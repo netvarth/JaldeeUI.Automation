@@ -48,7 +48,7 @@ def login():
     # driver.quit()
 
 
-def test_create_patient(login):
+def test_appt_reschedule(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -132,6 +132,8 @@ def test_create_patient(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
     ).click()
+
+    time.sleep(3)
 
     while True:
         try:
@@ -218,3 +220,4 @@ def test_create_patient(login):
     )
     reschedule_button.click()
     print("Reschedule Successfully")
+
