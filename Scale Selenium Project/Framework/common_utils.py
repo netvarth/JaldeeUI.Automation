@@ -1,11 +1,15 @@
 import pytest
 import random
 import string
+import pyautogui
+import time
 from faker import Faker
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
@@ -33,7 +37,7 @@ def login(url):
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     driver.get(url)
     driver.maximize_window()
-
+    time.sleep(5)
     driver.find_element(By.ID, "phone").send_keys("5555556030")
     driver.find_element(By.ID, "password").send_keys("Jaldee01")
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
