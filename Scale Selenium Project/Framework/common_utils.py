@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-
+from datetime import datetime, timedelta
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
 test_mail = "test@jaldee.com"
@@ -38,11 +38,13 @@ def login(url):
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
+
+    # 5550005540  Netvarth123
     driver.find_element(By.ID, "phone").send_keys("5555556030")
     driver.find_element(By.ID, "password").send_keys("Jaldee01")
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)
     driver.implicitly_wait(5)
     yield driver
-    # driver.close()
-    # driver.quit()
+    driver.close()
+    driver.quit()
