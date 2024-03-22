@@ -11,6 +11,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, timedelta
+
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
 test_mail = "test@jaldee.com"
@@ -24,7 +25,8 @@ def create_user_data():
     print(last_name)
     cons_manual_id = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
     print(cons_manual_id)
-    random_digits = ''.join(random.choices(string.digits, k=7))
+    random_digits = fake.numerify(text='#######')
+    # random_digits = ''.join(random.choices(string.digits, k=7))
     phonenumber = f"{555}{random_digits}"
     print(phonenumber)
     email = f"{phonenumber}.{first_name}.{test_mail}"

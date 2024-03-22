@@ -1,3 +1,5 @@
+import time
+
 from Framework.common_utils import *
 
 first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -131,7 +133,7 @@ def test_appt_autoinvoice1(login):
         EC.element_to_be_clickable(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
     ).click()
-
+    time.sleep(2)
     while True:
         try:
             print("before in loop")
@@ -152,8 +154,6 @@ def test_appt_autoinvoice1(login):
     last_element_in_accordian.click()
 
     time.sleep(3)
-    last_element_in_accordian.click()
-
     accordion_tab = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//p-table[@class='p-element']")
