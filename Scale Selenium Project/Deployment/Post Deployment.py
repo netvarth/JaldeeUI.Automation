@@ -1,3 +1,5 @@
+import time
+
 from Framework.common_utils import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -437,8 +439,10 @@ def test_create_patient(login):
     time.sleep(5)
     print("Successfully send the Payment Link to the patient")
 
-    login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
-
+    # login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
+    ).click()
     while True:
         try:
             next_button = WebDriverWait(login, 10).until(
@@ -478,9 +482,9 @@ def test_create_patient(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Service/Item']"))
     ).click()
-
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()=' Consultation ']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Consultation']"))
     ).click()
 
     WebDriverWait(login, 10).until(

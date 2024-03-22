@@ -1,3 +1,5 @@
+import time
+
 from Framework.common_utils import *
 
 
@@ -114,6 +116,8 @@ def test_appt_manualinvoice(login):
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Naveen Consultation']"))
     ).click()
 
+    time.sleep(3)
+
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[@class='cs-btn bt1 ml-0'][normalize-space()='Add']"))
     ).click()
@@ -140,3 +144,4 @@ def test_appt_manualinvoice(login):
 
     time.sleep(5)
     print("Successfully send the Payment Link to the patient")
+

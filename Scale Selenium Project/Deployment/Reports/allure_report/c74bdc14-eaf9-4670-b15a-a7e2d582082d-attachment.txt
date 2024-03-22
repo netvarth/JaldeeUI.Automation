@@ -1,0 +1,18 @@
+Samantha
+Williams
+kDd
+5557286145
+5557286145.Samantha.test@jaldee.com
+location : Chavakkad
+Department : ENT
+Select user : Naveen
+Select Service : Naveen Consultation
+Today Date: 15
+Time Slot: 05:15 PM
+Note added for walkin appointment
+Successfully upload the file
+Appointment confirm successfully
+Send Message Successfully
+Attachment Send Successfully
+prescription created successfully
+Prescription Shared Successfully

@@ -1,0 +1,24 @@
+Today Date: 21
+Time Slot: 11:39 AM
+Dustin
+Friedman
+XQg
+5555038861
+Number of OTP input fields: 5
+[<selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.247")>, <selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.248")>, <selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.249")>, <selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.250")>, <selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.251")>]
+0
+<selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.247")>
+1
+<selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.248")>
+2
+<selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.249")>
+3
+<selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.250")>
+4
+<selenium.webdriver.remote.webelement.WebElement (session="9a017165b8414378b88f7d43b1b13b14", element="f.A0CBFC49975B164865D4F7221F872FE2.d.94F1DA3BCF7413FDA12A174E388DDEE5.e.251")>
+Dustin
+Friedman
+before
+After
+Successfully send the message
+Successfully send Attachment
