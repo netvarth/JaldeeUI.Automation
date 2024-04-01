@@ -37,7 +37,7 @@ def login():
 
 
 def test_booking(login):
-    # login.find_element(By.XPATH, "//span[contains(text(),'Book Now')]").click()
+
     wait = WebDriverWait(login, 10)
     book_now_button = wait.until(EC.presence_of_element_located((By.XPATH, "//span[text()='Book Now']")))
     book_now_button.click()

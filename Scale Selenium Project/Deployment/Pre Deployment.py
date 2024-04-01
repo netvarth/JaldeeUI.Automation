@@ -99,7 +99,7 @@ def test_walkin_appointment(login):
 
     print("Appointment confirm successfully")
 
-    time.sleep(5)
+    time.sleep(4)
 
     while True:
         try:
@@ -406,13 +406,6 @@ def test_walkin_appointment(login):
     )
     last_element_in_accordian.click()
 
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
-
     # ************************* Auto Invoice and Sharing ************************
 
     time.sleep(3)
@@ -450,6 +443,7 @@ def test_walkin_appointment(login):
             next_button.click()
 
         except:
+
             break
 
     time.sleep(3)
@@ -457,13 +451,6 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
 
     # ********************** Manual Invoice and Sharing ***********************
 

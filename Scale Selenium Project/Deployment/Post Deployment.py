@@ -389,8 +389,11 @@ def test_create_patient(login):
         EC.presence_of_element_located((By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
     ).click()
 
+    time.sleep(5)
+
     while True:
         try:
+            print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -399,20 +402,13 @@ def test_create_patient(login):
             next_button.click()
 
         except:
+            print("EC caught:")
             break
 
-    time.sleep(3)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
 
     # ************************* Auto Invoice and Sharing ************************
 
@@ -436,15 +432,17 @@ def test_create_patient(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
-    time.sleep(5)
+    time.sleep(3)
     print("Successfully send the Payment Link to the patient")
 
     # login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
     ).click()
+    time.sleep(3)
     while True:
         try:
+            print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -453,20 +451,13 @@ def test_create_patient(login):
             next_button.click()
 
         except:
+            print("EC caught:")
             break
 
-    time.sleep(3)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
 
     # ********************** Manual Invoice and Sharing ***********************
 
@@ -516,8 +507,11 @@ def test_create_patient(login):
 
     login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
 
+    time.sleep(5)
+
     while True:
         try:
+            print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -526,20 +520,13 @@ def test_create_patient(login):
             next_button.click()
 
         except:
+            print("EC caught:")
             break
 
-    time.sleep(3)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
 
     time.sleep(3)
     View_Detail_button = WebDriverWait(login, 10).until(
@@ -602,6 +589,8 @@ def test_create_patient(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Future']"))
     ).click()
 
+    time.sleep(5)
+
     while True:
         try:
             print("before in loop")
@@ -615,8 +604,6 @@ def test_create_patient(login):
         except:
             print("EC caught:")
             break
-
-    time.sleep(3)
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))

@@ -29,7 +29,7 @@ def create_user_data():
     # random_digits = ''.join(random.choices(string.digits, k=7))
     phonenumber = f"{555}{random_digits}"
     print(phonenumber)
-    email = f"{phonenumber}.{first_name}.{test_mail}"
+    email = f"{first_name}.{last_name}{test_mail}"
     print(email)
     return [first_name, last_name, cons_manual_id, phonenumber, email]
 

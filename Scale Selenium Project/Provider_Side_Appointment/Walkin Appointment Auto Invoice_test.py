@@ -124,9 +124,9 @@ def test_appt_autoinvoice(login):
     print("Successfully send the Payment Link to the patient")
 
 
+# Apply the discount in the Invoice and Share the payment link
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice1(login):
-    # Apply the discount in the Invoice and Share the payment link
     print("Apply discount and share the payment link")
 
     WebDriverWait(login, 20).until(
@@ -226,9 +226,9 @@ def test_appt_autoinvoice1(login):
     print("Successfully send the Payment Link to the patient")
 
 
+# Add the item in the Invoice and Share the payment link
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice2(login):
-    # Add the item in the Invoice and Share the payment link
     print("Add item and Share the payment link")
 
     WebDriverWait(login, 20).until(
@@ -313,6 +313,7 @@ def test_appt_autoinvoice2(login):
     print("Successfully send the Payment Link to the patient")
 
 
+# Add the item and apply the discount in the Invoice and Share the payment link
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice3(login):
     # Add the item and apply the discount in the Invoice and Share the payment link
@@ -497,6 +498,7 @@ def test_appt_autoinvoice3(login):
     print("Successfully send the Payment Link to the patient")
 
 
+# Change the Qty/Price of the Service in the invoice and share the payment link
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice4(login):
     # Change the Qty/Price of the Service in the invoice and share the payment link
