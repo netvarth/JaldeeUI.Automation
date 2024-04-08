@@ -1,50 +1,4 @@
-import random
-import string
-import time
-
-import pyautogui
-import pytest
-from faker import Faker
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
-
-test_mail = "test@jaldee.com"
-
-
-def create_user_data():
-    fake = Faker()
-    first_name = fake.first_name()
-    print(first_name)
-    last_name = fake.last_name()
-    print(last_name)
-    cons_manual_id = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
-    print(cons_manual_id)
-    random_digits = ''.join(random.choices(string.digits, k=7))
-    phonenumber = f"{555}{random_digits}"
-    print(phonenumber)
-    email = f"{phonenumber}.{first_name}.{test_mail}"
-    print(email)
-    return [first_name, last_name, cons_manual_id, phonenumber, email]
-
-
-@pytest.fixture()
-def login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.get("https://scale.jaldee.com/business/")
-    driver.maximize_window()
-
-    driver.find_element(By.ID, "phone").send_keys("5555556030")
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
-    # time.sleep(10)
-    driver.implicitly_wait(5)
-    yield driver
-    # driver.close()
-    # driver.quit()
+from Framework.common_utils import *
 
 
 def test_create_patient(login):
@@ -92,9 +46,8 @@ def test_create_patient(login):
     user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
     print("Select user : Naveen")
-    # time.sleep(3)
+
     service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
@@ -118,49 +71,54 @@ def test_create_patient(login):
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
-    # time.sleep(3)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload File']"))
-    # ).click()
-    #
-    # time.sleep(4)
-    # pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
-    # pyautogui.press('enter')
-    #
-    # time.sleep(4)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
-    # ).click()
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload File']"))
+    ).click()
+
+    time.sleep(4)
+    pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
+    pyautogui.press('enter')
+
+    time.sleep(4)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+    ).click()
 
     time.sleep(3)
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
+
+    while True:
+        try:
+            print("before in loop")
+            next_button = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+            )
+
+            next_button.click()
+
+        except:
+            print("EC caught:")
+            break
+
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
-    accordion_tab.click()
+    last_element_in_accordian.click()
+
     time.sleep(3)
-    print("Before clicking View Details button")
     view_details_button = WebDriverWait(login, 30).until(
         EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
     )
-    print("View Details button found, attempting to click")
     view_details_button.click()
 
     time.sleep(3)
-    # view_details_button = WebDriverWait(login, 30).until(
-    #     EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'View Details')]")))
-    print("Before clicking View Details button")
+
     view_details_button = WebDriverWait(login, 30).until(
         EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
     )
-    print("View Details button found, attempting to click")
     view_details_button.click()
-    print("View Details button clicked")
-
-    # Use JavaScript to click the element
     login.execute_script("arguments[0].click();", view_details_button)
-    # login.find_element(By.XPATH, "//button[normalize-space()='More Actions']").click()
     login.refresh()
     more_actions_button = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='More Actions']"))
@@ -184,4 +142,20 @@ def test_create_patient(login):
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
     ).click()
 
-    print("Attachment Send Successfully")
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+

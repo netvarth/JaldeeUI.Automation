@@ -1,5 +1,3 @@
-import time
-
 from Framework.common_utils import *
 
 first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -31,6 +29,21 @@ def test_appt_autoinvoice(login):
     login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
     login.implicitly_wait(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
@@ -51,9 +64,8 @@ def test_appt_autoinvoice(login):
     user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
     print("Select user : Naveen")
-    # time.sleep(3)
+
     service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
@@ -79,6 +91,22 @@ def test_appt_autoinvoice(login):
 
     login.find_element(By.XPATH,
                        "//span[normalize-space()='Confirm']").click()
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     time.sleep(5)
 
     while True:
@@ -120,8 +148,23 @@ def test_appt_autoinvoice(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     time.sleep(5)
-    print("Successfully send the Payment Link to the patient")
 
 
 # Apply the discount in the Invoice and Share the payment link
@@ -152,14 +195,6 @@ def test_appt_autoinvoice1(login):
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
-    time.sleep(3)
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -201,11 +236,33 @@ def test_appt_autoinvoice1(login):
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Apply']"))
     ).click()
 
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     time.sleep(5)
 
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
     ).click()
+
+    snack_bar = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    )
+    message = snack_bar.text
+    print("Snack bar message:", message)
 
     time.sleep(5)
     WebDriverWait(login, 10).until(
@@ -222,8 +279,23 @@ def test_appt_autoinvoice1(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     time.sleep(5)
-    print("Successfully send the Payment Link to the patient")
 
 
 # Add the item in the Invoice and Share the payment link
@@ -258,13 +330,6 @@ def test_appt_autoinvoice2(login):
     time.sleep(3)
     last_element_in_accordian.click()
 
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
-
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Invoice']"))
@@ -294,6 +359,12 @@ def test_appt_autoinvoice2(login):
         EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
     ).click()
 
+    snack_bar = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    )
+    message = snack_bar.text
+    print("Snack bar message:", message)
+
     time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
@@ -309,8 +380,22 @@ def test_appt_autoinvoice2(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
     time.sleep(5)
-    print("Successfully send the Payment Link to the patient")
 
 
 # Add the item and apply the discount in the Invoice and Share the payment link
@@ -341,6 +426,23 @@ def test_appt_autoinvoice3(login):
     login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     login.implicitly_wait(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
@@ -361,9 +463,7 @@ def test_appt_autoinvoice3(login):
     user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
     print("Select user : Naveen")
-    # time.sleep(3)
     service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
@@ -389,6 +489,22 @@ def test_appt_autoinvoice3(login):
 
     login.find_element(By.XPATH,
                        "//span[normalize-space()='Confirm']").click()
+
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
     time.sleep(5)
 
     while True:
@@ -412,13 +528,6 @@ def test_appt_autoinvoice3(login):
 
     time.sleep(3)
     last_element_in_accordian.click()
-
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -473,11 +582,33 @@ def test_appt_autoinvoice3(login):
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Apply']"))
     ).click()
 
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     time.sleep(5)
 
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
     ).click()
+
+    snack_bar = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    )
+    message = snack_bar.text
+    print("Snack bar message:", message)
 
     time.sleep(5)
     WebDriverWait(login, 10).until(
@@ -494,8 +625,23 @@ def test_appt_autoinvoice3(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     time.sleep(5)
-    print("Successfully send the Payment Link to the patient")
 
 
 # Change the Qty/Price of the Service in the invoice and share the payment link
@@ -531,13 +677,6 @@ def test_appt_autoinvoice4(login):
     time.sleep(3)
     last_element_in_accordian.click()
 
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
-
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Invoice']"))
@@ -571,6 +710,12 @@ def test_appt_autoinvoice4(login):
         EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
     ).click()
 
+    snack_bar = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    )
+    message = snack_bar.text
+    print("Snack bar message:", message)
+
     time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
@@ -586,5 +731,20 @@ def test_appt_autoinvoice4(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
     time.sleep(5)
-    print("Successfully send the Payment Link to the patient")

@@ -130,7 +130,7 @@ def test_walkin_appointment(login):
     )
     more_actions_button.click()
     # ****************************** Send Message ****************************
-    time.sleep(5)
+    time.sleep(4)
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='Send Message']"))
     ).click()
@@ -517,13 +517,6 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-table[@class='p-element']")
-        )
-    )
-    accordion_tab.click()
 
     time.sleep(3)
     print("Before clicking View Details button")

@@ -1,53 +1,9 @@
-import random
-import string
 import time
-from datetime import datetime, timedelta
 
-import pyautogui
-import pytest
-from faker import Faker
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
-
-test_mail = "test@jaldee.com"
+from Framework.common_utils import *
 
 
-def create_user_data():
-    fake = Faker()
-    first_name = fake.first_name()
-    print(first_name)
-    last_name = fake.last_name()
-    print(last_name)
-    cons_manual_id = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
-    print(cons_manual_id)
-    random_digits = ''.join(random.choices(string.digits, k=7))
-    phonenumber = f"{555}{random_digits}"
-    print(phonenumber)
-    email = f"{phonenumber}.{first_name}.{test_mail}"
-    print(email)
-    return [first_name, last_name, cons_manual_id, phonenumber, email]
-
-
-@pytest.fixture()
-def login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.get("https://scale.jaldee.com/business/")
-    driver.maximize_window()
-
-    driver.find_element(By.ID, "phone").send_keys("5555556030")
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
-    # time.sleep(10)
-    driver.implicitly_wait(5)
-    yield driver
-    # driver.close()
-    # driver.quit()
-
-
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_reschedule(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -93,9 +49,8 @@ def test_appt_reschedule(login):
     user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
     print("Select user : Naveen")
-    # time.sleep(3)
+
     service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
@@ -137,20 +92,15 @@ def test_appt_reschedule(login):
 
     while True:
         try:
-            print("before in loop")
-            # Find the "Next" button
+
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
             )
-            # if next_button.is_enabled():
-            #     print("in if")
-            #     time.sleep(3)
+
             next_button.click()
 
-            # else:
 
-            # break
         except:
             print("EC caught:")
             break
@@ -158,29 +108,19 @@ def test_appt_reschedule(login):
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
-    # accordion_tab.click()
     time.sleep(3)
     last_element_in_accordian.click()
 
     time.sleep(3)
-    print("Before clicking View Details button")
+
     View_Detail_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
     )
     View_Detail_button.click()
-
-    # login.execute_script("arguments[0].click();", View_Detail_button)
-    print("After clicking View Details button")
-    # time.sleep(3)
-    # WebDriverWait(login, 20).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "#p-accordiontab-628-content > div > div:nth-child(2) > app-booking-actions > div > div > button:nth-child(5)"))).click()
+    login.execute_script("arguments[0].click();", View_Detail_button)
     time.sleep(3)
     login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
     time.sleep(3)
-
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//button[@class='p-element p-ripple p-datepicker-trigger p-button-icon-only ng-tns-c86-58 p-button p-component ng-star-inserted']"))
-    #
-    # ).click()
 
     calendar_icon_xpath = "//button[contains(@class,'p-element p-ripple p-datepicker-trigger p-button-icon-only ng-tns-c86')]"
 
@@ -219,5 +159,8 @@ def test_appt_reschedule(login):
                                           "//div[@class='col-12 col-sm-12 col-md-12 col-lg-12 mgn-up-20 mgn-bt-20 footerlinks no-padding reschedulebtn ng-star-inserted']//button[@class='btn btn-primary reschedule-btn']"))
     )
     reschedule_button.click()
-    print("Reschedule Successfully")
+
+    time.sleep(3)
+
+
 

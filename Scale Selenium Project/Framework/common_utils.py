@@ -14,7 +14,8 @@ from datetime import datetime, timedelta
 
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
-test_mail = "test@jaldee.com"
+localhost_url = "https://localhost:4200/business/"
+test_mail = ".test@jaldee.com"
 
 
 def create_user_data():
@@ -36,7 +37,12 @@ def create_user_data():
 
 @pytest.fixture()
 def login(url):
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--ignore-ssl-errors=yes")
+    chrome_options.add_argument("--ignore-certificate-errors")
+
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+    # driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
