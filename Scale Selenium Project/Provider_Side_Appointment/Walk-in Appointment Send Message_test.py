@@ -112,7 +112,7 @@ def test_create_patient(login):
 
     while True:
         try:
-            print("before in loop")
+
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -121,7 +121,7 @@ def test_create_patient(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -130,13 +130,11 @@ def test_create_patient(login):
     last_element_in_accordian.click()
 
     time.sleep(3)
-    print("Before clicking View Details button")
+
     view_details_button = WebDriverWait(login, 30).until(
         EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
     )
-    print("View Details button found, attempting to click")
     view_details_button.click()
-    print("View Details button clicked")
 
     login.execute_script("arguments[0].click();", view_details_button)
     time.sleep(3)
@@ -204,7 +202,7 @@ def test_create_patient_1(login):
         (By.XPATH, "//b[contains(text(),'Create New Patient')]")))
     element_appoint.click()
     login.implicitly_wait(3)
-    first_name, last_name, cons_manual_id, email = create_user_data()
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
     login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
     login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
@@ -227,7 +225,7 @@ def test_create_patient_1(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    login.implicitly_wait(3)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
     ).click()
@@ -304,20 +302,16 @@ def test_create_patient_1(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
-    time.sleep(3)
-    last_element_in_accordian.click()
-
     time.sleep(2)
     view_details_button = WebDriverWait(login, 30).until(
-        EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
+        EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='View Details']"))
     )
     view_details_button.click()
     login.execute_script("arguments[0].click();", view_details_button)

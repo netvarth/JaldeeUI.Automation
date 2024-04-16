@@ -152,15 +152,11 @@ def test_appt_reschedule(login):
     login.execute_script("arguments[0].click();", View_Detail_button)
     time.sleep(3)
     login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
-    time.sleep(3)
+    time.sleep(2)
 
-    calendar_icon_xpath = "//button[contains(@class,'p-element p-ripple p-datepicker-trigger p-button-icon-only ng-tns-c86')]"
-
-    WebDriverWait(login, 20).until(EC.element_to_be_clickable((By.XPATH, calendar_icon_xpath)))
-
-    calendar_icon = WebDriverWait(login, 20).until(EC.visibility_of_element_located((By.XPATH, calendar_icon_xpath)))
-
-    login.execute_script("arguments[0].click();", calendar_icon)
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@class='reschedule-date-picker']"))
+    ).click()
 
     print("calendar popup successful")
 
@@ -346,37 +342,30 @@ def test_appt_reschedule1(login):
     login.execute_script("arguments[0].click();", View_Detail_button)
     time.sleep(3)
     login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
-    time.sleep(3)
+    time.sleep(2)
 
-    # calendar_icon_xpath = "//button[contains(@class,'p-element p-ripple p-datepicker-trigger p-button-icon-only ng-tns-c86')]"
-    #
-    # WebDriverWait(login, 20).until(EC.element_to_be_clickable((By.XPATH, calendar_icon_xpath)))
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@class='reschedule-date-picker']"))
+    ).click()
 
-    # calendar_icon = WebDriverWait(login, 20).until(
-    #     EC.visibility_of_element_located((By.XPATH, calendar_icon_xpath)))
-    #
-    # login.execute_script("arguments[0].click();", calendar_icon)
+    today_date = datetime.now()
+    print(today_date.day)
+    today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
+        today_date.day)
+    print(today_xpath_expression)
+    tomorrow_date = today_date + timedelta(days=1)
+    print(tomorrow_date.day)
+    tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
+        tomorrow_date.day)
+    print(tomorrow_xpath_expression)
 
-    # today_date = datetime.now()
-    # print(today_date.day)
-    # today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
-    #     today_date.day)
-    # print(today_xpath_expression)
-    # tomorrow_date = today_date + timedelta(days=1)
-    # print(tomorrow_date.day)
-    # tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
-    #     tomorrow_date.day)
-    # print(tomorrow_xpath_expression)
-    #
-    # Tomorrow_Date = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
-    # )
-    # Tomorrow_Date.click()
-    # print("Tomorrow Date:", Tomorrow_Date.text)
+    Tomorrow_Date = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
+    )
+    Tomorrow_Date.click()
+    print("Tomorrow Date:", Tomorrow_Date.text)
 
     wait = WebDriverWait(login, 10)
     time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected= 'false']")))
     time_slot.click()
     print("Time Slot:", time_slot.text)
-
-

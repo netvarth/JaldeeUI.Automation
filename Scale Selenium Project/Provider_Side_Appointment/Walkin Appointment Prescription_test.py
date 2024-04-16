@@ -47,9 +47,7 @@ def test_create_patient(login):
     user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
     print("Select user : Naveen")
-    # time.sleep(3)
     service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
