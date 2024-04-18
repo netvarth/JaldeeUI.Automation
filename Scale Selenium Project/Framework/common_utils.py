@@ -17,6 +17,7 @@ prod_url = "https://www.jaldee.com/business/"
 localhost_url = "https://localhost:4200/business/"
 test_scale_url = "https://test.jaldee.com/business/"
 test_mail = ".test@jaldee.com"
+consumer_url = "https://scale.jaldee.com/visionhospital/"
 
 
 def create_user_data():
@@ -49,8 +50,8 @@ def login(url):
     time.sleep(5)
 
     # 5550005540  Netvarth123
-    driver.find_element(By.ID, "phone").send_keys("5550005540")
-    driver.find_element(By.ID, "password").send_keys("Netvarth123")
+    driver.find_element(By.ID, "phone").send_keys("5555556030")
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)
     driver.implicitly_wait(5)

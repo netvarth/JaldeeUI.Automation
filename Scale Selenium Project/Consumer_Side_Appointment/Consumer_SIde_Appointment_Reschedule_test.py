@@ -1,6 +1,7 @@
 import random
 import string
 import time
+from datetime import datetime, timedelta
 
 import pytest
 from faker import Faker
@@ -57,10 +58,8 @@ def test_booking(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH,
-                                        "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][contains(text(),'service zero')]"))
+                                        "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][normalize-space()='service']"))
     ).click()
-    # login.find_element(By.XPATH,
-    #                    "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][contains(text(),'service zero')]").click()
 
     Today_Date = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']"))
@@ -143,18 +142,40 @@ def test_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Reschedule')]"))
     ).click()
+    #
+    # tomorrow_Date = WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.XPATH, "(//div[normalize-space()='6'])[1]"))
+    # )
+    #
+    # tomorrow_Date.click()
+    #
+    # print("Tomorrow Date:", tomorrow_Date.text)
+    #
+    # wait = WebDriverWait(login, 10)
+    # time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']")))
+    # time_slot.click()
+    # print("Time Slot:", time_slot.text)
+    #
+    # print("Reschedule is successfully ")
 
-    tomorrow_Date = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "(//div[normalize-space()='6'])[1]"))
+    today_date = datetime.now()
+    print(today_date.day)
+    today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
+        today_date.day)
+    print(today_xpath_expression)
+    tomorrow_date = today_date + timedelta(days=1)
+    print(tomorrow_date.day)
+    tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
+        tomorrow_date.day)
+    print(tomorrow_xpath_expression)
+
+    Tomorrow_Date = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
     )
+    Tomorrow_Date.click()
+    print("Tomorrow Date:", Tomorrow_Date.text)
 
-    tomorrow_Date.click()
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Next']"))
+    ).click()
 
-    print("Tomorrow Date:", tomorrow_Date.text)
-
-    wait = WebDriverWait(login, 10)
-    time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']")))
-    time_slot.click()
-    print("Time Slot:", time_slot.text)
-
-    print("Reschedule is successfully ")
