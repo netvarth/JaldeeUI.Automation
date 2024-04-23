@@ -146,25 +146,27 @@ def test_create_catalogs(login):
         EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Create Catalog']"))
     ).click()
 
-    # for i in range(2, 4):
-    #     item_xpath = f"//input[@class='mdc-checkbox__native-control'][{i}]"
-    #     WebDriverWait(login, 10).until(
-    #         EC.presence_of_element_located((By.XPATH, item_xpath))
-    #     ).click()
-    time.sleep(3)
-    # checkboxes = WebDriverWait(login, 10).until(
-    #     EC.visibility_of_all_elements_located((By.XPATH, "//input[@class='mdc-checkbox__native-control']"))
-    # )
-    #
-    # for checkbox in checkboxes[:3]:
-    #     checkbox.click()
+    time.sleep(5)
 
     checkboxes = WebDriverWait(login, 10).until(
-        EC.visibility_of_all_elements_located((By.XPATH, "//input[@class='mdc-checkbox__native-control']"))
+        EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@id, 'mat-mdc-checkbox')]"))
     )
 
     # Click the first three checkboxes
-    for i in range(min(3, len(checkboxes))):
+    for i in range(1, min(6, len(checkboxes))):
         checkboxes[i].click()
 
+    time.sleep(5)
+    print("before")
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
+    ).click()
+
+    print("After")
+
     time.sleep(3)
+    toast_detail = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_detail.text
+    print("toast_Message:", message)
