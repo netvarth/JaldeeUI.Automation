@@ -156,7 +156,7 @@ def test_create_catalogs(login):
     for i in range(1, min(6, len(checkboxes))):
         checkboxes[i].click()
 
-    time.sleep(5)
+    time.sleep(3)
     print("before")
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
