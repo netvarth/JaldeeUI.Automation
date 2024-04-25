@@ -31,7 +31,7 @@ def create_user_data():
 @pytest.fixture()
 def login():
     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.get("https://scale.jaldee.com/visionhospital/")
+    driver.get("https://jaldee.com/royalclinic/")
     driver.maximize_window()
     yield driver
 
@@ -306,5 +306,3 @@ def test_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Send')]"))
     ).click()
-
-

@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_walkin_appointment(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -278,12 +278,6 @@ def test_walkin_appointment(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
-
     time.sleep(3)
 
     WebDriverWait(login, 10).until(
@@ -298,12 +292,6 @@ def test_walkin_appointment(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
-
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Medication']"))
     ).click()
@@ -315,12 +303,6 @@ def test_walkin_appointment(login):
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
-
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Vital Signs']"))
@@ -336,12 +318,6 @@ def test_walkin_appointment(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
-
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Immunization History']"))
@@ -355,12 +331,6 @@ def test_walkin_appointment(login):
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
-
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -376,12 +346,6 @@ def test_walkin_appointment(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
-
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Diagnosis']"))
@@ -395,12 +359,6 @@ def test_walkin_appointment(login):
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
-
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
