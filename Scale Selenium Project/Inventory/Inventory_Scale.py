@@ -1,4 +1,3 @@
-import time
 import uuid
 
 from Framework.common_utils import *
@@ -8,12 +7,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_create_catalogs(login):
-    time.sleep(5)
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
+        EC.presence_of_element_located((By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
     ).click()
 
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Inventory')]"))
+    ).click()
     time.sleep(3)
 
     WebDriverWait(login, 10).until(
@@ -70,9 +71,8 @@ def test_create_catalogs(login):
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Unit')]"))
     ).click()
 
-    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Box of 2']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='1 strip']"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -105,36 +105,29 @@ def test_create_catalogs(login):
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Item Tax')]"))
     ).click()
 
-    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='GST 5%']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Standard Tax']"))
     ).click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create Item']"))
     ).click()
 
-    # toast_detail = WebDriverWait(login, 10).until(
-    #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    # )
-    # message = toast_detail.text
-    # print("toast_Message:", message)
-    time.sleep(3)
+    toast_detail = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_detail.text
+    print("toast_Message:", message)
+
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-arrow-left']"))
     ).click()
 
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-arrow-left']"))
-    ).click()
-
-    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Catalogs')]"))
     ).click()
 
-    time.sleep(3)
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[@class='p-ripple p-element p-button p-component']"))
     ).click()

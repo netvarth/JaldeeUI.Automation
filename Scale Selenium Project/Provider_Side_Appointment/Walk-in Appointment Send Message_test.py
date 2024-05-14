@@ -671,4 +671,6 @@ def test_create_patient_3(login):
     message = snack_bar.text
     print("Snack bar message:", message)
 
+    
+
 

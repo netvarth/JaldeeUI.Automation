@@ -174,6 +174,7 @@ def test_appt_reschedule(login):
     Tomorrow_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
     )
+    time.sleep(2)
     Tomorrow_Date.click()
     print("Tomorrow Date:", Tomorrow_Date.text)
 

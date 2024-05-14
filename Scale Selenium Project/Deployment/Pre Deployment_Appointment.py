@@ -1,3 +1,5 @@
+import time
+
 import allure
 
 from Framework.common_utils import *
@@ -97,7 +99,23 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
     ).click()
 
-    print("Appointment confirm successfully")
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    # print("Appointment confirm successfully")
 
     time.sleep(4)
 
@@ -152,7 +170,23 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
     ).click()
 
-    print("Send Message Successfully")
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    # print("Send Message Successfully")
 
     # ******************* Send Attachment ************************
     time.sleep(5)
@@ -173,7 +207,23 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
     ).click()
 
-    print("Attachment Send Successfully")
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    # print("Attachment Send Successfully")
 
     # ********************* Create the Prescription and Sharing *************************
 
@@ -239,9 +289,15 @@ def test_walkin_appointment(login):
     option_element.click()
 
     login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-    time.sleep(5)
-    print("prescription created successfully")
 
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
+    # print("prescription created successfully")
+    time.sleep(2)
     login.find_element(By.XPATH, "//img[@alt='share']").click()
 
     login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
@@ -249,7 +305,16 @@ def test_walkin_appointment(login):
 
     login.find_element(By.XPATH, "(//input[@class='mdc-checkbox__native-control'])[1]").click()
     login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
-    print("Prescription Shared Successfully")
+    login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
+        "Prescription Message to Patient")
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
+    # print("Prescription Shared Successfully")
 
     # ************************* Case Creation and Sharing *********************
 
@@ -270,6 +335,14 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
     ).click()
 
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
+    time.sleep(2)
+
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']"))
     ).send_keys("Fever")
@@ -278,32 +351,61 @@ def test_walkin_appointment(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
     time.sleep(3)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='History']"))
     ).click()
 
+    login.find_element(By.XPATH, "//input[@placeholder ='Enter History']").send_keys("viral fever")
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder = 'Enter History']"))
-    ).send_keys("Viral fever")
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='viral fever']"))
+    ).click()
 
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
+    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Medication']"))
     ).click()
 
+    login.find_element(By.XPATH, "//input[@placeholder='Enter Medication'] ").send_keys("no medication")
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Medication']"))
-    ).send_keys(" No medication")
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='mdc-list-item__primary-text'][normalize-space()='no medication']"))
+    ).click()
 
+    time.sleep(3)
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
+    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Vital Signs']"))
     ).click()
@@ -318,47 +420,83 @@ def test_walkin_appointment(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
+    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Immunization History']"))
     ).click()
-
-    time.sleep(3)
+    login.find_element(By.XPATH, "//input[@placeholder='Enter Immunization History']").send_keys(
+        "No History of Immunization History")
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Immunization History']"))
-    ).send_keys("No History of Immunization History")
+        EC.presence_of_element_located((By.XPATH,
+                                        "//span[@class='mdc-list-item__primary-text'][normalize-space()='no history of immunization history']"))
+    ).click()
 
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    time.sleep(3)
+    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Observations']"))
     ).click()
 
-    time.sleep(3)
+    login.find_element(By.XPATH, "//input[@placeholder='Enter Observations']").send_keys("Minor fever")
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Observations']"))
-    ).send_keys("Minor fever")
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='minor fever']"))
+    ).click()
 
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
+
+    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Diagnosis']"))
     ).click()
 
-    time.sleep(3)
+    login.find_element(By.XPATH, "//input[@placeholder='Enter Diagnosis']").send_keys("High temperature")
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Diagnosis']"))
-    ).send_keys("High temperature")
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='high temperature']"))
+    ).click()
 
     element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
+
+    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -378,7 +516,13 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Share')]"))
     ).click()
 
-    print("Case file Shared successfully")
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
+    # print("Case file Shared successfully")
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-arrow-left back-btn-arrow']"))
@@ -428,8 +572,23 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
-    time.sleep(5)
-    print("Successfully send the Payment Link to the patient")
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+    time.sleep(3)
+    # print("Successfully send the Payment Link to the patient")
 
     login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
 
@@ -495,8 +654,24 @@ def test_walkin_appointment(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
-    time.sleep(5)
-    print("Successfully send the Payment Link to the patient")
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    time.sleep(3)
+    # print("Successfully send the Payment Link to the patient")
 
     login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
 
@@ -519,7 +694,7 @@ def test_walkin_appointment(login):
     last_element_in_accordian.click()
 
     time.sleep(3)
-    print("Before clicking View Details button")
+    # print("Before clicking View Details button")
     View_Detail_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
     )
@@ -548,7 +723,6 @@ def test_walkin_appointment(login):
     Tomorrow_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
     )
-    time.sleep(3)
     Tomorrow_Date.click()
     print("Tomorrow Date:", Tomorrow_Date.text)
 
@@ -562,7 +736,23 @@ def test_walkin_appointment(login):
                                           "//div[@class='col-12 col-sm-12 col-md-12 col-lg-12 mgn-up-20 mgn-bt-20 footerlinks no-padding reschedulebtn ng-star-inserted']//button[@class='btn btn-primary reschedule-btn']"))
     )
     reschedule_button.click()
-    print("Reschedule Successfully")
+
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+    # print("Reschedule Successfully")
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -616,5 +806,97 @@ def test_walkin_appointment(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Ok']"))
     ).click()
-    time.sleep(5)
-    print("Successfully Cancel Appointment")
+
+    toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_message.text
+    print("Toast Message:", message)
+
+    time.sleep(3)
+
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Block Slots']"))
+    # ).click()
+    #
+    # WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
+    # ).click()
+    #
+    # login.implicitly_wait(5)
+    # login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
+    # print("location : Chavakkad")
+    # login.implicitly_wait(5)
+    #
+    # login.find_element(By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']").click()
+    # login.implicitly_wait(5)
+    # login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
+    # print("Department : ENT")
+    # user_dropdown_xpath = ("(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
+    #                        "ng-dirty'])[1]")
+    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))).click()
+    # user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
+    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
+    # print("Select user : Naveen")
+    #
+    # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+    # element = login.find_element(By.XPATH, service_dropdown_xpath)
+    # login.execute_script("arguments[0].scrollIntoView();", element)
+    # element.click()
+    #
+    # service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
+    #                         "Consultation'])[2]")
+    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
+    # print("Select Service : Naveen Consultation")
+    # time.sleep(3)
+    #
+    # # Select today's date
+    #
+    # today_date = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH,
+    #                                                                             "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
+    # today_date.click()
+    # print("Today Date:", today_date.text)
+    #
+    # # Wait for time slots to become clickable
+    # wait = WebDriverWait(login, 10)
+    # time_slots = wait.until(EC.visibility_of_all_elements_located((By.XPATH, "//button[@aria-selected='true']")))
+    #
+    # # Define how many slots you want to select (e.g., 4 slots)
+    # slots_to_select = 4
+    #
+    # # Click the first 'slots_to_select' number of slots
+    # for i in range(slots_to_select):
+    #     if i < len(time_slots):
+    #         time_slots[i].click()
+    #         print(f"Time Slot {i + 1}:", time_slots[i].text)
+    #     else:
+    #
+    #         print(f"Not enough available time slots to select {slots_to_select} slots.")
+    #         break
+    #
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//textarea[@name='consumerNote']"))
+    # ).send_keys("Block slot test")
+    #
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Confirm']"))
+    # ).click()
+    # try:
+    #
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
+    #
+    # except:
+    #
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
+
+
+
+

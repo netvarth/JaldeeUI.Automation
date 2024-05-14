@@ -171,6 +171,7 @@ def test_booking(login):
     pyautogui.press('enter')
     print("Successfully upload the file")
 
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']"))
     ).click()
@@ -214,12 +215,12 @@ def test_booking(login):
 
     today_date = datetime.now()
     print(today_date.day)
-    today_xpath_expression = "//table[@class='mat-calendar-table']//button[contains(@class, 'mat-calendar-body-cell')][normalize-space()='{}']".format(
+    today_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today'][normalize-space()='{}']".format(
         today_date.day)
     print(today_xpath_expression)
     tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
-    tomorrow_xpath_expression = "//table[@class='mat-calendar-table']//button[contains(@class, 'mat-calendar-body-cell')][normalize-space()='{}']".format(
+    tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected'][normalize-space()='{}']".format(
         tomorrow_date.day)
     print(tomorrow_xpath_expression)
 
@@ -253,7 +254,7 @@ def test_booking(login):
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
 
-    login.implicitly_wait(3)
+    time.sleep(2)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='My Bookings']"))

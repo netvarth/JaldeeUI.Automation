@@ -5,10 +5,13 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.parametrize('url', ["https://localhost:4200/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_create_catalogs(login):
-    time.sleep(10)
-    login.get("https://localhost:4200/business/rxorders/dashboard")
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
+    ).click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Inventory')]"))
