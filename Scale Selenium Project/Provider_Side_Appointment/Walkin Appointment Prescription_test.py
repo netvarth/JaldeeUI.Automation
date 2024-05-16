@@ -1,7 +1,7 @@
 from Framework.common_utils import *
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+
 def test_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
