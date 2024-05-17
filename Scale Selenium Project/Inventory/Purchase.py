@@ -74,88 +74,92 @@ def test_create_catalogs(login):
 
     login.find_element(By.XPATH, "//textarea[@placeholder='Notes to supplier']").send_keys("Medcc  Supplied item ")
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Add Items']"))
-    ).click()
+    for i in range(1, 5):
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Add Items']"))
+        ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-radio']//input[@type='radio'])[1]"))
-    ).click()
+        # i = 5
+        item_radio_xpath = f"(//div[@class='mdc-radio']//input[@type='radio'])[{i}]"
+        print(item_radio_xpath)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, item_radio_xpath))
+        ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
-    ).click()
-    time.sleep(3)
-    try:
-        # Wait for the input field to be visible and interactable
-        input_field = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//input[@type='number'])[1]"))
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
+        ).click()
+        time.sleep(3)
+        try:
+            # Wait for the input field to be visible and interactable
+            input_field = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "(//input[@type='number'])[1]"))
+            )
+
+            # Clear any existing value in the input field (optional)
+            input_field.clear()
+
+            # Enter a new value into the input field
+            input_value = 10
+            input_field.send_keys(str(input_value))  # Convert to string before sending keys
+
+            # For example, to verify the min attribute:
+            min_value = int(input_field.get_attribute("min"))
+            assert input_value >= min_value, f"Value {input_value} should be >= {min_value}"
+        except Exception as e:
+            print("Exception:", e)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Add']"))
+        ).click()
+
+        time.sleep(3)
+        batch_no = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@type='text'])[5]"))
         )
+        batch_no.click()
 
-        # Clear any existing value in the input field (optional)
-        input_field.clear()
+        random_number = str(random.randint(100, 999))
+        batch_no.send_keys(random_number)
+        print("Batch No:", random_number)
 
-        # Enter a new value into the input field
-        input_value = 10
-        input_field.send_keys(str(input_value))  # Convert to string before sending keys
+        login.find_element(By.XPATH,
+                           "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Box of 10']"))
+        ).click()
 
-        # For example, to verify the min attribute:
-        min_value = int(input_field.get_attribute("min"))
-        assert input_value >= min_value, f"Value {input_value} should be >= {min_value}"
-    except Exception as e:
-        print("Exception:", e)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@type='text'])[7]"))
+        ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Add']"))
-    ).click()
+        current_year = datetime.now().strftime("%Y")
+        current_year_xpath = f"//button[normalize-space()='{current_year}']"
+        print(current_year_xpath)
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, current_year_xpath))
+        ).click()
 
-    time.sleep(3)
-    batch_no = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "(//input[@type='text'])[5]"))
-    )
-    batch_no.click()
+        [year, month, day] = add_date(2)
+        print(year)
+        year_xpath = f"//span[normalize-space()='{year}']"
+        print(year_xpath)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, year_xpath))
+        ).click()
+        time.sleep(2)
+        month_xpath = f"//span[normalize-space()='{month}']"
 
-    random_number = str(random.randint(100, 999))
-    batch_no.send_keys(random_number)
-    print("Batch No:", random_number)
-
-    login.find_element(By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Box of 10']"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "(//input[@type='text'])[7]"))
-    ).click()
-
-    current_year = datetime.now().strftime("%Y")
-    current_year_xpath = f"//button[normalize-space()='{current_year}']"
-    print(current_year_xpath)
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, current_year_xpath))
-    ).click()
-
-    [year, month, day] = add_date(2)
-    print(year)
-    year_xpath = f"//span[normalize-space()='{year}']"
-    print(year_xpath)
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, year_xpath))
-    ).click()
-    time.sleep(2)
-    month_xpath = f"//span[normalize-space()='{month}']"
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, month_xpath))
-    ).click()
-    time.sleep(2)
-    day_xpath = f"//span[normalize-space()='{day}']"
-    print(day_xpath)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, day_xpath))
-    ).click()
-
-
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, month_xpath))
+        ).click()
+        time.sleep(2)
+        day_xpath = f"//span[normalize-space()='{day}']"
+        print(day_xpath)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, day_xpath))
+        ).click()

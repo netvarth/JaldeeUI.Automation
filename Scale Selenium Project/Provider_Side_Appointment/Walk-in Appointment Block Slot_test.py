@@ -54,9 +54,8 @@ def test_create_patient(login):
     # Wait for time slots to become clickable
     wait = WebDriverWait(login, 10)
     time_slots = wait.until(EC.visibility_of_all_elements_located((By.XPATH, "//button[@aria-selected='true']")))
-    time.sleep(3
+    time.sleep(3)
 
-               )
     # Define how many slots you want to select (e.g., 4 slots)
     slots_to_select = 4
 
