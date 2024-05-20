@@ -40,7 +40,7 @@ def test_create_patient(login):
 
     print("Select Service :  Consultation ")
 
-    time.sleep(3)
+    time.sleep(5)
     Today_Date = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH,
                                                                                 "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
     Today_Date.click()
@@ -118,7 +118,7 @@ def test_create_patient(login):
 
     login.find_element(By.XPATH, " //textarea[@id='messageData']").send_keys("Send Message to the Patient")
 
-    time.sleep(3)
+    time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
     ).click()
@@ -230,13 +230,14 @@ def test_create_patient(login):
         "prescription message")
 
     login.find_element(By.XPATH, "//span[normalize-space()='Email']").click()
-    login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
+    # time.sleep(2)
+    # login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
     login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
     print("Prescription Shared Successfully")
 
     # ************************* Case Creation and Sharing *********************
 
-    time.sleep(5)
+    time.sleep(7)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Patient Record']"))
     ).click()

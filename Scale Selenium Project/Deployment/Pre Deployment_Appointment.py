@@ -155,7 +155,7 @@ def test_walkin_appointment(login):
 
     login.find_element(By.XPATH, " //textarea[@id='messageData']").send_keys("Send Message to the Patient")
 
-    time.sleep(2)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
     ).click()

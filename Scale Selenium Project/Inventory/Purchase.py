@@ -163,3 +163,8 @@ def test_create_catalogs(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, day_xpath))
         ).click()
+        time.sleep(3)
+
+
+
+
