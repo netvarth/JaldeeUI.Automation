@@ -238,6 +238,7 @@ def test_booking(login):
     time_slot.click()
     print("Time Slot:", time_slot.text)
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Next']"))
     ).click()
