@@ -36,7 +36,7 @@ def test_create_patient(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
-    ).send_keys("920720")
+    ).send_keys("9207206")
 
     time.sleep(3)
 
@@ -98,7 +98,7 @@ def test_create_patient(login):
 
     while True:
         try:
-            print("before in loop")
+
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -107,7 +107,7 @@ def test_create_patient(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -135,12 +135,10 @@ def test_create_patient(login):
     ).click()
 
     login.find_element(By.XPATH, " //textarea[@id='messageData']").send_keys("Send Message to the Patient")
-
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
     ).click()
-
     time.sleep(4)
     pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
     pyautogui.press('enter')
@@ -243,13 +241,16 @@ def test_create_patient(login):
     print("prescription created successfully")
 
     login.find_element(By.XPATH, "//img[@alt='share']").click()
-
+    time.sleep(3)
     login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
         "prescription message")
 
     login.find_element(By.XPATH, "//span[normalize-space()='Email']").click()
     login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
-    login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
+    time.sleep(2)
+    WebDriverWait(login, 30).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[@type='button'][normalize-space()='Share']"))
+    ).click()
     print("Prescription Shared Successfully")
 
     # ************************* Case Creation and Sharing *********************
@@ -393,7 +394,7 @@ def test_create_patient(login):
 
     while True:
         try:
-            print("before in loop")
+
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -402,7 +403,7 @@ def test_create_patient(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -433,6 +434,7 @@ def test_create_patient(login):
     ).click()
 
     time.sleep(3)
+    print("Auto Invoice")
     print("Successfully send the Payment Link to the patient")
 
     # login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
@@ -442,7 +444,7 @@ def test_create_patient(login):
     time.sleep(3)
     while True:
         try:
-            print("before in loop")
+
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -451,7 +453,7 @@ def test_create_patient(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -503,6 +505,7 @@ def test_create_patient(login):
     ).click()
 
     time.sleep(5)
+    print("Manual Invoice")
     print("Successfully send the Payment Link to the patient")
 
     login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
@@ -511,7 +514,7 @@ def test_create_patient(login):
 
     while True:
         try:
-            print("before in loop")
+
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -520,7 +523,7 @@ def test_create_patient(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -589,7 +592,7 @@ def test_create_patient(login):
 
     while True:
         try:
-            print("before in loop")
+
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -598,7 +601,7 @@ def test_create_patient(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+            # print("EC caught:")
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(

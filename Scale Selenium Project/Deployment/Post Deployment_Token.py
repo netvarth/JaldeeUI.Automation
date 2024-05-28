@@ -415,6 +415,8 @@ def test_create_patient(login):
     ).click()
 
     time.sleep(3)
+    print("Auto Invoice")
+
     print("Successfully send the Payment Link to the patient")
 
     # login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
@@ -424,7 +426,6 @@ def test_create_patient(login):
     time.sleep(3)
     while True:
         try:
-            print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -433,7 +434,7 @@ def test_create_patient(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -485,6 +486,7 @@ def test_create_patient(login):
     ).click()
 
     time.sleep(5)
+    print("Manual Invoice")
     print("Successfully send the Payment Link to the patient")
 
     login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()

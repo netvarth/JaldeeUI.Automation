@@ -483,7 +483,7 @@ def test_create_purchase(login):
             EC.presence_of_element_located((By.XPATH, month_xpath))
         ).click()
         time.sleep(2)
-        day_xpath = f"//span[normalize-space()='{day}']"
+        day_xpath = f"//span[normalize-space()='{day}'][contains(@class, 'p-highlight')]"
         print(day_xpath)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, day_xpath))
@@ -518,3 +518,4 @@ def test_create_purchase(login):
 
     element = login.find_element(By.XPATH, "//div[contains(text(),'Add Items')]")
     login.execute_script("arguments[0].scrollIntoView();", element)
+
