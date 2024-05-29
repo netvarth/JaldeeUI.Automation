@@ -1,0 +1,38 @@
+Select Supplier: MedCC
+Inventory Selected: Inventory Catalog2
+Bill no: 91255
+Date: 29
+items
+Batch_Number: 84
+//button[normalize-space()='2024']
+2026
+//span[normalize-space()='2026']
+//span[normalize-space()='May']
+//span[normalize-space()='29' and not(contains(@class,'p-disabled'))]
+Qty Of Item: 31
+Free Qty: 3
+Price of the item: 87
+item3
+Batch_Number: 84
+//button[normalize-space()='2024']
+2026
+//span[normalize-space()='2026']
+//span[normalize-space()='May']
+//span[normalize-space()='29' and not(contains(@class,'p-disabled'))]
+Qty Of Item: 25
+Free Qty: 5
+Price of the item: 67
+item4
+Batch_Number: 84
+//button[normalize-space()='2024']
+2026
+//span[normalize-space()='2026']
+//span[normalize-space()='May']
+//span[normalize-space()='29' and not(contains(@class,'p-disabled'))]
+Qty Of Item: 26
+Free Qty: 2
+Price of the item: 119
+Expected status: 'DRAFT', Actual status: 'DRAFT'
+Status is correctly set to 'DRAFT' and 'Edit' button clicked successfully.
+Expected status: 'IN REVIEW', Actual status: 'IN REVIEW'
+Expected status: 'APPROVED', Actual status: 'APPROVED'
