@@ -1,0 +1,2 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Sat Jun 01 01:07:05 IST 2024","Sat Jun 01 01:10:51 IST 2024","225256","Scale Selenium Project.Deployment","Post Deployment_Appointment","","","","test_create_patient[https://www.jaldee.com/business/]",""

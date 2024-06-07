@@ -5,7 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.parametrize('url', ["https://jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://www.jaldee.com/business/"])
 def test_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -83,7 +83,7 @@ def test_create_patient(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload File']"))
     ).click()
 
-    time.sleep(4)
+    time.sleep(8)
     pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
     pyautogui.press('enter')
 
@@ -139,8 +139,8 @@ def test_create_patient(login):
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
     ).click()
-    time.sleep(4)
-    pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
+    time.sleep(8)
+    pyautogui.write(r"C:\U    sers\Archana\PycharmProjects\SeleniumPython\test.png")
     pyautogui.press('enter')
 
     time.sleep(2)
@@ -162,7 +162,7 @@ def test_create_patient(login):
         EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
     ).click()
 
-    time.sleep(3)
+    time.sleep(8)
     pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
     pyautogui.press('enter')
 
@@ -179,7 +179,7 @@ def test_create_patient(login):
     WebDriverWait(login, 10)
     login.find_element(By.XPATH, "//span[normalize-space()='Prescriptions']").click()
 
-    for i in range(5):
+    for i in range(3):
         login.find_element(By.XPATH, "//div[@class='add']").click()
         login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
 
@@ -237,7 +237,7 @@ def test_create_patient(login):
     # option_element.click()
 
     login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-    time.sleep(5)
+    time.sleep(8)
     print("prescription created successfully")
 
     login.find_element(By.XPATH, "//img[@alt='share']").click()
@@ -553,6 +553,21 @@ def test_create_patient(login):
     print(today_xpath_expression)
     tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
+
+    # current_month = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
+    # )
+
+    # current_year = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
+    # )
+
+    # if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
+    #     print("sdfsdfs")
+    #     login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
+
     tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
         tomorrow_date.day)
     print(tomorrow_xpath_expression)

@@ -127,7 +127,7 @@ def test_appt_reschedule(login):
 
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                    (By.XPATH, "//angledoublerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']"))
             )
 
             next_button.click()

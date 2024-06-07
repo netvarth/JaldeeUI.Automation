@@ -314,7 +314,12 @@ def test_upload_prescription(login):
 
 
 
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+def test_upload_prescription(login):
 
+
+
+    
 
 
 

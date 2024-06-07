@@ -1,5 +1,4 @@
 import time
-
 import allure
 import sys
 import os
@@ -34,6 +33,15 @@ def test_walkin_appointment(login):
         element_appoint.click()
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+        # File path
+        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        
+        # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
+        print("value to be written to file", phonenumber)
+        with open(file_path, 'w') as file:
+            # Write the value to the file
+            file.write(phonenumber)
+        print("value written to file", phonenumber)
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
         login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
         login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
@@ -168,11 +176,11 @@ def test_walkin_appointment(login):
             EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
         ).click()
 
-        time.sleep(4)
+        time.sleep(3)
         pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
         pyautogui.press('enter')
 
-        time.sleep(2)
+        time.sleep(4)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
@@ -316,14 +324,14 @@ def test_walkin_appointment(login):
         login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
             "Prescription Message to Patient")
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
     
 
-        # print("Prescription Shared Successfully")
+        print("Prescription Shared Successfully")
 
         # ************************* Case Creation and Sharing *********************
 
@@ -580,7 +588,7 @@ def test_walkin_appointment(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
         ).click()
-
+        print("Auto Invoice")
         try:
 
             snack_bar = WebDriverWait(login, 10).until(
@@ -663,6 +671,7 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
         ).click()
 
+        print("Manual Invoice")
         try:
 
             snack_bar = WebDriverWait(login, 10).until(
@@ -725,6 +734,21 @@ def test_walkin_appointment(login):
         print(today_xpath_expression)
         tomorrow_date = today_date + timedelta(days=1)
         print(tomorrow_date.day)
+
+        # current_month = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located(
+        #     (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
+        # )
+
+        # current_year = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located(
+        #     (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
+        # )
+
+        # if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
+        
+        #     login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
+
         tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
             tomorrow_date.day)
         print(tomorrow_xpath_expression)
@@ -734,6 +758,8 @@ def test_walkin_appointment(login):
         )
         Tomorrow_Date.click()
         print("Tomorrow Date:", Tomorrow_Date.text)
+
+        
 
         wait = WebDriverWait(login, 10)
         time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected= 'false']")))
@@ -823,12 +849,20 @@ def test_walkin_appointment(login):
         print("Toast Message:", message)
 
         time.sleep(3)
-    except:
+    except Exception as e:
         allure.attach(      # use Allure package, .attach() method, pass 3 params
         login.get_screenshot_as_png(),    # param1
         # login.screenshot()
         name="full_page",                 # param2
         attachment_type=AttachmentType.PNG)
+        raise e
+
+
+
+
+
+
+
 
     # WebDriverWait(login, 10).until(
     #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Block Slots']"))

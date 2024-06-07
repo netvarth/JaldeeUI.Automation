@@ -10,6 +10,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 import allure
 from allure_commons.types import AttachmentType
 from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import StaleElementReferenceException
 
 
 #################   Enable the Inventory Setting   #############################
@@ -17,12 +18,12 @@ from selenium.common.exceptions import ElementClickInterceptedException
 @allure.title("Testing inventory settings")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_enable_inventory_setting(login):
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@ptooltip='Settings']"))
+    time.sleep(5)
+    WebDriverWait(login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Settings')]"))
     ).click()
 
-    element = login.find_element(By.XPATH, "//div[@class='disp-flex'][normalize-space()='RX Orders']")
+    element = login.find_element(By.XPATH, "//div[normalize-space()='Inventory Management']")
     login.execute_script("arguments[0].scrollIntoView();", element)
 
     allure.attach(      # use Allure package, .attach() method, pass 3 params
@@ -58,7 +59,7 @@ def test_enable_inventory_setting(login):
     login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
 
     # Find the element you want to scroll to
-    element = login.find_element(By.XPATH, "//div[@class='disp-flex'][normalize-space()='RX Orders']")
+    element = login.find_element(By.XPATH, "//div[normalize-space()='Inventory Management']")
 
     # Scroll to the element
     login.execute_script("arguments[0].scrollIntoView();", element)
@@ -69,7 +70,7 @@ def test_enable_inventory_setting(login):
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Inventory Management  Off']"))
+        EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__icons']"))
     ).click()
 
     try:
@@ -90,7 +91,7 @@ def test_enable_inventory_setting(login):
 
     login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
 
-    element = login.find_element(By.XPATH, "//div[@class='disp-flex'][normalize-space()='RX Orders']")
+    element = login.find_element(By.XPATH, "//div[normalize-space()='Inventory Management']")
     login.execute_script("arguments[0].scrollIntoView();", element)
 
     print("Inventory setting Enabled Successfully")
@@ -109,26 +110,26 @@ def test_store_creation(login):
 
     time.sleep(5)
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Stores']"))
     ).click()
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create Store']"))
     ).click()
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Type']"))
     ).click()
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='PHARMACY']"))
     ).click()
 
     store_name = "Store_" + str(uuid.uuid4())[:6]
-
-    WebDriverWait(login, 10).until(
+    print(store_name)
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Name']"))
     ).send_keys(store_name)
 
@@ -136,22 +137,24 @@ def test_store_creation(login):
     random_number = str(random.randint(1111111, 9999999))
     phonenumber = f"{555}{random_number}"
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
     ).send_keys(phonenumber)
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='email']"))
     ).send_keys(email)
 
-    invoice_prefix = "KKM_" + str(uuid.uuid4())[:4]
 
-    WebDriverWait(login, 10).until(
+    invoice_prefix = "K_" + str(uuid.uuid4())[:1]
+    print(invoice_prefix)
+    time.sleep(3)
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, " //input[@placeholder= 'Invoice prefix']"))
     ).send_keys(invoice_prefix)
-    print(invoice_prefix)
+    
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Location']"))
     ).click()
 
@@ -186,11 +189,11 @@ def test_store_creation(login):
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_item_creation(login):
     time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Inventory')]"))
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
     ).click()
 
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Items']"))
     ).click()
@@ -309,7 +312,7 @@ def test_inventory_catalog(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Inventory')]"))
+            (By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
     ).click()
 
     time.sleep(5)
@@ -361,13 +364,21 @@ def test_inventory_catalog(login):
     print("toast_Message:", message)
 
 
-######################################  Create Purchase ######################################################3
+######################################  Create Purchase ######################################################
+
+def add_date(years_to_add):
+    future_date = datetime.now().replace(year=datetime.now().year + years_to_add)
+    return [future_date.year, future_date.strftime("%b"), future_date.day]
+
+def title_to_item(title_case_string):
+    return title_case_string.title()
+
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_create_purchase(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Inventory')]"))
+            (By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
     ).click()
 
     time.sleep(5)
@@ -393,7 +404,11 @@ def test_create_purchase(login):
     )
     store.click()
 
-    login.find_element(By.XPATH, "//span[normalize-space()='Select Supplier']").click()
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//p-dropdown[@placeholder='Select Vendor']//div[@aria-label='dropdown trigger']"))
+    ).click()
 
     Select_supplier = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='MedCC']"))
@@ -436,11 +451,11 @@ def test_create_purchase(login):
 
     for i in range(len(item_list)):
         print(item_list[i])
-        item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{item_list[i]}']"
-
+        item_xpath = item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{title_to_item(item_list[i])}']"
+                                            
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
-        ).send_keys("ite")
+        ).send_keys("item")
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, item_xpath))
@@ -502,7 +517,7 @@ def test_create_purchase(login):
         print(day_xpath)
         time.sleep(3)
         WebDriverWait(login, 20).until(
-            EC.element_to_be_clickable((By.XPATH, day_xpath))
+            EC.presence_of_element_located((By.XPATH, day_xpath))
         ).click()
 
         # time.sleep(3)
@@ -589,7 +604,7 @@ def test_create_purchase(login):
     edit_button.click()
 
     print("Status is correctly set to 'DRAFT' and 'Edit' button clicked successfully.")
-
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Send to review']"))
@@ -682,6 +697,167 @@ def test_create_order_catalog(login):
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Swathy Pharmacy']"))
     ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//p-dropdown[@placeholder = 'Select Inventory Management']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Yes']"))
+    ).click()
+
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//p-dropdown[@placeholder = 'Online Self Order']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//li[@aria-label='Yes']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[@class='p-multiselect-label p-placeholder']"))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Inventory Catalog2']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Save & Next']"))
+    ).click()
+
+    time.sleep(2)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
+    ).click()
+
+    #List of item names to be selected
+    item_names_to_select = ['items', 'Item3', 'Item4']
+
+     # Find all rows in the table
+    # rows = WebDriverWait(login, 10).until(
+    #     EC.presence_of_all_elements_located((By.XPATH, "//tbody/tr"))
+    # )
+    # time.sleep(3)
+
+    for item_name in item_names_to_select:
+        print(f"Looking for item: {item_name}")
+        # Locate the row containing the item name
+        try:
+            row = WebDriverWait(login, 20).until(
+                EC.presence_of_element_located((By.XPATH, f"//tr[td/span[text()='{item_name}']]"))
+            )
+            print(f"Found row for item: {item_name}")
+            
+            # Locate the checkbox within that row
+            checkbox = row.find_element(By.XPATH, ".//input[@type='checkbox']")
+            
+            # Click the checkbox if it is not already selected
+            if not checkbox.is_selected():
+                checkbox.click()
+                print(f"Selected item: {item_name}")
+        except Exception as e:
+            print(f"Error finding item: {item_name}. Exception: {e}")
+
+    # rows = WebDriverWait(login, 10).until(
+    #             EC.presence_of_all_elements_located((By.XPATH, "//tbody/tr"))
+    #         )
+
+    # print("length of rows", len(rows))
+
+    # # Loop through the rows by index and select the checkboxes for the desired items
+    # for index in range(len(rows)):
+    #     print("length of rows immediately inside for", len(rows))
+    #     if index == len(rows):
+    #         print("Breaking out of for loop.")
+    #         break
+    #     item_name = None
+    #     retry_count = 3  # Number of retries for stale element
+    #     while retry_count > 0:
+    #         try:
+    #             print("row index:",index)
+    #             # Re-fetch rows and the specific row by index
+    #             rows = WebDriverWait(login, 10).until(
+    #                 EC.presence_of_all_elements_located((By.XPATH, "//tbody/tr"))
+    #             )
+    #             print("length of rows after refetch", len(rows))
+    #             # if index == len(rows):
+    #             #     print("Breaking out of while loop.")
+    #             #     break
+    #             row = rows[index]
+    #             item_name_element = row.find_element(By.XPATH, "./td[2]/span")  # Adjust the XPath based on the structure of your table
+    #             item_name = item_name_element.text
+    #             print("name of item:", item_name)
+    #             if item_name.lower() in item_names_to_select:
+    #                 print(f"Found item: {item_name}")
+    #                 checkbox = row.find_element(By.XPATH, ".//input[@type='checkbox']")
+    #                 if not checkbox.is_selected():
+    #                     checkbox.click()
+    #                     print(f"Selected item: {item_name}")
+    #             break  # Exit the retry loop if successful
+    #         except StaleElementReferenceException:
+    #             retry_count -= 1
+    #             if retry_count == 0:
+    #                 raise
+    #             time.sleep(1)  # Wait before retrying
+        
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
+    ).click()
+
+    time.sleep(2)
+
+    item_names_to_select = ['items', 'Item3', 'Item4']
+
+
+    for item_name in item_names_to_select:
+        print(f"Looking for item: {item_name}")
+        # Locate the row containing the item name
+        try:
+            row = WebDriverWait(login, 20).until(
+                EC.presence_of_element_located((By.XPATH, f"//tr[td/span[text()='{item_name}']]"))
+            )
+            print(f"Found row for item: {item_name}")
+            
+            # Locate the checkbox within that row
+            edit_details = row.find_element(By.XPATH, "//button[@class= 'p-element btn fw-bold p-button-light p-button p-component']")
+            
+            # Click the checkbox if it is not already selected
+            if not edit_details.is_selected():
+                edit_details.click()
+                print(f"Selected item: {item_name}")
+        except Exception as e:
+            print(f"Error finding item: {item_name}. Exception: {e}")
+
+            random_number = str(random.randint(5, 10))
+            WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Enter Price']"))
+            ).send_keys(random_number)
+
+            
+
+
+
+
+
+
+
+
+
+
 
     
 

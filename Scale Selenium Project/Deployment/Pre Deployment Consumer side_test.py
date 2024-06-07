@@ -1,11 +1,8 @@
-import random
-import string
 import time
 from datetime import datetime, timedelta
 
 import pyautogui
 import pytest
-from faker import Faker
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
@@ -13,19 +10,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
-
-def create_user_data():
-    fake = Faker()
-    first_name = fake.first_name()
-    print(first_name)
-    last_name = fake.last_name()
-    print(last_name)
-    cons_manual_id = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
-    print(cons_manual_id)
-    random_digits = ''.join(random.choices(string.digits, k=7))
-    phonenumber = f"{555}{random_digits}"
-    print(phonenumber)
-    return [first_name, last_name, cons_manual_id, phonenumber]
 
 
 @pytest.fixture()
@@ -78,65 +62,73 @@ def test_booking(login):
 
     login.find_element(By.XPATH, "//button[contains(text(),'Next')]").click()
 
-    user_data = create_user_data()
+    # user_data = create_user_data()
 
-    login.find_element(By.XPATH, "//input[@id='phone']").send_keys(user_data[3])
+    # login.find_element(By.XPATH, "//input[@id='phone']").send_keys(user_data[3])
+    # login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='phone']"))
+
+    ).send_keys("9207206005")
+
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+
 
     time.sleep(3)
 
-    otp_digits = "55555"
+    otp_digits = "5555"
 
     # Wait for the OTP input fields to be present
     otp_inputs = wait.until(EC.presence_of_all_elements_located(
         (By.XPATH, "//input[contains(@id, 'otp_')]")))
 
-    print("Number of OTP input fields:", len(otp_inputs))
-    print(otp_inputs)
-    # Wait for each OTP input field to be clickable and then fill the digit
+    # print("Number of OTP input fields:", len(otp_inputs))
+    # print(otp_inputs)
+  
     for i, otp_input in enumerate(otp_inputs):
-        # wait.until(EC.element_to_be_clickable((By.XPATH, otp_input))).send_keys(
-        #     otp_digits[i])
-        print(i)
-        print(otp_input)
+    
+        # print(i)
+        # print(otp_input)
         otp_input.send_keys(otp_digits[i])
 
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
     time.sleep(3)
 
-    first_name_field = wait.until(EC.element_to_be_clickable((By.XPATH, "//*[@id='first_name']")))
-    first_name_field.clear()  # Clear the field to ensure it's empty before sending keys
-    print(user_data[0])
-    first_name_field.send_keys(user_data[0])
-    print(user_data[1])
-    wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[2]"))).send_keys(user_data[1])
 
-    # Explicit wait for the "Next" button after entering the first and last names
-    next_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Next'][1]")))
-    next_button.click()
-
+    # time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Add Notes you may have...']"))
-    ).send_keys("Note from the consumer side")
-
+        EC.presence_of_element_located(
+            (By.XPATH, "//textarea[@placeholder='Add Notes you may have...']"))
+    ).send_keys("Notes added from conumser side")
+    
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@class='uploadFileTxt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='uploadFileTxt']"))
     ).click()
-    time.sleep(3)
+
+    time.sleep(2)
     pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
     pyautogui.press('enter')
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Confirm']"))
     ).click()
 
     time.sleep(5)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Ok')]"))
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
+
+    # snack_bar = WebDriverWait(login, 10).until(
+    #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    # )
+    # message = snack_bar.text
+    # print("Snack bar message:", message)
 
     print("Consumer create appointment successfully")
 
@@ -169,6 +161,8 @@ def test_booking(login):
     time.sleep(3)
     pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
     pyautogui.press('enter')
+
+    
     print("Successfully upload the file")
 
     time.sleep(3)
@@ -176,11 +170,9 @@ def test_booking(login):
         EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']"))
     ).click()
 
-    # snack_bar = WebDriverWait(login, 10).until(
-    #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-    # )
-    # message = snack_bar.text
-    # print("Snack bar message:", message)
+    print("Send message successfully")
+
+  
 
     ################## Sending attachment to provider #################
     time.sleep(2)
@@ -200,12 +192,9 @@ def test_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='send']"))
     ).click()
-    #
-    # snack_bar = WebDriverWait(login, 10).until(
-    #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-    # )
-    # message = snack_bar.text
-    # print("Snack bar message:", message)
+
+    print("Send attachment successfully")
+    
 
     ################## Rescheduling the Appointment ##################
     time.sleep(2)
@@ -220,11 +209,21 @@ def test_booking(login):
     print(today_xpath_expression)
     tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
-    tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected'][normalize-space()='{}']".format(
+
+    current_month_year = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']"))
+    )
+    # print(current_month_year.text)
+    # print(current_month_year.text.lower())
+    # print(tomorrow_date.strftime("%b %Y").lower())
+    if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
+        login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
+    time.sleep(3)
+    tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
         tomorrow_date.day)
     print(tomorrow_xpath_expression)
 
-    time.sleep(2)
     Tomorrow_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
     )
@@ -249,11 +248,14 @@ def test_booking(login):
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Reschedule']"))
     ).click()
 
+ 
     time.sleep(2)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
+
+    print("Appointment Rescheduled successfully")
 
     time.sleep(2)
 
@@ -286,11 +288,15 @@ def test_booking(login):
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))
     ).click()
 
+    print("Appointment cancelled successfully")
+
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//img[@alt='Home']"))
     ).click()
 
     login.find_element(By.XPATH, "//i[@class='fa fa-commenting-o']").click()
+
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//textarea[@id='message']"))
@@ -308,5 +314,7 @@ def test_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Send')]"))
     ).click()
+
+    print("Send enquriy successfully")
 
 
