@@ -17,6 +17,7 @@ def test_walkin_token(login):
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Token']"))
     )
     element.click()
+
     time.sleep(3)
     wait = WebDriverWait(login, 10)
     element_appoint = wait.until(EC.presence_of_element_located(
@@ -24,6 +25,16 @@ def test_walkin_token(login):
     element_appoint.click()
     login.implicitly_wait(3)
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+
+    # File path
+    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+    
+    # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
+    print("value to be written to file", phonenumber)
+    with open(file_path, 'w') as file:
+    # Write the value to the file
+        file.write(phonenumber)
+    print("value written to file", phonenumber)
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
     login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
     login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
@@ -31,6 +42,7 @@ def test_walkin_token(login):
     login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+    
     login.implicitly_wait(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
@@ -202,7 +214,7 @@ def test_walkin_token(login):
         aftertd_XPath_2 = "/td[3]"
         aftertd_XPath_3 = "/td[4]"
         aftertd_XPath_4 = "/td[5]"
-        textarea_xpath = "/p-celleditor/textarea"
+        textarea_xpath = "//input[@role='searchbox']"
         row = i + 1
         if i > 0:
             trXPath = before_XPath + str([row])
@@ -255,7 +267,7 @@ def test_walkin_token(login):
     print("prescription created successfully")
 
     login.find_element(By.XPATH, "//img[@alt='share']").click()
-
+    time.sleep(2)
     login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
         "prescription message")
 
@@ -631,19 +643,19 @@ def test_walkin_token(login):
     tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
 
-    current_month = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
-    )
+    # current_month = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
+    # )
 
-    current_year = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
-    )
+    # current_year = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
+    # )
 
-    if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
+    # if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
         
-        login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
+    #     login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
 
     tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
         tomorrow_date.day)

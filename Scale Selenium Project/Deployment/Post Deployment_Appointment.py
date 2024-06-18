@@ -140,7 +140,7 @@ def test_create_patient(login):
         EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
     ).click()
     time.sleep(8)
-    pyautogui.write(r"C:\U    sers\Archana\PycharmProjects\SeleniumPython\test.png")
+    pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
     pyautogui.press('enter')
 
     time.sleep(2)
@@ -158,6 +158,7 @@ def test_create_patient(login):
         EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='Send Attachments']"))
     ).click()
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
     ).click()
@@ -175,83 +176,83 @@ def test_create_patient(login):
 
     # ********************* Create the Prescription and Sharing *************************
 
-    time.sleep(5)
-    WebDriverWait(login, 10)
-    login.find_element(By.XPATH, "//span[normalize-space()='Prescriptions']").click()
+    # time.sleep(5)
+    # WebDriverWait(login, 10)
+    # login.find_element(By.XPATH, "//span[normalize-space()='Prescriptions']").click()
 
-    for i in range(3):
-        login.find_element(By.XPATH, "//div[@class='add']").click()
-        login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
+    # for i in range(3):
+    #     login.find_element(By.XPATH, "//div[@class='add']").click()
+    #     login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
 
-        before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
-        aftertd_XPath_1 = "/td[2]"
-        aftertd_XPath_2 = "/td[3]"
-        aftertd_XPath_3 = "/td[4]"
-        aftertd_XPath_4 = "/td[5]"
-        textarea_xpath = "/p-celleditor/textarea"
-        row = i + 1
-        if i > 0:
-            trXPath = before_XPath + str([row])
-        else:
-            trXPath = before_XPath
+    #     before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
+    #     aftertd_XPath_1 = "/td[2]"
+    #     aftertd_XPath_2 = "/td[3]"
+    #     aftertd_XPath_3 = "/td[4]"
+    #     aftertd_XPath_4 = "/td[5]"
+    #     textarea_xpath = "/p-celleditor/textarea"
+    #     row = i + 1
+    #     if i > 0:
+    #         trXPath = before_XPath + str([row])
+    #     else:
+    #         trXPath = before_XPath
 
-        PreFinalXPath = trXPath + aftertd_XPath_1
-        FinalXPath = PreFinalXPath + textarea_xpath
+    #     PreFinalXPath = trXPath + aftertd_XPath_1
+    #     FinalXPath = PreFinalXPath + textarea_xpath
 
-        Dose = login.find_element(By.XPATH, PreFinalXPath)
-        Dose.click()
-        Dose1 = login.find_element(By.XPATH, FinalXPath)
-        Dose1.send_keys("650 mg")
+    #     Dose = login.find_element(By.XPATH, PreFinalXPath)
+    #     Dose.click()
+    #     Dose1 = login.find_element(By.XPATH, FinalXPath)
+    #     Dose1.send_keys("650 mg")
 
-        PreFinalXPath = trXPath + aftertd_XPath_2
-        FinalXPath = PreFinalXPath + textarea_xpath
+    #     PreFinalXPath = trXPath + aftertd_XPath_2
+    #     FinalXPath = PreFinalXPath + textarea_xpath
 
-        Frequency = login.find_element(By.XPATH, PreFinalXPath)
-        Frequency.click()
-        Frequency1 = login.find_element(By.XPATH, FinalXPath)
-        Frequency1.send_keys("1-1-1")
+    #     Frequency = login.find_element(By.XPATH, PreFinalXPath)
+    #     Frequency.click()
+    #     Frequency1 = login.find_element(By.XPATH, FinalXPath)
+    #     Frequency1.send_keys("1-1-1")
 
-        PreFinalXPath = trXPath + aftertd_XPath_3
-        FinalXPath = PreFinalXPath + textarea_xpath
-        Duration = login.find_element(By.XPATH, PreFinalXPath)
-        Duration.click()
-        Duration1 = login.find_element(By.XPATH, FinalXPath)
-        Duration1.send_keys("5 Days")
+    #     PreFinalXPath = trXPath + aftertd_XPath_3
+    #     FinalXPath = PreFinalXPath + textarea_xpath
+    #     Duration = login.find_element(By.XPATH, PreFinalXPath)
+    #     Duration.click()
+    #     Duration1 = login.find_element(By.XPATH, FinalXPath)
+    #     Duration1.send_keys("5 Days")
 
-        PreFinalXPath = trXPath + aftertd_XPath_4
-        FinalXPath = PreFinalXPath + textarea_xpath
-        Notes = login.find_element(By.XPATH, PreFinalXPath)
-        Notes.click()
-        Notes1 = login.find_element(By.XPATH, FinalXPath)
-        Notes1.send_keys("After Food")
+    #     PreFinalXPath = trXPath + aftertd_XPath_4
+    #     FinalXPath = PreFinalXPath + textarea_xpath
+    #     Notes = login.find_element(By.XPATH, PreFinalXPath)
+    #     Notes.click()
+    #     Notes1 = login.find_element(By.XPATH, FinalXPath)
+    #     Notes1.send_keys("After Food")
 
-    # dropdown_locator_xpath = "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/span[1]/mat-select[1]"
-    # dropdown_element = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath)))
-    #
-    # dropdown_element.click()
-    #
-    # option_locator_xpath = "//div[normalize-space()='Naveen KP']"
-    # option_element = WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, option_locator_xpath)))
-    #
-    # option_element.click()
+    # # dropdown_locator_xpath = "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/span[1]/mat-select[1]"
+    # # dropdown_element = WebDriverWait(login, 10).until(
+    # #     EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath)))
+    # #
+    # # dropdown_element.click()
+    # #
+    # # option_locator_xpath = "//div[normalize-space()='Naveen KP']"
+    # # option_element = WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, option_locator_xpath)))
+    # #
+    # # option_element.click()
 
-    login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-    time.sleep(8)
-    print("prescription created successfully")
+    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+    # time.sleep(8)
+    # print("prescription created successfully")
 
-    login.find_element(By.XPATH, "//img[@alt='share']").click()
-    time.sleep(3)
-    login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
-        "prescription message")
+    # login.find_element(By.XPATH, "//img[@alt='share']").click()
+    # time.sleep(3)
+    # login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
+    #     "prescription message")
 
-    login.find_element(By.XPATH, "//span[normalize-space()='Email']").click()
-    login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
-    time.sleep(2)
-    WebDriverWait(login, 30).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@type='button'][normalize-space()='Share']"))
-    ).click()
-    print("Prescription Shared Successfully")
+    # login.find_element(By.XPATH, "//span[normalize-space()='Email']").click()
+    # login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
+    # time.sleep(2)
+    # WebDriverWait(login, 30).until(
+    #     EC.element_to_be_clickable((By.XPATH, "//button[@type='button'][normalize-space()='Share']"))
+    # ).click()
+    # print("Prescription Shared Successfully")
 
     # ************************* Case Creation and Sharing *********************
 

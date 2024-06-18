@@ -11,12 +11,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 import allure
 from allure_commons.types import AttachmentType
 
-@allure.severity(allure.severity_level.NORMAL)
+@allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_walkin_appointment(login):
     try:
+
         time.sleep(5)
+        print("New patient create")
         WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
@@ -247,56 +249,72 @@ def test_walkin_appointment(login):
         WebDriverWait(login, 10)
         login.find_element(By.XPATH, "//span[normalize-space()='Prescriptions']").click()
 
+        # for i in range(5):
+        #     login.find_element(By.XPATH, "//div[@class='add']").click()
+        #     login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
+
+        #     before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
+        #     aftertd_XPath_1 = "/td[2]"
+        #     aftertd_XPath_2 = "/td[3]"
+        #     aftertd_XPath_3 = "/td[4]"
+        #     aftertd_XPath_4 = "/td[5]"
+        #     textarea_xpath = "/p-celleditor/textarea"
+        #     row = i + 1
+        #     if i > 0:
+        #         trXPath = before_XPath + str([row])
+        #     else:
+        #         trXPath = before_XPath
+
+        #     PreFinalXPath = trXPath + aftertd_XPath_1
+        #     FinalXPath = PreFinalXPath + textarea_xpath
+
+        #     Dose = login.find_element(By.XPATH, PreFinalXPath)
+        #     Dose.click()
+        #     Dose1 = login.find_element(By.XPATH, FinalXPath)
+        #     Dose1.send_keys("650 mg")
+
+        #     PreFinalXPath = trXPath + aftertd_XPath_2
+        #     FinalXPath = PreFinalXPath + textarea_xpath
+
+        #     Frequency = login.find_element(By.XPATH, PreFinalXPath)
+        #     Frequency.click()
+        #     Frequency1 = login.find_element(By.XPATH, FinalXPath)
+        #     Frequency1.send_keys("1-1-1")
+
+        #     PreFinalXPath = trXPath + aftertd_XPath_3
+        #     FinalXPath = PreFinalXPath + textarea_xpath
+        #     Duration = login.find_element(By.XPATH, PreFinalXPath)
+        #     Duration.click()
+        #     Duration1 = login.find_element(By.XPATH, FinalXPath)
+        #     Duration1.send_keys("5 Days")
+
+        #     PreFinalXPath = trXPath + aftertd_XPath_4
+        #     FinalXPath = PreFinalXPath + textarea_xpath
+        #     Notes = login.find_element(By.XPATH, PreFinalXPath)
+        #     Notes.click()
+        #     Notes1 = login.find_element(By.XPATH, FinalXPath)
+        #     Notes1.send_keys("After Food")
+
+        # dropdown_locator_xpath = "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/span[1]/mat-select[1]"
+        # dropdown_element = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath)))
+
+        # dropdown_element.click()
+
         for i in range(5):
             login.find_element(By.XPATH, "//div[@class='add']").click()
             login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
 
-            before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
-            aftertd_XPath_1 = "/td[2]"
-            aftertd_XPath_2 = "/td[3]"
-            aftertd_XPath_3 = "/td[4]"
-            aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "/p-celleditor/textarea"
-            row = i + 1
-            if i > 0:
-                trXPath = before_XPath + str([row])
-            else:
-                trXPath = before_XPath
+            fill_prescription_details(i + 1, "650 mg", "1-1-1", "5 Days", "After Food")
 
-            PreFinalXPath = trXPath + aftertd_XPath_1
-            FinalXPath = PreFinalXPath + textarea_xpath
-
-            Dose = login.find_element(By.XPATH, PreFinalXPath)
-            Dose.click()
-            Dose1 = login.find_element(By.XPATH, FinalXPath)
-            Dose1.send_keys("650 mg")
-
-            PreFinalXPath = trXPath + aftertd_XPath_2
-            FinalXPath = PreFinalXPath + textarea_xpath
-
-            Frequency = login.find_element(By.XPATH, PreFinalXPath)
-            Frequency.click()
-            Frequency1 = login.find_element(By.XPATH, FinalXPath)
-            Frequency1.send_keys("1-1-1")
-
-            PreFinalXPath = trXPath + aftertd_XPath_3
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Duration = login.find_element(By.XPATH, PreFinalXPath)
-            Duration.click()
-            Duration1 = login.find_element(By.XPATH, FinalXPath)
-            Duration1.send_keys("5 Days")
-
-            PreFinalXPath = trXPath + aftertd_XPath_4
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Notes = login.find_element(By.XPATH, PreFinalXPath)
-            Notes.click()
-            Notes1 = login.find_element(By.XPATH, FinalXPath)
-            Notes1.send_keys("After Food")
-
-        dropdown_locator_xpath = "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/span[1]/mat-select[1]"
+        # Handle the dropdown element
+        dropdown_locator_xpath = ("/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/"
+                            "div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/"
+                            "div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/"
+                            "span[1]/mat-select[1]")
         dropdown_element = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath)))
-
+        EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath))
+        )
         dropdown_element.click()
 
         option_locator_xpath = "//div[normalize-space()='Naveen KP']"
@@ -316,6 +334,7 @@ def test_walkin_appointment(login):
         time.sleep(2)
         login.find_element(By.XPATH, "//img[@alt='share']").click()
 
+        time.sleep(2)
         login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
             "prescription message")
 

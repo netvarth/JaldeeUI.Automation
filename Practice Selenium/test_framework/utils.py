@@ -13,8 +13,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, timedelta
-import allure
-from allure_commons.types import AttachmentType
 
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
@@ -64,6 +62,44 @@ def login(url):
     driver.quit()
 
 
+# def fill_prescription_details(login, row, dose, frequency, duration, notes):
+#     # Base XPath for the specified row
+#     base_xpath = f"//table[@id='pr_id_19-table']/tbody/tr[{row}]"
+    
+#     # XPaths for each cell in the row
+#     cells = ["/td[2]", "/td[3]", "/td[4]", "/td[5]"]
+#     details = [dose, frequency, duration, notes]
+    
+#     # Iterate over each cell and detail to enter
+#     for cell, detail in zip(cells, details):
+#         cell_xpath = base_xpath + cell  # XPath for the cell
+#         textarea_xpath = cell_xpath + "/p-celleditor/textarea"  # XPath for the textarea within the cell
+        
+#         # Find the cell element and click to activate it
+#         cell_element = login.find_element(By.XPATH, cell_xpath)
+#         cell_element.click()
+        
+#         # Find the textarea element and enter the detail
+#         textarea_element = login.find_element(By.XPATH, textarea_xpath)
+#         textarea_element.clear()  # Clear any existing text
+#         textarea_element.send_keys(detail)
 
 
-
+def fill_prescription_details(login, row_num, dose, frequency, duration, notes):
+    base_xpath = f"//table[@id='pr_id_19-table']/tbody/tr[{row_num}]"
+    dose_xpath = base_xpath + "/td[2]"
+    frequency_xpath = base_xpath + "/td[3]"
+    duration_xpath = base_xpath + "/td[4]"
+    notes_xpath = base_xpath + "/td[5]"
+    
+    def fill_cell(cell_xpath, value):
+        cell = WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, cell_xpath)))
+        cell.click()
+        input_field = cell.find_element(By.TAG_NAME, "input")
+        input_field.clear()
+        input_field.send_keys(value)
+    
+    fill_cell(dose_xpath, dose)
+    fill_cell(frequency_xpath, frequency)
+    fill_cell(duration_xpath, duration)
+    fill_cell(notes_xpath, notes)

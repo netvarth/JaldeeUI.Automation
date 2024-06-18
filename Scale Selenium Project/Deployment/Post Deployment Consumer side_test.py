@@ -71,7 +71,7 @@ def test_booking(login):
         EC.presence_of_element_located(
             (By.XPATH, "//input[@id='phone']"))
 
-    ).send_keys("9567570961")
+    ).send_keys("9207206005")
 
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
@@ -207,16 +207,16 @@ def test_booking(login):
     tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
 
-    current_month_year = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']"))
-    )
-    print(current_month_year.text)
-    print(current_month_year.text.lower())
-    print(tomorrow_date.strftime("%b %Y").lower())
-    if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
-        login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
-    time.sleep(3)
+    # current_month_year = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']"))
+    # )
+    # print(current_month_year.text)
+    # print(current_month_year.text.lower())
+    # print(tomorrow_date.strftime("%b %Y").lower())
+    # if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
+    #     login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
+    # time.sleep(3)
     tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
         tomorrow_date.day)
     print(tomorrow_xpath_expression)

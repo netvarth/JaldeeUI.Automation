@@ -2,7 +2,8 @@ from Framework.common_utils import *
 
 first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
-
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Auto Invoice")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice(login):
     time.sleep(5)
