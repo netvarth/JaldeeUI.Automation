@@ -103,7 +103,12 @@ def test_Prescription(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload File']"))).click()
         time.sleep(4)
-        pyautogui.write(r"C:\Users\Archana\PycharmProjects\SeleniumPython\test.png")
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
+        pyautogui.write(absolute_path)
         pyautogui.press('enter')
         time.sleep(4)
         WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))).click()
