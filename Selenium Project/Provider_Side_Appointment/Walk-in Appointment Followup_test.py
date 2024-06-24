@@ -130,3 +130,5 @@ def test_create_patient(login):
     time.sleep(3)
     login.find_element(By.XPATH, "//span[normalize-space()='Confirm']").click()
     print("Followup Complete Successful")
+
+
