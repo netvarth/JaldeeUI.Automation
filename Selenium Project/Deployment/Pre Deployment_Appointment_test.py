@@ -11,6 +11,321 @@ from selenium.webdriver.support.ui import WebDriverWait
 import allure
 from allure_commons.types import AttachmentType
 
+
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Pre deployment testing")
+def test_account_signup():
+    login = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    login.get("https://scale.jaldee.com/business/")
+    login.maximize_window()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//a[normalize-space()='Sign Up']")
+        )
+    ).click()
+
+    time.sleep(3)
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+    login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+    login.find_element(By.XPATH, "//input[@id='Firstname']").send_keys(str(first_name))
+    login.find_element(By.XPATH, "//input[@id='Lastname']").send_keys(str(last_name))
+
+    time.sleep(3)
+    signup_button = WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//input[@id='signup']"))
+    )
+
+    # Scroll into view if needed
+    login.execute_script("arguments[0].scrollIntoView(true);", signup_button)
+
+    # Additional wait to ensure the element is not covered by any other element
+    time.sleep(1)
+
+    signup_button.click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//h6[normalize-space()='Healthcare']"))
+    ).click()
+
+    next_button = WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+           (By.XPATH, "//input[@class='form-submit']"))
+    )
+
+    login.execute_script("arguments[0].scrollIntoView(true);", next_button)
+
+
+    time.sleep(1)
+
+    next_button.click()
+
+
+    # login.find_element(By.XPATH,"//h6[normalize-space()='Doctor / Clinic']").click()
+   
+    
+    next_button1 = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@value='Next']"))
+    )
+
+
+    login.execute_script("arguments[0].scrollIntoView(true);", next_button1)
+
+    time.sleep(1)
+
+    next_button1.click()
+
+    time.sleep(2)
+
+    next_button2 = WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//input[@id='signup']"))
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", next_button2)
+    time.sleep(1)
+    next_button2.click()
+
+    try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+    except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@placeholder='Enter OTP']"))
+    ).send_keys("55555")
+
+    confirm_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Confirm OTP']"))
+    )
+
+    login.execute_script("arguments[0].scrollIntoView(true);", confirm_button)
+
+    time.sleep(1)
+    confirm_button.click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='name']"))
+    ).send_keys("Jaldee01")
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='password']"))
+    ).send_keys("Jaldee01")
+
+    join_button = WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//input[@id='signup']"))
+    )
+
+    join_button.click()
+
+    time.sleep(2)
+
+    welcome_message = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Take me to assissted account setup']"))
+    )
+
+   # Get the text of the confirmation message
+    actual_message = welcome_message.text
+    print("Actual welcome message:", actual_message)
+
+    # Assert the expected text
+    expected_message = "Take me to assissted account setup"
+    assert actual_message == expected_message, f"Expected '{expected_message}', but got '{actual_message}'"
+
+    time.sleep(2)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//ul[@class='underline']"))
+    ).click()
+
+    time.sleep(1)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Ok']"))
+    ).click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[normalize-space()='My Account']"))
+    ).click()
+
+    time.sleep(1)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='About Us']"))
+    ).click()
+
+    business_name = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//label[@aria-owns='bname']"))
+    )
+
+
+    time.sleep(2)
+    comp_name = "Business_" + str(uuid.uuid4())[:4]
+    business_name.click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='bname']"))
+    ).send_keys(comp_name)
+
+    comp_busername = "Busername_" + str(uuid.uuid4())[:4]
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//label[@aria-owns='busername']"))
+    ).click()
+
+      
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//textarea[@id='bdesc']"))
+    ).send_keys("I'm trying to write a test with selenium in python language for a web page that manages users. In this page someone can add role for users and if a role exists while adding it, an alert raises. I don't know if the alert is a javascript alert or an element of the web page. I want to automatically check the existence of the alert, because checking for the role in the list wastes time and has an enormous load.")
+
+
+    time.sleep(5)
+    WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//span[normalize-space()='Educational Qualifications']"))
+    ).click()
+    
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//mat-label[normalize-space()='Education']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//span[normalize-space()='MD']"))
+    ).click()
+
+    login.find_element(By.XPATH, "//input[@id='qualifiedFrom']").send_keys("MG University")
+    login.find_element(By.XPATH, "//mat-label[normalize-space()='Month']").click()
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//span[normalize-space()='June']"))
+    ).click()
+
+    login.find_element(By.XPATH, "//mat-label[normalize-space()='Year']").click()
+
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//span[@class='mdc-list-item__primary-text'][normalize-space()='2006']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//button[contains(text(),'Save')]"))
+    ).click()
+
+    
+
+
+
+    time.sleep(1)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='mdc-button__label']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
+    ).click()
+
+    time.sleep(5)
+    WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//span[normalize-space()='Location']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Choose your location in the MAP']"))
+    ).click()
+
+    time.sleep(2)
+
+    try:
+        # Locate the input field using XPath
+        input_field = login.find_element(By.XPATH, "//input[@id='pac-input']")
+
+        # Input "Thrissur" into the text field
+        input_field.send_keys("Thrissur")
+
+        # Wait for the suggestions to appear and select the appropriate one
+        # Adjust the wait time and condition as necessary
+        wait = WebDriverWait(login, 10)
+        suggestions = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'pac-item')))
+
+        # Iterate through the suggestions and select the one that matches "Thrissur, Kerala, India"
+        for suggestion in suggestions:
+            if "Thrissur, Kerala, India" in suggestion.text:
+                suggestion.click()
+                break
+
+    finally:
+
+        print("Loaction : Thrissur, Kerala, India") 
+
+    login.find_element(By.XPATH, "//button[@type='button']//span[@class='mdc-button__label']").click()
+    login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
+
+    time.sleep(2)
+    WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//span[normalize-space()='Specializations']"))
+    ).click()
+
+    specializations_list = ["Cardiology", "Ophthalmology", "Neurology"]
+    
+
+    for i in range(len(specializations_list)):
+        print(specializations_list[i])
+        specializations_xpath = f"//div[@class='specializationouter ng-star-inserted']//label[normalize-space()='{specializations_list[i].title()}']"
+
+        print(specializations_xpath)
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, specializations_xpath))
+        ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//span[@class='mdc-button__label']"))
+    ).click()
+    
+    time.sleep(3)
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
@@ -36,7 +351,7 @@ def test_walkin_appointment(login):
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         # File path
-        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
         
         # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
         print("value to be written to file", phonenumber)
@@ -176,6 +491,7 @@ def test_walkin_appointment(login):
             EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='Send Message']"))
         ).click()
 
+        time.sleep(2)
         login.find_element(By.XPATH, " //textarea[@id='messageData']").send_keys("Send Message to the Patient")
 
         time.sleep(3)
@@ -264,63 +580,54 @@ def test_walkin_appointment(login):
         WebDriverWait(login, 10)
         login.find_element(By.XPATH, "//span[normalize-space()='Prescriptions']").click()
 
-        # for i in range(5):
-        #     login.find_element(By.XPATH, "//div[@class='add']").click()
-        #     login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
-
-        #     before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
-        #     aftertd_XPath_1 = "/td[2]"
-        #     aftertd_XPath_2 = "/td[3]"
-        #     aftertd_XPath_3 = "/td[4]"
-        #     aftertd_XPath_4 = "/td[5]"
-        #     textarea_xpath = "/p-celleditor/textarea"
-        #     row = i + 1
-        #     if i > 0:
-        #         trXPath = before_XPath + str([row])
-        #     else:
-        #         trXPath = before_XPath
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_1
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-
-        #     Dose = login.find_element(By.XPATH, PreFinalXPath)
-        #     Dose.click()
-        #     Dose1 = login.find_element(By.XPATH, FinalXPath)
-        #     Dose1.send_keys("650 mg")
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_2
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-
-        #     Frequency = login.find_element(By.XPATH, PreFinalXPath)
-        #     Frequency.click()
-        #     Frequency1 = login.find_element(By.XPATH, FinalXPath)
-        #     Frequency1.send_keys("1-1-1")
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_3
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-        #     Duration = login.find_element(By.XPATH, PreFinalXPath)
-        #     Duration.click()
-        #     Duration1 = login.find_element(By.XPATH, FinalXPath)
-        #     Duration1.send_keys("5 Days")
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_4
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-        #     Notes = login.find_element(By.XPATH, PreFinalXPath)
-        #     Notes.click()
-        #     Notes1 = login.find_element(By.XPATH, FinalXPath)
-        #     Notes1.send_keys("After Food")
-
-        # dropdown_locator_xpath = "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/span[1]/mat-select[1]"
-        # dropdown_element = WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath)))
-
-        # dropdown_element.click()
-
+  
         for i in range(5):
             login.find_element(By.XPATH, "//div[@class='add']").click()
             login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
 
-            fill_prescription_details(i + 1, "650 mg", "1-1-1", "5 Days", "After Food")
+            before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
+            aftertd_XPath_1 = "/td[2]"
+            aftertd_XPath_2 = "/td[3]"
+            aftertd_XPath_3 = "/td[4]"
+            aftertd_XPath_4 = "/td[5]"
+            textarea_xpath = "//input[@role='searchbox']"
+            row = i + 1
+            if i > 0:
+                trXPath = before_XPath + str([row])
+            else:
+                trXPath = before_XPath
+
+            PreFinalXPath = trXPath + aftertd_XPath_1
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Dose = login.find_element(By.XPATH, PreFinalXPath)
+            Dose.click()
+            Dose1 = login.find_element(By.XPATH, FinalXPath)
+            Dose1.send_keys("650 mg")
+
+            PreFinalXPath = trXPath + aftertd_XPath_2
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Frequency = login.find_element(By.XPATH, PreFinalXPath)
+            Frequency.click()
+            Frequency1 = login.find_element(By.XPATH, FinalXPath)
+            Frequency1.send_keys("1-1-1")
+
+            PreFinalXPath = trXPath + aftertd_XPath_3
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Duration = login.find_element(By.XPATH, PreFinalXPath)
+            Duration.click()
+            Duration1 = login.find_element(By.XPATH, FinalXPath)
+            Duration1.send_keys("5 Days")
+
+            PreFinalXPath = trXPath + aftertd_XPath_4
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Notes = login.find_element(By.XPATH, PreFinalXPath)
+            Notes.click()
+            Notes1 = login.find_element(By.XPATH, FinalXPath)
+            Notes1.send_keys("After Food")
+
+
 
         # Handle the dropdown element
         dropdown_locator_xpath = ("/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/"
@@ -549,6 +856,77 @@ def test_walkin_appointment(login):
         message = toast_message.text
         print("Toast Message:", message)
 
+        WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Prescription']"))
+        ).click()
+
+        for i in range(5):
+                login.find_element(By.XPATH, "//div[@class='add']").click()
+                login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
+
+                before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
+                aftertd_XPath_1 = "/td[2]"
+                aftertd_XPath_2 = "/td[3]"
+                aftertd_XPath_3 = "/td[4]"
+                aftertd_XPath_4 = "/td[5]"
+                textarea_xpath = "//input[@role='searchbox']"
+                row = i + 1
+                if i > 0:
+                    trXPath = before_XPath + str([row])
+                else:
+                    trXPath = before_XPath
+
+                PreFinalXPath = trXPath + aftertd_XPath_1
+                FinalXPath = PreFinalXPath + textarea_xpath
+
+                Dose = login.find_element(By.XPATH, PreFinalXPath)
+                Dose.click()
+                Dose1 = login.find_element(By.XPATH, FinalXPath)
+                Dose1.send_keys("650 mg")
+
+                PreFinalXPath = trXPath + aftertd_XPath_2
+                FinalXPath = PreFinalXPath + textarea_xpath
+
+                Frequency = login.find_element(By.XPATH, PreFinalXPath)
+                Frequency.click()
+                Frequency1 = login.find_element(By.XPATH, FinalXPath)
+                Frequency1.send_keys("1-1-1")
+
+                PreFinalXPath = trXPath + aftertd_XPath_3
+                FinalXPath = PreFinalXPath + textarea_xpath
+                Duration = login.find_element(By.XPATH, PreFinalXPath)
+                Duration.click()
+                Duration1 = login.find_element(By.XPATH, FinalXPath)
+                Duration1.send_keys("5 Days")
+
+                PreFinalXPath = trXPath + aftertd_XPath_4
+                FinalXPath = PreFinalXPath + textarea_xpath
+                Notes = login.find_element(By.XPATH, PreFinalXPath)
+                Notes.click()
+                Notes1 = login.find_element(By.XPATH, FinalXPath)
+                Notes1.send_keys("After Food")
+
+        dropdown_locator_xpath = "//div[contains(@class, 'mat-mdc-select-arrow-wrapper ')]"
+        dropdown_element = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath)))
+
+        dropdown_element.click()
+
+        option_locator_xpath = "//div[normalize-space()='Naveen KP']"
+        option_element = WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, option_locator_xpath)))
+
+        option_element.click()
+
+        login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Share')]"))
@@ -669,16 +1047,20 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='New Invoice']"))
         ).click()
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Service/Item']"))
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
         ).click()
 
+        time.sleep(1)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Service/Item']"))
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
         ).click()
 
+
+        time.sleep(1)
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Naveen Consultation']"))
+            EC.element_to_be_clickable((By.XPATH, "//div[@class='item-name'][normalize-space()='Naveen Consultation']"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -802,7 +1184,7 @@ def test_walkin_appointment(login):
 
         reschedule_button = WebDriverWait(login, 30).until(
             EC.visibility_of_element_located((By.XPATH,
-                                            "//div[@class='col-12 col-sm-12 col-md-12 col-lg-12 mgn-up-20 mgn-bt-20 footerlinks no-padding reschedulebtn ng-star-inserted']//button[@class='btn btn-primary reschedule-btn']"))
+                                            "//button[@class='btn btn-primary reschedule-btn']"))
         )
         reschedule_button.click()
 

@@ -27,7 +27,7 @@ def test_create_patient(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
     # File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt""
     
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     print("value to be written to file", phonenumber)
@@ -681,7 +681,7 @@ def test_create_patient(login):
     login.implicitly_wait(3)
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     # File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt""
 
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     print("value to be written to file", phonenumber)

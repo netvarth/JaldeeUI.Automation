@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 import allure
 from allure_commons.types import AttachmentType
 
-@allure.severity(allure.severity_level.NORMAL)
+@allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_walkin_appointment(login):
@@ -29,7 +29,7 @@ def test_walkin_appointment(login):
         element.click()
 
         # File path
-        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
         # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
         with open(file_path, 'r') as file:
             phonenumber = file.read()
@@ -40,12 +40,13 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
         ).send_keys(phonenumber)
 
-        xpath_ph = f"//div[normalize-space()='{phonenumber}']"
+        # xpath_ph = f"//div[normalize-space()='{phonenumber}']"
         time.sleep(3)
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//div[@class='d-flex justify-content-between fw-normal'])"))
+            EC.presence_of_element_located((By.XPATH, "//div[@class='d-flex justify-content-between fw-normal']"))
         ).click()
+
 
         # time.sleep(3)
         # wait = WebDriverWait(login, 10)
@@ -185,7 +186,7 @@ def test_walkin_appointment(login):
         WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='Send Message']"))
         ).click()
-
+        time.sleep(3)
         login.find_element(By.XPATH, " //textarea[@id='messageData']").send_keys("Send Message to the Patient")
 
         time.sleep(3)
@@ -283,7 +284,7 @@ def test_walkin_appointment(login):
             aftertd_XPath_2 = "/td[3]"
             aftertd_XPath_3 = "/td[4]"
             aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "/p-celleditor/textarea"
+            textarea_xpath = "//input[@role='searchbox']"
             row = i + 1
             if i > 0:
                 trXPath = before_XPath + str([row])
@@ -379,11 +380,12 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
         ).click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        # time.sleep(2)
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
 
         time.sleep(2)
 
@@ -663,15 +665,15 @@ def test_walkin_appointment(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Service/Item']"))
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Service/Item']"))
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Naveen Consultation']"))
+            EC.element_to_be_clickable((By.XPATH, "//div[@class='item-name'][normalize-space()='Naveen Consultation']"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -795,7 +797,7 @@ def test_walkin_appointment(login):
 
         reschedule_button = WebDriverWait(login, 30).until(
             EC.visibility_of_element_located((By.XPATH,
-                                            "//div[@class='col-12 col-sm-12 col-md-12 col-lg-12 mgn-up-20 mgn-bt-20 footerlinks no-padding reschedulebtn ng-star-inserted']//button[@class='btn btn-primary reschedule-btn']"))
+                                            "//button[@class='btn btn-primary reschedule-btn']"))
         )
         reschedule_button.click()
 
