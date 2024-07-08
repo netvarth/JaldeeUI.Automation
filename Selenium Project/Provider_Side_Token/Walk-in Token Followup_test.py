@@ -5,11 +5,7 @@ from selenium.common import TimeoutException
 def test_followup_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'tokens.gif')]//following::div[@class='my-1 "
-                                                  ""
-                                                  "font-small ng-star-inserted']"
-                                                  "//span[normalize-space(text("
-                                                  "))='Tokens']"))
+        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'tokens.gif')]//following::div[@class='my-1 font-small ng-star-inserted']//span[normalize-space(text())='Tokens']"))
     ).click()
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -193,7 +189,7 @@ def test_followup_patient(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Details']"))
     ).click()
-    time.sleep(5)
+    time.sleep(3)
     print("ViewDetails Button Clicked") 
      # # **** FollowUp *****
     WebDriverWait(login, 10).until(
@@ -202,9 +198,12 @@ def test_followup_patient(login):
     time.sleep(3)
     today = datetime.now().date()
     tomorrow = today + timedelta(days=1)
-    tomorrow_str = tomorrow.strftime("%d")
-    xpath_tomorrow = f"//span[normalize-space()='{tomorrow_str}']"
-    date_tomorrow = login.find_element(By.XPATH, xpath_tomorrow)
+    xpath_tomorrow = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
+        tomorrow.day)
+    date_tomorrow = WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, xpath_tomorrow))
+    )
+    print("Tomorrow Date:", date_tomorrow)
     date_tomorrow.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -429,9 +428,12 @@ def test_followup_create_patient(login):
     time.sleep(3)
     today = datetime.now().date()
     tomorrow = today + timedelta(days=1)
-    tomorrow_str = tomorrow.strftime("%d")
-    xpath_tomorrow = f"//span[normalize-space()='{tomorrow_str}']"
-    date_tomorrow = login.find_element(By.XPATH, xpath_tomorrow)
+    xpath_tomorrow = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
+        tomorrow.day)
+    date_tomorrow = WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, xpath_tomorrow))
+    )
+    print("Tomorrow Date:", date_tomorrow)
     date_tomorrow.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -503,9 +505,12 @@ def test_history_followup(login):
     time.sleep(3)
     today = datetime.now().date()
     tomorrow = today + timedelta(days=1)
-    tomorrow_str = tomorrow.strftime("%d")
-    xpath_tomorrow = f"//span[normalize-space()='{tomorrow_str}']"
-    date_tomorrow = login.find_element(By.XPATH, xpath_tomorrow)
+    xpath_tomorrow = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
+        tomorrow.day)
+    date_tomorrow = WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, xpath_tomorrow))
+    )
+    print("Tomorrow Date:", date_tomorrow)
     date_tomorrow.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
