@@ -27,7 +27,7 @@ def test_create_patient(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
     # File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
     
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     print("value to be written to file", phonenumber)
@@ -213,7 +213,7 @@ def test_create_patient(login):
         aftertd_XPath_2 = "/td[3]"
         aftertd_XPath_3 = "/td[4]"
         aftertd_XPath_4 = "/td[5]"
-        textarea_xpath = "/p-celleditor/textarea"
+        textarea_xpath = "//input[@role='searchbox']"
         row = i + 1
         if i > 0:
             trXPath = before_XPath + str([row])
@@ -684,7 +684,7 @@ def test_create_patient(login):
     login.implicitly_wait(3)
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     # File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
 
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     print("value to be written to file", phonenumber)

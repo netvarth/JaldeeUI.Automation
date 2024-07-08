@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-
+import os
 
 
 @pytest.fixture()
@@ -125,6 +125,24 @@ def test_booking(login):
 
     time.sleep(5)
 
+   # Locate the element containing the booking ID
+    booking_id_element = login.find_element(By.XPATH, "//div[contains(@class, 'bookingIdFlex')]")
+
+    # Extract the text of the booking ID
+    booking_id = booking_id_element.text
+    print(f"Booking ID: {booking_id}")
+
+    # Split the text to get only the booking ID
+    # Assuming the booking ID is after a colon and space (': ')
+    if ':' in booking_id:
+        booking_id = booking_id.replace(' ', '').replace('\n', ' ').replace('\r', '').split(':')[1].strip()
+        print("in IF",booking_id)
+    else:
+        booking_id = booking_id.strip()  # fallback in case the format is different
+        print("in else",booking_id)
+
+    print(f"Booking ID: {booking_id}")
+
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
@@ -145,11 +163,30 @@ def test_booking(login):
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//a[@class='show_more']"))
+    ).click()
+    
+
+    time.sleep(3)
+
+    appt_xpath = f"//div[contains(text(), '{booking_id}')]"
+    print(appt_xpath)
+
+    # Locate the booking with the same ID
+    booking_to_cancel = WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, appt_xpath))
+    )
+    login.execute_script("arguments[0].scrollIntoView();", booking_to_cancel)
+    # booking_to_cancel.click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//mat-icon[@role='img'][last()]"))
     ).click()
 
     ######################### Sending Message from consumer side ################################
-
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send Message']"))
     ).click()
@@ -158,6 +195,7 @@ def test_booking(login):
         EC.presence_of_element_located((By.XPATH, "//textarea[@id='message']"))
     ).send_keys(" Message to the provider ")
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[@type='button']//i[@class='material-icons'][normalize-space()='attach_file']"))
@@ -286,18 +324,38 @@ def test_booking(login):
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Upcoming Bookings')]"))
     ).click()
 
+  
+
+    time.sleep(5)
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//a[@class='show_more']"))
+    ).click()
+    
+
+    time.sleep(3)
+
+    # Locate the booking with the same ID
+    booking_to_cancel = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, f"//div[contains(text(), '{booking_id}')]"))
+    )
+    booking_to_cancel.click()
+
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//mat-icon[@role='img'][last()]"))
     ).click()
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Cancel']"))
     ).click()
+
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//mat-chip[normalize-space()='Change of Plans']"))
     ).click()
+
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))

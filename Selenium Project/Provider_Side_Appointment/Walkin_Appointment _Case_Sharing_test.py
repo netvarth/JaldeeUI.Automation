@@ -348,6 +348,7 @@ def test_without_prescription(login):
         name="full_page",                 # param2
         attachment_type=AttachmentType.PNG)
         raise e
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription in case Sharing")    
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
@@ -683,7 +684,7 @@ def test_with_prescription(login):
                 aftertd_XPath_4 = "/td[5]"
                 textarea_xpath = "//input[@role='searchbox']"
                 row = i + 1
-                if i > 0:
+                if i > 0:  
                     trXPath = before_XPath + str([row])
                 else:
                     trXPath = before_XPath

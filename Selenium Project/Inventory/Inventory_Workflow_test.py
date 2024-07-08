@@ -719,6 +719,8 @@ def test_create_purchase(login):
 
 
 
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Enable inventory settings")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_create_order_catalog(login):
 
@@ -806,148 +808,235 @@ def test_create_order_catalog(login):
 
     time.sleep(2)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
-    ).click()
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
+    # ).click()
 
     #List of item names to be selected
-    item_names_to_select = ['items', 'Item3', 'Item4']
-
-     # Find all rows in the table
-    # rows = WebDriverWait(login, 10).until(
-    #     EC.presence_of_all_elements_located((By.XPATH, "//tbody/tr"))
-    # )
-    # time.sleep(3)
+    item_names_to_select = ['Item4', 'Item3', 'items']
 
     for item_name in item_names_to_select:
-        print(f"Looking for item: {item_name}")
-        # Locate the row containing the item name
-        try:
-            try:
-                row = WebDriverWait(login, 20).until(
-                    EC.presence_of_element_located((By.XPATH, f"//tr[td/span[text()='{item_name}']]"))
-                )
-            except Exception as e:
-                print(f"Error finding item: {item_name}. Exception: {e}")
-                WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//anglelefticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']"))
-                ).click()
-            print(f"Found row for item: {item_name}")
-            
-            # Locate the checkbox within that row
-            checkbox = row.find_element(By.XPATH, ".//input[@type='checkbox']")
-            
-            # Click the checkbox if it is not already selected
-            if not checkbox.is_selected():
-                checkbox.click()
-                print(f"Selected item: {item_name}")
-        except Exception as e:
-            print(f"Error finding item: {item_name}. Exception: {e}")
+        print(item_name)
+        
+        item_search = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Search Items']"))
+        )
+        item_search.clear()
+        item_search.send_keys(item_name)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[@class='p-button-icon pi pi-search']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//mat-checkbox[@class='mat-mdc-checkbox mat-accent ng-star-inserted']"))
+        ).click()
+
+
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
     ).click()
 
-    # try:
-        # Wait for the table body to be present
     time.sleep(2)
-    table_body = WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//tbody[@class='p-element p-datatable-tbody']"))
-    )
-    
-    # Find all rows in the table body
-    rows = table_body.find_elements(By.XPATH, ".//tr[@class='ng-star-inserted']")
-    
-    for row in rows:
-        # Find the "Edit Details" button in the current row
-        edit_button = row.find_element(By.XPATH, ".//button[contains(@class, 'btn fw-bold p-button-light')]")
+    try:
+        # Wait for the table body to be present
+        time.sleep(2)
+        table_body = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody[@class='p-element p-datatable-tbody']"))
+        )
         
-        # Click the "Edit Details" button
-        edit_button.click()
+        # Find all rows in the table body
+        rows = table_body.find_elements(By.XPATH, ".//tr[@class='ng-star-inserted']")
+        print("num of rows:", len(rows))
         
-        # Perform the necessary actions on the edit details page
-        items_to_select = ["GST 5%", "GST 12%", "GST 18%"]
+        for i in range(len(rows)):
+            # print(row)
+            time.sleep(3)
+            # Find the "Edit Details" button in the current row
+            rows = table_body.find_elements(By.XPATH, ".//tr[@class='ng-star-inserted']")
+            print("num of rows in loop:", len(rows))
+            # print(rows)
+            row= rows[i]
+            time.sleep(2)
+            edit_button = row.find_element(By.XPATH, ".//button[contains(@class, 'btn fw-bold p-button-light')]")
+            
+            # Click the "Edit Details" button
+            edit_button.click()
+            
+            # Perform the necessary actions on the edit details page
+            items_to_select = ["GST 5%", "GST 12%", "GST 18%"]
 
-        try:
-                # Locate the MultiSelect component
-                multiSelect = WebDriverWait(login, 10).until(
-                    EC.element_to_be_clickable((By.CSS_SELECTOR, "p-multiselect"))
-                )
-                
-                # Open the dropdown
-                multiSelect.click()
-                
+            try:
+                    # Locate the MultiSelect component
+                    multiSelect = WebDriverWait(login, 10).until(
+                        EC.element_to_be_clickable((By.CSS_SELECTOR, "p-multiselect"))
+                    )
+                    
+                    # Open the dropdown
+                    multiSelect.click()
+                    
+                    # Wait for the dropdown options to be visible
+                    optionsContainer = WebDriverWait(login, 10).until(
+                        EC.visibility_of_element_located((By.CSS_SELECTOR, ".p-multiselect-items"))
+                    )
+                    
+                    # Get all available options
+                    options = optionsContainer.find_elements(By.CSS_SELECTOR, ".p-multiselect-item")
+                    
+                    # Filter the options to match the items to select
+                    optionsToSelect = [option for option in options if option.text.strip() in items_to_select]
+                    
+                    # Select a random item
+                    selectedOption = random.choice(optionsToSelect)
+                    selectedOption.click()  # Click to select the option
+                    
+                    # Optionally, close the dropdown by clicking outside or performing another action
+                    multiSelect.click()  # Clicking on the component again might close the dropdown
+
+            finally:
+                    time.sleep(5)  # Allow some time to observe the change or for any additional processing
+
+
+            try:
+
+
                 # Wait for the dropdown options to be visible
-                optionsContainer = WebDriverWait(login, 10).until(
-                    EC.visibility_of_element_located((By.CSS_SELECTOR, ".p-multiselect-items"))
+                options_container = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Select Batch']"))
                 )
-                
-                # Get all available options
-                options = optionsContainer.find_elements(By.CSS_SELECTOR, ".p-multiselect-item")
-                
-                # Filter the options to match the items to select
-                optionsToSelect = [option for option in options if option.text.strip() in items_to_select]
-                
-                # Select a random item
-                selectedOption = random.choice(optionsToSelect)
-                selectedOption.click()  # Click to select the option
-                
-                # Optionally, close the dropdown by clicking outside or performing another action
-                multiSelect.click()  # Clicking on the component again might close the dropdown
+                options_container.click()
 
-        finally:
+
+                # Get all available options
+                options = options_container.find_elements(By.XPATH, "//ul[@role='listbox' and contains(@class, 'p-dropdown-items')]/p-dropdownitem/li[@role='option']")
+                # print(options.text)
+                if options:
+                    # Select the last option
+                    last_option = options[-1]
+                    last_option_text = last_option.text.strip()  # Optionally, you can get the text of the last option
+                    last_option.click()   
+                    print(f"Selected last option: {last_option_text}")
+                else:
+                    print("No options found in the dropdown.")
+
+                # Optionally, close the dropdown by clicking outside or performing another action
+                # multiSelect.click()  # Clicking on the component again might close the dropdown
+
+            finally:
                 time.sleep(5)  # Allow some time to observe the change or for any additional processing
 
 
-        try:
 
-
-            # Wait for the dropdown options to be visible
-            options_container = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Select Batch']"))
+            price = WebDriverWait(login, 20).until(
+                EC.presence_of_element_located((By.XPATH,
+                                                "//input[@placeholder='Enter Batch Price']"))
             )
-            options_container.click()
+            price.click()
 
+            price_random_number = str(random.randint(60, 200))
+            price.send_keys(price_random_number)
+            print("Price of the item:", price_random_number)
 
-            # Get all available options
-            options = options_container.find_elements(By.XPATH, "//ul[@role='listbox' and contains(@class, 'p-dropdown-items')]/p-dropdownitem/li[@role='option']")
-            # print(options.text)
-            if options:
-                # Select the last option
-                last_option = options[-1]
-                last_option_text = last_option.text.strip()  # Optionally, you can get the text of the last option
-                last_option.click()   
-                print(f"Selected last option: {last_option_text}")
-            else:
-                print("No options found in the dropdown.")
+            time.sleep(3)
+            WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//span[normalize-space()='Save']"))
+            ).click()
+            time.sleep(2)
 
-            # Optionally, close the dropdown by clicking outside or performing another action
-            # multiSelect.click()  # Clicking on the component again might close the dropdown
-
-        finally:
-            time.sleep(5)  # Allow some time to observe the change or for any additional processing
+    finally:
+        time.sleep(2)
 
 
 
-        price = WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH,
-                                            "//input[@placeholder='Enter Batch Price']"))
-        )
-        price.click()
+################################################## Create Order ###############################################
 
-        price_random_number = str(random.randint(60, 200))
-        price.send_keys(price_random_number)
-        print("Price of the item:", price_random_number)
 
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Save']"))
-        ).click()
-   
+
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+def create_order_test(login):
+
+ 
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[contains(text(),'Sales Order')]"))
+    ).click()
+
+    time.sleep(3)
+    WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//p-dropdown[@optionlabel='name']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Swathy Pharmacy']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[contains(text(),'Create Order')]"))
+    ).click()
+
+
     time.sleep(2)
 
+    login.find_elements(By.XPATH, "//input[@placeholder='Search patients']").send_keys("5558210996")
+
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Id : etf']"))
+    ).click()
+
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[@class='p-multiselect-label p-placeholder']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Swathy Order Catalog']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+    ).click()
+
+    item_names_to_select = ['Item4', 'Item3', 'items']
+
+    for item_name in item_names_to_select:
+        print(item_name)
+
+    
+    
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Search items']"))
+        ).send_keys(item_name)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='items'])"))
+        ).click()
+
+        qty = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//input[@min='1']"))
+            )
+        qty.click()
+        qty.clear()
+
+        qty_random_number = str(random.randint(10, 30))
+        qty.send_keys(qty_random_number)
+        print("Qty Of Item:", qty_random_number) 
 

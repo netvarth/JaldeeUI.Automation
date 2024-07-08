@@ -45,7 +45,7 @@ def test_create_patient(login):
     # ).click()
 
 # File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt""
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     with open(file_path, 'r') as file:
         phonenumber = file.read()

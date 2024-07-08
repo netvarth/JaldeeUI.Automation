@@ -5,6 +5,7 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from Framework.common_utils import *
+from Framework.common_dates_utils import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -29,11 +30,11 @@ def test_walkin_appointment(login):
         element.click()
 
         # File path
-        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
         # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
         with open(file_path, 'r') as file:
             phonenumber = file.read()
-
+ 
         print("Phonenumber obtained :",phonenumber)
 
         WebDriverWait(login, 10).until(
@@ -92,7 +93,8 @@ def test_walkin_appointment(login):
         WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
         print("Select Service : Naveen Consultation")
         time.sleep(3)
-        Today_Date = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH,
+ 
+        Today_Date = wait.until(EC.presence_of_element_located((By.XPATH,
                                                                 "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
         Today_Date.click()
         print("Today Date:", Today_Date.text)
@@ -100,6 +102,75 @@ def test_walkin_appointment(login):
         time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']")))
         time_slot.click()
         print("Time Slot:", time_slot.text)
+
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[@aria-label='Choose month and year']//span[@class='mdc-button__label']//*[name()='svg']"))
+        # ).click()
+
+        # [year, month, day] = add_days(180)
+        # print(month,year)
+        # year_xpath = f"//span[normalize-space()='{year}']"
+        # print(year_xpath)
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, year_xpath))
+        # ).click()
+        # time.sleep(2)
+        # month_xpath = f"//span[normalize-space()='{month.upper()}']"
+        # print(month_xpath)
+        # WebDriverWait(login, 10).until(
+        #         EC.presence_of_element_located((By.XPATH, month_xpath))
+        #  ).click()
+        # time.sleep(2)
+        # day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
+        # print(day_xpath)
+        # time.sleep(3)
+        # WebDriverWait(login, 20).until(
+        #     EC.presence_of_element_located((By.XPATH, day_xpath))
+        # ).click()
+
+        # time.sleep(3)
+        # current_year = datetime.now().strftime("%Y")
+        # current_year_xpath = f"//button[normalize-space()='{current_year}']"
+        # print(current_year_xpath)
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, current_year_xpath))
+        # ).click()
+
+        # [year, month, day] = add_date(2)
+        # print(year)
+        # year_xpath = f"//span[normalize-space()='{year}']"
+        # print(year_xpath)
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, year_xpath))
+        # ).click()
+        # time.sleep(2)
+        # month_xpath = f"//span[normalize-space()='{month}']"
+        # print(month_xpath)
+        # WebDriverWait(login, 10).until(
+        #         EC.presence_of_element_located((By.XPATH, month_xpath))
+        #  ).click()
+        # time.sleep(2)
+        # day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
+        # print(day_xpath)
+        # time.sleep(3)
+        # WebDriverWait(login, 20).until(
+        #     EC.presence_of_element_located((By.XPATH, day_xpath))
+        # ).click()
+
+
+
+        # Today_Date = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH,
+        #                                                         "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
+        # Today_Date.click()
+        # print("Today Date:", Today_Date.text)
+        # wait = WebDriverWait(login, 10)
+        # time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']")))
+        # time_slot.click()
+        # print("Time Slot:", time_slot.text)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
@@ -283,7 +354,7 @@ def test_walkin_appointment(login):
             aftertd_XPath_2 = "/td[3]"
             aftertd_XPath_3 = "/td[4]"
             aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "/p-celleditor/textarea"
+            textarea_xpath = "//input[@role='searchbox']"
             row = i + 1
             if i > 0:
                 trXPath = before_XPath + str([row])
@@ -342,7 +413,7 @@ def test_walkin_appointment(login):
         # print("prescription created successfully")
         time.sleep(2)
         login.find_element(By.XPATH, "//img[@alt='share']").click()
-
+        time.sleep(2)
         login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys("prescription message")
 
         login.find_element(By.XPATH, "//span[normalize-space()='Email']").click()
@@ -663,15 +734,15 @@ def test_walkin_appointment(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Service/Item']"))
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Service/Item']"))
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Naveen Consultation']"))
+            EC.element_to_be_clickable((By.XPATH, "//div[@class='item-name'][normalize-space()='Naveen Consultation']"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -889,7 +960,7 @@ def test_walkin_appointment(login):
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         # File path
-        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
         
         # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
         print("value to be written to file", phonenumber)

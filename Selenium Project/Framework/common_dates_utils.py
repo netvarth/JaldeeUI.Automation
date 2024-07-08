@@ -20,3 +20,23 @@ def add_date(years):
     month = future_date.strftime("%b")
     day = future_date.strftime("%d")
     return [year, month, day]
+
+
+
+
+def add_month(month):
+    current_date = datetime.now()
+    future_date = current_date + relativedelta(months=month)
+    year = future_date.strftime("%Y")
+    month = future_date.strftime("%b")
+    day = future_date.strftime("%d")
+    return [year, month, day]
+
+
+def add_days(days):
+    current_date = datetime.now()
+    future_date = current_date + relativedelta(days=days)
+    year = future_date.strftime("%Y")
+    month = future_date.strftime("%b")
+    day = future_date.strftime("%d")
+    return [year, month, day]

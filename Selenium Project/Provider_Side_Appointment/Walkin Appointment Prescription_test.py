@@ -27,14 +27,15 @@ def test_Prescription(login):
         element_appoint.click()
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-        # File path
-        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        # File pat
+        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
         
         # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
         print("value to be written to file", phonenumber)
         with open(file_path, 'w') as file:
             # Write the value to the file
             file.write(phonenumber)
+        print("value written to file", phonenumber)
         print("value written to file", phonenumber)
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
         login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
@@ -276,7 +277,7 @@ def test_Prescription_1(login):
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         # # File path
-        # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt""
         
         # # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
         # print("value to be written to file", phonenumber)
@@ -496,7 +497,7 @@ def test_Prescription_2(login):
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         # # File path
-        # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Scale Selenium Project\Data\number.txt"
+        # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt""
         
         # # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
         # print("value to be written to file", phonenumber)

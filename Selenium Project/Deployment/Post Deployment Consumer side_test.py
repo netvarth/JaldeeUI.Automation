@@ -9,7 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-
+import os
 
 
 @pytest.fixture()
@@ -239,6 +239,7 @@ def test_booking(login):
     Tomorrow_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
     )
+    time.sleep(2)
     Tomorrow_Date.click()
 
     print("Tomorrow Date:", Tomorrow_Date.text)

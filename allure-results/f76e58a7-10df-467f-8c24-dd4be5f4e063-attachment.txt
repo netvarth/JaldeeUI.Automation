@@ -1,10 +1,17 @@
-Phonenumber obtained : 5553270439
+New patient create
+Anita
+Jones
+SpJ
+5557485038
+Anita.Jones.test@jaldee.com
+value to be written to file 5557485038
+value written to file 5557485038
 location : Chavakkad
 Department : ENT
 Select user : Naveen
 Select Service : Naveen Consultation
-Today Date: 7
-Time Slot: 04:45 PM
+Today Date: 3
+Time Slot: 06:30 PM
 Note added for walkin appointment
 Successfully upload the file
 Snack bar message: Appointment created successfully
@@ -20,16 +27,17 @@ Toast Message: Data Saved Successfully
 Toast Message: Data Saved Successfully
 Toast Message: Data Saved Successfully
 Toast Message: Data Saved Successfully
+Toast Message: Prescription created Successfully
 Toast Message: Case Shared Successfully
 Auto Invoice
 Snack bar message: The invoice has been sent to the patient
 Manual Invoice
 Snack bar message: The invoice has been sent to the patient
-7
-//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='7']
-8
-//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='8']
-Tomorrow Date: 8
+3
+//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='3']
+4
+//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='4']
+Tomorrow Date: 4
 Time Slot: 09:00 AM
-Snack bar message: Appointment rescheduled to Jun 8, 2024,09:00 AM
+Snack bar message: Appointment rescheduled to Jul 4, 2024,09:00 AM
 Toast Message: Appointment status changed to cancelled
