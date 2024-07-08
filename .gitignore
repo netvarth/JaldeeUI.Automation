@@ -17,7 +17,6 @@ Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Manual
 Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Prescription_test.cpython-312-pytest-8.1.0.pyc
 Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Prescription_test.cpython-312-pytest-8.1.0.pyc.9156
 Selenium Project/Provider_Side_Appointment/__pycache__/Walkin_Appointment _Case_Sharing_test.cpython-312-pytest-8.1.0.pyc
-<<<<<<< HEAD
 Selenium Project/Consumer_Side_Appointment/__pycache__/*
 Selenium Project/Framework/__pycache__/__init__.cpython-312.pyc
 Selenium Project/Provider_Side_Appointment/__pycache__/__init__.cpython-312.pyc
@@ -37,7 +36,6 @@ Selenium Project/Deployment/__pycache__/__init__.cpython-312.pyc
 Selenium Project/Deployment/__pycache__/Post Deployment Consumer side_test.cpython-312-pytest-8.1.0.pyc
 Selenium Project/Deployment/__pycache__/Pre Deployment Consumer side_test.cpython-312-pytest-8.1.0.pyc
 Selenium Project/Deployment/__pycache__/Pre Deployment_Appointment_test.cpython-312-pytest-8.1.0.pyc
-=======
 Selenium Project/Provider_Side_Appointment/__pycache__/__init__.cpython-312.pyc
 Selenium Project/Provider_Side_Appointment/__pycache__/Walk-in Appointment Block Slot_test.cpython-312-pytest-8.1.0.pyc
 Selenium Project/Provider_Side_Appointment/__pycache__/Walk-in Appointment Followup_test.cpython-312-pytest-8.1.0.pyc.7276
@@ -53,4 +51,6 @@ allure-results/8a0985c3-60c2-4da4-b7c3-978772f90cb3-container.json
 allure-results/844ab842-b12a-4608-88a4-dee3df69a9d7-attachment.txt
 allure-results/3977101f-7cab-46e0-919d-249788dac2a7-container.json
 allure-results/e113d86e-c99a-4005-aa9e-a8e236121e28-container.json
->>>>>>> c8d099ec96668afce4ade6a483bc93c68ca700f4
+Selenium Project/Consumer_Side_Appointment/__pycache__/Consumer Side Appointment SendMessage and Attachment_test.cpython-312-pytest-7.4.3.pyc
+Selenium Project/Deployment/__pycache__/*
+Selenium Project/Inventory/__pycache__/*

@@ -6,9 +6,6 @@ from selenium.common import TimeoutException
 def test_followup_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
-<<<<<<< HEAD
-        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'tokens.gif')]//following::div[@class='my-1 font-small ng-star-inserted']//span[normalize-space(text())='Tokens']"))
-=======
         EC.presence_of_element_located(
             (
                 By.XPATH,
@@ -19,9 +16,9 @@ def test_followup_patient(login):
                 "))='Tokens']",
             )
         )
->>>>>>> c8d099ec96668afce4ade6a483bc93c68ca700f4
     ).click()
     time.sleep(5)
+    
     WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Token']"))
     ).click()
@@ -273,15 +270,10 @@ def test_followup_patient(login):
             (By.XPATH, "//button[normalize-space()='View Details']")
         )
     ).click()
-<<<<<<< HEAD
     time.sleep(3)
     print("ViewDetails Button Clicked") 
      # # **** FollowUp *****
-=======
-    time.sleep(5)
-    print("ViewDetails Button Clicked")
-    # # **** FollowUp *****
->>>>>>> c8d099ec96668afce4ade6a483bc93c68ca700f4
+     
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Follow Up']")
