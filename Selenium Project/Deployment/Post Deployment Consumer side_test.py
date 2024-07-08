@@ -23,7 +23,9 @@ def login():
 def test_booking(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Book Now']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Book Now']")
+        )
     ).click()
 
     # wait = WebDriverWait(login, 10)
@@ -41,14 +43,20 @@ def test_booking(login):
     #     (By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]"))).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH,
-                                        "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][normalize-space()='Consultation']"))
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][normalize-space()='Consultation']",
+            )
+        )
     ).click()
     # login.find_element(By.XPATH,
     #                    "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][contains(text(),'service zero')]").click()
 
     Today_Date = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']"))
+        EC.element_to_be_clickable(
+            (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+        )
     )
 
     Today_Date.click()
@@ -56,7 +64,9 @@ def test_booking(login):
     print("Today Date:", Today_Date.text)
 
     wait = WebDriverWait(login, 10)
-    time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']")))
+    time_slot = wait.until(
+        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+    )
     time_slot.click()
     print("Time Slot:", time_slot.text)
 
@@ -68,27 +78,27 @@ def test_booking(login):
     # login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@id='phone']"))
-
+        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
     ).send_keys("9207206005")
 
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
-
 
     time.sleep(5)
 
     otp_digits = "5555"
 
     # Wait for the OTP input fields to be present
-    otp_inputs = wait.until(EC.presence_of_all_elements_located(
-        (By.XPATH, "//input[contains(@id, 'otp_')]")))
+    otp_inputs = wait.until(
+        EC.presence_of_all_elements_located(
+            (By.XPATH, "//input[contains(@id, 'otp_')]")
+        )
+    )
 
     # print("Number of OTP input fields:", len(otp_inputs))
     # print(otp_inputs)
-  
+
     for i, otp_input in enumerate(otp_inputs):
-    
+
         # print(i)
         # print(otp_input)
         otp_input.send_keys(otp_digits[i])
@@ -97,16 +107,15 @@ def test_booking(login):
 
     time.sleep(3)
 
-
     # time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//textarea[@placeholder='Add Notes you may have...']"))
+            (By.XPATH, "//textarea[@placeholder='Add Notes you may have...']")
+        )
     ).send_keys("Notes added from conumser side")
-    
+
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='uploadFileTxt']"))
+        EC.presence_of_element_located((By.XPATH, "//span[@class='uploadFileTxt']"))
     ).click()
 
     time.sleep(8)
@@ -114,13 +123,17 @@ def test_booking(login):
     current_working_directory = os.getcwd()
 
     # Construct the absolute path
-    absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\test.png")
+    )
     pyautogui.write(absolute_path)
-    pyautogui.press('enter')
+    pyautogui.press("enter")
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Confirm']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Confirm']")
+        )
     ).click()
 
     time.sleep(5)
@@ -134,7 +147,9 @@ def test_booking(login):
     time.sleep(3)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'My Bookings')]"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[contains(text(),'My Bookings')]")
+        )
     ).click()
 
     time.sleep(2)
@@ -145,7 +160,9 @@ def test_booking(login):
     ######################### Sending Message from consumer side ################################
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send Message']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Send Message']")
+        )
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -154,7 +171,11 @@ def test_booking(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[@type='button']//i[@class='material-icons'][normalize-space()='attach_file']"))
+            (
+                By.XPATH,
+                "//button[@type='button']//i[@class='material-icons'][normalize-space()='attach_file']",
+            )
+        )
     ).click()
 
     time.sleep(8)
@@ -162,14 +183,18 @@ def test_booking(login):
     current_working_directory = os.getcwd()
 
     # Construct the absolute path
-    absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\test.png")
+    )
     pyautogui.write(absolute_path)
-    pyautogui.press('enter')
+    pyautogui.press("enter")
     print("Successfully upload the file")
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']")
+        )
     ).click()
 
     # snack_bar = WebDriverWait(login, 10).until(
@@ -181,11 +206,15 @@ def test_booking(login):
     ################## Sending attachment to provider #################
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send Attachments']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Send Attachments']")
+        )
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Click here to select the files']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//label[normalize-space()='Click here to select the files']")
+        )
     ).click()
 
     time.sleep(8)
@@ -193,9 +222,11 @@ def test_booking(login):
     current_working_directory = os.getcwd()
 
     # Construct the absolute path
-    absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\test.png")
+    )
     pyautogui.write(absolute_path)
-    pyautogui.press('enter')
+    pyautogui.press("enter")
     print("Successfully upload the file")
 
     WebDriverWait(login, 10).until(
@@ -211,13 +242,16 @@ def test_booking(login):
     ################## Rescheduling the Appointment ##################
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Reschedule']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Reschedule']")
+        )
     ).click()
 
     today_date = datetime.now()
     print(today_date.day)
     today_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today'][normalize-space()='{}']".format(
-        today_date.day)
+        today_date.day
+    )
     print(today_xpath_expression)
     tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
@@ -233,7 +267,8 @@ def test_booking(login):
     #     login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
     # time.sleep(3)
     tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
-        tomorrow_date.day)
+        tomorrow_date.day
+    )
     print(tomorrow_xpath_expression)
 
     Tomorrow_Date = WebDriverWait(login, 10).until(
@@ -245,8 +280,14 @@ def test_booking(login):
     print("Tomorrow Date:", Tomorrow_Date.text)
 
     wait = WebDriverWait(login, 10)
-    time_slot = wait.until(EC.element_to_be_clickable((By.XPATH,
-                                                       "//mat-chip[@class='mat-chip mat-focus-indicator text-center mat-primary mat-standard-chip mat-chip-selected ng-star-inserted']")))
+    time_slot = wait.until(
+        EC.element_to_be_clickable(
+            (
+                By.XPATH,
+                "//mat-chip[@class='mat-chip mat-focus-indicator text-center mat-primary mat-standard-chip mat-chip-selected ng-star-inserted']",
+            )
+        )
+    )
     time_slot.click()
     print("Time Slot:", time_slot.text)
 
@@ -258,7 +299,9 @@ def test_booking(login):
     time.sleep(2)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Reschedule']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Reschedule']")
+        )
     ).click()
 
     time.sleep(2)
@@ -270,7 +313,9 @@ def test_booking(login):
     time.sleep(2)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='My Bookings']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[normalize-space()='My Bookings']")
+        )
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -278,7 +323,9 @@ def test_booking(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Upcoming Bookings')]"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[contains(text(),'Upcoming Bookings')]")
+        )
     ).click()
 
     time.sleep(2)
@@ -291,7 +338,9 @@ def test_booking(login):
     ).click()
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//mat-chip[normalize-space()='Change of Plans']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//mat-chip[normalize-space()='Change of Plans']")
+        )
     ).click()
     time.sleep(2)
     WebDriverWait(login, 10).until(
@@ -303,7 +352,6 @@ def test_booking(login):
     ).click()
 
     login.find_element(By.XPATH, "//i[@class='fa fa-commenting-o']").click()
-
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//textarea[@id='message']"))
@@ -318,9 +366,11 @@ def test_booking(login):
     current_working_directory = os.getcwd()
 
     # Construct the absolute path
-    absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\test.png")
+    )
     pyautogui.write(absolute_path)
-    pyautogui.press('enter')
+    pyautogui.press("enter")
     print("Successfully upload the file")
 
     WebDriverWait(login, 10).until(
@@ -328,4 +378,3 @@ def test_booking(login):
     ).click()
 
     print("Send enquriy successfully")
-

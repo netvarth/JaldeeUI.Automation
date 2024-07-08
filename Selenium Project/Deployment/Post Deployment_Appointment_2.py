@@ -44,8 +44,8 @@ def test_create_patient(login):
     #     EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#87')]"))
     # ).click()
 
-# File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt""
+    # File path
+    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     with open(file_path, 'r') as file:
         phonenumber = file.read()

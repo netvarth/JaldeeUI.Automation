@@ -31,9 +31,9 @@ def create_user_data():
     print(first_name)
     last_name = fake.last_name()
     print(last_name)
-    cons_manual_id = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
+    cons_manual_id = "".join(random.choices(string.ascii_letters + string.digits, k=3))
     print(cons_manual_id)
-    random_digits = fake.numerify(text='#######')
+    random_digits = fake.numerify(text="#######")
     # random_digits = ''.join(random.choices(string.digits, k=7))
     phonenumber = f"{555}{random_digits}"
     print(phonenumber)
@@ -48,15 +48,17 @@ def login(url):
     chrome_options.add_argument("--ignore-ssl-errors=yes")
     chrome_options.add_argument("--ignore-certificate-errors")
 
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(
+        service=ChromeService(ChromeDriverManager().install()), options=chrome_options
+    )
     # driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
 
     # 5550005540  Netvarth123  5555556030  Jaldee01
-    driver.find_element(By.ID, "phone").send_keys("5555556030")
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("5550005540")
+    driver.find_element(By.ID, "password").send_keys("Netvarth123")
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)
     driver.implicitly_wait(5)
@@ -66,17 +68,7 @@ def login(url):
 
 
 def generate_random_salutation():
-    salutations = [
-        "Mr.",
-        "Ms.",
-        "Mrs.",
-        "Master",
-        "Miss",
-        "B/o",
-        "Dr.",
-        "Adv.",
-        "Fr."
-    ]
+    salutations = ["Mr.", "Ms.", "Mrs.", "Master", "Miss", "B/o", "Dr.", "Adv.", "Fr."]
     return random.choice(salutations)
 
 
@@ -86,15 +78,9 @@ def create_users_data():
     print(first_name)
     last_name = fake.last_name()
     print(last_name)
-    random_digits = fake.numerify(text='#######')
+    random_digits = fake.numerify(text="#######")
     phonenumber = f"{555}{random_digits}"
     print(phonenumber)
     email = f"{first_name}.{last_name}{test_mail}"
     print(email)
     return [first_name, last_name, phonenumber, email]
-
-
-
-
-
-
