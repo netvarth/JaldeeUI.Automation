@@ -220,11 +220,7 @@ def test_followup_patient(login):
 def test_followup_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'tokens.gif')]//following::div[@class='my-1 "
-                                                  ""
-                                                  "font-small ng-star-inserted']"
-                                                  "//span[normalize-space(text("
-                                                  "))='Tokens']"))
+        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'tokens.gif')]//following::div[@class='my-1 font-small ng-star-inserted']//span[normalize-space(text())='Tokens']"))
     ).click()
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -426,9 +422,10 @@ def test_followup_create_patient(login):
     time.sleep(5)
     print("ViewDetails Button Clicked") 
      # # **** FollowUp *****
-    WebDriverWait(login, 10).until(
+    follow_up_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Follow Up']"))
-    ).click()
+    )
+    follow_up_button.click()
     time.sleep(3)
     today = datetime.now().date()
     tomorrow = today + timedelta(days=1)
@@ -451,26 +448,95 @@ def test_followup_create_patient(login):
 def test_history_followup(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'tokens.gif')]//following::div[@class='my-1 "
-                                                  ""
-                                                  "font-small ng-star-inserted']"
-                                                  "//span[normalize-space(text("
-                                                  "))='Tokens']"))
+        EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'tokens.gif')]//following::div[@class='my-1 font-small ng-star-inserted']//span[normalize-space(text())='Tokens']"))
     ).click()
     login.implicitly_wait(5)
     WebDriverWait(login, 20).until(
        EC.element_to_be_clickable((By.XPATH, "//span[@id='pr_id_7_label']//span[@class='ng-star-inserted']"))
     ).click()
     time.sleep(3)
-    WebDriverWait(login, 20).until(
+    # *******Navigate to history bookings************
+    history_button = WebDriverWait(login, 20).until(
        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='History']"))
+    )
+    history_button.click()
+    time.sleep(3)
+    # *****Open filter options and Enter booking ID and apply filter*******
+    filter_button = WebDriverWait(login, 20).until(
+       EC.element_to_be_clickable((By.XPATH, "//i[@class='pi pi-filter-fill']"))
+    )
+    filter_button.click()
+    time.sleep(3)
+    booking_id_option = WebDriverWait(login, 20).until(
+       EC.element_to_be_clickable((By.XPATH, "//span[contains(@class, 'p-accordion-header-text') and contains(text(), 'Booking Id')]"))
+    )
+    booking_id_option.click()
+    time.sleep(3)
+    booking_id_input = WebDriverWait(login, 20).until(
+       EC.element_to_be_clickable((By.XPATH, "//input[@id='checkinEncId']"))
+    )
+    booking_id_input.send_keys('c-33b98s2-k0')
+    time.sleep(3)
+    filter_apply_button = WebDriverWait(login, 20).until(
+       EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Apply']"))
+    )
+    filter_apply_button .click()
+    time.sleep(3)
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+
+    )
+    last_element_in_accordian.click()
+    login.execute_script("arguments[0].scrollIntoView(true);", last_element_in_accordian)
+    time.sleep(5)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Details']"))
+    ).click()
+    time.sleep(5)
+    print("ViewDetails Button Clicked") 
+     # # **** FollowUp for History Bookings *****
+    follow_up_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Follow Up']"))
+    )
+    follow_up_button .click()
+    time.sleep(3)
+    today = datetime.now().date()
+    tomorrow = today + timedelta(days=1)
+    tomorrow_str = tomorrow.strftime("%d")
+    xpath_tomorrow = f"//span[normalize-space()='{tomorrow_str}']"
+    date_tomorrow = login.find_element(By.XPATH, xpath_tomorrow)
+    date_tomorrow.click()
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Confirm']"))
+    ).click()
+    snack_bar = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    )
+    print("Snackbar Message :", snack_bar.text)
+    time.sleep(3)
+    WebDriverWait(login, 20).until(
+       EC.presence_of_element_located((By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
     ).click()
     time.sleep(3)
     WebDriverWait(login, 20).until(
        EC.element_to_be_clickable((By.XPATH, "//i[@class='pi pi-filter-fill']"))
     ).click()
     time.sleep(3)
+    filter_reset_button = WebDriverWait(login, 20).until(
+       EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Reset']"))
+    )
+    filter_reset_button.click()
+    time.sleep(3)
+    filter_close = WebDriverWait(login, 20).until(
+       EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-sidebar-close-icon'])"))
+    )
+    filter_close.click()
+    time.sleep(3)
+
     
+
 
 
     
