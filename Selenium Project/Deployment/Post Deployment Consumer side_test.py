@@ -21,7 +21,7 @@ def login():
 
 
 def test_booking(login):
-    time.sleep(3)
+    time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Book Now']")

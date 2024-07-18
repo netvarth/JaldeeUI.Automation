@@ -123,49 +123,53 @@ def test_walkin_appointment(login):
         print("Select Service : Naveen Consultation")
         time.sleep(3)
 
-        Today_Date = wait.until(
+        # Today_Date = wait.until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+        #         )
+        #     )
+        # )
+        # Today_Date.click()
+        # print("Today Date:", Today_Date.text)
+        # wait = WebDriverWait(login, 10)
+        # time_slot = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']"))
+        # )
+        # time_slot.click()
+        # print("Time Slot:", time_slot.text)
+
+        WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+                    "//button[@aria-label='Choose month and year']//span[@class='mdc-button__label']//*[name()='svg']",
                 )
             )
-        )
-        Today_Date.click()
-        print("Today Date:", Today_Date.text)
-        wait = WebDriverWait(login, 10)
-        time_slot = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']"))
-        )
-        time_slot.click()
-        print("Time Slot:", time_slot.text)
+        ).click()
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[@aria-label='Choose month and year']//span[@class='mdc-button__label']//*[name()='svg']"))
-        # ).click()
-
-        # [year, month, day] = add_days(180)
-        # print(month,year)
-        # year_xpath = f"//span[normalize-space()='{year}']"
-        # print(year_xpath)
-        # time.sleep(2)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, year_xpath))
-        # ).click()
-        # time.sleep(2)
-        # month_xpath = f"//span[normalize-space()='{month.upper()}']"
-        # print(month_xpath)
-        # WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, month_xpath))
-        #  ).click()
-        # time.sleep(2)
-        # day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
-        # print(day_xpath)
-        # time.sleep(3)
-        # WebDriverWait(login, 20).until(
-        #     EC.presence_of_element_located((By.XPATH, day_xpath))
-        # ).click()
+        [year, month, day] = add_days(180)
+        print(month, year)
+        year_xpath = f"//span[normalize-space()='{year}']"
+        print(year_xpath)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, year_xpath))
+        ).click()
+        time.sleep(2)
+        month_xpath = f"//span[normalize-space()='{month.upper()}']"
+        print(month_xpath)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, month_xpath))
+        ).click()
+        time.sleep(2)
+        day_xpath = f"//span[normalize-space()='{int(day)}' and not(contains(@class,'p-disabled'))]"
+        print(day_xpath)
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, day_xpath))
+        ).click()
 
         # time.sleep(3)
         # current_year = datetime.now().strftime("%Y")
@@ -188,24 +192,34 @@ def test_walkin_appointment(login):
         # month_xpath = f"//span[normalize-space()='{month}']"
         # print(month_xpath)
         # WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, month_xpath))
-        #  ).click()
+        #     EC.presence_of_element_located((By.XPATH, month_xpath))
+        # ).click()
         # time.sleep(2)
-        # day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
+        # day_xpath = (
+        #     f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
+        # )
         # print(day_xpath)
         # time.sleep(3)
         # WebDriverWait(login, 20).until(
         #     EC.presence_of_element_located((By.XPATH, day_xpath))
         # ).click()
 
-        # Today_Date = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH,
-        #                                                         "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
+        # Today_Date = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+        #         )
+        #     )
+        # )
         # Today_Date.click()
         # print("Today Date:", Today_Date.text)
-        # wait = WebDriverWait(login, 10)
-        # time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']")))
-        # time_slot.click()
-        # print("Time Slot:", time_slot.text)
+        wait = WebDriverWait(login, 10)
+        time_slot = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']"))
+        )
+        time_slot.click()
+        print("Time Slot:", time_slot.text)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))

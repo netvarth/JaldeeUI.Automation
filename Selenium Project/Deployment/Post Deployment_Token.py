@@ -181,7 +181,7 @@ def test_create_patient(login):
     login.find_element(By.XPATH, "//span[normalize-space()='Prescriptions']").click()
 
     for i in range(3):
-        login.find_element(By.XPATH, "//div[@class='add']").click()
+        login.find_element(By.XPATH, "//button[normalize-space()='+ Add Medicine']").click()
         login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
 
         before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
@@ -463,7 +463,7 @@ def test_create_patient(login):
     # ).click()
 
     # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Service/Item']"))
+    #     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
     # ).click()
     # time.sleep(2)
     # WebDriverWait(login, 10).until(

@@ -14,7 +14,7 @@ from allure_commons.types import AttachmentType
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Pre deployment testing")
+@allure.title("Pre deployment signup")
 def test_account_signup():
     login = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     login.get("https://scale.jaldee.com/business/")
@@ -255,13 +255,14 @@ def test_account_signup():
     login.find_element(By.XPATH, "//input[@id='qualifiedFrom']").send_keys(
         "MG University"
     )
+    time.sleep(4)
     login.find_element(By.XPATH, "//mat-label[normalize-space()='Month']").click()
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='June']"))
     ).click()
 
     login.find_element(By.XPATH, "//mat-label[normalize-space()='Year']").click()
-
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable(
             (
@@ -320,7 +321,9 @@ def test_account_signup():
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Location']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Location']")
+        )
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -345,6 +348,8 @@ def test_account_signup():
             EC.presence_of_all_elements_located((By.XPATH, "//div[@class='pac-item']"))
         )
 
+        time.sleep(3)
+
         # Iterate through the suggestions and select the one that matches "Thrissur, Kerala, India"
         for suggestion in suggestions:
             if "Thrissur, Kerala, India" in suggestion.text:
@@ -354,12 +359,15 @@ def test_account_signup():
     finally:
         print("Loaction : Thrissur, Kerala, India")
 
+    time.sleep(2)
     login.find_element(
         By.XPATH, "//button[@type='button']//span[@class='mdc-button__label']"
     ).click()
-    login.find_element(
-        By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"
-    ).click()
+    time.sleep(2)
+    login.find_element(By.XPATH, "//span[@class='mdc-button__label']").click()
+    # login.find_element(
+    #     By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"
+    # ).click()
 
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -367,8 +375,6 @@ def test_account_signup():
             (By.XPATH, "//span[normalize-space()='Specializations']")
         )
     ).click()
-
-    
 
     specializations_list = ["Cardiology", "Ophthalmology", "Neurology"]
 
@@ -402,14 +408,14 @@ def test_account_signup():
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    time.sleep(10)
-    WebDriverWait(login, 20).until(
+    time.sleep(5)
+    WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[@class='edit-txt custId-cursor']")
         )
     ).click()
 
-    time.sleep(1)
+    time.sleep(3)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -417,10 +423,10 @@ def test_account_signup():
         )
     ).click()
 
-    time.sleep(1)
+    time.sleep(6)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]]")
+            (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]")
         )
     ).click()
 
@@ -436,6 +442,8 @@ def test_account_signup():
             (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
         )
     ).click()
+
+    time.sleep(3)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -1081,7 +1089,9 @@ def test_walkin_appointment(login):
         ).click()
 
         for i in range(5):
-            login.find_element(By.XPATH, "//div[@class='add']").click()
+            login.find_element(
+                By.XPATH, "//button[normalize-space()='+ Add Medicine']"
+            ).click()
             login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
                 "Medicine"
             )
@@ -1426,7 +1436,9 @@ def test_walkin_appointment(login):
         ).click()
 
         for i in range(5):
-            login.find_element(By.XPATH, "//div[@class='add']").click()
+            login.find_element(
+                By.XPATH, "//button[normalize-space()='+ Add Medicine']"
+            ).click()
             login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
                 "Medicine"
             )
@@ -1512,7 +1524,7 @@ def test_walkin_appointment(login):
         ).send_keys("case sharing testing")
 
         login.find_element(By.XPATH, "//span[contains(text(),'Email')]").click()
-        login.find_element(By.XPATH, "//span[contains(text(),'Whatsapp')]").click()
+        # login.find_element(By.XPATH, "//span[contains(text(),'Whatsapp')]").click()
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
