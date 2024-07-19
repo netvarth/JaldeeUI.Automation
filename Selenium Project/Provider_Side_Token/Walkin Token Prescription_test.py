@@ -2,11 +2,430 @@ from Framework.common_utils import *
 from Framework.common_dates_utils import *
 from selenium.common import TimeoutException
 
+
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_patient_MR(login):
-    time.sleep(5)
-    WebDriverWait(login,20).until(
-        EC.presence_of_all_elements_located((By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
-    )
-    ).click()
-    time.sleep(3)
+def test_patient_MR_Sharing(login):
+    try:
+        time.sleep(5)
+        WebDriverWait(login,20).until(
+            EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
+        )
+        ).click()
+        time.sleep(3)
+        patientsearch =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
+        )
+        patientsearch.send_keys('5553310348')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 153']"))
+        ).click()
+        time.sleep(3)
+        prescription = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Prescriptions']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", prescription)
+        prescription.click()
+        time.sleep(3)
+        addmedicine = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
+            )
+        addmedicine.click()
+        time.sleep(1)
+        medicinename = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[@class= 'p-element medicine-name p-editable-column p-cell-editing']//input[@type='text']"))
+            )
+        medicinename.send_keys('p')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'paracetamol')]"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[@class='p-element first-cell p-editable-column']"))
+            ).click()
+        time.sleep(1)
+        dose = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][2]//input[@type='text']"))
+            )
+        dose.send_keys('650 mg')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[3]"))
+            ).click()
+        time.sleep(1)
+        frequency = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][3]//input[@type='text']"))
+            )
+        frequency.send_keys('Once daily')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[4]"))
+            ).click()
+        time.sleep(1)
+        duration = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][4]//input[@type='text']"))
+            )
+        duration.send_keys('2 weeks')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[5]"))
+            ).click()
+        time.sleep(1)
+        pre_notes = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][5]//input[@type='text']"))
+            )
+        pre_notes.send_keys('Take with food')
+        time.sleep(3)
+        Notesif_any = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']"))
+            )
+        Notesif_any.send_keys('Please schedule a follow-up consultation after two weeks if the condition does not improve.')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Share']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter message description']"))
+            ).send_keys('Sharing Prescription')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Email']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Whatsapp']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[@type='button'][normalize-space()='Share']"))
+            ).click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e  
+       
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_patient_MR_Sharing_Others(login):
+    try:
+        time.sleep(5)
+        WebDriverWait(login,20).until(
+            EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
+        )
+        ).click()
+        time.sleep(3)
+        patientsearch =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
+        )
+        patientsearch.send_keys('5553310348')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 153']"))
+        ).click()
+        time.sleep(3)
+        prescription = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Prescriptions']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", prescription)
+        prescription.click()
+        time.sleep(3)
+        addmedicine = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
+            )
+        addmedicine.click()
+        time.sleep(1)
+        medicinename = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[@class= 'p-element medicine-name p-editable-column p-cell-editing']//input[@type='text']"))
+            )
+        medicinename.send_keys('p')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'paracetamol')]"))
+            ).click()
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[@class='p-element first-cell p-editable-column']"))
+            ).click()
+        time.sleep(1)
+        dose = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][2]//input[@type='text']"))
+            )
+        dose.send_keys('650 mg')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[3]"))
+            ).click()
+        time.sleep(1)
+        frequency = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][3]//input[@type='text']"))
+            )
+        frequency.send_keys('Once daily')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[4]"))
+            ).click()
+        time.sleep(1)
+        duration = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][4]//input[@type='text']"))
+            )
+        duration.send_keys('2 weeks')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[5]"))
+            ).click()
+        time.sleep(1)
+        pre_notes = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][5]//input[@type='text']"))
+            )
+        pre_notes.send_keys('Take with food')
+        time.sleep(1)
+        Notesif_any = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']"))
+            )
+        Notesif_any.send_keys('Please schedule a follow-up consultation after two weeks if the condition does not improve.')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Share']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//mat-select[@placeholder = 'Share with whom']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Others']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter message description']"))
+            ).send_keys('Sharing Prescription')
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Email']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//input[@id='thirdpartyemail']"))
+            ).send_keys('priya.test@jaldee.com')
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Whatsapp']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//input[@id='mobile_number']"))
+            ).send_keys('5550001536')
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[@type='button'][normalize-space()='Share']"))
+            ).click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_patient_Upload_MR_Sharing(login):
+    try:
+        time.sleep(5)
+        WebDriverWait(login,20).until(
+            EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
+        )
+        ).click()
+        time.sleep(3)
+        patientsearch =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
+        )
+        patientsearch.send_keys('5552826546')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 155']"))
+        ).click()
+        time.sleep(3)
+        prescription = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Prescriptions']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", prescription)
+        prescription.click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload Prescription']"))
+        ).click()
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//a[normalize-space()='Upload']"))
+        ).click()
+        time.sleep(8)
+        current_working_directory = os.getcwd()
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\prescription.pdf")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        time.sleep(3)
+        
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Share']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter message description']"))
+            ).send_keys('Sharing Prescription')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Email']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Whatsapp']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[@type='button'][normalize-space()='Share']"))
+            ).click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_patient_Upload_MR_Sharing_others(login):
+    try:
+        time.sleep(5)
+        WebDriverWait(login,20).until(
+            EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
+        )
+        ).click()
+        time.sleep(3)
+        patientsearch =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
+        )
+        patientsearch.send_keys('5552826546')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 155']"))
+        ).click()
+        time.sleep(3)
+        prescription = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Prescriptions']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", prescription)
+        prescription.click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload Prescription']"))
+        ).click()
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//a[normalize-space()='Upload']"))
+        ).click()
+        time.sleep(8)
+        current_working_directory = os.getcwd()
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\prescription.pdf")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Share']"))
+            ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//mat-select[@placeholder = 'Share with whom']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Others']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter message description']"))
+            ).send_keys('Sharing Prescription')
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Email']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//input[@id='thirdpartyemail']"))
+            ).send_keys('priya.test@jaldee.com')
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Whatsapp']"))
+            ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//input[@id='mobile_number']"))
+            ).send_keys('5550001536')
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[@type='button'][normalize-space()='Share']"))
+            ).click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+
+  

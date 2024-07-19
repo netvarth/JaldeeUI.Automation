@@ -47,7 +47,7 @@ def login(url):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument("--ignore-ssl-errors=yes")
     chrome_options.add_argument("--ignore-certificate-errors")
-
+    chrome_options.add_argument("--lang=en-US")
     driver = webdriver.Chrome(
         service=ChromeService(ChromeDriverManager().install()), options=chrome_options
     )
