@@ -650,14 +650,55 @@ def test_Prescription_2(login):
         time.sleep(5)
         print("prescription created successfully")
 
-        login.find_element(By.XPATH, "//img[@alt='share']").click()
-        
-        time.sleep(2)
-        login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
-            "prescription message")
 
-        login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
-        login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Print']"))
+        ).click()
+
+        time.sleep(2)
+        # Wait until the shadow host element is present
+        shadow_host = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "#shadow-host"))
+        )
+
+        # Execute JavaScript to access the shadow root
+        shadow_root = login.execute_script('return arguments[0].shadowRoot', shadow_host)
+
+        # Locate the button inside the shadow root
+        print_button = shadow_root.find_element(By.CSS_SELECTOR, "cr-button.action-button")
+
+        # Click the button
+        print_button.click()
+
+        time.sleep(4)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        print("Successfully upload the file")
+
+
+
+        # login.find_element(By.XPATH, "//img[@alt='share']").click()
+        
+        # time.sleep(2)
+        # login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
+        #     "prescription message")
+
+        # login.find_element(By.XPATH, "//span[normalize-space()='Email']").click()
+        # login.find_element(By.XPATH, "//div[@class='coupon-outer']").click()
+
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Share']"))
+        # ).click()
+
 
 
     except Exception as e:
@@ -670,7 +711,9 @@ def test_Prescription_2(login):
 
 
 
-#######################################
+##############################################################################################################################################
+
+
 
 
 

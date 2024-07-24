@@ -58,11 +58,11 @@ def login(url):
 
     # 5550005540  Netvarth123  5555556030  Jaldee01
 
-    driver.find_element(By.ID, "loginId").send_keys("5555523479")
-    driver.find_element(By.ID, "password").send_keys("Jaldee123")
+    # driver.find_element(By.ID, "loginId").send_keys("5555523479")
+    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
 
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)
