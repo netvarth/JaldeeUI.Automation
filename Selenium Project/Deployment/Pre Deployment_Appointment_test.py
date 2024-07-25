@@ -11,12 +11,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 import allure
 from allure_commons.types import AttachmentType
-
+import selenium
+print(selenium.__version__)
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
 def test_account_signup():
-    login = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    login = webdriver.Chrome(
+        service=ChromeService(
+             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
     login.get("https://scale.jaldee.com/business/")
     login.maximize_window()
 

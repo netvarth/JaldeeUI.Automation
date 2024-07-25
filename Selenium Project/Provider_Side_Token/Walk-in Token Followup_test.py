@@ -1183,7 +1183,7 @@ def test_followup_patient_previousdays(login):
     time.sleep(3)
 
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_followup_patient_previousdays(login):
+def test_followup_patient_nextmonth(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
