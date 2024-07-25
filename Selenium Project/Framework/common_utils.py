@@ -44,14 +44,20 @@ def create_user_data():
 
 @pytest.fixture()
 def login(url):
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--ignore-ssl-errors=yes")
-    chrome_options.add_argument("--ignore-certificate-errors")
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument("--ignore-ssl-errors=yes")
+    # chrome_options.add_argument("--ignore-certificate-errors")
+
+    # driver = webdriver.Chrome(
+    #     service=ChromeService(ChromeDriverManager().install()), options=chrome_options
+    # )
 
     driver = webdriver.Chrome(
-        service=ChromeService(ChromeDriverManager().install()), options=chrome_options
+        service=ChromeService(
+            # executable_path=r"D:\ChromeDriver\chromedriver-win64\chromedriver.exe"
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
     )
-    # driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
