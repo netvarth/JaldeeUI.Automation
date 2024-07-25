@@ -11,12 +11,17 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 import allure
 from allure_commons.types import AttachmentType
-
+import selenium
+print(selenium.__version__)
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
 def test_account_signup():
-    login = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    login = webdriver.Chrome(
+        service=ChromeService(
+             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
     login.get("https://scale.jaldee.com/business/")
     login.maximize_window()
 
@@ -466,28 +471,41 @@ def test_account_signup():
         )
     ).click()
 
-    WebDriverWait(login, 10).until(
+    HH = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
                 By.XPATH,
-                "//ngb-timepicker[@class='ng-valid ng-touched ng-dirty']//input[@placeholder='HH']",
+                "(//input[@placeholder='HH'])[2]",
             )
         )
-    ).send_keys("11")
+    )
+    HH.clear()
+    HH.send_keys("11")
 
-    WebDriverWait(login, 10).until(
+    MM = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
                 By.XPATH,
-                "//ngb-timepicker[@class='ng-pristine ng-valid ng-touched']//input[@placeholder='MM']",
+                "(//input[@placeholder='MM'])[2]",
             )
         )
-    ).send_keys("55")
+    )
+    MM.clear()
+    MM.send_keys("55")
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='ENT']"))
-    ).click()
+    time.sleep(2)
+    select_btn = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//label[normalize-space()='Consultation']",
+            )
+        )
+    )
 
+    login.execute_script("arguments[0].click();", select_btn)
+
+    time.sleep(1)
     title = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
@@ -496,18 +514,25 @@ def test_account_signup():
             )
         )
     )
-
-    title.click()
-    title.send_keys("Test Schedule")
+    login.execute_script("arguments[0].click();", title)
+    title_input = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@formcontrolname='qname']"))
+    )
+    title_input.send_keys("Test Schedule")
 
     time_slot = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//label[normalize-space()='Time Slot Duration (min) *']")
         )
     )
+    login.execute_script("arguments[0].click();", time_slot)
 
-    time_slot.click()
-    time_slot.send_keys("10")
+    time_slot_input = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@formcontrolname='timeSlot']")
+        )
+    )
+    time_slot_input.send_keys("10")
 
     time.sleep(2)
 
@@ -536,26 +561,31 @@ def test_account_signup():
             (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
         )
     ).click()
-
     time.sleep(2)
-
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
         )
     ).click()
 
+    time.sleep(2)
+
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[2]//div[1]//div[2]//ul[1]//li[3]//a[1]//p[1]")
+            (
+                By.XPATH,
+                "//body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-settings[1]/section[1]/app-old-settings[1]/section[1]/div[1]/div[1]/div[3]/div[1]/div[2]/ul[1]/li[1]/a[1]/p[1]",
+            )
         )
     ).click()
 
-    time.sleep(1)
+    time.sleep(3)
 
-    WebDriverWait(login, 10).until(
+    mdc_switch = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__ripple']"))
-    ).click()
+    )
+
+    login.execute_script("arguments[0].click();", mdc_switch)
 
     login.find_element(
         By.XPATH, "//label[normalize-space()='Allow online appointments for today']"
@@ -619,57 +649,57 @@ def test_account_signup():
     print("value written to file", phonenumber)
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
     login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
-    login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
+    # login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
     login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
     login.find_element(
         By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
     ).send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
-    login.implicitly_wait(3)
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
-    ).click()
+    # WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
+    # ).click()
 
-    login.implicitly_wait(5)
-    login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
-    print("location : Chavakkad")
-    login.implicitly_wait(5)
+    # login.implicitly_wait(5)
+    # login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
+    # print("location : Chavakkad")
+    # login.implicitly_wait(5)
 
-    login.find_element(
-        By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
-    ).click()
-    login.implicitly_wait(5)
-    login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
-    print("Department : ENT")
-    user_dropdown_xpath = (
-        "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-        "ng-dirty'])[1]"
-    )
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))
-    ).click()
-    user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, user_option_xpath))
-    ).click()
-    print("Select user : Naveen")
+    # login.find_element(
+    #     By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
+    # ).click()
+    # login.implicitly_wait(5)
+    # login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
+    # print("Department : ENT")
+    # user_dropdown_xpath = (
+    #     "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
+    #     "ng-dirty'])[1]"
+    # )
+    # WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))
+    # ).click()
+    # user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
+    # WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.XPATH, user_option_xpath))
+    # ).click()
+    # print("Select user : Naveen")
 
-    service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    element = login.find_element(By.XPATH, service_dropdown_xpath)
-    login.execute_script("arguments[0].scrollIntoView();", element)
-    element.click()
+    # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+    # element = login.find_element(By.XPATH, service_dropdown_xpath)
+    # login.execute_script("arguments[0].scrollIntoView();", element)
+    # element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, service_option_xpath))
-    ).click()
-    print("Select Service : Naveen Consultation")
-    time.sleep(3)
-    Today_Date = wait.until(
+    # service_option_xpath = (
+    #     "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
+    #     "Consultation'])[2]"
+    # )
+    # WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.XPATH, service_option_xpath))
+    # ).click()
+    # print("Select Service : Naveen Consultation")
+    # time.sleep(3)
+    time.sleep(5)
+    Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
                 By.XPATH,
@@ -677,48 +707,16 @@ def test_account_signup():
             )
         )
     )
-    Today_Date.click()
+    login.execute_script("arguments[0].click();", Today_Date)
+   
     print("Today Date:", Today_Date.text)
-    wait = WebDriverWait(login, 10)
-    time_slot = wait.until(
+
+    time_slot = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']"))
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
-    ).click()
-
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
-        "Note for the walkin appointment"
-    )
-
-    WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))
-    ).click()
-    print("Note added for walkin appointment")
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Upload File']")
-        )
-    ).click()
-
-    time.sleep(4)
-    # Get the current working directory
-    current_working_directory = os.getcwd()
-
-    # Construct the absolute path
-    absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
-    )
-    pyautogui.write(absolute_path)
-    pyautogui.press("enter")
-    print("Successfully upload the file")
-
-    time.sleep(6)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
     ).click()

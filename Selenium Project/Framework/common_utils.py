@@ -44,26 +44,32 @@ def create_user_data():
 
 @pytest.fixture()
 def login(url):
-    chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_argument("--ignore-ssl-errors=yes")
-    chrome_options.add_argument("--ignore-certificate-errors")
-    chrome_options.add_argument("--lang=en-US")
-    
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument("--ignore-ssl-errors=yes")
+    # chrome_options.add_argument("--ignore-certificate-errors")
+    # chrome_options.add_argument("--lang=en-US")
+
+    # driver = webdriver.Chrome(
+    #     service=ChromeService(ChromeDriverManager().install()), options=chrome_options
+    # )
+
     driver = webdriver.Chrome(
-        service=ChromeService(ChromeDriverManager().install()), options=chrome_options
+        service=ChromeService(
+            # executable_path=r"D:\ChromeDriver\chromedriver-win64\chromedriver.exe"
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
     )
-    # driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
 
     # 5550005540  Netvarth123  5555556030  Jaldee01
 
-    driver.find_element(By.ID, "loginId").send_keys("5555523479")
-    driver.find_element(By.ID, "password").send_keys("Jaldee123")
+    # driver.find_element(By.ID, "loginId").send_keys("5555523479")
+    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
 
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)

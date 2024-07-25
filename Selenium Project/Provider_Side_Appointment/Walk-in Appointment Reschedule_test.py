@@ -204,11 +204,16 @@ def test_appt_reschedule(login):
 
         today_date = datetime.now()
         print(today_date.day)
-        today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
-            today_date.day
-        )
+        # today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(today_date.day)
+        # print(today_xpath_expression)
+        # today_xpath_expression.click()
+
+        today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(today_date.day)
         print(today_xpath_expression)
-        today_xpath_expression.click()
+        today_date_element = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, today_xpath_expression))
+        )
+        today_date_element.click()
 
         wait = WebDriverWait(login, 10)
         time_slot = wait.until(
@@ -526,6 +531,8 @@ def con_login():
     driver.get("https://scale.jaldee.com/visionhospital/")
     driver.maximize_window()
     yield driver
+
+
 
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -1047,14 +1054,14 @@ def test_prepaymentbooking_reschedule(con_login):
                 )
             )
         ).click()
-        time.sleep(2)
+        time.sleep(4)
         Today_Date = WebDriverWait(con_login, 10).until(
-            EC.element_to_be_clickable(
+            EC.presence_of_element_located(
                 (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
             )
         )
 
-        Today_Date.click()
+        con_login.execute_script("arguments[0].click();", Today_Date)
 
         print("Today Date:", Today_Date.text)
 
@@ -1145,16 +1152,40 @@ def test_prepaymentbooking_reschedule(con_login):
             )
         ).click()
 
+        # Handle the popup window
+        # Save the current window handle
+        main_window_handle = con_login.current_window_handle
+
+        # Wait until the new window is present
+        WebDriverWait(con_login, 10).until(EC.new_window_is_opened)
+
+        # Get all window handles
+        all_window_handles = con_login.window_handles
+
+        # Find the new window handle (the popup window)
+        new_window_handle = None
+        for handle in all_window_handles:
+            if handle != main_window_handle:
+                new_window_handle = handle
+                break
+
+        # Switch to the new window
+        con_login.switch_to.window(new_window_handle)
+
+        # Now interact with elements in the new window
+        # For example, clicking the success button
         time.sleep(3)
         WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Successful')]")
-            )
+            EC.presence_of_element_located((By.XPATH, "//button[@class='btn btnd']"))
         ).click()
 
-        try:
+        # Optionally, switch back to the main window
 
-            snack_bar = WebDriverWait(login, 10).until(
+        con_login.switch_to.window(main_window_handle)
+        # time.sleep(15)
+
+        try:
+            snack_bar = WebDriverWait(con_login, 10).until(
                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
             )
             message = snack_bar.text
@@ -1162,31 +1193,31 @@ def test_prepaymentbooking_reschedule(con_login):
 
         except:
 
-            snack_bar = WebDriverWait(login, 10).until(
+            snack_bar = WebDriverWait(con_login, 10).until(
                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
             )
             message = snack_bar.text
             print("Snack bar message:", message)
 
         time.sleep(3)
-        confirm_button = WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Confirm')]")
-            )
-        )
-        con_login.execute_script("arguments[0].click();", confirm_button)
-        time.sleep(3)
+        # confirm_button = WebDriverWait(con_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[contains(text(),'Confirm')]")
+        #     )
+        # )
+        # con_login.execute_script("arguments[0].click();", confirm_button)
+        # time.sleep(3)
 
         ok_button = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(),'Ok')]")
+                (By.XPATH, "//button[normalize-space()='Ok']")
             )
         )
 
         con_login.execute_script("arguments[0].click();", ok_button)
 
-        time.sleep(5)
-        con_login.quit()
+        time.sleep(3)
+        # con_login.quit()
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params

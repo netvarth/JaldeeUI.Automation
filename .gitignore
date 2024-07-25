@@ -81,6 +81,21 @@ Selenium Project/Consumer_Side_Appointment/__pycache__/Consumer Side Appointment
 Selenium Project/Deployment/__pycache__/*
 Selenium Project/Inventory/__pycache__/*
 Selenium Project/Provider_Side_Token/WalkinTokenFollowup_test.py/__pycache__/History Followup_test.cpython-312-pytest-8.1.0.pyc
+Selenium Project/Provider_Side_Appointment/__pycache__/Walk-in Appointment Reschedule_test.cpython-312-pytest-8.1.0.pyc.15064
+Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Manual Invoice_test.cpython-312-pytest-8.1.0.pyc.1092
+Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Manual Invoice_test.cpython-312-pytest-8.1.0.pyc.1360
+Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Manual Invoice_test.cpython-312-pytest-8.1.0.pyc.8280
+Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Manual Invoice_test.cpython-312-pytest-8.1.0.pyc.9176
+Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Manual Invoice_test.cpython-312-pytest-8.1.0.pyc.10076
+Selenium Project/Provider_Side_Appointment/__pycache__/Walkin Appointment Manual Invoice_test.cpython-312-pytest-8.1.0.pyc.10636
+allure-results/2fb633e4-aafd-452c-8643-ea29b42c6b57-container.json
+allure-results/25294d38-d80b-4161-934a-45068f5e01c5-attachment.txt
+allure-results/a024f2f6-808c-4d7d-9bb0-a1fdd7e37b8f-container.json
+allure-results/a284d7df-c0b1-48a8-abdf-6793d01c17b7-container.json
+allure-results/fcd75a40-d711-4ee8-b754-88d77ad8c0d7-result.json
+allure-results/3fca1607-b370-4c54-9086-f27c3cb65be6-container.json
+allure-results/28f9bdd8-98c5-4693-b4da-e2d7a9b0bae6-result.json
+allure-results/*
 venv/Lib/site-packages/__pycache__/allure.cpython-312.pyc
 venv/Lib/site-packages/__pycache__/py.cpython-312.pyc
 venv/Lib/site-packages/__pycache__/six.cpython-312.pyc
