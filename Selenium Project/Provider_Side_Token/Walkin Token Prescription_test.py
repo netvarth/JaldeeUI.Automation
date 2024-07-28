@@ -6,7 +6,7 @@ from pywinauto import Desktop , Application # type: ignore
 
 
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_patient_MR_Sharing(login):
+def test_patient_MR_Sharing(login, ):
     try:
         time.sleep(5)
         WebDriverWait(login,20).until(
@@ -441,10 +441,10 @@ def test_patient_MR_Print(login):
         patientsearch =WebDriverWait(login,10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
         )
-        patientsearch.send_keys('5556328484')
+        patientsearch.send_keys('5558615251')
         time.sleep(3)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 151']"))
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 149']"))
         ).click()
         time.sleep(3)
         prescription = WebDriverWait(login, 10).until(
@@ -458,51 +458,51 @@ def test_patient_MR_Print(login):
             )
         addmedicine.click()
         time.sleep(1)
-        # medicinename = WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//td[@class= 'p-element medicine-name p-editable-column p-cell-editing']//input[@type='text']"))
-        #     )
-        # medicinename.send_keys('p')
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'paracetamol')]"))
-        #     ).click()
-        # time.sleep(2)
-        # WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//td[@class='p-element first-cell p-editable-column']"))
-        #     ).click()
-        # time.sleep(1)
-        # dose = WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][2]//input[@type='text']"))
-        #     )
-        # dose.send_keys('650 mg')
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[3]"))
-        #     ).click()
-        # time.sleep(1)
-        # frequency = WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][3]//input[@type='text']"))
-        #     )
-        # frequency.send_keys('Once daily')
-        # time.sleep(1)
-        # WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[4]"))
-        #     ).click()
-        # time.sleep(1)
-        # duration = WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][4]//input[@type='text']"))
-        #     )
-        # duration.send_keys('2 weeks')
-        # time.sleep(1)
-        # WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[5]"))
-        #     ).click()
-        # time.sleep(1)
-        # pre_notes = WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][5]//input[@type='text']"))
-        #     )
-        # pre_notes.send_keys('Take with food')
-        # time.sleep(3)
+        medicinename = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[@class= 'p-element medicine-name p-editable-column p-cell-editing']//input[@type='text']"))
+            )
+        medicinename.send_keys('p')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'paracetamol')]"))
+            ).click()
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[@class='p-element first-cell p-editable-column']"))
+            ).click()
+        time.sleep(1)
+        dose = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][2]//input[@type='text']"))
+            )
+        dose.send_keys('650 mg')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[3]"))
+            ).click()
+        time.sleep(1)
+        frequency = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][3]//input[@type='text']"))
+            )
+        frequency.send_keys('Once daily')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[4]"))
+            ).click()
+        time.sleep(1)
+        duration = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][4]//input[@type='text']"))
+            )
+        duration.send_keys('2 weeks')
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[5]"))
+            ).click()
+        time.sleep(1)
+        pre_notes = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][5]//input[@type='text']"))
+            )
+        pre_notes.send_keys('Take with food')
+        time.sleep(1)
         Notesif_any = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']"))
             )
@@ -542,23 +542,19 @@ def test_patient_MR_Print(login):
                 .querySelector('cr-button.action-button').click();
                 """
             login.execute_script(save_button_script)
-            login.switch_to.window(login.window_handles[-1])
-            
-            # generated_uuid = uuid.uuid4()
-            # filename = str(generated_uuid)
-            # print(filename)
-            # pyautogui.write(filename)
-            # pyautogui.press('enter')
-            # login.switch_to.window(login.window_handles[0])
-            # dlg = Desktop(backend="uia").window(title='Save As')
-            # edit_control = dlg.child_window(title="File name:", control_type="Edit")
+            time.sleep(3)
+            pyautogui.click()
             # current_working_directory = os.getcwd()
-            # absolute_path = os.path.abspath(
+            # print(f"Current working directory: {current_working_directory}")
+            # download_dir  = os.path.abspath(
             #        os.path.join(current_working_directory, r'Extras')
-            #    )
-            # edit_control.type_keys(absolute_path)
-            # save_button = dlg.child_window(title="Save", control_type="Button")
-            # save_button.click_input()
+            #   )
+            # print(f"Download directory: {download_dir}")
+            # pyautogui.typewrite(download_dir)
+            time.sleep(3)
+            pyautogui.press('enter')
+            time.sleep(3)
+            login.switch_to.window(login.window_handles[0])
         except JavascriptException as e:
             print('element not found')
     except Exception as e:
