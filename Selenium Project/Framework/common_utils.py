@@ -23,6 +23,7 @@ localhost_url = "https://localhost:4200/business/"
 test_scale_url = "https://test.jaldee.com/business/"
 test_mail = ".test@jaldee.com"
 consumer_url = "https://scale.jaldee.com/visionhospital/"
+test_consumer_url = "https://test.jaldee.com/53b6eu1/"
 
 
 def create_user_data():
@@ -63,10 +64,9 @@ def login(url):
     driver.maximize_window()
     time.sleep(5)
 
-    # 5550005540  Netvarth123  5555556030  Jaldee01
-
-    # driver.find_element(By.ID, "loginId").send_keys("5555523479")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
+    # 5550005540  Netvarth123  5555556030 Jaldee01
+    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    # driver.find_element(By.ID, "password").send_keys("Netvarth123")
 
     driver.find_element(By.ID, "loginId").send_keys("5555556030")
     driver.find_element(By.ID, "password").send_keys("Jaldee01")
@@ -77,6 +77,19 @@ def login(url):
     yield driver
     driver.close()
     driver.quit()
+
+
+@pytest.fixture()
+def con_login(url):
+
+    driver = webdriver.Chrome(
+        service=ChromeService(
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
+    driver.get(url)
+    driver.maximize_window()
+    yield driver
 
 
 def generate_random_salutation():
