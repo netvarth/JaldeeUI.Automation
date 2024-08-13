@@ -11,15 +11,14 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 import allure
 from allure_commons.types import AttachmentType
-import selenium
-print(selenium.__version__)
+
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
 def test_account_signup():
     login = webdriver.Chrome(
         service=ChromeService(
-             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
     login.get("https://scale.jaldee.com/business/")
@@ -656,49 +655,9 @@ def test_account_signup():
     ).send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
-    # WebDriverWait(login, 10).until(
-    #     EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
-    # ).click()
 
-    # login.implicitly_wait(5)
-    # login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
-    # print("location : Chavakkad")
-    # login.implicitly_wait(5)
-
-    # login.find_element(
-    #     By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
-    # ).click()
-    # login.implicitly_wait(5)
-    # login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
-    # print("Department : ENT")
-    # user_dropdown_xpath = (
-    #     "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-    #     "ng-dirty'])[1]"
-    # )
-    # WebDriverWait(login, 10).until(
-    #     EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))
-    # ).click()
-    # user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
-    # WebDriverWait(login, 10).until(
-    #     EC.element_to_be_clickable((By.XPATH, user_option_xpath))
-    # ).click()
-    # print("Select user : Naveen")
-
-    # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    # element = login.find_element(By.XPATH, service_dropdown_xpath)
-    # login.execute_script("arguments[0].scrollIntoView();", element)
-    # element.click()
-
-    # service_option_xpath = (
-    #     "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-    #     "Consultation'])[2]"
-    # )
-    # WebDriverWait(login, 10).until(
-    #     EC.element_to_be_clickable((By.XPATH, service_option_xpath))
-    # ).click()
-    # print("Select Service : Naveen Consultation")
-    # time.sleep(3)
     time.sleep(5)
+
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
@@ -708,7 +667,7 @@ def test_account_signup():
         )
     )
     login.execute_script("arguments[0].click();", Today_Date)
-   
+
     print("Today Date:", Today_Date.text)
 
     time_slot = WebDriverWait(login, 10).until(
@@ -770,37 +729,51 @@ def test_walkin_appointment(login):
         )
         element.click()
         time.sleep(3)
-        wait = WebDriverWait(login, 10)
-        element_appoint = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//b[normalize-space()='Create New Patient']")
-            )
-        )
-        element_appoint.click()
-        login.implicitly_wait(3)
-        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-        # File path
-        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
 
-        # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
-        print("value to be written to file", phonenumber)
-        with open(file_path, "w") as file:
-            # Write the value to the file
-            file.write(phonenumber)
-        print("value written to file", phonenumber)
-        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
-            str(first_name)
-        )
-        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(
-            str(last_name)
-        )
-        login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
-        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
-        login.find_element(
-            By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
-        ).send_keys(phonenumber)
-        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-        login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
+            )
+        ).send_keys("9207206005")
+        time.sleep(2)
+        login.implicitly_wait(5)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Id : 2']")
+            )
+        ).click()
+
+        # wait = WebDriverWait(login, 10)
+        # element_appoint = wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//b[normalize-space()='Create New Patient']")
+        #     )
+        # )
+        # element_appoint.click()
+        # login.implicitly_wait(3)
+        # first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+        # # File path
+        # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
+
+        # # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
+        # print("value to be written to file", phonenumber)
+        # with open(file_path, "w") as file:
+        #     # Write the value to the file
+        #     file.write(phonenumber)
+        # print("value written to file", phonenumber)
+        # login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
+        #     str(first_name)
+        # )
+        # login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(
+        #     str(last_name)
+        # )
+        # login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
+        # login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        # login.find_element(
+        #     By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
+        # ).send_keys(phonenumber)
+        # login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        # login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
         login.implicitly_wait(3)
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable(
@@ -846,7 +819,7 @@ def test_walkin_appointment(login):
         ).click()
         print("Select Service : Naveen Consultation")
         time.sleep(3)
-        Today_Date = wait.until(
+        Today_Date = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
@@ -1175,6 +1148,7 @@ def test_walkin_appointment(login):
         login.find_element(
             By.XPATH, "(//input[@class='mdc-checkbox__native-control'])[1]"
         ).click()
+        login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
         login.find_element(
             By.XPATH, "//button[@type='button'][normalize-space()='Share']"
         ).click()
@@ -1199,6 +1173,7 @@ def test_walkin_appointment(login):
             )
         ).click()
 
+        login.implicitly_wait(5)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='+ Create Case']")
@@ -1522,7 +1497,7 @@ def test_walkin_appointment(login):
         ).send_keys("case sharing testing")
 
         login.find_element(By.XPATH, "//span[contains(text(),'Email')]").click()
-        # login.find_element(By.XPATH, "//span[contains(text(),'Whatsapp')]").click()
+        login.find_element(By.XPATH, "//span[contains(text(),'Whatsapp')]").click()
 
         time.sleep(3)
         WebDriverWait(login, 10).until(

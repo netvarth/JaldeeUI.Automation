@@ -167,6 +167,33 @@ def test_appt_autoinvoice(login):
 
     time.sleep(5)
 
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Pay by Cash']"))
+    ).click()
+
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    time.sleep(5)
+
 
 # Apply the discount in the Invoice and Share the payment link
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])

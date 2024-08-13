@@ -9,53 +9,55 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.action_chains import ActionChains
 import os
 
 
 @pytest.fixture()
 def login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(
+        service=ChromeService(
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
     driver.get("https://www.jaldee.com/royalclinic/")
     driver.maximize_window()
     yield driver
 
 
 def test_booking(login):
+
     time.sleep(5)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Book Now']")
-        )
-    ).click()
+    # bookbutton = WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
+    # )
+    # bookbutton.click()
+    element = login.find_element(By.XPATH, "//span[normalize-space()='Book Now']")
+    login.execute_script("arguments[0].scrollIntoView();", element)
 
-    # wait = WebDriverWait(login, 10)
-    # location_button = wait.until(EC.presence_of_element_located(
-    #     (By.XPATH, "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]")))
-    # location_button.click()
+    # Optionally move the mouse over the button to see if it helps
+    ActionChains(login).move_to_element(element).perform()
 
-    # wait = WebDriverWait(login, 10)
-    # depart_button = wait.until(EC.presence_of_element_located(
-    #     (By.XPATH, "//div[@class='deptName ng-star-inserted'][normalize-space()='ENT']")))
-    # depart_button.click()
-
-    # wait = WebDriverWait(login, 10)
-    # wait.until(EC.presence_of_element_located(
-    #     (By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]"))).click()
+    bookbutton = WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
+    )
+    bookbutton.click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
                 By.XPATH,
-                "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][normalize-space()='Consultation']",
+                "(//div[@class='serviceName ng-star-inserted'][normalize-space()='Consultation'])[1]",
             )
         )
     ).click()
-    # login.find_element(By.XPATH,
-    #                    "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][contains(text(),'service zero')]").click()
 
     Today_Date = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//div[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+            )
         )
     )
 
@@ -69,13 +71,9 @@ def test_booking(login):
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
+    time.sleep(1)
+    login.find_element(By.XPATH, "//button[normalize-space()='Next']").click()
 
-    login.find_element(By.XPATH, "//button[contains(text(),'Next')]").click()
-
-    # user_data = create_user_data()
-
-    # login.find_element(By.XPATH, "//input[@id='phone']").send_keys(user_data[3])
-    # login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))

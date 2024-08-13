@@ -453,73 +453,73 @@ def test_create_patient(login):
 
     # ********************** Manual Invoice and Sharing ***********************
 
-    # time.sleep(3)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='New Invoice']"))
-    # ).click()
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='New Invoice']"))
+    ).click()
 
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-    # ).click()
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
+    ).click()
 
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
-    # ).click()
-    # time.sleep(2)
-    # WebDriverWait(login, 10).until(
-    #     EC.element_to_be_clickable((By.XPATH, "//div[@class='item-name'][normalize-space()='Consultation']"))
-    # ).click()
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
+    ).click()
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//div[@class='item-name'][normalize-space()='Consultation']"))
+    ).click()
 
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add']"))
-    # ).click()
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add']"))
+    ).click()
 
-    # time.sleep(5)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
-    # ).click()
+    time.sleep(5)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
+    ).click()
 
-    # time.sleep(5)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
-    # ).click()
+    time.sleep(5)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
+    ).click()
 
-    # time.sleep(3)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share Payment Link']"))
-    # ).click()
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share Payment Link']"))
+    ).click()
 
-    # time.sleep(2)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
-    # ).click()
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
+    ).click()
 
-    # time.sleep(5)
-    # print("Manual Invoice")
-    # print("Successfully send the Payment Link to the patient")
+    time.sleep(5)
+    print("Manual Invoice")
+    print("Successfully send the Payment Link to the patient")
 
-    # login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
+    login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
 
-    # time.sleep(5)
+    time.sleep(5)
 
-    # while True:
-    #     try:
+    while True:
+        try:
 
-    #         next_button = WebDriverWait(login, 10).until(
-    #             EC.presence_of_element_located(
-    #                 (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
-    #         )
+            next_button = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+            )
 
-    #         next_button.click()
+            next_button.click()
 
-    #     except:
+        except:
 
-    #         break
+            break
 
-    # last_element_in_accordian = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
-    # )
-    # last_element_in_accordian.click()
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    )
+    last_element_in_accordian.click()
 
     time.sleep(3)
     View_Detail_button = WebDriverWait(login, 10).until(

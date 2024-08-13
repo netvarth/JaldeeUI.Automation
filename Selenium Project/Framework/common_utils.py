@@ -13,6 +13,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, timedelta
+from selenium.webdriver.common.keys import Keys
 import allure
 from allure_commons.types import AttachmentType
 import os
@@ -67,9 +68,13 @@ def login(url):
     # 5550005540  Netvarth123  5555556030 Jaldee01
     # driver.find_element(By.ID, "loginId").send_keys("5555556030")
     # driver.find_element(By.ID, "password").send_keys("Netvarth123")
+    # 5550005540  Netvarth123  5555556030  Jaldee01
 
-    driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("5555523479")
+    driver.find_element(By.ID, "password").send_keys("Jaldee123")
+
+    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)

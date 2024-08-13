@@ -14,7 +14,12 @@ import os
 
 @pytest.fixture()
 def login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+
+    driver = webdriver.Chrome(
+        service=ChromeService(
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
     driver.get("https://scale.jaldee.com/visionhospital/")
     driver.maximize_window()
     yield driver
@@ -41,7 +46,7 @@ def test_booking(login):
     except:
         # If click is intercepted, click using JavaScript
         login.execute_script("arguments[0].click();", clickable_book_now_button)
-    
+
     wait = WebDriverWait(login, 10)
     location_button = wait.until(
         EC.presence_of_element_located(
@@ -105,7 +110,6 @@ def test_booking(login):
     #         (By.XPATH, "//span[normalize-space()='Book Now']")
     #     )
     # ).click()
-
 
     time.sleep(3)
 
