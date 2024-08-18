@@ -5,7 +5,6 @@ from selenium.common import TimeoutException , JavascriptException
 from selenium.webdriver.support.ui import Select
 from pywinauto import Desktop , Application # type: ignore
 
-
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_patient_MR_Sharing(login):
     try:
@@ -826,57 +825,60 @@ def test_patient_MR_Edit(login):
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"]) 
 def test_patient_MR_createTemplate(login):
     try:
-        wait_and_click(By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
-        wait_and_send_keys(By.XPATH, "//input[@placeholder='Enter name or phone or id']", '5556328484')
-        wait_and_click(By.XPATH, "//span[normalize-space()='Id : 151']")
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
         time.sleep(3)
-        prescription = wait_and_click(By.XPATH, "//span[normalize-space()='Prescriptions']")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter name or phone or id']", '5556328484')
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 151']")
+        time.sleep(3)
+        prescription = wait_and_click(login, By.XPATH, "//span[normalize-space()='Prescriptions']")
         login.execute_script("arguments[0].scrollIntoView();", prescription)
         time.sleep(3)
         # Create Template
-        wait_and_click(By.XPATH, "//button[@class='p-element p-button-primary p-button p-component ng-star-inserted']")
+        wait_and_click(login, By.XPATH, "//button[@class='p-element p-button-primary p-button p-component ng-star-inserted']")
         basetemplatename = 'Temp'
         random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
         uniquename = f"{basetemplatename}_{random_string}"
-        wait_and_send_keys(By.XPATH, "//input[@placeholder='Enter Template Name']", 
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Template Name']", 
                                           uniquename)
-        wait_and_click(By.XPATH, "//div[@class='add']")
+        wait_and_click(login, By.XPATH, "//div[@class='add']")
         time.sleep(3)
         # Fill in the template details
-        medicine = wait_and_send_keys(By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[contains(@class, 'medicine-name')]//p-celleditor//textarea", 'Furosemide')
+        medicine = wait_and_send_keys(login, By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[contains(@class, 'medicine-name')]//p-celleditor//textarea", 'Furosemide')
         medicine.send_keys(Keys.TAB)
-        dose = wait_and_send_keys(By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[contains(@class, 'first-cell')][1]//p-celleditor//textarea", '2mg')
+        dose = wait_and_send_keys(login, By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[contains(@class, 'first-cell')][1]//p-celleditor//textarea", '2mg')
         dose.send_keys(Keys.TAB)
-        frequency = wait_and_send_keys(By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[not(contains(@class, 'first-cell'))][2]//p-celleditor//textarea", 'Twice a day')
+        frequency = wait_and_send_keys(login, By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[not(contains(@class, 'first-cell'))][2]//p-celleditor//textarea", 'Twice a day')
         frequency.send_keys(Keys.TAB)
-        duration = wait_and_send_keys(By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[not(contains(@class, 'first-cell'))][3]//p-celleditor//textarea", '2 Weeks')
+        duration = wait_and_send_keys(login, By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[not(contains(@class, 'first-cell'))][3]//p-celleditor//textarea", '2 Weeks')
         duration.send_keys(Keys.TAB)
-        wait_and_send_keys(By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[not(contains(@class, 'first-cell'))][4]//p-celleditor//textarea", 'Before food')
+        wait_and_send_keys(login, By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[not(contains(@class, 'first-cell'))][4]//p-celleditor//textarea", 'Before food')
         time.sleep(3)
-        wait_and_click(By.XPATH, "//button[normalize-space()='Save Template']")
-        print("Toast Message:", wait_for_text(By.CLASS_NAME, "p-toast-detail"))
+        wait_and_click(login, By.XPATH, "//button[normalize-space()='Save Template']")
+        print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))
         time.sleep(3)
         # Search and Edit Template
-        wait_and_send_keys(By.XPATH, "//input[@placeholder='Search Template']", uniquename)  # Adjust search term if necessary
-        wait_and_click(By.XPATH, "//span[@class='p-button-icon pi pi-search']")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Search Template']", uniquename)  # Adjust search term if necessary
+        wait_and_click(login, By.XPATH, "//span[@class='p-button-icon pi pi-search']")
         time.sleep(3)
-        wait_and_click(By.XPATH, "//span[normalize-space()='Edit']")
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='Edit']")
         time.sleep(3)
-        wait_and_click(By.XPATH, "//button[normalize-space()='Update Template']")
-        print("Toast Message:", wait_for_text(By.CLASS_NAME, "p-toast-detail"))
+        wait_and_click(login, By.XPATH, "//button[normalize-space()='Update Template']")
+        print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))
         time.sleep(3)
         # View and Delete Template
-        wait_and_click(By.XPATH, "//span[@class='p-button-icon pi pi-search']")
-        wait_and_click(By.XPATH, "//span[normalize-space()='View']")
+        wait_and_click(login, By.XPATH, "//span[@class='p-button-icon pi pi-search']")
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='View']")
         time.sleep(3)
-        wait_and_click(By.XPATH, "//i[@class='fa fa-times']")
+        wait_and_click(login, By.XPATH, "//i[@class='fa fa-times']")
         print("Template viewed successfully")
         time.sleep(3)
-        wait_and_click(By.XPATH, "//span[normalize-space()='Delete']")
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='Delete']")
         time.sleep(3)
-        wait_and_click(By.XPATH, "//button[normalize-space()='Yes']")
+        wait_and_click(login, By.XPATH, "//button[normalize-space()='Yes']")
         time.sleep(3)
-        print("Toast Message:", wait_for_text(By.CLASS_NAME, "p-toast-detail"))
+        print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))
         time.sleep(3)
     except Exception as e:
         allure.attach(

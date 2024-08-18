@@ -115,22 +115,22 @@ def create_users_data():
     print(email)
     return [first_name, last_name, phonenumber, email]
 
-def wait_and_click(by, value, timeout=10):
+def wait_and_click(login, by, value, timeout=10):
     element = WebDriverWait(login, timeout).until(EC.element_to_be_clickable((by, value)))
     element.click()
     return element
 
-def wait_and_locate_click(by, value, timeout=10):
+def wait_and_locate_click(login, by, value, timeout=10):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     element.click()
     return element
 
-def wait_and_send_keys(by, value, keys, timeout=10):
+def wait_and_send_keys(login, by, value, keys, timeout=10):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     element.send_keys(keys)
     return element
 
-def wait_for_text(by, value, timeout=10):
+def wait_for_text(login, by, value, timeout=10):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     return element.text
 
