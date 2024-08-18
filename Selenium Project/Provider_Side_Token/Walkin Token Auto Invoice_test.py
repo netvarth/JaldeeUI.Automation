@@ -683,10 +683,8 @@ def test_token_autoinvoice_paybycash_settled(login):
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Yes']"))
         ).click()
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        print("Snackbar Message :", snack_bar.text)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
         time.sleep(3)
         settledinvoice = WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Settle Invoice']"))
@@ -700,10 +698,8 @@ def test_token_autoinvoice_paybycash_settled(login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Yes']"))
         ).click()
         time.sleep(3)
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        print("Snackbar Message :", snack_bar.text)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
         time.sleep(3)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
@@ -882,10 +878,8 @@ def test_token_autoinvoice_paybyothers_cancel(login):
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Yes']"))
         ).click()
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        print("Snackbar Message :", snack_bar.text)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
         time.sleep(3)
         settledinvoice = WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Cancel Invoice']"))
@@ -899,10 +893,8 @@ def test_token_autoinvoice_paybyothers_cancel(login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Yes']"))
         ).click()
         time.sleep(3)
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        print("Snackbar Message :", snack_bar.text)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
         time.sleep(3)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
@@ -955,10 +947,8 @@ def test_token_autoinvoice_sharedpdf(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@class='mdc-button__label']"))
         ).click()
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        print("Snackbar Message :", snack_bar.text)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
         time.sleep(3)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
@@ -1045,10 +1035,8 @@ def test_token_autoinvoice_edit(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Update']"))
         ).click()
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        print("Snackbar Message :", snack_bar.text)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
         time.sleep(3)
 
         WebDriverWait(login, 20).until(

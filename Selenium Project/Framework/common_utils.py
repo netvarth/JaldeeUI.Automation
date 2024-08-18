@@ -134,3 +134,23 @@ def wait_for_text(login, by, value, timeout=10):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     return element.text
 
+def get_snack_bar_message(login, timeout=10):
+    try:
+        # Try to get the normal snack bar message
+        snack_bar = WebDriverWait(login, timeout).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        return message
+
+    except:
+        # If not found, try to get the error snack bar message
+        try:
+            snack_bar = WebDriverWait(login, timeout).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            return message
+        except Exception as e:
+            return None
+
