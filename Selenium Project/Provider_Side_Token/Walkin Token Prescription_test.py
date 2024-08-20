@@ -3,7 +3,6 @@ from Framework.common_utils import *
 from Framework.common_dates_utils import *
 from selenium.common import TimeoutException , JavascriptException
 from selenium.webdriver.support.ui import Select
-from pywinauto import Desktop , Application # type: ignore
 
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_patient_MR_Sharing(login):
