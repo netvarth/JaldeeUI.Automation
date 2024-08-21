@@ -3,7 +3,7 @@ from Framework.common_utils import *
 
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_create_patient(login):
-    time.sleep(5)
+    time.sleep(6)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
