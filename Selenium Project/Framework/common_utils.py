@@ -8,6 +8,9 @@ import datetime
 from faker import Faker
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
@@ -17,6 +20,9 @@ from selenium.webdriver.common.keys import Keys
 import allure
 from allure_commons.types import AttachmentType
 import os
+from selenium.webdriver.firefox.service import Service
+from webdriver_manager.firefox import GeckoDriverManager
+
 
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
@@ -54,12 +60,17 @@ def login(url):
     # driver = webdriver.Chrome(
     #     service=ChromeService(ChromeDriverManager().install()), options=chrome_options
     # )
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--no-sandbox")  # Optional, may help with some environments
+    chrome_options.add_argument("--disable-dev-shm-usage")  # Optional, may help with some environments
 
     driver = webdriver.Chrome(
         service=ChromeService(
             # executable_path=r"D:\ChromeDriver\chromedriver-win64\chromedriver.exe"
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-        )
+        ),
+        options=chrome_options
     )
     driver.get(url)
     driver.maximize_window()
@@ -70,11 +81,11 @@ def login(url):
     # driver.find_element(By.ID, "password").send_keys("Netvarth123")
     # 5550005540  Netvarth123  5555556030  Jaldee01
 
-    driver.find_element(By.ID, "loginId").send_keys("5555523479")
-    driver.find_element(By.ID, "password").send_keys("Jaldee123")
+    # driver.find_element(By.ID, "loginId").send_keys("5550005540")
+    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
 
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)
@@ -83,6 +94,46 @@ def login(url):
     driver.close()
     driver.quit()
 
+
+
+@pytest.fixture()
+def login1(url):
+    # chrome_options = webdriver.ChromeOptions()
+    # chrome_options.add_argument("--ignore-ssl-errors=yes")
+    # chrome_options.add_argument("--ignore-certificate-errors")
+    # chrome_options.add_argument("--lang=en-US")
+
+    # driver = webdriver.Chrome(
+    #     service=ChromeService(ChromeDriverManager().install()), options=chrome_options
+    # )
+    
+    driver = webdriver.Firefox(
+        service=FirefoxService(
+            # executable_path=r"D:\ChromeDriver\chromedriver-win64\chromedriver.exe"
+            executable_path=r"Drivers\geckodriver-win64\geckodriver.exe"
+        )
+    )
+    driver.get(url)
+    # driver.maximize_window()
+    time.sleep(5)
+
+    # 5550005540  Netvarth123  5555556030 Jaldee01
+    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    # driver.find_element(By.ID, "password").send_keys("Netvarth123")
+    # 5550005540  Netvarth123  5555556030  Jaldee01
+
+    # driver.find_element(By.ID, "loginId").send_keys("5550005540")
+    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
+
+    driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+
+    driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
+    # time.sleep(10)
+    driver.implicitly_wait(5)
+    yield driver
+    driver.close()
+    driver.quit()
 
 @pytest.fixture()
 def con_login(url):
