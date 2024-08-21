@@ -1,8 +1,10 @@
 import time
 
 from Framework.common_utils import *
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
-
+ 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to a later time in the same day")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
@@ -525,15 +527,6 @@ def test_appt_reschedule_1(login):
 
 
 #########################################################################################################################
-@pytest.fixture()
-def con_login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.get("https://scale.jaldee.com/visionhospital/")
-    driver.maximize_window()
-    yield driver
-
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title(
@@ -692,6 +685,7 @@ def test_reschedule_arrived_state(con_login):
         )
         raise e
 
+##############################################################################################################################################################
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title(
@@ -981,13 +975,6 @@ def test_reschedule_arrived_state1(login):
 
 
 ###################################################################################################################################################
-@pytest.fixture()
-def con_login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.get("https://scale.jaldee.com/visionhospital/")
-    driver.maximize_window()
-    yield driver
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer take prepayment booking and Provider reschedule it")
@@ -1217,6 +1204,271 @@ def test_prepaymentbooking_reschedule(con_login):
         con_login.execute_script("arguments[0].click();", ok_button)
 
         time.sleep(3)
+        # con_login.quit()
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            con_login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+
+#######################################################################################################################################################
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Consumer reschedule it next month")
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
+def test_nextmonth_reschedule(con_login):
+    try:
+
+        time.sleep(5)
+
+        book_now_button = WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Book Now']")
+            )
+        )
+        con_login.execute_script("arguments[0].scrollIntoView();", book_now_button)
+
+        # Wait for the element to be clickable
+        clickable_book_now_button = WebDriverWait(con_login, 10).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//span[normalize-space()='Book Now']")
+            )
+        )
+
+        # Attempt to click the element
+        try:
+            clickable_book_now_button.click()
+        except:
+            # If click is intercepted, click using JavaScript
+            con_login.execute_script("arguments[0].click();", clickable_book_now_button)
+
+        wait = WebDriverWait(con_login, 10)
+        location_button = wait.until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]",
+                )
+            )
+        )
+        location_button.click()
+
+        wait = WebDriverWait(con_login, 10)
+        depart_button = wait.until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='deptName ng-star-inserted'][normalize-space()='ENT']",
+                )
+            )
+        )
+        depart_button.click()
+
+        wait = WebDriverWait(con_login, 10)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]")
+            )
+        ).click()
+
+        WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][normalize-space()='service']",
+                )
+            )
+        ).click()
+        time.sleep(4)
+        Today_Date = WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+            )
+        )
+
+        con_login.execute_script("arguments[0].click();", Today_Date)
+
+        print("Today Date:", Today_Date.text)
+
+        wait = WebDriverWait(con_login, 10)
+        time_slot = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        )
+        time_slot.click()
+        print("Time Slot:", time_slot.text)
+
+        time.sleep(2)
+        clickable_next_button = WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(text(),'Next')]")
+            )
+        )
+
+        con_login.execute_script("arguments[0].click();", clickable_next_button)
+
+        time.sleep(2)
+        WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys("9207206005")
+
+        con_login.find_element(
+            By.XPATH, "//span[@class='continue ng-star-inserted']"
+        ).click()
+
+        time.sleep(5)
+
+        otp_digits = "5555"
+
+        # Wait for the OTP input fields to be present
+        otp_inputs = WebDriverWait(con_login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//input[contains(@id, 'otp_')]")
+            )
+        )
+
+        # print("Number of OTP input fields:", len(otp_inputs))
+        # print(otp_inputs)
+
+        for i, otp_input in enumerate(otp_inputs):
+
+            # print(i)
+            # print(otp_input)
+            otp_input.send_keys(otp_digits[i])
+
+        con_login.find_element(
+            By.XPATH,
+            "//div[@class='form-group otp text-center']//button[@type='button']",
+        ).click()
+
+        # WebDriverWait(con_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//div[contains(text(),'NET BANKING')]")
+        #     )
+        # ).click()
+
+        # time.sleep(3)
+        # makepayment = WebDriverWait(con_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//div[@class='text-center mgn-up-10']//button[@type='button']",
+        #         )
+        #     )
+        # )
+        # con_login.execute_script("arguments[0].click();", makepayment)
+        # WebDriverWait(con_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
+        #     )
+        # ).click()
+
+        # time.sleep(1)
+
+        # WebDriverWait(con_login, 10).until(
+        #     EC.visibility_of_element_located((By.XPATH, "//p[contains(text(),'SBI')]"))
+        # ).click()
+
+        # WebDriverWait(con_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//div[contains(@class,'ptm-emi-overlay')]//div[contains(@class,'')]//div[@id='checkout-button']//button[contains(@class,'ptm-nav-selectable')][contains(text(),'Pay ₹149')]",
+        #         )
+        #     )
+        # ).click()
+
+        # # Handle the popup window
+        # # Save the current window handle
+        # main_window_handle = con_login.current_window_handle
+
+        # # Wait until the new window is present
+        # WebDriverWait(con_login, 10).until(EC.new_window_is_opened)
+
+        # # Get all window handles
+        # all_window_handles = con_login.window_handles
+
+        # # Find the new window handle (the popup window)
+        # new_window_handle = None
+        # for handle in all_window_handles:
+        #     if handle != main_window_handle:
+        #         new_window_handle = handle
+        #         break
+
+        # # Switch to the new window
+        # con_login.switch_to.window(new_window_handle)
+
+        # # Now interact with elements in the new window
+        # # For example, clicking the success button
+        # time.sleep(3)
+        # WebDriverWait(con_login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//button[@class='btn btnd']"))
+        # ).click()
+
+        # # Optionally, switch back to the main window
+
+        # con_login.switch_to.window(main_window_handle)
+        # # time.sleep(15)
+
+        # try:
+        #     snack_bar = WebDriverWait(con_login, 10).until(
+        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        #     )
+        #     message = snack_bar.text
+        #     print("Snack bar message:", message)
+
+        # except:
+
+        #     snack_bar = WebDriverWait(con_login, 10).until(
+        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        #     )
+        #     message = snack_bar.text
+        #     print("Snack bar message:", message)
+
+        # time.sleep(3)
+        confirm_button = WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[contains(text(),'Confirm')]")
+            )
+        )
+        con_login.execute_script("arguments[0].click();", confirm_button)
+        time.sleep(3)
+
+        ok_button = WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Ok']")
+            )
+        )
+
+        con_login.execute_script("arguments[0].click();", ok_button)
+
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[normalize-space()='My Bookings']"))
+        ).click()
+
+        # Find all booking cards
+        booking_cards = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'cstmApptCard')))
+
+        # Loop through the booking cards and find the "New Booking" button
+        for card in booking_cards:
+            try:
+        # Find the "New Booking" button within each card
+                new_booking_button = card.find_element(By.XPATH, ".//button[contains(text(), 'New Booking')]")
+                if new_booking_button:
+            # Click the "New Booking" button
+                    new_booking_button.click()
+                break
+            except:
+                continue
+
+
         # con_login.quit()
 
     except Exception as e:

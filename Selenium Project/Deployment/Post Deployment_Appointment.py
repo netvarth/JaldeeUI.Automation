@@ -420,280 +420,282 @@ def test_signup():
     ).click()
 
     time.sleep(5)
-    WebDriverWait(login, 10).until(
+    switch_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "(//div[@class='mdc-switch__ripple'])[2]")
         )
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
-        )
-    ).click()
-
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
-        )
-    ).click()
-
-    time.sleep(3)
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p[normalize-space()='Set when you want to accept bookings.']")
-        )
-    ).click()
-
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//p-button[1]//button[1]//span[1]"))
-    ).click()
-
-    time.sleep(1)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[@class='form-group queue-selection']//i[@class='fa fa-square-o ng-star-inserted'][normalize-space()='Select All']",
-            )
-        )
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//ngb-timepicker[@class='ng-valid ng-touched ng-dirty']//input[@placeholder='HH']",
-            )
-        )
-    ).send_keys("11")
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//ngb-timepicker[@class='ng-pristine ng-valid ng-touched']//input[@placeholder='MM']",
-            )
-        )
-    ).send_keys("55")
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='ENT']"))
-    ).click()
-
-    title = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//label[normalize-space()='Title for Schedule * (not visible to public)']",
-            )
-        )
     )
+    
+    login.execute_script("arguments[0].click();", switch_button)
 
-    title.click()
-    title.send_keys("Test Schedule")
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
+    #     )
+    # ).click()
 
-    time_slot = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//label[normalize-space()='Time Slot Duration (min) *']")
-        )
-    )
+    # time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
+    #     )
+    # ).click()
 
-    time_slot.click()
-    time_slot.send_keys("10")
+    # time.sleep(3)
 
-    time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//p[normalize-space()='Set when you want to accept bookings.']")
+    #     )
+    # ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@class='mdc-button__label']"))
-    ).click()
+    # time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//p-button[1]//button[1]//span[1]"))
+    # ).click()
 
-    try:
+    # time.sleep(1)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//div[@class='form-group queue-selection']//i[@class='fa fa-square-o ng-star-inserted'][normalize-space()='Select All']",
+    #         )
+    #     )
+    # ).click()
 
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//ngb-timepicker[@class='ng-valid ng-touched ng-dirty']//input[@placeholder='HH']",
+    #         )
+    #     )
+    # ).send_keys("11")
 
-    except:
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//ngb-timepicker[@class='ng-pristine ng-valid ng-touched']//input[@placeholder='MM']",
+    #         )
+    #     )
+    # ).send_keys("55")
 
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='ENT']"))
+    # ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
-        )
-    ).click()
+    # title = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//label[normalize-space()='Title for Schedule * (not visible to public)']",
+    #         )
+    #     )
+    # )
 
-    time.sleep(2)
+    # title.click()
+    # title.send_keys("Test Schedule")
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
-        )
-    ).click()
+    # time_slot = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//label[normalize-space()='Time Slot Duration (min) *']")
+    #     )
+    # )
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[2]//div[1]//div[2]//ul[1]//li[3]//a[1]//p[1]")
-        )
-    ).click()
+    # time_slot.click()
+    # time_slot.send_keys("10")
 
-    time.sleep(1)
+    # time.sleep(2)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__ripple']"))
-    ).click()
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//span[@class='mdc-button__label']"))
+    # ).click()
 
-    login.find_element(
-        By.XPATH, "//label[normalize-space()='Allow online appointments for today']"
-    ).click()
-    login.find_element(
-        By.XPATH, "//label[normalize-space()='Allow online appointments for future']"
-    ).click()
+    # try:
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
-        )
-    ).click()
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
 
-    time.sleep(1)
+    # except:
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//img[@src='./assets/images/menu/home-color.png']")
-        )
-    ).click()
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
 
-    time.sleep(5)
-    print("New patient create")
-    WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
-            )
-        )
-    ).click()
-    time.sleep(3)
-    element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
-            )
-        )
-    )
-    element.click()
-    time.sleep(3)
-    wait = WebDriverWait(login, 10)
-    element_appoint = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//b[normalize-space()='Create New Patient']")
-        )
-    )
-    element_appoint.click()
-    login.implicitly_wait(3)
-    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-    # File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
+    #     )
+    # ).click()
 
-    # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
-    print("value to be written to file", phonenumber)
-    with open(file_path, "w") as file:
-        # Write the value to the file
-        file.write(phonenumber)
-    print("value written to file", phonenumber)
-    login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
-    login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
-    login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
-    login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
-    login.find_element(
-        By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
-    ).send_keys(phonenumber)
-    login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-    login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
-    time.sleep(3)
-    Today_Date = wait.until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
-            )
-        )
-    )
-    Today_Date.click()
-    print("Today Date:", Today_Date.text)
-    wait = WebDriverWait(login, 10)
-    time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']"))
-    )
-    time_slot.click()
-    print("Time Slot:", time_slot.text)
+    # time.sleep(2)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
-    ).click()
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
+    #     )
+    # ).click()
 
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
-        "Note for the walkin appointment"
-    )
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//div[2]//div[1]//div[2]//ul[1]//li[3]//a[1]//p[1]")
+    #     )
+    # ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))
-    ).click()
-    print("Note added for walkin appointment")
+    # time.sleep(1)
 
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Upload File']")
-        )
-    ).click()
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__ripple']"))
+    # ).click()
 
-    time.sleep(4)
-    # Get the current working directory
-    current_working_directory = os.getcwd()
+    # login.find_element(
+    #     By.XPATH, "//label[normalize-space()='Allow online appointments for today']"
+    # ).click()
+    # login.find_element(
+    #     By.XPATH, "//label[normalize-space()='Allow online appointments for future']"
+    # ).click()
 
-    # Construct the absolute path
-    absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
-    )
-    pyautogui.write(absolute_path)
-    pyautogui.press("enter")
-    print("Successfully upload the file")
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
+    #     )
+    # ).click()
 
-    time.sleep(6)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
-    ).click()
+    # time.sleep(1)
 
-    try:
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//img[@src='./assets/images/menu/home-color.png']")
+    #     )
+    # ).click()
 
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    # time.sleep(5)
+    # print("New patient create")
+    # WebDriverWait(login, 20).until(
+    #     EC.element_to_be_clickable(
+    #         (
+    #             By.XPATH,
+    #             "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+    #         )
+    #     )
+    # ).click()
+    # time.sleep(3)
+    # element = WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable(
+    #         (
+    #             By.XPATH,
+    #             "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+    #         )
+    #     )
+    # )
+    # element.click()
+    # time.sleep(3)
+    # wait = WebDriverWait(login, 10)
+    # element_appoint = wait.until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//b[normalize-space()='Create New Patient']")
+    #     )
+    # )
+    # element_appoint.click()
+    # login.implicitly_wait(3)
+    # first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+    # # File path
+    # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
 
-    except:
+    # # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
+    # print("value to be written to file", phonenumber)
+    # with open(file_path, "w") as file:
+    #     # Write the value to the file
+    #     file.write(phonenumber)
+    # print("value written to file", phonenumber)
+    # login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
+    # login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
+    # login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
+    # login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+    # login.find_element(
+    #     By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
+    # ).send_keys(phonenumber)
+    # login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+    # login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+    # time.sleep(3)
+    # Today_Date = wait.until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+    #         )
+    #     )
+    # )
+    # Today_Date.click()
+    # print("Today Date:", Today_Date.text)
+    # wait = WebDriverWait(login, 10)
+    # time_slot = wait.until(
+    #     EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']"))
+    # )
+    # time_slot.click()
+    # print("Time Slot:", time_slot.text)
 
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
+    # ).click()
 
-    time.sleep(3)
+    # login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
+    #     "Note for the walkin appointment"
+    # )
+
+    # WebDriverWait(login, 10).until(
+    #     EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))
+    # ).click()
+    # print("Note added for walkin appointment")
+
+    # time.sleep(3)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[normalize-space()='Upload File']")
+    #     )
+    # ).click()
+
+    # time.sleep(4)
+    # # Get the current working directory
+    # current_working_directory = os.getcwd()
+
+    # # Construct the absolute path
+    # absolute_path = os.path.abspath(
+    #     os.path.join(current_working_directory, r"Extras\test.png")
+    # )
+    # pyautogui.write(absolute_path)
+    # pyautogui.press("enter")
+    # print("Successfully upload the file")
+
+    # time.sleep(6)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+    # ).click()
+
+    # try:
+
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
+
+    # except:
+
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
+
+    # time.sleep(3)
 
 
 ############################################################################################################################################################

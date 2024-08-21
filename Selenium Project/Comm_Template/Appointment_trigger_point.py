@@ -9,7 +9,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 @allure.title(
     "Confirmation, Send_message, Send_Attachment, Prescription_Sharing, Case_Sharing, Auto and Manual Invoice, Reschedule, Cancellation"
 )
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -35,7 +35,7 @@ def test_create_patient(login):
         EC.presence_of_element_located(
             (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
         )
-    ).send_keys("9207206005")
+    ).send_keys("920720600")
 
     time.sleep(3)
 
@@ -416,41 +416,41 @@ def test_create_patient(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Observations']")
-        )
-    ).click()
+    # time.sleep(3)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[normalize-space()='Observations']")
+    #     )
+    # ).click()
 
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Enter Observations']")
-        )
-    ).send_keys("Minor fever")
+    # time.sleep(3)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//input[@placeholder='Enter Observations']")
+    #     )
+    # ).send_keys("Minor fever")
 
-    element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-    login.execute_script("arguments[0].scrollIntoView();", element)
-    element.click()
+    # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+    # login.execute_script("arguments[0].scrollIntoView();", element)
+    # element.click()
 
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Diagnosis']")
-        )
-    ).click()
+    # time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[normalize-space()='Diagnosis']")
+    #     )
+    # ).click()
 
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Enter Diagnosis']")
-        )
-    ).send_keys("High temperature")
+    # time.sleep(3)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//input[@placeholder='Enter Diagnosis']")
+    #     )
+    # ).send_keys("High temperature")
 
-    element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-    login.execute_script("arguments[0].scrollIntoView();", element)
-    element.click()
+    # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+    # login.execute_script("arguments[0].scrollIntoView();", element)
+    # element.click()
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -550,9 +550,15 @@ def test_create_patient(login):
     print("Successfully send the Payment Link to the patient")
 
     # login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
-    ).click()
+
+    
+    card_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div/span/span[contains(text(),'Appointments')]"))
+    )
+
+    login.execute_script("arguments[0].click();", card_button)
+
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
@@ -613,7 +619,7 @@ def test_create_patient(login):
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Consultation']")
+            (By.XPATH, "//div[@class='item-name'][normalize-space()='Consultation']")
         )
     ).click()
 
@@ -834,7 +840,7 @@ def test_create_patient(login):
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    login.get("https://test.jaldee.com/business/")
+    login.get("https://scale.jaldee.com/business/")
     login.maximize_window()
 
     time.sleep(3)
@@ -959,7 +965,7 @@ def test_create_patient(login):
 ######################################################################################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reconfirmation")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_patient_Reconfirmation(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -985,12 +991,12 @@ def test_patient_Reconfirmation(login):
         EC.presence_of_element_located(
             (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
         )
-    ).send_keys("9207206005")
+    ).send_keys("920720600")
 
     time.sleep(3)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : 1')]"))
+        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : 2')]"))
     ).click()
 
     time.sleep(3)
@@ -1159,7 +1165,7 @@ def test_patient_Reconfirmation(login):
 ####################################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Start")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_patient_start(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -1185,12 +1191,12 @@ def test_patient_start(login):
         EC.presence_of_element_located(
             (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
         )
-    ).send_keys("9207206005")
+    ).send_keys("920720600")
 
     time.sleep(3)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : 1')]"))
+        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : 2')]"))
     ).click()
 
     time.sleep(3)
@@ -1287,7 +1293,7 @@ def test_patient_start(login):
 ###############################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Reminder Message")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_reminder_message(login):
 
     time.sleep(5)
@@ -1314,7 +1320,7 @@ def test_reminder_message(login):
         EC.presence_of_element_located(
             (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
         )
-    ).send_keys("9207206005")
+    ).send_keys("920720600")
 
     time.sleep(3)
 
@@ -1446,7 +1452,7 @@ def test_reminder_message(login):
 ####################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Completed Messages")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_completed_messages(login):
 
     time.sleep(5)
@@ -1473,7 +1479,7 @@ def test_completed_messages(login):
         EC.presence_of_element_located(
             (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
         )
-    ).send_keys("9207206005")
+    ).send_keys("920720600")
 
     time.sleep(3)
 
@@ -1566,7 +1572,7 @@ def test_completed_messages(login):
 #################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Donation")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/53b6eu1/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
 def test_donation(con_login):
     time.sleep(5)
 
@@ -1730,7 +1736,7 @@ def test_donation(con_login):
 ########################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Confirmation,Reschedule,Send Message, Send attachment")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/53b6eu1/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
 def test_confirmation(con_login):
     time.sleep(3)
     book_now_button = WebDriverWait(con_login, 10).until(
@@ -2064,7 +2070,7 @@ def test_confirmation(con_login):
 ##################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Reschedule")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/53b6eu1/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
 def test_reschedule(con_login):
     time.sleep(3)
     book_now_button = WebDriverWait(con_login, 10).until(

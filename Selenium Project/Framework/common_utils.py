@@ -60,26 +60,22 @@ def login(url):
     # driver = webdriver.Chrome(
     #     service=ChromeService(ChromeDriverManager().install()), options=chrome_options
     # )
-    chrome_options = Options()
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--no-sandbox")  # Optional, may help with some environments
-    chrome_options.add_argument("--disable-dev-shm-usage")  # Optional, may help with some environments
+    
 
     driver = webdriver.Chrome(
         service=ChromeService(
             # executable_path=r"D:\ChromeDriver\chromedriver-win64\chromedriver.exe"
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-        ),
-        options=chrome_options
+        )
     )
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
 
-    # 5550005540  Netvarth123  5555556030 Jaldee01
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    # 5550005540  Netvarth123  5555556030 Jaldee01 5555998877 Jaldee01
+    # driver.find_element(By.ID, "loginId").send_keys("5550005540")
     # driver.find_element(By.ID, "password").send_keys("Netvarth123")
-    # 5550005540  Netvarth123  5555556030  Jaldee01
+    # 5550005540  Netvarth123  5555556030  Jaldee01 
 
     # driver.find_element(By.ID, "loginId").send_keys("5550005540")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
@@ -96,44 +92,7 @@ def login(url):
 
 
 
-@pytest.fixture()
-def login1(url):
-    # chrome_options = webdriver.ChromeOptions()
-    # chrome_options.add_argument("--ignore-ssl-errors=yes")
-    # chrome_options.add_argument("--ignore-certificate-errors")
-    # chrome_options.add_argument("--lang=en-US")
 
-    # driver = webdriver.Chrome(
-    #     service=ChromeService(ChromeDriverManager().install()), options=chrome_options
-    # )
-    
-    driver = webdriver.Firefox(
-        service=FirefoxService(
-            # executable_path=r"D:\ChromeDriver\chromedriver-win64\chromedriver.exe"
-            executable_path=r"Drivers\geckodriver-win64\geckodriver.exe"
-        )
-    )
-    driver.get(url)
-    # driver.maximize_window()
-    time.sleep(5)
-
-    # 5550005540  Netvarth123  5555556030 Jaldee01
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    # driver.find_element(By.ID, "password").send_keys("Netvarth123")
-    # 5550005540  Netvarth123  5555556030  Jaldee01
-
-    # driver.find_element(By.ID, "loginId").send_keys("5550005540")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-
-    driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
-    driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
-    # time.sleep(10)
-    driver.implicitly_wait(5)
-    yield driver
-    driver.close()
-    driver.quit()
 
 @pytest.fixture()
 def con_login(url):
@@ -165,3 +124,48 @@ def create_users_data():
     email = f"{first_name}.{last_name}{test_mail}"
     print(email)
     return [first_name, last_name, phonenumber, email]
+
+def wait_and_click(login, by, value, timeout=10):
+    element = WebDriverWait(login, timeout).until(EC.element_to_be_clickable((by, value)))
+    element.click()
+    return element
+
+def wait_and_locate_click(login, by, value, timeout=10):
+    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+    element.click()
+    return element
+
+def wait_and_visible_click(login, by, value, timeout=10):
+    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+    element.click()
+    return element
+
+def wait_and_send_keys(login, by, value, keys, timeout=10):
+    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+    element.send_keys(keys)
+    return element
+
+def wait_for_text(login, by, value, timeout=10):
+    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+    return element.text
+
+def get_snack_bar_message(login, timeout=10):
+    try:
+        # Try to get the normal snack bar message
+        snack_bar = WebDriverWait(login, timeout).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        return message
+
+    except:
+        # If not found, try to get the error snack bar message
+        try:
+            snack_bar = WebDriverWait(login, timeout).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            return message
+        except Exception as e:
+            return None
+

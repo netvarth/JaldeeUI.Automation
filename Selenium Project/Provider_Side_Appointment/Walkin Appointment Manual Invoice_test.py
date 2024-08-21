@@ -45,7 +45,8 @@ def test_appt_manualinvoice(login):
         By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
     ).send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-    login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+    save_button= login.find_element(By.XPATH, "//span[contains(text(),'Save')]")
+    login.execute_script("arguments[0].click();", save_button)
     try:
 
         snack_bar = WebDriverWait(login, 10).until(
@@ -95,7 +96,7 @@ def test_appt_manualinvoice(login):
     # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
-    element.click()
+    login.execute_script("arguments[0].click();", element)
 
     service_option_xpath = (
         "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "

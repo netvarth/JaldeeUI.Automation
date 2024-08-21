@@ -465,7 +465,7 @@ def test_walkin_token(login):
     time.sleep(5)
     print("Successfully send the Payment Link to the patient")
 
-    login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
+    login.find_element(By.XPATH, "//div/span/span[contains(text(),'Tokens')]").click()
 
     while True:
         try:
@@ -517,7 +517,7 @@ def test_walkin_token(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='service']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Consultation']"))
     ).click()
 
     WebDriverWait(login, 10).until(

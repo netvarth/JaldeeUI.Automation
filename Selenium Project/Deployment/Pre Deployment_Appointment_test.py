@@ -734,7 +734,7 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("9207206005")
+        ).send_keys("920720600")
         time.sleep(2)
         login.implicitly_wait(5)
         WebDriverWait(login, 10).until(
@@ -818,7 +818,7 @@ def test_walkin_appointment(login):
             EC.element_to_be_clickable((By.XPATH, service_option_xpath))
         ).click()
         print("Select Service : Naveen Consultation")
-        time.sleep(3)
+        time.sleep(5)
         Today_Date = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (
@@ -827,6 +827,7 @@ def test_walkin_appointment(login):
                 )
             )
         )
+        login.implicitly_wait(10)
         Today_Date.click()
         print("Today Date:", Today_Date.text)
         wait = WebDriverWait(login, 10)
