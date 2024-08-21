@@ -3,7 +3,7 @@ from Framework.common_dates_utils import *
 from selenium.common import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Reschedules  to tomorrow date")
+@allure.title("Reschedule Token to tomorrow date")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_reschedule_create_patient(login):
     try:
@@ -167,10 +167,9 @@ def test_reschedule_create_patient(login):
         wait_and_locate_click(login, By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
         time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
             attachment_type=AttachmentType.PNG,
         ) 
         raise e  
