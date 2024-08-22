@@ -338,10 +338,7 @@ def test_Prescription(login):
         )
         raise e
 
-
 ####################################################### uplaod prescription #####################################################
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription upload Sharing")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
@@ -629,10 +626,7 @@ def test_Prescription_1(login):
         )
         raise e
 
-
 ############################################## Prescription Using Template #########################################
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription using Template")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
@@ -938,5 +932,5 @@ def test_Prescription_2(login):
         )
         raise e
 
-
 ##############################################################################################################################################
+  
