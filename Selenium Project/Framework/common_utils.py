@@ -140,7 +140,7 @@ def wait_and_locate_click(login, by, value, timeout=10):
     return element
 
 def wait_and_visible_click(login, by, value, timeout=10):
-    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+    element = WebDriverWait(login, timeout).until(EC.visibility_of_element_located((by, value)))
     element.click()
     return element
 
