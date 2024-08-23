@@ -83,8 +83,13 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("5555556030")
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
+<<<<<<< HEAD
     driver.find_element(By.ID, "loginId").send_keys("5551111557")
     driver.find_element(By.ID, "password").send_keys("Jaldee123")
+=======
+    driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+>>>>>>> b2140c2b8a54ea5ba9dd67e529eb1de5bc93bd51
 
 
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
