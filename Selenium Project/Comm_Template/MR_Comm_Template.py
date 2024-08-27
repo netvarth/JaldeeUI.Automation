@@ -4,21 +4,6 @@ from selenium.common import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("MR_COMM_TEMPLATE")
-
-
-
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def add_text_to_editor(login, text):
-    # Locate the rich text editor and ensure it is focused
-    editor = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']//p"))
-    )
-    login.execute_script("arguments[0].scrollIntoView(true);", editor)  # Scroll into view
-    editor.clear()
-    editor.click()  # Focus on the editor
-    editor.send_keys(text)  # Use send_keys to add text
-    print(editor.text)
-
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_create_MR_Template(login):
     try:
@@ -101,26 +86,31 @@ def test_create_MR_Template(login):
                                 option_text = option.text
                                 # Store the formatted text
                                 formatted_text[i] = option_text
-                                print(f"Selecting option: {option_text} at position {i}")
+                                # print(f"Selecting option: {option_text} at position {i}")
                                 option.click()
                                 time.sleep(1)  # Adjust the delay as needed
 
                                 # Reopen the dropdown menu
                                 wait_and_locate_click(login, By.XPATH, "//div[@class='form-group text-ceditor pointer-cursor']//span[@class='mgn-lt-5'][normalize-space()='Add Variables']")
                                 time.sleep(2)
-
+                                
                             except Exception as e:
                                 print(f"Error selecting option: {e}")
                                 break
                         # Exit if no more options can be selected
                         break
-                        
                     except Exception as e:
                         print(f"Error while interacting with dropdown: {e}")
             except Exception as e:
                 print(f"An error occurred: {e}")
                 break
-                                 
+        
+        editors = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']//p"))
+        )
+        editors.click()
+        editors.send_keys(Keys.CONTROL + 'a')  
+        editors.send_keys(Keys.DELETE)                     
          # Construct the final message with the formatted options
         editor_text = (
             f"Hello {formatted_text.get(0, '[d_var_consumerName]')}\n"
@@ -130,12 +120,11 @@ def test_create_MR_Template(login):
         )
         # Debug output
         print(f"Constructed editor text:\n{editor_text}")
-        # Add the final formatted text to the editor
-        add_text_to_editor(login, editor_text)
-        # wait_and_locate_click(login, By.XPATH, "//div[@class='actiondiv mgn-lt-10 desktop-only']//button[@type='submit'][normalize-space()='Update']")
+        editors.send_keys(editor_text)
+        wait_and_locate_click(login, By.XPATH, "//div[@class='actiondiv mgn-lt-10 desktop-only']//button[@type='submit'][normalize-space()='Update']")
         time.sleep(2)
-        # wait_and_visible_click(login, By.XPATH, "(//span[contains(text(),'Inactive')])[1]")
-        # time.sleep(2)
+        wait_and_visible_click(login, By.XPATH, "(//span[contains(text(),'Inactive')])[1]")
+        time.sleep(2)
             
 
         
