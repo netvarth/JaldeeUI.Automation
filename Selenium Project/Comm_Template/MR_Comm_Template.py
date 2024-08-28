@@ -123,7 +123,7 @@ def test_create_MR_Template(login):
         editors.send_keys(editor_text)
         time.sleep(5)
         email_subject_line = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//input[@class='col-12 input-height ng-valid ng-dirty ng-touched']"))
+            EC.presence_of_element_located((By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[1]/input[1]"))
         )
         email_subject_line.click()
         email_subject_line.send_keys("Prescription from")
@@ -135,6 +135,37 @@ def test_create_MR_Template(login):
             (By.XPATH, "//li[@aria-label='Business Name']")) 
         )
         business_name.click()
+        time.sleep(2)
+        header_notes = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[2]/input[1]"))
+        )
+        header_notes.click()
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='mgn-lt-5'][normalize-space()='Add Variables'])[3]")
+        consumer_name = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//li[@aria-label='Consumer name']")) 
+        )
+        consumer_name.click()
+        time.sleep(2)
+        salutation = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[3]/input[1]"))
+        )
+        salutation.click()
+        salutation.send_keys("Greetings!!")
+        time.sleep(2)
+        Signature = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[4]/input[1]"))
+        )
+        Signature.click()
+        Signature.send_keys("Thank you for using Jaldee")
+        time.sleep(2)
+        Footer = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[5]/input[1]"))
+        )
+        Footer.click()
+        Footer.send_keys("Powered by Jaldee business")
+        time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//div[@class='actiondiv mgn-lt-10 desktop-only']//button[@type='submit'][normalize-space()='Update']")
         time.sleep(2)
         wait_and_visible_click(login, By.XPATH, "(//span[contains(text(),'Inactive')])[1]")
