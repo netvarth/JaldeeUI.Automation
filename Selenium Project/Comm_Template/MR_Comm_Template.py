@@ -4,6 +4,15 @@ from selenium.common import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("MR_COMM_TEMPLATE")
+
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def extract_value(option_text):
+    # Assuming the format is "displayText (value)"
+    if '[' in option_text and ']' in option_text:
+        value = option_text.split('[')[-1].split(']')[0].strip()
+        return value
+    return option_text
+
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_create_MR_Template(login):
     try:
@@ -81,10 +90,11 @@ def test_create_MR_Template(login):
                                     EC.element_to_be_clickable(option)
                                 )
                                 
-                                option_text = option.value
+                                option_text = option.value  # Use .text to get the text
+                                option_value = extract_value(option_text)  # Extract the value
                                 # Store the formatted text
                                 formatted_text[i] = option_text
-                                print(f"Selecting option: {option_text} at position {i}")
+                                print(f"Selecting option with value: {option_value} at position {i}")
                                 option.click()
                                 time.sleep(1)  # Adjust the delay as needed
 
@@ -100,7 +110,7 @@ def test_create_MR_Template(login):
                     except Exception as e:
                         print(f"Error while interacting with dropdown: {e}")
             except Exception as e:
-                print(f"An error occurred: {e}")
+                # print(f"An error occurred while opening the dropdown: {e}")
                 break
         
         editors = WebDriverWait(login, 10).until(
