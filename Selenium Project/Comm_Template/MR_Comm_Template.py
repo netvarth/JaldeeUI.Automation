@@ -36,8 +36,6 @@ def test_create_MR_Template(login):
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']")
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']")
-        time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save & Next']")
         time.sleep(2)
         editors = WebDriverWait(login, 10).until(
