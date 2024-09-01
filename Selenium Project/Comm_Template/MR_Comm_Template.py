@@ -1,17 +1,25 @@
 from Framework.common_utils import *
 from Framework.common_dates_utils import *
 from selenium.common import TimeoutException
-
+import re
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("MR_COMM_TEMPLATE")
 
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def extract_value(option_text):
-    # Assuming the format is "displayText (value)"
-    if '[' in option_text and ']' in option_text:
-        value = option_text.split('[')[-1].split(']')[0].strip()
-        return value
-    return option_text
+# def extract_value(option_text):
+#     # Assuming the format is "displayText (value)"
+#     if '[' in option_text and ']' in option_text:
+#         value = option_text.split('[')[-1].split(']')[0].strip()
+#         return value
+#     return option_text
+# Define a function to extract dynamic arguments
+def extract_dynamic_arguments(text):
+    # Regular expression pattern to find dynamic arguments in square brackets
+    pattern = r'\[d_var_[^\]]+\]'
+    # Find all matches in the text
+    matches = re.findall(pattern, text)
+    return matches
+
 
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_create_MR_Template(login):
@@ -90,11 +98,14 @@ def test_create_MR_Template(login):
                                     EC.element_to_be_clickable(option)
                                 )
                                 
-                                option_text = option.value  # Use .text to get the text
-                                option_value = extract_value(option_text)  # Extract the value
+                                option_text = option.text  # Use .text to get the text
+                                print(option_text)
+                                # option_value = extract_value(option_text)  # Extract the value
+                                # print(option_value)
                                 # Store the formatted text
                                 formatted_text[i] = option_text
-                                print(f"Selecting option with value: {option_value} at position {i}")
+                                print(f"Selected option with value: {option_text} at position {i}")
+                                print(f"Current formatted_text: {formatted_text}")
                                 option.click()
                                 time.sleep(1)  # Adjust the delay as needed
 
@@ -110,7 +121,7 @@ def test_create_MR_Template(login):
                     except Exception as e:
                         print(f"Error while interacting with dropdown: {e}")
             except Exception as e:
-                # print(f"An error occurred while opening the dropdown: {e}")
+                print(f"An error occurred while opening the dropdown: {e}")
                 break
         
         editors = WebDriverWait(login, 10).until(
@@ -118,13 +129,24 @@ def test_create_MR_Template(login):
         )
         editors.click()
         editors.send_keys(Keys.CONTROL + 'a')  
-        editors.send_keys(Keys.DELETE)                     
+        editors.send_keys(Keys.DELETE)   
+        # Extract dynamic arguments from each entry in the dictionary
+        dynamic_arguments = {}
+        for key, value in formatted_text.items():
+            arguments = extract_dynamic_arguments(value)
+            if arguments:
+                dynamic_arguments[key] = arguments[0]  # Store the first match if there are multiple
+
+        # Debug output
+        print("Extracted dynamic arguments:")
+        for key, arg in dynamic_arguments.items():
+            print(f"Key {key}: {arg}")                  
          # Construct the final message with the formatted options
         editor_text = (
-            f"Hello {formatted_text.get(0, '[d_var_consumerName]')}\n"
-            f"Your {formatted_text.get(1, '[d_var_providerName]')} {formatted_text.get(2, '[d_var_business]')} has shared a prescription with you.\n"
-            f"Doctor's Note: {formatted_text.get(3, '[d_var_message]')}\n"
-            f"Link: {formatted_text.get(4, '[d_var_prescriptionLink]')}"
+            f"Hello {dynamic_arguments.get(0, '[d_var_consumerName]')}\n"
+            f"Your {dynamic_arguments.get(1, '[d_var_providerName]')} {dynamic_arguments.get(2, '[d_var_business]')} has shared a prescription with you.\n"
+            f"Doctor's Note: {dynamic_arguments.get(3, '[d_var_message]')}\n"
+            f"Link: {dynamic_arguments.get(4, '[d_var_prescriptionLink]')}"
         )
         # Debug output
         print(f"Constructed editor text:\n{editor_text}")
