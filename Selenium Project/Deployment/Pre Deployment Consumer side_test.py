@@ -481,12 +481,12 @@ def test_booking(login):
     ################## Cancel the appointment from Upcoming bookings. #################
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='fa fa-user-circle-o']")
+            (By.XPATH, "//button[@aria-haspopup='menu']")
         )
     ).click()
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Dashboard']")
+            (By.XPATH, "//span[contains(text(),'Dashboard')]")
         )
     ).click()
     WebDriverWait(login, 10).until(
