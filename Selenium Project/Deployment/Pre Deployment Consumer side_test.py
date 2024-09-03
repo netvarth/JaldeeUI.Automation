@@ -140,8 +140,8 @@ def test_booking(login):
 
     time.sleep(5)
 
-    # otp_digits = "5555"
-    otp_digits = "55555"
+    otp_digits = "5555"
+    # otp_digits = "55555"
     # Wait for the OTP input fields to be present
     otp_inputs = WebDriverWait(login, 10).until(
         EC.presence_of_all_elements_located(
@@ -478,12 +478,12 @@ def test_booking(login):
     ).click()
 
     print("Send enquriy successfully")    
-    login.implicitly_wait(5)
     ################## Cancel the appointment from Upcoming bookings. #################
+    time.sleep(5)
     time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-haspopup='menu']")
+            (By.XPATH, "//i[@class='fa fa-user-circle-o']")
         )
     ).click()
     WebDriverWait(login, 10).until(
