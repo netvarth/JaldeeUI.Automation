@@ -478,7 +478,9 @@ def test_booking(login):
     ).click()
 
     print("Send enquriy successfully")    
+    login.implicitly_wait(5)
     ################## Cancel the appointment from Upcoming bookings. #################
+    time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//i[@class='fa fa-user-circle-o']")
