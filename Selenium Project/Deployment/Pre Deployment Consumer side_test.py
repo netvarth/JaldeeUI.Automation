@@ -27,7 +27,7 @@ def login():
 
 
 def scroll_until_visible(login, element):
-    """Scroll the page until the given element is visible."""
+    #####Scroll the page until the given element is visible.#####
     while True:
         try:
             login.execute_script("arguments[0].scrollIntoView(true);", element)
