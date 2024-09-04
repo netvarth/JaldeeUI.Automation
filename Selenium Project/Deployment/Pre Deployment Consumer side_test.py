@@ -127,7 +127,7 @@ def test_booking(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-    ).send_keys("9207206005")
+    ).send_keys("5550002254")
     # WebDriverWait(login, 10).until(
     #     EC.presence_of_element_located(
     #        (By.XPATH, "//a[normalize-space()='My Bookings']")
@@ -135,13 +135,13 @@ def test_booking(login):
     # time.sleep(2)
     # WebDriverWait(login, 10).until(
     #     EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-    # ).send_keys("5550004454")
+    # ).send_keys("5550002254")
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
     time.sleep(5)
 
-    otp_digits = "5555"
-    # otp_digits = "55555"
+    # otp_digits = "5555"
+    otp_digits = "55555"
     # Wait for the OTP input fields to be present
     otp_inputs = WebDriverWait(login, 10).until(
         EC.presence_of_all_elements_located(
@@ -325,7 +325,7 @@ def test_booking(login):
 
     # Construct the absolute path
     absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
+        os.path.join(current_working_directory, r"Extras\flower.jpg")
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
@@ -361,7 +361,7 @@ def test_booking(login):
 
     # Construct the absolute path
     absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
+        os.path.join(current_working_directory, r"Extras\prescription.pdf")
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
@@ -372,12 +372,26 @@ def test_booking(login):
     ).click()
 
     print("Send attachment successfully")
-
-    ################## Rescheduling the Appointment ##################
     time.sleep(3)
+    ################## View Attachment to the Booking ##################
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Reschedule']")
+            (By.XPATH, "//span[normalize-space()='View Attachments']")
+        )
+    ).click()
+    time.sleep(2)
+
+    print("View attachment successfully")
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//i[@class='fa fa-window-close']")
+        )
+    ).click()
+    time.sleep(3)
+    ################## Rescheduling the Appointment ##################
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Reschedule']")
         )
     ).click()
 
@@ -467,7 +481,7 @@ def test_booking(login):
 
     # Construct the absolute path
     absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
+        os.path.join(current_working_directory, r"Extras\sea.jpg")
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
@@ -479,7 +493,7 @@ def test_booking(login):
 
     print("Send enquriy successfully")    
     ################## Cancel the appointment from Upcoming bookings. #################
-    time.sleep(5)
+    login.refresh()
     time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -491,12 +505,12 @@ def test_booking(login):
             (By.XPATH, "//span[contains(text(),'Dashboard')]")
         )
     ).click()
+    time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
+        EC.element_to_be_clickable(
             (By.XPATH, "//div[normalize-space()='My Bookings']")
         )
     ).click()
-
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//mat-select[@role='combobox']"))
     ).click()
@@ -515,61 +529,36 @@ def test_booking(login):
             WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(text(),'Show more')]"))).click()
             time.sleep(3)
             login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
         except:
             break
-    while True:
-        try:
-            my_Bookings = WebDriverWait(login, 10).until(
-                EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
-            )
-            if my_Bookings:
-                # Find non-canceled bookings
-                non_canceled_bookings = []
-                for booking in my_Bookings:
-                    try:
-                        # Check if booking is canceled
-                        canceled_text = booking.find_element(By.XPATH, ".//span[contains(text(),'Cancelled')]")  # Adjust XPath as needed
-                        print(canceled_text.text)
-                        if canceled_text:
-                            continue  # Skip this booking
-                    except:
-                        # Booking is not canceled, add it to the list
-                        non_canceled_bookings.append(booking)
-                        print(non_canceled_bookings.count)
-                    if non_canceled_bookings:
-                        # Select the most recent non-canceled booking
-                        last_booking = non_canceled_bookings[-1]
-                        print(last_booking.text)
-                        scroll_until_visible(login, last_booking)
-                        WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
-                        WebDriverWait(login, 10).until(
-                            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Cancel']"))
-                        ).click()
-                        time.sleep(2)
-                        WebDriverWait(login, 10).until(
-                            EC.presence_of_element_located(
-                                (By.XPATH, "//mat-chip[normalize-space()='Change of Plans']")
-                            )
-                        ).click()
-                        time.sleep(2)
-                        WebDriverWait(login, 10).until(
-                            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))
-                        ).click()
-                        print("Appointment cancelled successfully")
-                        time.sleep(3)
-                    else:
-                        print("No non-canceled bookings found. Waiting for new bookings to load...")
-                        time.sleep(3)
-                        WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(text(),'Show more')]"))).click()
-                        # Try clicking 'Show more' again
-                        time.sleep(3)
-            else:
-                print("No bookings found.")
-                break
-                    
-        except Exception as e:
-            print(f"Exception while processing bookings: {e}")
-            break
+    my_Bookings = WebDriverWait(login, 10).until(
+        EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
+    )
+    if my_Bookings:
+            last_booking = my_Bookings[-1]
+            # Ensure the last booking is visible and clickable
+            scroll_until_visible(login, last_booking)
+            WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
+            WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Cancel']"))
+            ).click()
+            time.sleep(2)
+            WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//mat-chip[normalize-space()='Change of Plans']")
+                )
+            ).click()
+            time.sleep(2)
+            WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))
+            ).click()
+            print("Appointment cancelled successfully")
+            time.sleep(3)
+    else:
+        print("No bookings found. Waiting for new bookings to load...")
+        time.sleep(3)
+    
                 
     # time.sleep(5)
     # WebDriverWait(login, 10).until(
