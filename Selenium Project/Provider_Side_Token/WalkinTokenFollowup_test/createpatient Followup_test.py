@@ -632,6 +632,31 @@ def test_followup_create_patient_futuredays(login):
         EC.presence_of_element_located((By.XPATH, day_xpath))
     ).click()
     time.sleep(3)
+    uploadfile = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Upload File']")
+        )
+    )
+    uploadfile.click()
+    time.sleep(3)
+    # Get the current working directory
+    current_working_directory = os.getcwd()
+
+    # Construct the absolute path
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\prescription.pdf")
+    )
+    pyautogui.write(absolute_path)
+    pyautogui.press("enter")
+    time.sleep(3)
+    uploadfileaccordion = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//label[contains(text(),'Files selected')]")
+        )
+    )
+    uploadfileaccordion.click()
+    print("Uploaded File Successfully")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Confirm']")
