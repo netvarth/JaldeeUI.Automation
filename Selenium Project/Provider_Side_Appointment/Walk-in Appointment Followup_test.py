@@ -5,7 +5,7 @@ from Framework.common_dates_utils import *
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup for Sameday")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def followup_sameday(login):
+def test_followup_sameday(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -382,6 +382,25 @@ def test_followup_nextday(login):
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Upload File']")
+        )
+    ).click()
+
+    time.sleep(4)
+    # Get the current working directory
+    current_working_directory = os.getcwd()
+
+    # Construct the absolute path
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\prescription.pdf")
+    )
+    pyautogui.write(absolute_path)
+    pyautogui.press("enter")
+
+    time.sleep(4)
 
     confirm_button = WebDriverWait(login, 30).until(
         EC.presence_of_element_located(
