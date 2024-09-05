@@ -455,7 +455,7 @@ def test_booking(login):
     time.sleep(3)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     confirmation_button = WebDriverWait(login, 10).until(
-    EC.element_to_be_clickable((By.CSS_SELECTOR, "button.confirmationBtn"))
+    EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Ok']"))
     )
     confirmation_button.click()
     print("Appointment Rescheduled successfully")
@@ -488,11 +488,12 @@ def test_booking(login):
     print("Successfully upload the file")
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Send')]"))
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'sendBtn')]"))
     ).click()
 
+
     print("Send enquriy successfully")    
-    ################## Cancel the appointment from Upcoming bookings. #################
+    ################# Cancel the appointment from Upcoming bookings. #################
     login.refresh()
     time.sleep(5)
     WebDriverWait(login, 10).until(
@@ -532,53 +533,59 @@ def test_booking(login):
 
         except:
             break
-    my_Bookings = WebDriverWait(login, 10).until(
-        EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
-    )
-    if my_Bookings:
-            last_booking = my_Bookings[-1]
-            # Ensure the last booking is visible and clickable
-            scroll_until_visible(login, last_booking)
-            WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
-            WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Cancel']"))
-            ).click()
-            time.sleep(2)
-            WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//mat-chip[normalize-space()='Change of Plans']")
-                )
-            ).click()
-            time.sleep(2)
-            WebDriverWait(login, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))
-            ).click()
-            print("Appointment cancelled successfully")
-            time.sleep(3)
-    else:
-        print("No bookings found. Waiting for new bookings to load...")
-        time.sleep(3)
-    
-                
-    # time.sleep(5)
-    # WebDriverWait(login, 10).until(
-    #     EC.element_to_be_clickable((By.XPATH, "//a[@class='show_more']"))
-    # ).click()
+    while True:
+        try:
+            my_Bookings = WebDriverWait(login, 10).until(
+                EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
+            )
+            if not my_Bookings:
+                print("No bookings found.")
+                break
 
-    # time.sleep(3)
+            booking_found = False
 
-    # Locate the booking with the same ID
-    # booking_to_cancel = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, f"//div[contains(text(), '{booking_id}')]")
-    #     )
-    # )
-    # booking_to_cancel.click()
+            # Iterate from the last booking to the first
+            for i in range(len(my_Bookings) - 1, -1, -1):
+                last_booking = my_Bookings[i]
+                scroll_until_visible(login, last_booking)
 
-    # time.sleep(2)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//mat-icon[@role='img'][last()]"))
-    # ).click()
+                # Construct XPath expressions for status and confirmed based on index
+                status_xpath = f"(//div[@class='cstmTxt field-head'][normalize-space()='Status'])[position()={i+1}]"
+                confirmed_xpath = f"(//span[@class='greenc ng-star-inserted'][normalize-space()='Confirmed'])[position()={i+1}]"
 
-    # time.sleep(2)
+                try:
+                    status_element = login.find_element(By.XPATH, status_xpath)
+                    confirmed_element = login.find_element(By.XPATH, confirmed_xpath)
+
+                    # Check if the status is 'Confirmed'
+                    if status_element.text.strip() == "Status" and confirmed_element.text.strip() == "Confirmed":
+                        WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
+
+                        WebDriverWait(login, 10).until(
+                            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Cancel']"))
+                        ).click()
+                        time.sleep(2)
+
+                        WebDriverWait(login, 10).until(
+                            EC.presence_of_element_located((By.XPATH, "//mat-chip[normalize-space()='Change of Plans']"))
+                        ).click()
+                        time.sleep(2)
+
+                        WebDriverWait(login, 10).until(
+                            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))
+                        ).click()
+
+                        print("Appointment cancelled successfully")
+                        booking_found = True
+                        break  # Exit the loop after successfully canceling
+                except Exception as e:
+                    print(f"Error processing booking {i}: {e}")
+
+            if not booking_found:
+                print("No confirmed bookings found.")
+                break  # Exit if no confirmed bookings were found
+
+        except Exception as e:
+            print(f"Error in processing bookings: {e}")
+            break
     
