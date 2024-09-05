@@ -149,7 +149,7 @@ def test_signup_appointment_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[2]"))
     ).send_keys(consumer_data['last_name'])
-    print("New Consumer Lastname\t", consumer_data['last_name'])
+    print("New Consumer Lastname\:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
     time.sleep(5)
     consumer_notes = WebDriverWait(login, 10).until(
@@ -183,7 +183,7 @@ def test_signup_appointment_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
-    print("New Consumer token booking confirmed successfully")
+    print("New Consumer Appointment booking confirmed successfully")
     time.sleep(3)
 
 
@@ -291,7 +291,7 @@ def test_signup_token_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[2]"))
     ).send_keys(consumer_data['last_name'])
-    print("New Consumer Lastname\t", consumer_data['last_name'])
+    print("New Consumer Lastname\:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
     time.sleep(5)
     consumer_notes = WebDriverWait(login, 10).until(
