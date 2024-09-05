@@ -33,7 +33,7 @@ def create_consumer_data():
     last_name = fake.last_name()
     random_digits = fake.numerify(text="#######")
     phonenumber = f"555{random_digits}"
-    test_mail = "@example.com"  # Define a domain or use a placeholder
+    test_mail = "@jaldee.com"  # Define a domain or use a placeholder
     email = f"{first_name}.{last_name}{test_mail}"
     
     return {
