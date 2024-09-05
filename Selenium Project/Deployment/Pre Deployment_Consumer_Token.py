@@ -196,95 +196,95 @@ def test_consumer_token_booking(login):
         print("No bookings found. Waiting for new bookings to load...")
     #     time.sleep(3)
     # ######################### Sending Message from consumer side ################################
-    # time.sleep(2)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//button[normalize-space()='Send Message']")
-    #     )
-    # ).click()
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Send Message']")
+        )
+    ).click()
 
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//textarea[@id='message']"))
-    # ).send_keys(" Message to the provider ")
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//textarea[@id='message']"))
+    ).send_keys(" Message to the provider ")
 
-    # time.sleep(2)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (
-    #             By.XPATH,
-    #             "//button[@type='button']//i[@class='material-icons'][normalize-space()='attach_file']",
-    #         )
-    #     )
-    # ).click()
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//button[@type='button']//i[@class='material-icons'][normalize-space()='attach_file']",
+            )
+        )
+    ).click()
 
-    # time.sleep(3)
-    # # Get the current working directory
-    # current_working_directory = os.getcwd()
+    time.sleep(3)
+    # Get the current working directory
+    current_working_directory = os.getcwd()
 
-    # # Construct the absolute path
-    # absolute_path = os.path.abspath(
-    #     os.path.join(current_working_directory, r"Extras\flower.jpg")
-    # )
-    # pyautogui.write(absolute_path)
-    # pyautogui.press("enter")
+    # Construct the absolute path
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\flower.jpg")
+    )
+    pyautogui.write(absolute_path)
+    pyautogui.press("enter")
 
-    # print("Successfully upload the file")
+    print("Successfully upload the file")
 
-    # time.sleep(3)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']")
-    #     )
-    # ).click()
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']")
+        )
+    ).click()
 
-    # print("Send message successfully")
-    # ################## Sending attachment to provider #################
-    # time.sleep(3)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//button[i[contains(text(),'attach_file')] and contains(text(), 'Send Attachments')]")
-    #     )
-    # ).click()
+    print("Send message successfully")
+    ################## Sending attachment to provider #################
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[i[contains(text(),'attach_file')] and contains(text(), 'Send Attachments')]")
+        )
+    ).click()
 
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//label[normalize-space()='Click here to select the files']")
-    #     )
-    # ).click()
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//label[normalize-space()='Click here to select the files']")
+        )
+    ).click()
 
-    # time.sleep(3)
-    # # Get the current working directory
-    # current_working_directory = os.getcwd()
+    time.sleep(3)
+    # Get the current working directory
+    current_working_directory = os.getcwd()
 
-    # # Construct the absolute path
-    # absolute_path = os.path.abspath(
-    #     os.path.join(current_working_directory, r"Extras\prescription.pdf")
-    # )
-    # pyautogui.write(absolute_path)
-    # pyautogui.press("enter")
-    # print("Successfully upload the file")
+    # Construct the absolute path
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\prescription.pdf")
+    )
+    pyautogui.write(absolute_path)
+    pyautogui.press("enter")
+    print("Successfully upload the file")
 
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='send']"))
-    # ).click()
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='send']"))
+    ).click()
 
-    # print("Send attachment successfully")
-    # time.sleep(3)
-    # ################## View Attachment to the Booking ##################
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//button[i[text()='attach_file'] and contains(text(), 'View Attachments')]")
-    #     )
-    # ).click()
-    # time.sleep(2)
+    print("Send attachment successfully")
+    time.sleep(3)
+    ################## View Attachment to the Booking ##################
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[i[text()='attach_file'] and contains(text(), 'View Attachments')]")
+        )
+    ).click()
+    time.sleep(2)
 
-    # print("View attachment successfully")
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//i[@class='fa fa-window-close']")
-    #     )
-    # ).click()
-    # time.sleep(3)
+    print("View attachment successfully")
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//i[@class='fa fa-window-close']")
+        )
+    ).click()
+    time.sleep(3)
     ################## Rescheduling the Token ##################
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -374,7 +374,7 @@ def test_consumer_token_booking(login):
     print("Successfully upload the file")
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Send')]"))
+        EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'sendBtn')]"))
     ).click()
 
     print("Send enquriy successfully")
