@@ -366,11 +366,10 @@ def test_booking(login):
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
     print("Successfully upload the file")
-
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='send']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='send']"))
     ).click()
-
     print("Send attachment successfully")
     time.sleep(3)
     ################## View Attachment to the Booking ##################
@@ -486,12 +485,10 @@ def test_booking(login):
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
     print("Successfully upload the file")
-
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'sendBtn')]"))
+        EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted']"))
     ).click()
-
-
     print("Send enquriy successfully")    
     ################# Cancel the appointment from Upcoming bookings. #################
     login.refresh()
@@ -586,6 +583,6 @@ def test_booking(login):
                 break  # Exit if no confirmed bookings were found
 
         except Exception as e:
-            print(f"Error in processing bookings: {e}")
+            # print(f"Error in processing bookings: {e}")
             break
     
