@@ -114,7 +114,7 @@ def test_consumer_token_booking(login):
     login.execute_script("arguments[0].scrollIntoView(true);", next_button)
     time.sleep(3)
     next_button.click()
-    time.sleep(3)
+    time.sleep(3)  
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
     ).send_keys("5550033354")
