@@ -638,7 +638,9 @@ def test_account_signup():
     login.implicitly_wait(3)
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     # File path
-    file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
+    file_path = r"E:\SeleiumProject\JaldeeUI.Automation\Selenium Project\Data\number.txt"
+
+    # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
 
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     print("value to be written to file", phonenumber)
