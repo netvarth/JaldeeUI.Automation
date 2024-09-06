@@ -77,7 +77,7 @@ def test_Prescription(login):
         print("Select user : Naveen")
 
         service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        element = login.find_element(By.XPATH, service_dropdown_xpath)
+        element = login.find_element(By.XPATH, "//span[normalize-space()='Add the sections you need for this medical record']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
