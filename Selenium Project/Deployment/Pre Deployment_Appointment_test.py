@@ -637,6 +637,7 @@ def test_account_signup():
     element_appoint.click()
     login.implicitly_wait(3)
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
     login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
     # login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)

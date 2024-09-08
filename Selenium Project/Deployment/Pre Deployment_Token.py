@@ -50,6 +50,7 @@ def test_walkin_token(login):
     element.click()
     
     # File path
+<<<<<<<<< Temporary merge branch 1
     # file_path = r"E:\SeleiumProject\JaldeeUI.Automation\Selenium Project\Data\number.txt"
 
     file_path = r"D:\workspace\JaldeeUI.Automation\Selenium Project\Data\number.txt"
@@ -440,6 +441,17 @@ def test_walkin_token(login):
     )
     message = toast_message.text
     print("Toast Message:", message)
+=========
+    element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+    login.execute_script("arguments[0].scrollIntoView();", element)
+    element.click()
+
+    # toast_message = WebDriverWait(login, 10).until(
+    #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    # )
+    # message = toast_message.text
+    # print("Toast Message:", message)
+>>>>>>>>> Temporary merge branch 2
 
     time.sleep(3)
 
@@ -875,6 +887,14 @@ def test_walkin_token(login):
         EC.presence_of_element_located(
             (By.XPATH, "//button[contains(text(),'Share')]")
         )
+=========
+    login.find_element(By.XPATH, "//span[contains(text(),'Email')]").click()
+    login.find_element(By.XPATH, "//span[contains(text(),'Whatsapp')]").click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Share')]"))
+>>>>>>>>> Temporary merge branch 2
     ).click()
 
     toast_message = WebDriverWait(login, 10).until(
@@ -1208,5 +1228,7 @@ def test_walkin_token(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Ok']"))
     ).click()
+    
     time.sleep(5)
+    
     print("Successfully Cancel Token")
