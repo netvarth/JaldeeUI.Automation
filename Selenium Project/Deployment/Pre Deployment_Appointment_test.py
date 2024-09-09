@@ -1058,7 +1058,7 @@ def test_walkin_appointment(login):
 
         # print("Attachment Send Successfully")
 
-        # ********************* Create the Prescription and Sharing *************************
+        # ********************* Create the Prescription and Sharing ******************************
 
         time.sleep(5)
         WebDriverWait(login, 10)
