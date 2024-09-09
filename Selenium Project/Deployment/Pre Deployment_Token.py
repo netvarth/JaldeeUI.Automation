@@ -8,10 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_walkin_token(login):
     time.sleep(5)
-<<<<<<< HEAD
-=======
     
->>>>>>> 0b4e054c11271cf2107c2b8a807f8672ff6c0d93
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable((By.XPATH, "//span[contains(text(),'Tokens')]"))
     ).click()
@@ -52,16 +49,11 @@ def test_walkin_token(login):
     )
     element.click()
     
-    # File path
-<<<<<<<<< Temporary merge branch 1
+
     # file_path = r"E:\SeleiumProject\JaldeeUI.Automation\Selenium Project\Data\number.txt"
 
     file_path = r"D:\workspace\JaldeeUI.Automation\Selenium Project\Data\number.txt"
-=========
-    file_path = r"E:\SeleiumProject\JaldeeUI.Automation\Selenium Project\Data\number.txt"
 
-    # file_path = r"D:\workspace\JaldeeUI.Automation\Selenium Project\Data\number.txt"
->>>>>>>>> Temporary merge branch 2
     # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
     with open(file_path, "r") as file:
         phonenumber = file.read()
@@ -84,36 +76,7 @@ def test_walkin_token(login):
         )
     ).click()
 
-<<<<<<<<< Temporary merge branch 1
-    
 
-=========
-    # time.sleep(3)
-    # wait = WebDriverWait(login, 10)
-    # element_appoint = wait.until(EC.presence_of_element_located(
-    #     (By.XPATH, "//b[contains(text(),'Create New Patient')]")))
-    # element_appoint.click()
-    # login.implicitly_wait(3)
-    # first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-
-    # # File path
-    # file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
-
-    # # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
-    # print("value to be written to file", phonenumber)
-    # with open(file_path, 'w') as file:
-    # # Write the value to the file
-    #     file.write(phonenumber)
-    # print("value written to file", phonenumber)
-    # login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
-    # login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
-    # login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
-    # login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
-    # login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
-    # login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-    # login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
-
->>>>>>>>> Temporary merge branch 2
     login.implicitly_wait(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
@@ -402,15 +365,12 @@ def test_walkin_token(login):
 
     option_element.click()
 
-<<<<<<<<< Temporary merge branch 1
+
     WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Save']"))
     ).click()
-    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-=========
-    login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
->>>>>>>>> Temporary merge branch 2
+    
     time.sleep(5)
     print("prescription created successfully")
 
@@ -432,20 +392,16 @@ def test_walkin_token(login):
 
     time.sleep(5)
     WebDriverWait(login, 10).until(
-<<<<<<<<< Temporary merge branch 1
+
             EC.element_to_be_clickable(
                 (By.XPATH, "//span[normalize-space()='Patient Record']")
             )
         ).click()
 
     login.implicitly_wait(5)
-=========
-        EC.element_to_be_clickable(
-            (By.XPATH, "//span[normalize-space()='Patient Record']")
-        )
-    ).click()
 
->>>>>>>>> Temporary merge branch 2
+
+
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='+ Create Case']")
@@ -459,17 +415,12 @@ def test_walkin_token(login):
     ).send_keys("test case for case")
 
     WebDriverWait(login, 10).until(
-<<<<<<<<< Temporary merge branch 1
+
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Save']")
         )
     ).click()
     # time.sleep(1)
-=========
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
-    ).click()
-
->>>>>>>>> Temporary merge branch 2
     # toast_message = WebDriverWait(login, 10).until(
     #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
     # )
@@ -484,7 +435,7 @@ def test_walkin_token(login):
         )
     ).send_keys("Fever")
 
-<<<<<<<<< Temporary merge branch 1
+
     element = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Save']"))
@@ -496,17 +447,17 @@ def test_walkin_token(login):
     )
     message = toast_message.text
     print("Toast Message:", message)
-=========
-    element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-    login.execute_script("arguments[0].scrollIntoView();", element)
-    element.click()
+
+    # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+    # login.execute_script("arguments[0].scrollIntoView();", element)
+    # element.click()
 
     # toast_message = WebDriverWait(login, 10).until(
     #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
     # )
     # message = toast_message.text
     # print("Toast Message:", message)
->>>>>>>>> Temporary merge branch 2
+
 
     time.sleep(3)
 
@@ -516,15 +467,11 @@ def test_walkin_token(login):
         )
     ).click()
 
-<<<<<<<<< Temporary merge branch 1
+
     login.find_element(
         By.XPATH, "//input[@placeholder ='Enter History']"
     ).send_keys("viral fever")
-=========
-    login.find_element(By.XPATH, "//input[@placeholder ='Enter History']").send_keys(
-        "viral fever"
-    )
->>>>>>>>> Temporary merge branch 2
+
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -538,19 +485,12 @@ def test_walkin_token(login):
 
     # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
-<<<<<<<<< Temporary merge branch 1
     toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
     )
     message = toast_message.text
     print("Toast Message:", message)
-=========
-    # toast_message = WebDriverWait(login, 10).until(
-    #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    # )
-    # message = toast_message.text
-    # print("Toast Message:", message)
->>>>>>>>> Temporary merge branch 2
+
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -558,15 +498,11 @@ def test_walkin_token(login):
         )
     ).click()
 
-<<<<<<<<< Temporary merge branch 1
+
     login.find_element(
         By.XPATH, "//input[@placeholder='Enter Medication'] "
     ).send_keys("no medication")
-=========
-    login.find_element(By.XPATH, "//input[@placeholder='Enter Medication'] ").send_keys(
-        "no medication"
-    )
->>>>>>>>> Temporary merge branch 2
+
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -628,41 +564,21 @@ def test_walkin_token(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-<<<<<<<<< Temporary merge branch 1
+
             (By.XPATH, "//button[normalize-space()='Treatment Plan']"))
-=========
-            (By.XPATH, "//button[normalize-space()='Immunization History']")
-        )
-    ).click()
-    login.find_element(
-        By.XPATH, "//input[@placeholder='Enter Immunization History']"
-    ).send_keys("No History of Immunization History")
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//span[@class='mdc-list-item__primary-text'][normalize-space()='no history of immunization history']",
-            )
-        )
->>>>>>>>> Temporary merge branch 2
-    ).click()
+        ).click()
+
+   
     
 
-<<<<<<<<< Temporary merge branch 1
     treat_name = "Treatment" + str(uuid.uuid4())[:4]
     treat_namebox = WebDriverWait(login, 10).until(
     EC.presence_of_element_located((By.XPATH, "//input[@role='searchbox']"))
-=========
-    element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-    login.execute_script("arguments[0].scrollIntoView();", element)
-    element.click()
-
-    # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+    )
 
     toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
->>>>>>>>> Temporary merge branch 2
+
     )
     treat_namebox.clear()
     treat_namebox.send_keys(treat_name)
@@ -801,11 +717,9 @@ def test_walkin_token(login):
         )
     ).click()
 
-<<<<<<<<< Temporary merge branch 1
+
     time.sleep(3)
     
-=========
->>>>>>>>> Temporary merge branch 2
     login.find_element(
         By.XPATH, "//input[@placeholder='Enter Observations']"
     ).send_keys("Minor fever")
@@ -835,15 +749,10 @@ def test_walkin_token(login):
         )
     ).click()
 
-<<<<<<<<< Temporary merge branch 1
     login.find_element(
         By.XPATH, "//input[@placeholder='Enter Diagnosis']"
     ).send_keys("High temperature")
-=========
-    login.find_element(By.XPATH, "//input[@placeholder='Enter Diagnosis']").send_keys(
-        "High temperature"
-    )
->>>>>>>>> Temporary merge branch 2
+
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -865,7 +774,7 @@ def test_walkin_token(login):
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
-<<<<<<<<< Temporary merge branch 1
+
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Prescription']")
         )
@@ -972,12 +881,9 @@ def test_walkin_token(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'Share')]")
-        )
-=========
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Share')]"))
->>>>>>>>> Temporary merge branch 2
-    ).click()
+            (By.XPATH, "//span[contains(text(),'Share')]"))
+
+        ).click()
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -986,7 +892,6 @@ def test_walkin_token(login):
         )
     ).send_keys("case sharing testing")
 
-<<<<<<<<< Temporary merge branch 1
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[contains(text(),'Email')]"))
@@ -996,23 +901,7 @@ def test_walkin_token(login):
         EC.presence_of_element_located(
             (By.XPATH, "//span[contains(text(),'Whatsapp')]"))
     ).click()
-    # login.find_element(By.XPATH, "//span[contains(text(),'Email')]").click()
-    # login.find_element(By.XPATH, "//span[contains(text(),'Whatsapp')]").click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[contains(text(),'Share')]")
-        )
-=========
-    login.find_element(By.XPATH, "//span[contains(text(),'Email')]").click()
-    login.find_element(By.XPATH, "//span[contains(text(),'Whatsapp')]").click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Share')]"))
->>>>>>>>> Temporary merge branch 2
-    ).click()
+   
 
     toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
@@ -1020,11 +909,7 @@ def test_walkin_token(login):
     message = toast_message.text
     print("Toast Message:", message)
 
-<<<<<<<<< Temporary merge branch 1
-    # print("Case file Shared successfully")
 
-=========
->>>>>>>>> Temporary merge branch 2
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//i[@class='pi pi-arrow-left back-btn-arrow']")
