@@ -539,7 +539,7 @@ def test_booking(login):
                 print("No bookings found.")
                 break
 
-            booking_found = False
+            Confirmed_booking_found = False # Confirmed_booking  is not processed
 
             # Iterate from the last booking to the first
             for i in range(len(my_Bookings) - 1, -1, -1):
@@ -573,14 +573,14 @@ def test_booking(login):
                         ).click()
 
                         print("Appointment cancelled successfully")
-                        booking_found = True
+                        Confirmed_booking_found = True # Confirmed_booking_found booking is  processed 
                         break  # Exit the loop after successfully canceling
                 except Exception as e:
                     print(f"Error processing booking {i}: {e}")
 
-            if not booking_found:
-                print("No confirmed bookings found.")
-                break  # Exit if no confirmed bookings were found
+            if not Confirmed_booking_found:
+                print("No need to processed further Confirmed booking")
+                break  # While loop exit
 
         except Exception as e:
             # print(f"Error in processing bookings: {e}")

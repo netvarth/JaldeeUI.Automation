@@ -55,8 +55,8 @@ def test_consumer_token_booking(login):
         clickable_book_now_button.click()
     except:
         login.execute_script("arguments[0].click();", clickable_book_now_button)
-        wait = WebDriverWait(login, 10)
-    location_button = wait.until(
+        # wait = WebDriverWait(login, 10)
+    location_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
                 By.XPATH,
@@ -66,8 +66,8 @@ def test_consumer_token_booking(login):
     )
     location_button.click()
 
-    wait = WebDriverWait(login, 10)
-    depart_button = wait.until(
+    # wait = WebDriverWait(login, 10)
+    depart_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (
                 By.XPATH,
@@ -77,8 +77,8 @@ def test_consumer_token_booking(login):
     )
     depart_button.click()
 
-    wait = WebDriverWait(login, 10)
-    wait.until(
+    # wait = WebDriverWait(login, 10)
+    WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]")
         )
@@ -118,6 +118,14 @@ def test_consumer_token_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
     ).send_keys("5550033354")
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #        (By.XPATH, "//a[normalize-space()='My Bookings']")
+    #     )).click()
+    # time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+    # ).send_keys("5550033354")
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
     time.sleep(5)
@@ -194,7 +202,7 @@ def test_consumer_token_booking(login):
             WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
     else:
         print("No bookings found. Waiting for new bookings to load...")
-    #     time.sleep(3)
+        time.sleep(3)
     # ######################### Sending Message from consumer side ################################
     time.sleep(2)
     WebDriverWait(login, 10).until(
@@ -285,14 +293,16 @@ def test_consumer_token_booking(login):
         )
     ).click()
     time.sleep(3)
-    ################## Rescheduling the Token ##################
+    ################# Rescheduling the Token ##################
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Reschedule']")
         )
     ).click()
-
+    time.sleep(2)
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
     today_date = datetime.now()
     tomorrow_date = today_date + timedelta(days=1)
     current_month_year = WebDriverWait(login, 10).until(
@@ -310,22 +320,21 @@ def test_consumer_token_booking(login):
         tomorrow_date.day
     )
     print(tomorrow_xpath_expression)
-
     Tomorrow_Date = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
+        EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
     )
     Tomorrow_Date.click()
-
     print("Tomorrow Date:", Tomorrow_Date.text)
-    
-    time.sleep(2)
     queue = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//span[normalize-space()='00:00 AM - 11:59 PM']")
+        EC.visibility_of_element_located(
+            (By.XPATH, "//mat-chip[@role='option']")
         )
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", queue)
+    time.sleep(2)
     queue.click()
     print("Queue:", queue.text)
+    time.sleep(2)
     next_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Next']")
@@ -374,11 +383,11 @@ def test_consumer_token_booking(login):
     print("Successfully upload the file")
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'sendBtn')]"))
+        EC.presence_of_element_located((By.XPATH, "//button[@type='button']//span[@class='mat-button-wrapper']"))
     ).click()
 
     print("Send enquriy successfully")
-    ################## Cancel the appointment from Upcoming bookings. #################
+    ################# Cancel the Token from Upcoming bookings. #################
     login.refresh()
     time.sleep(5)
     WebDriverWait(login, 10).until(
@@ -418,32 +427,61 @@ def test_consumer_token_booking(login):
 
         except:
             break
-    my_Bookings = WebDriverWait(login, 10).until(
-        EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
-    )
-    if my_Bookings:
-            last_booking = my_Bookings[-1]
-            # Ensure the last booking is visible and clickable
-            scroll_until_visible(login, last_booking)
-            WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
-            WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Cancel']"))
-            ).click()
-            time.sleep(2)
-            WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//mat-chip[normalize-space()='Change of Plans']")
-                )
-            ).click()
-            time.sleep(2)
-            WebDriverWait(login, 10).until(
-                EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))
-            ).click()
-            print("Appointment cancelled successfully")
-            time.sleep(3)
-    else:
-        print("No bookings found. Waiting for new bookings to load...")
-        time.sleep(3)
+    while True:
+        try:
+            my_Bookings = WebDriverWait(login, 10).until(
+                EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
+            )
+            if not my_Bookings:
+                print("No bookings found.")
+                break
+
+            Checked_in_booking_found = False #Checked in booking is not processed 
+
+            # Iterate from the last booking to the first
+            for i in range(len(my_Bookings) - 1, -1, -1):
+                last_booking = my_Bookings[i]
+                scroll_until_visible(login, last_booking)
+
+                # Construct XPath expressions for status and Checked in based on index
+                status_xpath = f"(//div[@class='cstmTxt field-head'][normalize-space()='Status'])[position()={i+1}]"
+                checked_in_xpath = f"(//span[@class='greenc ng-star-inserted'][normalize-space()='Checked in'])[position()={i+1}]"
+
+                try:
+                    status_element = login.find_element(By.XPATH, status_xpath)
+                    checked_in_element = login.find_element(By.XPATH, checked_in_xpath)
+
+                    # Check if the status is 'Checked-in'
+                    if status_element.text.strip() == "Status" and checked_in_element.text.strip() == "Checked in":
+                        WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
+                        time.sleep(1)
+                        WebDriverWait(login, 10).until(
+                            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Cancel']"))
+                        ).click()
+                        time.sleep(2)
+
+                        WebDriverWait(login, 10).until(
+                            EC.presence_of_element_located((By.XPATH, "//mat-chip[normalize-space()='Change of Plans']"))
+                        ).click()
+                        time.sleep(2)
+
+                        WebDriverWait(login, 10).until(
+                            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Confirm']"))
+                        ).click()
+
+                        print("Token cancelled successfully")
+                        Checked_in_booking_found = True #Checked in booking is  processed 
+                        break  # Exit the for loop after successfully canceling
+                except Exception as e:
+                    print(f"Error processing booking {i}: {e}")
+
+            if not Checked_in_booking_found:
+                print("No need to processed further Checked in booking")
+                break  ### While loop exit
+
+        except Exception as e:
+            print(f"Error in processing bookings: {e}")
+            break
     
 
 
