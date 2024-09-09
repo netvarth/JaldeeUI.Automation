@@ -949,7 +949,7 @@ def test_walkin_token(login):
     )
     last_element_in_accordian.click()
 
-    # # ************************* Auto Invoice and Sharing ************************
+    # # ************************* Auto Invoice and Sharing ****************************
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
