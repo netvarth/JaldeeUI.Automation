@@ -22,6 +22,9 @@ from allure_commons.types import AttachmentType
 import os
 from selenium.webdriver.firefox.service import Service
 from webdriver_manager.firefox import GeckoDriverManager
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
 
 
 scale_url = "https://scale.jaldee.com/business/"
@@ -80,20 +83,13 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("5550005540")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
 
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
     # driver.find_element(By.ID, "loginId").send_keys("5555523479")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    # # driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    # # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5551111557")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     driver.find_element(By.ID, "loginId").send_keys("5555556030")
     driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("5551111557")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
+    # driver.find_element(By.ID, "loginId").send_keys("5555557799")
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
 
