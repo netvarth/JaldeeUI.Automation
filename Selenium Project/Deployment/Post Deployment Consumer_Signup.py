@@ -48,27 +48,19 @@ def create_consumer_data():
 def test_signup_appointment_booking(login):
     consumer_data = create_consumer_data()
     time.sleep(5)
-    # Scroll to the element
     book_now_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Book Now']")
         )
     )
     login.execute_script("arguments[0].scrollIntoView();", book_now_button)
-
-    # Wait for the element to be clickable
     clickable_book_now_button = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
     )
-
-    # Attempt to click the element
     try:
         clickable_book_now_button.click()
     except:
-        # If click is intercepted, click using JavaScript
         login.execute_script("arguments[0].click();", clickable_book_now_button)
-
-
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -166,7 +158,6 @@ def test_signup_appointment_booking(login):
 def test_signup_token_booking(login):
     consumer_data = create_consumer_data()
     time.sleep(5)
-    # Scroll to the element
     book_now_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Book Now']")
@@ -174,19 +165,13 @@ def test_signup_token_booking(login):
     )
     login.execute_script("arguments[0].scrollIntoView();", book_now_button)
 
-    # Wait for the element to be clickable
     clickable_book_now_button = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
     )
-
-    # Attempt to click the element
     try:
         clickable_book_now_button.click()
     except:
-        # If click is intercepted, click using JavaScript
         login.execute_script("arguments[0].click();", clickable_book_now_button)
-
-
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
