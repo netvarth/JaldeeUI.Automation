@@ -742,7 +742,7 @@ def test_appt_started(login):
             (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[3]/input[1]"))
     ).send_keys("Hello")
     
-    
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[@class='actiondiv mgn-lt-10 desktop-only']//button[@class='cs-btn btn btn-primary btn-transform']"))
@@ -825,3 +825,9 @@ def test_appt_started(login):
     print("Toast Message:", message)
 
     time.sleep(3)
+    
+    
+    
+    ############
+    
+    
