@@ -270,7 +270,7 @@ def test_signup_token_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
-    print("New Consumer Appointment booking confirmed successfully")
+    print("New Consumer Token booking confirmed successfully")
     time.sleep(3)
 
 
@@ -384,9 +384,9 @@ def test_signup_familymember_appointment_booking(login):
     time.sleep(3)
     consumer_data = create_consumer_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(consumer_data['first_name'])
-    print("New Consumer Firstname:", consumer_data['first_name'])
+    print("Add Familymember Firstname:", consumer_data['first_name'])
     login.find_element(By.XPATH, "//input[@id='lastname']").send_keys(consumer_data['last_name'])
-    print("New Consumer Lastname:", consumer_data['last_name'])
+    print("Add Familymember Lastname:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//button[normalize-space()='Ok']").click()
     time.sleep(3)
     family_member_radio_button = WebDriverWait(login, 10).until(
@@ -434,7 +434,7 @@ def test_signup_familymember_appointment_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
-    print("New Consumer Appointment booking confirmed successfully")
+    print("Add Familymember Appointment booking confirmed successfully")
     time.sleep(3)
 
 
@@ -551,9 +551,9 @@ def test_signup_token_familymember_booking(login):
     time.sleep(3)
     consumer_data = create_consumer_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(consumer_data['first_name'])
-    print("New Consumer Firstname:", consumer_data['first_name'])
+    print("Add Familymember Firstname:", consumer_data['first_name'])
     login.find_element(By.XPATH, "//input[@id='lastname']").send_keys(consumer_data['last_name'])
-    print("New Consumer Lastname:", consumer_data['last_name'])
+    print("Add Familymember Lastname:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//button[normalize-space()='Ok']").click()
     time.sleep(3)
     family_member_radio_button = WebDriverWait(login, 10).until(
@@ -601,7 +601,7 @@ def test_signup_token_familymember_booking(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
-    print("New Consumer token booking confirmed successfully")
+    print("Add Familymember token booking confirmed successfully")
     time.sleep(3)
 
 
