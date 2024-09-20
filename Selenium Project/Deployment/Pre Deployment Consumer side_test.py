@@ -114,9 +114,12 @@ def test_booking(login):
     time_slot = wait.until(
         EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
     )
-    time_slot.click()
-    print("Time Slot:", time_slot.text)
     login.execute_script("arguments[0].scrollIntoView();", time_slot)
+    time.sleep(2)
+    time_slot.click()
+    
+    print("Time Slot:", time_slot.text)
+    
     # login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(2)
     WebDriverWait(login, 10).until(
@@ -169,7 +172,7 @@ def test_booking(login):
         )
     )
     consumer_notes.send_keys("Notes added from conumser side")
-    time.sleep(3)
+    time.sleep(5)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
