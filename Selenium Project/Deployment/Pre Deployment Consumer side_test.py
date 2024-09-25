@@ -18,7 +18,7 @@ def login():
     driver = webdriver.Chrome(
         service=ChromeService(
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-        )
+        )   
     )
     driver.get("https://scale.jaldee.com/visionhospital/")
     driver.maximize_window()
@@ -112,7 +112,7 @@ def test_booking(login):
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", time_slot)
     time.sleep(2)
@@ -399,7 +399,7 @@ def test_booking(login):
 
     today_date = datetime.now()
     print(today_date.day)
-    today_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today'][normalize-space()='{}']".format(
+    today_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today'][normalize-space()='{}']".format(
         today_date.day
     )
     print(today_xpath_expression)
@@ -417,9 +417,12 @@ def test_booking(login):
     if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
         login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
     time.sleep(3)
-    tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
-        tomorrow_date.day
-    )
+    # tomorrow_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
+    #     tomorrow_date.day
+    # )
+    
+    tomorrow_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(tomorrow_date.day)
+
     print(tomorrow_xpath_expression)
 
     Tomorrow_Date = WebDriverWait(login, 10).until(
@@ -434,7 +437,7 @@ def test_booking(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//mat-chip[@class='mat-chip mat-focus-indicator text-center mat-primary mat-standard-chip mat-chip-selected ng-star-inserted']"
+                "(//span[@class='mdc-evolution-chip__action mat-mdc-chip-action mdc-evolution-chip__action--primary mdc-evolution-chip__action--presentational'])[1]"
             )
         )
     )
