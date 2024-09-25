@@ -705,7 +705,7 @@ def test_walkin_appointment(login):
         print("New patient create")
         
         
-        
+
         
         WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
