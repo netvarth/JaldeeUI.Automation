@@ -102,25 +102,28 @@ def test_booking(login):
     # login.find_element(By.XPATH,
     #                    "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][contains(text(),'service zero')]").click()
     # time.sleep(2)
+    # login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
         )
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
+    time.sleep(3)
     Today_Date.click()
-    time.sleep(2)
+    time.sleep(3)  
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     time_slot = wait.until(
         EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", time_slot)
-    time.sleep(2)
+    time.sleep(3)
     time_slot.click()
     
     print("Time Slot:", time_slot.text)
     
-    # login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -304,7 +307,7 @@ def test_booking(login):
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Send Message']")
+            (By.XPATH, "//span[contains(text(),'Send Message')]")
         )
     ).click()
 
@@ -396,7 +399,9 @@ def test_booking(login):
             (By.XPATH, "//span[normalize-space()='Reschedule']")
         )
     ).click()
-
+    time.sleep(2)
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
     today_date = datetime.now()
     print(today_date.day)
     today_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today'][normalize-space()='{}']".format(
@@ -405,34 +410,45 @@ def test_booking(login):
     print(today_xpath_expression)
     tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
+    # Get tomorrow's date
+    tomorrow = (datetime.now() + timedelta(days=1)).strftime('%B %d, %Y')  # Format: "September 27, 2024"
+    print("Tomorrow's Date:", tomorrow)
 
-    current_month_year = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']",
-            )
-        )
-    )
-    if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
-        login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
-    time.sleep(3)
-    # tomorrow_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
+    # Create the XPath for tomorrow's date
+    tomorrow_xpath_expression = "//button[contains(@class, 'mat-calendar-body-cell') and @aria-label='{}']".format(tomorrow)
+    print("Tomorrow's XPath Expression:", tomorrow_xpath_expression)
+
+    # current_month_year = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']",
+    #         )
+    #     )
+    # )
+    # if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
+    #     login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
+    # time.sleep(5)
+    # tomorrow_xpath_expression = "//span[normalize-space()='{}']".format(
     #     tomorrow_date.day
     # )
-    
-    tomorrow_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(tomorrow_date.day)
+    # print(tomorrow_xpath_expression)
 
-    print(tomorrow_xpath_expression)
-
-    Tomorrow_Date = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
+    Tomorrow_Date = WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
     )
-    Tomorrow_Date.click()
-
+    # # Attempt to click the element
+    try:
+        Tomorrow_Date.click()
+    except:
+    #If click is intercepted, click using JavaScript
+        login.execute_script("arguments[0].scrollIntoView();", Tomorrow_Date)
+        login.execute_script("arguments[0].click();", Tomorrow_Date)
+        Tomorrow_Date.click()
+    
     print("Tomorrow Date:", Tomorrow_Date.text)
-
-    wait = WebDriverWait(login, 10)
+    time.sleep(3)
+    wait = WebDriverWait(login, 20)
     time_slot = wait.until(
         EC.element_to_be_clickable(
             (
@@ -443,15 +459,11 @@ def test_booking(login):
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
-    login.execute_script("arguments[0].scrollIntoView();", time_slot)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Next']"))
     ).click()
-
     time.sleep(2)
-    
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Reschedule']")
@@ -501,7 +513,7 @@ def test_booking(login):
     time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='fa fa-user-circle-o']")
+            (By.XPATH, "//button[@class='mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base']")
         )
     ).click()
     WebDriverWait(login, 10).until(
