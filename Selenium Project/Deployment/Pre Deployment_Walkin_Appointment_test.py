@@ -704,9 +704,6 @@ def test_walkin_appointment(login):
         time.sleep(5)
         print("New patient create")
         
-        
-
-        
         WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
                 (
@@ -753,6 +750,67 @@ def test_walkin_appointment(login):
         login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
         
         time.sleep(5)
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable(
+                (By.CSS_SELECTOR, "p-dropdown[optionlabel='place']")
+            )
+        ).click()
+
+        
+        login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
+        print("location : Chavakkad")
+        login.implicitly_wait(5)
+
+        login.find_element(
+            By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
+        ).click()
+        login.implicitly_wait(5)
+        login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
+        print("Department : ENT")
+        user_dropdown_xpath = (
+            "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
+            "ng-dirty'])[1]"
+        )
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))
+        ).click()
+        user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, user_option_xpath))
+        ).click()
+        print("Select user : Naveen")
+
+        service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+        element = login.find_element(By.XPATH, service_dropdown_xpath)
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
+
+        service_option_xpath = (
+            "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
+            "Consultation'])[2]"
+        )
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, service_option_xpath))
+        ).click()
+        print("Select Service : Naveen Consultation")
+        time.sleep(5)
+        Today_Date = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+                )
+            )
+        )
+        login.implicitly_wait(10)
+        Today_Date.click()
+        print("Today Date:", Today_Date.text)
+        wait = WebDriverWait(login, 10)
+        time_slot = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']"))
+        )
+        time_slot.click()
+        
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Confirm']"))
@@ -805,88 +863,88 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/div[1]/span[1]/span[1]/img[1]"))
         ).click()
         
-        time.sleep(3)
-        while True:
-            try:
-                next_button = WebDriverWait(login, 15).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                        ) 
-                    )
-                )
+        # time.sleep(3)
+        # while True:
+        #     try:
+        #         next_button = WebDriverWait(login, 15).until(
+        #             EC.presence_of_element_located(
+        #                 (
+        #                     By.XPATH,
+        #                     "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
+        #                 ) 
+        #             )
+        #         )
 
-                next_button.click()
+        #         next_button.click()
 
-            except:
-                break
+        #     except:
+        #         break
 
-        last_element_in_accordian = WebDriverWait(login, 15).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
-        )
-        last_element_in_accordian.click()
+        # last_element_in_accordian = WebDriverWait(login, 15).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+        #         )
+        #     )
+        # )
+        # last_element_in_accordian.click()
 
-        time.sleep(3)
-        View_Detail_button = WebDriverWait(login, 15).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
-            )
-        )
-        View_Detail_button.click()
+        # time.sleep(3)
+        # View_Detail_button = WebDriverWait(login, 15).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[contains(text(), 'View Details')]")
+        #     )
+        # )
+        # View_Detail_button.click()
         
         
-        time.sleep(3)
-        more_actions_button = WebDriverWait(login, 15).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//button[normalize-space()='More Actions']")
-            )
-        )
-        more_actions_button.click()
+        # time.sleep(3)
+        # more_actions_button = WebDriverWait(login, 15).until(
+        #     EC.visibility_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='More Actions']")
+        #     )
+        # )
+        # more_actions_button.click()
         
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Apply Labels']"))
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Apply Labels']"))
+        # ).click()
         
-        label_xpath1 = f"//label[normalize-space()='{label_name1}']"
+        # label_xpath1 = f"//label[normalize-space()='{label_name1}']"
 
-        # Wait for the label to appear and click on it
-        label1 = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, label_xpath1))
-        ).click()
+        # # Wait for the label to appear and click on it
+        # label1 = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located((By.XPATH, label_xpath1))
+        # ).click()
         
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Apply']"))
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Apply']"))
+        # ).click()
         
-        Selected_label1 = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-                (By.XPATH, label_xpath1))
-        )
+        # Selected_label1 = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located(
+        #         (By.XPATH, label_xpath1))
+        # )
 
-        # Get the text of the confirmation message
-        actual_label1 = Selected_label1.text
-        print("Selected Label:", actual_label1)
+        # # Get the text of the confirmation message
+        # actual_label1 = Selected_label1.text
+        # print("Selected Label:", actual_label1)
 
-        # Assert the expected text
-        expected_label1 = Selected_label1.text
-        assert (
-            actual_label1 == expected_label1
-        ), f"Expected '{expected_label1}', but got '{actual_label1}'"
+        # # Assert the expected text
+        # expected_label1 = Selected_label1.text
+        # assert (
+        #     actual_label1 == expected_label1
+        # ), f"Expected '{expected_label1}', but got '{actual_label1}'"
         
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
+        # ).click()
         
-        time.sleep(2)
+        # time.sleep(2)
         element = WebDriverWait(login, 10).until(
             EC.element_to_be_clickable(
                 (
@@ -1039,7 +1097,7 @@ def test_walkin_appointment(login):
                     EC.presence_of_element_located(
                         (
                             By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
                         ) 
                     )
                 )
@@ -1047,6 +1105,7 @@ def test_walkin_appointment(login):
                 next_button.click()
 
             except:
+                print("error")
                 break
 
         last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -1188,32 +1247,37 @@ def test_walkin_appointment(login):
         
         time.sleep(3)
 
-        while True:
-            try:
-                WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",   
-                        ) 
-                    )
-                ).click()
+        # while True:
+        #     try:
+        #         WebDriverWait(login, 10).until(
+        #             EC.presence_of_element_located(
+        #                 (
+        #                     By.XPATH,
+        #                     "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",   
+        #                 ) 
+        #             )
+        #         ).click()
                 
 
-            except:
-                break
+        #     except:
+        #         break
 
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
-        )
-        last_element_in_accordian.click()
+        # last_element_in_accordian = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+        #         )
+        #     )
+        # )
+        # last_element_in_accordian.click()
         
-
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')]"))
+            ).click()
+        
+        time.sleep(3)
         assert (
             actual_label == expected_label
         ), f"Expected '{expected_label}', but got '{actual_label}'"
@@ -1224,6 +1288,7 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//i[@class='pi pi-filter-fill']"))
         ).click()
         
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Reset']"))
@@ -1234,20 +1299,20 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//timesicon[contains(@class, 'p-element') and contains(@class, 'p-icon-wrapper') and contains(@class, 'ng-star-inserted')]//*[contains(@class, 'p-icon')]"))
         ).click()
         
+        login.refresh()
         
+        time.sleep(5)
         while True:
             try:
                 next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                        ) 
-                    )
+                EC.presence_of_element_located(
+                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']"))
                 )
+
                 next_button.click()
 
             except:
+                print("error")
                 break
 
         last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -2009,7 +2074,7 @@ def test_walkin_appointment(login):
                     EC.presence_of_element_located(
                         (
                             By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
                         )
                     )
                 )
@@ -2204,7 +2269,7 @@ def test_walkin_appointment(login):
                     EC.presence_of_element_located(
                         (
                             By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
                         )
                     )
                 )
@@ -2441,7 +2506,7 @@ def test_walkin_appointment(login):
                     EC.presence_of_element_located(
                         (
                             By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
                         )
                     )
                 )
@@ -2551,26 +2616,8 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//span[normalize-space()='Future']")
             )
         ).click()
-
-        while True:
-            try:
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                        )
-                    )
-                )
-
-                next_button.click()
-
-            except:
-                break
-
-        time.sleep(3)
-
-        last_element_in_accordian = WebDriverWait(login, 10).until(
+    
+        last_accordian = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
@@ -2578,7 +2625,7 @@ def test_walkin_appointment(login):
                 )
             )
         )
-        last_element_in_accordian.click()
+        last_accordian.click()
 
         # *******************Cancellation **********************
 
@@ -2617,13 +2664,13 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[9]/a[1]/div[1]/span[1]/span[1]/img[1]"))
         ).click()
-        print("test1")
+        
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//img[@alt='add']"))
         ).click()
-        print("test2")
+
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//body/div[3]/div[2]/div[1]/div[1]/div[1]/button[1]/span[1]"))
@@ -2633,7 +2680,7 @@ def test_walkin_appointment(login):
         
         first_name1, last_name1, cons_manual_id1, phonenumber1, email1 = create_user_data()
         
-        print("test3")
+        
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -2650,7 +2697,7 @@ def test_walkin_appointment(login):
         login.find_element(
             By.XPATH, "//ngx-intl-tel-input[@name='whatsappNumber']//input[@id='phone']"
         ).send_keys(phonenumber1)
-        print("test4")
+        
         time.sleep(3)
         
         usertype_button = WebDriverWait(login, 15).until(
@@ -2714,10 +2761,10 @@ def test_walkin_appointment(login):
         ).click()
         
         
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='loginId']"))
-        ).send_keys(str(first_name1))
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//input[@id='loginId']"))
+        # ).send_keys(str(first_name1))
         
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(

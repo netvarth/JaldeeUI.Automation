@@ -293,6 +293,7 @@ def test_token_confirmation(login):
 @allure.title("Create reminder template")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_token_reminder(login):
+  
     
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Settings')]"))
@@ -428,7 +429,7 @@ def test_token_reminder(login):
     consumer_name.click()
     time.sleep(2)
     salutation = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//bodypp-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[3]/input[1]"))
+        EC.presence_of_element_located((By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-template-details[1]/section[1]/div[3]/div[2]/div[2]/div[2]/div[3]/input[1]"))
     )
     salutation.click()
     salutation.send_keys("Greetings!!")
@@ -726,9 +727,10 @@ def test_token_Reschedule(login):
             (By.XPATH, "//div[@class='pull-right tag-style mgn-lt-5' and contains(img/@src, 'VariableTag.png')]"))
     ).click()
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[@aria-label='User Id']"))
+            (By.XPATH, "//li[@aria-label='Consumer name']"))
     ).click()
 
     editer1.click()
@@ -1137,7 +1139,7 @@ def test_token_cancellation(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[@aria-label='User Id']"))
+            (By.XPATH, "//li[@aria-label='Consumer name']"))
     ).click()
 
     editer1.click()

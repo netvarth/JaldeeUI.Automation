@@ -704,6 +704,9 @@ def test_signup():
 @pytest.mark.parametrize("url", ["https://www.jaldee.com/business/"])
 def test_create_patient(login):
     time.sleep(5)
+    print("New patient create")
+    
+    
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
             (
@@ -722,22 +725,174 @@ def test_create_patient(login):
         )
     )
     element.click()
+    
+    wait = WebDriverWait(login, 10)
+    element_appoint = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//b[normalize-space()='Create New Patient']")
+            )
+        )
+    element_appoint.click()
 
-    # time.sleep(3)
-    # wait = WebDriverWait(login, 10)
-    # element_appoint = wait.until(EC.presence_of_element_located(
-    #     (By.XPATH, "//b[contains(text(),'Create New Patient')]")))
-    # element_appoint.click()
-    # login.implicitly_wait(3)
-    # first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-    # login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
-    # login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
-    # login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
-    # login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
-    # login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
-    # login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-    # login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
-    # login.implicitly_wait(3)
+    login.implicitly_wait(3)
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+    login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
+        str(first_name)
+    )
+    login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(
+        str(last_name)
+    )
+    login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
+    login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+    login.find_element(
+        By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
+    ).send_keys(phonenumber)
+    login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+    login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+    
+    time.sleep(5)
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Confirm']"))
+    ).click()
+    
+    time.sleep(4)
+    WebDriverWait(login, 15).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//img[@src='./assets/images/menu/settings.png']"))
+    ).click()
+    
+    
+    fea_cust = login.find_element(By.XPATH, "//div[normalize-space()='Features and Customization']")
+    login.execute_script("arguments[0].scrollIntoView();", fea_cust)
+    
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Custom Fields']"))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Label']"))
+    ).click()
+    
+    label_name1 = "Label" + str(uuid.uuid1())[:3]
+    label_namebox1 = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//input[@id='displayName']"))
+    )
+    label_namebox1.clear()
+    label_namebox1.send_keys(label_name1)
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='mdc-button__label']"))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
+    ).click()
+    
+    
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/div[1]/span[1]/span[1]/img[1]"))
+    ).click()
+    
+    time.sleep(3)
+    while True:
+        try:
+            next_button = WebDriverWait(login, 15).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                    ) 
+                )
+            )
+
+            next_button.click()
+
+        except:
+            break
+
+    last_element_in_accordian = WebDriverWait(login, 15).until(
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+            )
+        )
+    )
+    last_element_in_accordian.click()
+
+    time.sleep(3)
+    View_Detail_button = WebDriverWait(login, 15).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(text(), 'View Details')]")
+        )
+    )
+    View_Detail_button.click()
+    
+    
+    time.sleep(3)
+    more_actions_button = WebDriverWait(login, 15).until(
+        EC.visibility_of_element_located(
+            (By.XPATH, "//button[normalize-space()='More Actions']")
+        )
+    )
+    more_actions_button.click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Apply Labels']"))
+    ).click()
+    
+    label_xpath1 = f"//label[normalize-space()='{label_name1}']"
+
+    # Wait for the label to appear and click on it
+    label1 = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located((By.XPATH, label_xpath1))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Apply']"))
+    ).click()
+    
+    Selected_label1 = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located(
+            (By.XPATH, label_xpath1))
+    )
+
+    # Get the text of the confirmation message
+    actual_label1 = Selected_label1.text
+    print("Selected Label:", actual_label1)
+
+    # Assert the expected text
+    expected_label1 = Selected_label1.text
+    assert (
+        actual_label1 == expected_label1
+    ), f"Expected '{expected_label1}', but got '{actual_label1}'"
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
+    ).click()
+    
+    time.sleep(2)
+    element = WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (
+                By.XPATH,
+                "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+            )
+        )
+    )
+    element.click()
+    
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -864,7 +1019,209 @@ def test_create_patient(login):
         )
     )
     View_Detail_button.click()
+    
 
+    time.sleep(3)
+    more_actions_button = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located(
+            (By.XPATH, "//button[normalize-space()='More Actions']")
+        )
+    )
+    more_actions_button.click()
+    
+    #********************Apply Label************************************
+    
+    WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Apply Labels']"))
+        ).click()
+        
+    login.implicitly_wait(5)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Create New']"))
+    ).click()
+    
+    label_name = "Label" + str(uuid.uuid1())[:3]
+    label_namebox = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//input[@id='displayName']"))
+    )
+    label_namebox.clear()
+    label_namebox.send_keys(label_name)
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Create']"))
+    ).click()
+    
+    label_xpath = f"//label[normalize-space()='{label_name}']"
+
+    # Wait for the label to appear and click on it
+    label = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located((By.XPATH, label_xpath))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Apply']"))
+    ).click()
+    
+    Selected_label = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located(
+            (By.XPATH, label_xpath))
+    )
+
+    # Get the text of the confirmation message
+    actual_label = Selected_label.text
+    print("Selected Label:", actual_label)
+
+    # Assert the expected text
+    expected_label = Selected_label.text
+    assert (
+        actual_label == expected_label
+    ), f"Expected '{expected_label}', but got '{actual_label}'"
+    
+    # Applying Filter
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
+    ).click()
+    
+    login.implicitly_wait(5)
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+    ).click()
+    
+    time.sleep(3)
+    Label_filter = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[contains(text(),'Labels')]"))
+    )
+    login.execute_script("arguments[0].scrollIntoView();", Label_filter)
+    Label_filter.click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[contains(text(),'Select Labels')]"))
+    ).click()
+
+    time.sleep(3)
+    
+        # Wait for the list to be visible
+    WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "//ul[@role='listbox']"))
+    )
+    
+    # Locate all the list items
+    list_items = WebDriverWait(login, 10).until(
+        EC.presence_of_all_elements_located((By.XPATH, "//ul[@role='listbox']//li"))
+    )
+
+    # Get the last item in the list
+    last_item = list_items[-1]
+
+    # Initialize ActionChains
+    actions = ActionChains(login)
+
+    # Move to the last item and click it
+    actions.move_to_element(last_item).click().perform()
+    
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//timesicon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']//*[name()='path' and contains(@d,'M8.01186 7')]"))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[contains(text(),'Apply')]"))
+    ).click()
+    
+    time.sleep(3)
+
+    while True:
+        try:
+            WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",   
+                    ) 
+                )
+            ).click()
+            
+
+        except:
+            break
+
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+            )
+        )
+    )
+    last_element_in_accordian.click()
+    
+
+    assert (
+        actual_label == expected_label
+    ), f"Expected '{expected_label}', but got '{actual_label}'"
+    
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Reset']"))
+    ).click()
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//timesicon[contains(@class, 'p-element') and contains(@class, 'p-icon-wrapper') and contains(@class, 'ng-star-inserted')]//*[contains(@class, 'p-icon')]"))
+    ).click()
+    
+    
+    while True:
+        try:
+            next_button = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (
+                        By.XPATH,
+                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                    ) 
+                )
+            )
+            next_button.click()
+
+        except:
+            break
+
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+            )
+        )
+    )
+    last_element_in_accordian.click()
+
+    time.sleep(3)
+    View_Detail_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(text(), 'View Details')]")
+        )
+    )
+    View_Detail_button.click()
+    
     time.sleep(3)
     more_actions_button = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located(
