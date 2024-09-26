@@ -111,17 +111,18 @@ def test_signup_appointment_booking(login):
         )
     ).click()
     time.sleep(3)
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+            (By.XPATH, "//button[contains(@class, 'mat-calendar-body-cell') and contains(@class, 'mat-calendar-body-active') and contains(@class, 'example-custom-date-class') and @aria-pressed='true' and @aria-current='date']")
         )
     )
     Today_Date.click()
-    time.sleep(2)
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
@@ -131,9 +132,7 @@ def test_signup_appointment_booking(login):
         )
     )
     login.execute_script("arguments[0].scrollIntoView(true);", next_button)
-    time.sleep(3)
     next_button.click()
-    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
     ).send_keys(consumer_data['phonenumber'])
@@ -254,6 +253,8 @@ def test_signup_token_booking(login):
         )
     ).click()
     time.sleep(3)
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[@aria-pressed='true']")
@@ -263,10 +264,13 @@ def test_signup_token_booking(login):
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     queue = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']"))
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", queue)
+    time.sleep(2)
     queue.click()
     print("Queue:", queue.text)
+    time.sleep(2)
     next_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Next']")
@@ -396,17 +400,18 @@ def test_signup_familymember_appointment_booking(login):
         )
     ).click()
     time.sleep(3)
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+            (By.XPATH, "//button[contains(@class, 'mat-calendar-body-cell') and contains(@class, 'mat-calendar-body-active') and contains(@class, 'example-custom-date-class') and @aria-pressed='true' and @aria-current='date']")
         )
     )
     Today_Date.click()
-    time.sleep(2)
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
@@ -416,7 +421,6 @@ def test_signup_familymember_appointment_booking(login):
         )
     )
     login.execute_script("arguments[0].scrollIntoView(true);", next_button)
-    time.sleep(3)
     next_button.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -472,14 +476,14 @@ def test_signup_familymember_appointment_booking(login):
     time.sleep(3)
     consumer_data = create_consumer_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(consumer_data['first_name'])
-    print("New Consumer Firstname:", consumer_data['first_name'])
+    print("Add Familymember Firstname:", consumer_data['first_name'])
     login.find_element(By.XPATH, "//input[@id='lastname']").send_keys(consumer_data['last_name'])
-    print("New Consumer Lastname:", consumer_data['last_name'])
+    print("Add Familymember Lastname:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//button[normalize-space()='Ok']").click()
     time.sleep(3)
     family_member_radio_button = WebDriverWait(login, 10).until(
     EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='mat-radio-label-content'])[2]")
+        (By.XPATH, "(//div[@class='mdc-radio'])[2]")
     )
     )
     family_member_radio_button.click()
@@ -518,7 +522,6 @@ def test_signup_familymember_appointment_booking(login):
     )
     confirmbutton.click()
     time.sleep(5)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
@@ -588,6 +591,8 @@ def test_signup_token_familymember_booking(login):
         )
     ).click()
     time.sleep(3)
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[@aria-pressed='true']")
@@ -597,10 +602,13 @@ def test_signup_token_familymember_booking(login):
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     queue = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']"))
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", queue)
+    time.sleep(2)
     queue.click()
     print("Queue:", queue.text)
+    time.sleep(2)
     next_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Next']")
@@ -663,14 +671,14 @@ def test_signup_token_familymember_booking(login):
     time.sleep(3)
     consumer_data = create_consumer_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(consumer_data['first_name'])
-    print("New Consumer Firstname:", consumer_data['first_name'])
+    print("Add Familymember Firstname:", consumer_data['first_name'])
     login.find_element(By.XPATH, "//input[@id='lastname']").send_keys(consumer_data['last_name'])
-    print("New Consumer Lastname:", consumer_data['last_name'])
+    print("Add Familymember Lastname:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//button[normalize-space()='Ok']").click()
     time.sleep(3)
     family_member_radio_button = WebDriverWait(login, 10).until(
     EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='mat-radio-label-content'])[2]")
+        (By.XPATH, "(//div[@class='mdc-radio'])[2]")
     )
     )
     family_member_radio_button.click()
@@ -771,17 +779,18 @@ def test_prepayment_appointment_booking(login):
         )
     ).click()
     time.sleep(3)
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-pressed='true']")
+            (By.XPATH, "//button[contains(@class, 'mat-calendar-body-cell') and contains(@class, 'mat-calendar-body-active') and contains(@class, 'example-custom-date-class') and @aria-pressed='true' and @aria-current='date']")
         )
     )
     Today_Date.click()
-    time.sleep(2)
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
@@ -823,9 +832,9 @@ def test_prepayment_appointment_booking(login):
             (By.XPATH, "//input[@id='email_id']")
         )
     ).send_keys(consumer_data['email'])
-    time.sleep(5)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[@class='mat-focus-indicator pass_butt mat-button mat-button-base']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Ok']"))
     ).click()
     time.sleep(3)
 
@@ -915,11 +924,15 @@ def test_prepayment_appointment_booking(login):
             print("Snack bar message:", message)
 
     time.sleep(5)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    # login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    Ok_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
-    print("New Consumer Appointment booking confirmed successfully")
+    )
+    time.sleep(2)
+    login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+    time.sleep(2)
+    Ok_button.click()
+    print("New Consumer Prepayment Appointment booking confirmed successfully")
     time.sleep(3)
 
 
@@ -988,20 +1001,23 @@ def test_prepayment_token_booking(login):
     prepayment_checkin.click()
     time.sleep(3)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[@aria-pressed='true']")
         )
     )
-    login.execute_script("arguments[0].scrollIntoView();", Today_Date)
     Today_Date.click()
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     queue = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']"))
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", queue)
+    time.sleep(2)
     queue.click()
     print("Queue:", queue.text)
+    time.sleep(2)
     next_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Next']")
@@ -1042,13 +1058,7 @@ def test_prepayment_token_booking(login):
     ).send_keys(consumer_data['email'])
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='mat-checkbox-label']")
-        )
-    ).click()
-    time.sleep(5)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[@class='mat-focus-indicator pass_butt mat-button mat-button-base']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Ok']"))
     ).click()
     time.sleep(3)
 
