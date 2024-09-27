@@ -79,9 +79,14 @@ def test_booking(login):
     print("Today Date:", Today_Date.text)
 
     wait = WebDriverWait(login, 10)
+    # time_slot = wait.until(
+    #     EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+    # )
     time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
+    login.execute_script("arguments[0].scrollIntoView();", time_slot)
+    time.sleep(3)
     time_slot.click()
     print("Time Slot:", time_slot.text)
     time.sleep(1)
