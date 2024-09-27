@@ -1054,20 +1054,20 @@ def test_create_patient(login):
     
     time.sleep(3)
 
-    while True:
-        try:
-            WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",   
-                    ) 
-                )
-            ).click()
+    # while True:
+    #     try:
+    #         WebDriverWait(login, 10).until(
+    #             EC.presence_of_element_located(
+    #                 (
+    #                     By.XPATH,
+    #                     "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",   
+    #                 ) 
+    #             )
+    #         ).click()
             
 
-        except:
-            break
+    #     except:
+    #         break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -1110,17 +1110,18 @@ def test_create_patient(login):
     time.sleep(1)
     login.refresh()
 
+    time.sleep(2)
     while True:
         try:
-            next_button = WebDriverWait(login, 10).until(
+            WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (
                         By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",   
                     ) 
                 )
-            )
-            next_button.click()
+            ).click()
+            
 
         except:
             break
@@ -2192,23 +2193,23 @@ def test_create_patient(login):
 
     time.sleep(5)
 
-    while True:
-        try:
+    # while True:
+    #     try:
 
-            next_button = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
-                )
-            )
+    #         next_button = WebDriverWait(login, 10).until(
+    #             EC.presence_of_element_located(
+    #                 (
+    #                     By.XPATH,
+    #                     "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+    #                 )
+    #             )
+    #         )
 
-            next_button.click()
+    #         next_button.click()
 
-        except:
-            # print("EC caught:")
-            break
+    #     except:
+    #         # print("EC caught:")
+    #         break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
