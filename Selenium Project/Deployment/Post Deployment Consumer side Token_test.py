@@ -77,8 +77,11 @@ def test_booking(login):
     Today_Date.click()
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
+    # queue = wait.until(
+    #     EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+    # )
     queue = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']"))
     )
     login.execute_script("arguments[0].scrollIntoView(true);", queue)
     time.sleep(2)
@@ -249,9 +252,14 @@ def test_booking(login):
     print("Send attachment successfully")
     time.sleep(3)
     ################## View Attachment to the Booking ##################
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[i[text()='attach_file'] and contains(text(), 'View Attachments')]")
+    #     )
+    # ).click()
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[i[text()='attach_file'] and contains(text(), 'View Attachments')]")
+            (By.XPATH, "(//span[@class='mat-mdc-menu-item-text'])[5]")
         )
     ).click()
     time.sleep(2)
@@ -273,28 +281,44 @@ def test_booking(login):
     time.sleep(2)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(2)
-    today_date = datetime.now()
-    tomorrow_date = today_date + timedelta(days=1)
-    current_month_year = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']",
-            )
-        )
-    )
-    if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
-        login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
+    # today_date = datetime.now()
+    # tomorrow_date = today_date + timedelta(days=1)
+    # current_month_year = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']",
+    #         )
+    #     )
+    # )
+    # if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
+    #     login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
+    # time.sleep(3)
+    # tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
+    #     tomorrow_date.day
+    # )
+    # print(tomorrow_xpath_expression)
+
+    # Tomorrow_Date = WebDriverWait(login, 10).until(
+    #     EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
+    # )
+    # Tomorrow_Date.click()
+    # print("Tomorrow Date:", Tomorrow_Date.text)
+
+    # Get tomorrow's date
+    tomorrow = (datetime.now() + timedelta(days=1)).strftime('%B %d, %Y')  # Format: "September 27, 2024"
+    print("Tomorrow's Date:", tomorrow)
+
+    # Create the XPath for tomorrow's date
+    tomorrow_xpath_expression = "//button[contains(@class, 'mat-calendar-body-cell') and @aria-label='{}']".format(tomorrow)
+    print("Tomorrow's XPath Expression:", tomorrow_xpath_expression)
     time.sleep(3)
-    tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
-        tomorrow_date.day
-    )
-    print(tomorrow_xpath_expression)
     Tomorrow_Date = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
     )
     Tomorrow_Date.click()
     print("Tomorrow Date:", Tomorrow_Date.text)
+    time.sleep(2)
     queue = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located(
             (By.XPATH, "//mat-chip[@role='option']")
