@@ -87,7 +87,7 @@ def test_signup_appointment_booking(login):
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
     time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
@@ -190,7 +190,7 @@ def test_signup_token_booking(login):
     time.sleep(2)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+            (By.XPATH, "//button[@aria-pressed='true']")
         )
     )
     Today_Date.click()
@@ -198,7 +198,7 @@ def test_signup_token_booking(login):
     print("Today Date:", Today_Date.text)
     queue = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located(
-            (By.XPATH, "//mat-chip[@role='option']")
+            (By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']")
         )
     )
     login.execute_script("arguments[0].scrollIntoView(true);", queue)
@@ -317,8 +317,11 @@ def test_signup_familymember_appointment_booking(login):
     time.sleep(2)
     print("Today Date:", Today_Date.text)
     wait = WebDriverWait(login, 10)
+    # time_slot = wait.until(
+    #     EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+    # )
     time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
@@ -389,9 +392,14 @@ def test_signup_familymember_appointment_booking(login):
     print("Add Familymember Lastname:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//button[normalize-space()='Ok']").click()
     time.sleep(3)
+    # family_member_radio_button = WebDriverWait(login, 10).until(
+    # EC.presence_of_element_located(
+    #     (By.XPATH, "(//span[@class='mat-radio-label-content'])[2]")
+    # )
+    # )
     family_member_radio_button = WebDriverWait(login, 10).until(
     EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='mat-radio-label-content'])[2]")
+        (By.XPATH, "(//div[@class='mdc-radio'])[2]")
     )
     )
     family_member_radio_button.click()
@@ -479,9 +487,14 @@ def test_signup_token_familymember_booking(login):
     Today_Date.click()
     time.sleep(2)
     print("Today Date:", Today_Date.text)
+    # queue = WebDriverWait(login, 10).until(
+    #     EC.visibility_of_element_located(
+    #         (By.XPATH, "//mat-chip[@role='option']")
+    #     )
+    # )
     queue = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located(
-            (By.XPATH, "//mat-chip[@role='option']")
+            (By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']")
         )
     )
     login.execute_script("arguments[0].scrollIntoView(true);", queue)
@@ -556,9 +569,14 @@ def test_signup_token_familymember_booking(login):
     print("Add Familymember Lastname:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//button[normalize-space()='Ok']").click()
     time.sleep(3)
+    # family_member_radio_button = WebDriverWait(login, 10).until(
+    # EC.presence_of_element_located(
+    #     (By.XPATH, "(//span[@class='mat-radio-label-content'])[2]")
+    # )
+    # )
     family_member_radio_button = WebDriverWait(login, 10).until(
     EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='mat-radio-label-content'])[2]")
+        (By.XPATH, "(//div[@class='mdc-radio'])[2]")
     )
     )
     family_member_radio_button.click()
