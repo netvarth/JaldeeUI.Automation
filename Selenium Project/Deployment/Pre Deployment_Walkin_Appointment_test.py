@@ -4,6 +4,9 @@ import allure
 import sys
 import os
 
+import pytest
+from selenium.webdriver.common.by import By
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from Framework.common_utils import *
@@ -17,6 +20,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
 def test_account_signup():
+    
     login = webdriver.Chrome(
         service=ChromeService(
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
@@ -652,14 +656,15 @@ def test_account_signup():
     time.sleep(5)
 
     Today_Date = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+                )
             )
         )
-    )
-    login.execute_script("arguments[0].click();", Today_Date)
+    login.implicitly_wait(10)
+    Today_Date.click()
 
     print("Today Date:", Today_Date.text)
 
@@ -691,9 +696,7 @@ def test_account_signup():
 
     time.sleep(3)
 
-
 ##########################################################################################################################################################
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
@@ -781,7 +784,7 @@ def test_walkin_appointment(login):
         print("Select user : Naveen")
 
         service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        element = login.find_element(By.XPATH, service_dropdown_xpath)
+        element= login.find_element(By.XPATH, service_dropdown_xpath)
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
@@ -789,6 +792,7 @@ def test_walkin_appointment(login):
             "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
             "Consultation'])[2]"
         )
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, service_option_xpath))
         ).click()
@@ -944,7 +948,7 @@ def test_walkin_appointment(login):
         #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
         # ).click()
         
-        # time.sleep(2)
+        time.sleep(2)
         element = WebDriverWait(login, 10).until(
             EC.element_to_be_clickable(
                 (
@@ -1126,7 +1130,7 @@ def test_walkin_appointment(login):
         )
         View_Detail_button.click()
         
-        #*********************************** Apply Label ***********************************************
+        #************************************** Apply Label ***********************************************
         
         time.sleep(3)
         more_actions_button = WebDriverWait(login, 10).until(
@@ -1299,6 +1303,7 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//timesicon[contains(@class, 'p-element') and contains(@class, 'p-icon-wrapper') and contains(@class, 'ng-star-inserted')]//*[contains(@class, 'p-icon')]"))
         ).click()
         
+        time.sleep(2)
         login.refresh()
         
         time.sleep(5)
@@ -1813,6 +1818,7 @@ def test_walkin_appointment(login):
         pyautogui.write(absolute_path)
         pyautogui.press("enter")
         
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//textarea[@placeholder='Enter Treatment Notes']"))
@@ -1824,36 +1830,7 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//button[normalize-space()='Save']"))
         ).click()
         
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[normalize-space()='Immunization History']")
-        #     )
-        # ).click()
-        
-        # login.find_element(
-        #     By.XPATH, "//input[@placeholder='Enter Immunization History']"
-        # ).send_keys("No History of Immunization History")
-        # time.sleep(2)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (
-        #             By.XPATH,
-        #             "//span[@class='mdc-list-item__primary-text'][normalize-space()='no history of immunization history']",
-        #         )
-        #     )
-        # ).click()
 
-        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
-
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-
-        # toast_message = WebDriverWait(login, 10).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        # )
-        # message = toast_message.text
-        # print("Toast Message:", message)
         
         element2 = login.find_element(By.XPATH, "//span[normalize-space()='Add the sections you need for this medical record']")
         login.execute_script("arguments[0].scrollIntoView();", element2)
@@ -2142,8 +2119,7 @@ def test_walkin_appointment(login):
             print("Snack bar message:", message)
         time.sleep(3)
         # print("Successfully send the Payment Link to the patient")
-    
-        print("Added Subservice and ADHOC item")
+
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Edit']"))
@@ -2188,7 +2164,7 @@ def test_walkin_appointment(login):
         )
         price.clear()
         price.click()
-        price.send_keys("102")
+        price.send_keys("1")
         
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -2360,8 +2336,8 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//span[normalize-space()='Send']")
             )
         ).click()
-
         print("Manual Invoice")
+
         try:
 
             snack_bar = WebDriverWait(login, 10).until(
@@ -2454,10 +2430,8 @@ def test_walkin_appointment(login):
             )
             message = snack_bar.text
             print("Snack bar message:", message)
-        
-        time.sleep(3)
-        
-        time.sleep(3)
+          
+        time.sleep(5)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Get Payment']")
@@ -2616,8 +2590,9 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//span[normalize-space()='Future']")
             )
         ).click()
-    
-        last_accordian = WebDriverWait(login, 10).until(
+
+        time.sleep(3)
+        last_accordian = WebDriverWait(login, 15).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
@@ -2659,7 +2634,27 @@ def test_walkin_appointment(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
+
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+####################################################################################################################################
         
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Pre deployment testing For add User")
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_walkin_appt_adduser(login):
+    try:
+
+        time.sleep(5)
+        print("Add New User")
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[9]/a[1]/div[1]/span[1]/span[1]/img[1]"))
@@ -2749,7 +2744,7 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//label[normalize-space()='Admin Privileges']"))
         ).click()
-        
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//label[normalize-space()='Male']"))
@@ -2760,18 +2755,18 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//span[@class='mdc-button__label']"))
         ).click()
         
-        
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//input[@id='loginId']"))
-        # ).send_keys(str(first_name1))
-        
+        time.sleep(3)
+        loginid= WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='loginId']"))
+        )
+        loginid.send_keys(str(first_name1))
+        time.sleep(1)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[@class='btn btn-primary mdc-button mat-mdc-button mat-unthemed mat-mdc-button-base']//span[@class='mdc-button__label'][normalize-space()='Save']"))
         ).click()
-        
-        
+
         time.sleep(3)
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
