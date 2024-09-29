@@ -176,8 +176,8 @@ def test_booking(login):
     else:
         print("No bookings found. Waiting for new bookings to load...")
         time.sleep(3)
-        # ######################### Sending Message from consumer side ################################
-    time.sleep(2)
+    # ######################### Sending Message from consumer side ################################
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Send Message']")
@@ -199,10 +199,8 @@ def test_booking(login):
     ).click()
 
     time.sleep(3)
-    # Get the current working directory
-    current_working_directory = os.getcwd()
 
-    # Construct the absolute path
+    current_working_directory = os.getcwd()
     absolute_path = os.path.abspath(
         os.path.join(current_working_directory, r"Extras\flower.jpg")
     )
@@ -223,7 +221,7 @@ def test_booking(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[i[contains(text(),'attach_file')] and contains(text(), 'Send Attachments')]")
+            (By.XPATH, "(//button[@role='menuitem'])[4]")
         )
     ).click()
 
@@ -233,11 +231,10 @@ def test_booking(login):
         )
     ).click()
 
-    time.sleep(3)
-    # Get the current working directory
-    current_working_directory = os.getcwd()
 
-    # Construct the absolute path
+    time.sleep(3)
+   
+    current_working_directory = os.getcwd()
     absolute_path = os.path.abspath(
         os.path.join(current_working_directory, r"Extras\prescription.pdf")
     )
@@ -252,11 +249,6 @@ def test_booking(login):
     print("Send attachment successfully")
     time.sleep(3)
     ################## View Attachment to the Booking ##################
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//button[i[text()='attach_file'] and contains(text(), 'View Attachments')]")
-    #     )
-    # ).click()
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[@class='mat-mdc-menu-item-text'])[5]")
@@ -321,7 +313,7 @@ def test_booking(login):
     time.sleep(2)
     queue = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located(
-            (By.XPATH, "//mat-chip[@role='option']")
+            (By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']")
         )
     )
     login.execute_script("arguments[0].scrollIntoView(true);", queue)
@@ -385,7 +377,7 @@ def test_booking(login):
     time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='fa fa-user-circle-o']")
+            (By.XPATH, "//button[@class='mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base']")
         )
     ).click()
     WebDriverWait(login, 10).until(
@@ -435,6 +427,7 @@ def test_booking(login):
             for i in range(len(my_Bookings) - 1, -1, -1):
                 last_booking = my_Bookings[i]
                 scroll_until_visible(login, last_booking)
+
 
                 # Construct XPath expressions for status and Checked in based on index
                 status_xpath = f"(//div[@class='cstmTxt field-head'][normalize-space()='Status'])[position()={i+1}]"
