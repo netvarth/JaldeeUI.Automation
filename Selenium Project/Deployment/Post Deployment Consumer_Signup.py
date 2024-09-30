@@ -152,6 +152,7 @@ def test_signup_appointment_booking(login):
     confirmbutton.click()
     time.sleep(5)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
@@ -267,6 +268,7 @@ def test_signup_token_booking(login):
     confirmbutton.click()
     time.sleep(5)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
@@ -439,6 +441,7 @@ def test_signup_familymember_appointment_booking(login):
     confirmbutton.click()
     time.sleep(5)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
@@ -478,20 +481,14 @@ def test_signup_token_familymember_booking(login):
     ).click()
     time.sleep(2)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
     Today_Date = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+            (By.XPATH, "//button[@aria-pressed='true']")
         )
     )
     Today_Date.click()
     time.sleep(2)
     print("Today Date:", Today_Date.text)
-    # queue = WebDriverWait(login, 10).until(
-    #     EC.visibility_of_element_located(
-    #         (By.XPATH, "//mat-chip[@role='option']")
-    #     )
-    # )
     queue = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located(
             (By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']")
@@ -569,11 +566,6 @@ def test_signup_token_familymember_booking(login):
     print("Add Familymember Lastname:", consumer_data['last_name'])
     login.find_element(By.XPATH, "//button[normalize-space()='Ok']").click()
     time.sleep(3)
-    # family_member_radio_button = WebDriverWait(login, 10).until(
-    # EC.presence_of_element_located(
-    #     (By.XPATH, "(//span[@class='mat-radio-label-content'])[2]")
-    # )
-    # )
     family_member_radio_button = WebDriverWait(login, 10).until(
     EC.presence_of_element_located(
         (By.XPATH, "(//div[@class='mdc-radio'])[2]")
@@ -616,6 +608,7 @@ def test_signup_token_familymember_booking(login):
     confirmbutton.click()
     time.sleep(5)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
