@@ -40,7 +40,7 @@ def test_create_patient(login):
     time.sleep(3)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : 1')]"))
+        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : 2')]"))
     ).click()
 
     time.sleep(3)
