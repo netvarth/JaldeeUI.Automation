@@ -290,52 +290,40 @@ def test_booking(login):
     time.sleep(3)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(2)
-    today_date = datetime.now()
-    print(today_date.day)
-    today_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today'][normalize-space()='{}']".format(
-        today_date.day
-    )
-    print(today_xpath_expression)
-    tomorrow_date = today_date + timedelta(days=1)
-    print(tomorrow_date.day)
-    # Get tomorrow's date
-    tomorrow = (datetime.now() + timedelta(days=1)).strftime('%B %d, %Y')  # Format: "September 27, 2024"
-    print("Tomorrow's Date:", tomorrow)
+    # Calculate tomorrow's date
+    tomorrow_date = datetime.now() + timedelta(days=1)
+    # Get the day as an integer to avoid leading zeros
+    day = tomorrow_date.day  # e.g., 1 for October 1
+    # Format for the XPath
+    tomorrow_xpath_expression = f"//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{day}']"
 
-    # Create the XPath for tomorrow's date
-    tomorrow_xpath_expression = "//button[contains(@class, 'mat-calendar-body-cell') and @aria-label='{}']".format(tomorrow)
     print("Tomorrow's XPath Expression:", tomorrow_xpath_expression)
 
-    # current_month_year = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (
-    #             By.XPATH,
-    #             "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']",
-    #         )
-    #     )
-    # )
-    # if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
-    #     login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
-    # time.sleep(5)
-    # tomorrow_xpath_expression = "//span[normalize-space()='{}']".format(
-    #     tomorrow_date.day
-    # )
-    # print(tomorrow_xpath_expression)
+    # Get current month/year element
+    current_month_year = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (
+                By.XPATH,
+                "//button[@aria-label='Choose month and year']//span[@class='mat-mdc-button-persistent-ripple mdc-button__ripple']",
+            )
+        )
+    )
 
-    Tomorrow_Date = WebDriverWait(login, 20).until(
+    login.execute_script("arguments[0].scrollIntoView(true);", current_month_year)
+
+    # Click next month if needed
+    if current_month_year.text.lower() != tomorrow_date.strftime('%B %Y').lower():
+        login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
+    time.sleep(3)
+
+    # Wait for tomorrow's date element to be clickable
+    Tomorrow_Date = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
     )
-    # # Attempt to click the element
-    try:
-        Tomorrow_Date.click()
-    except:
-    #If click is intercepted, click using JavaScript
-        login.execute_script("arguments[0].scrollIntoView();", Tomorrow_Date)
-        login.execute_script("arguments[0].click();", Tomorrow_Date)
-        Tomorrow_Date.click()
-    
-    print("Tomorrow Date:", Tomorrow_Date.text)
-    time.sleep(3)
+    # Click on tomorrow's date
+    Tomorrow_Date.click()
+    print("Clicked on Tomorrow Date:", day)
+    time.sleep(2)
     wait = WebDriverWait(login, 20)
     time_slot = wait.until(
         EC.element_to_be_clickable(
