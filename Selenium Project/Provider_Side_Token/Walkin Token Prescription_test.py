@@ -5,6 +5,56 @@ from selenium.common import TimeoutException , JavascriptException
 from selenium.webdriver.support.ui import Select
 
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_patient_Manage_Template(login):
+    try:
+        time.sleep(5)
+        WebDriverWait(login,20).until(
+            EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
+        )
+        ).click()
+        time.sleep(3)
+        patientsearch =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
+        )
+        patientsearch.send_keys('5553310348')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 153']"))
+        ).click()
+        time.sleep(3)
+        prescription = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Prescriptions']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", prescription)
+        prescription.click()
+        time.sleep(3)
+        manage_template = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//img[@src='./assets/images/customer-record/rx-templates.png']"))
+        )
+        manage_template.click()
+        time.sleep(3)
+        classic = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Classic']"))
+        )
+        classic.click()
+        save = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@type='button'][normalize-space()='Save']"))
+        )
+        save.click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+    except Exception as e:
+            allure.attach(  
+            login.get_screenshot_as_png(), 
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+            )
+            raise e  
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_patient_MR_Sharing(login):
     try:
         time.sleep(5)
@@ -113,10 +163,9 @@ def test_patient_MR_Sharing(login):
         print("Toast Message:", message)
         time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach( 
+            login.get_screenshot_as_png(),  
+            name="full_page", 
             attachment_type=AttachmentType.PNG,
         )
         raise e  
@@ -246,10 +295,9 @@ def test_patient_MR_Sharing_Others(login):
         print("Toast Message:", message)
         time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach( 
+            login.get_screenshot_as_png(),  
+            name="full_page",
             attachment_type=AttachmentType.PNG,
         )
         raise e
@@ -326,10 +374,9 @@ def test_patient_Upload_MR_Sharing(login):
         print("Toast Message:", message)
         time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach(  
+            login.get_screenshot_as_png(), 
+            name="full_page",  
             attachment_type=AttachmentType.PNG,
         )
         raise e
@@ -419,10 +466,9 @@ def test_patient_Upload_MR_Sharing_others(login):
         print("Toast Message:", message)
         time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach( 
+            login.get_screenshot_as_png(), 
+            name="full_page", 
             attachment_type=AttachmentType.PNG,
         )
         raise e
@@ -559,10 +605,9 @@ def test_patient_MR_Print(login):
         except JavascriptException as e:
             print('element not found')
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() met hod, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach( 
+            login.get_screenshot_as_png(), 
+            name="full_page",  
             attachment_type=AttachmentType.PNG,
         )
         raise e
@@ -682,10 +727,9 @@ def test_patient_MR_Templatesaving(login):
         except Exception as e:
             print(f"An error occurred:{str(e)}")
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() met hod, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach( 
+            login.get_screenshot_as_png(),
+            name="full_page",  
             attachment_type=AttachmentType.PNG,
         )
         raise e
@@ -812,10 +856,9 @@ def test_patient_MR_Edit(login):
         print("Toast Message:", message)
         time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() met hod, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach(  
+            login.get_screenshot_as_png(), 
+            name="full_page", 
             attachment_type=AttachmentType.PNG,
         )
         raise e
@@ -1025,10 +1068,9 @@ def test_patient_MR_usetemplate(login):
             print("Toast Message:", message)
             time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() met hod, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach( 
+            login.get_screenshot_as_png(),  
+            name="full_page",  
             attachment_type=AttachmentType.PNG,
         )
         raise e
@@ -1154,10 +1196,9 @@ def test_patient_prescriptionslist(login):
         message = toast_message.text
         print("Toast Message:", message)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
+        allure.attach(  
             login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+            name="full_page",  
             attachment_type=AttachmentType.PNG,
         )
         raise e  
@@ -1223,11 +1264,136 @@ def test_patient_cancel_prescriptionslist(login):
         # login.execute_script("window.scrollTo(0, 0);")
         time.sleep(3)
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach( 
+            login.get_screenshot_as_png(),  
+            name="full_page", 
             attachment_type=AttachmentType.PNG,
         )
         raise e  
     
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_Medical_History(login):
+    try:
+        time.sleep(5)
+        WebDriverWait(login,20).until(
+            EC.presence_of_element_located((By.XPATH, "//img[contains(@src, 'customers.gif')]//following::div[contains(text(),'Patients')]")
+        )
+        ).click()
+        time.sleep(3)
+        patientsearch =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
+        )
+        patientsearch.send_keys('5553310348')
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 153']"))
+        ).click()
+        time.sleep(3)
+        prescription = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Prescriptions']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", prescription)
+        prescription.click()
+        time.sleep(3)
+        medical_history = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//img[@src='./assets/images/customer-record/personal-medical-history.png']"))
+        )
+        medical_history.click()
+        time.sleep(2)
+        add_record = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Add')]"))
+        )
+        add_record.click()
+        time.sleep(2)
+        medical_history_title =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Medical History Title']"))
+        )
+        medical_history_title.send_keys('OP Booking INFO')
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Upload File']"))
+        ).click()
+        time.sleep(5)
+        current_working_directory = os.getcwd()
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\prescription.pdf")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        time.sleep(3)
+        add_medical_history = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted']//span[@class='ng-star-inserted'][normalize-space()='Medical History']"))
+        )
+        add_medical_history.click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-times']"))
+        ).click()
+        time.sleep(3)
+        medical_history = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//img[@src='./assets/images/customer-record/personal-medical-history.png']"))
+        )
+        medical_history.click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-paperclip']"))
+        ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@class='cdk-overlay-container']//div[@class='text-center']//div[1]"))
+        ).click()
+        time.sleep(3)
+        handles = login.window_handles
+        login.switch_to.window(handles[1])
+        login.close()
+        login.switch_to.window(handles[0])
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-times']"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-pencil']"))
+        ).click()
+        time.sleep(3)
+        medical_history_title =WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Medical History Title']"))
+        )
+        medical_history_title.clear()
+        medical_history_title.send_keys('OP Booking Number')
+        update_medical_history = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='update']"))
+        )
+        update_medical_history.click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+        delete_medical_history = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-trash']"))
+        )
+        delete_medical_history.click()
+        time.sleep(2)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Yes']"))
+        ).click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(2)
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e 
