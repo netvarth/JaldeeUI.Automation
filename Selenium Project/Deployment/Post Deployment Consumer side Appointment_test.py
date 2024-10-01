@@ -104,7 +104,7 @@ def test_booking(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-    ).send_keys("5550004454")
+    ).send_keys("5551117754")
 
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
@@ -224,7 +224,7 @@ def test_booking(login):
     pyautogui.press("enter")
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
+        EC.element_to_be_clickable(
             (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']")
         )
     ).click()
@@ -347,6 +347,7 @@ def test_booking(login):
     ).click()
     time.sleep(3)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     confirmation_button = WebDriverWait(login, 10).until(
     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Ok']"))
     )
