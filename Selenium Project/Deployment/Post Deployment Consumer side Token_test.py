@@ -100,7 +100,7 @@ def test_booking(login):
     # time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-    ).send_keys("5551114454")
+    ).send_keys("5551119954")
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
     time.sleep(5)

@@ -456,6 +456,7 @@ def test_booking(login):
     ).click()
     time.sleep(3)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     confirmation_button = WebDriverWait(login, 10).until(
     EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Ok']"))
     )
