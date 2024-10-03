@@ -103,3 +103,11 @@ def get_snack_bar_message(login, timeout=10):
             return message
         except Exception as e:
             return None
+        
+def Generate_dob():
+    fake = Faker()
+    dob = fake.date_of_birth(minimum_age=35, maximum_age=43)
+    year = dob.strftime("%Y")
+    month = dob.strftime("%b")
+    day = dob.strftime("%d")
+    return [year, month, day]
