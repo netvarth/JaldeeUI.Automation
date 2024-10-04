@@ -82,18 +82,20 @@ def login(url):
     # driver.find_element(By.ID, "password").send_keys("Netvarth123")
     # 5550005540  Netvarth123  5555556030  Jaldee01 
 
-    driver.find_element(By.ID, "loginId").send_keys("5550005540")
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    # driver.find_element(By.ID, "loginId").send_keys("5550005540")#Production
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
     # driver.find_element(By.ID, "loginId").send_keys("5555523479")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     # driver.find_element(By.ID, "loginId").send_keys("5551111557")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("5555557799")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
+    # driver.find_element(By.ID, "loginId").send_keys("5555556030")#ScaleInventory
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    # driver.find_element(By.ID, "loginId").send_keys("5555557799")#Whole
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
+    driver.find_element(By.ID, "password").send_keys("Jaldee123")
 
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     # time.sleep(10)
