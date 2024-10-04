@@ -529,9 +529,7 @@ def test_appt_reschedule_1(login):
 #########################################################################################################################
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title(
-    "Reschedules it to a later time after changing appointment state to started"
-)
+@allure.title("Reschedules it to a later time after changing appointment state to started")
 def test_reschedule_arrived_state(con_login):
     try:
 

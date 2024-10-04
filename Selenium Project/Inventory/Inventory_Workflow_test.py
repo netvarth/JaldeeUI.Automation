@@ -140,7 +140,7 @@ def test_store_creation(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
+            (By.XPATH, "//div[@class='active-menu']//img"))
     ).click()
 
     time.sleep(5)
