@@ -61,7 +61,7 @@ def test_create_patient(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, day_xpath))
     ).click()
-
+    
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
 
     try:
@@ -111,6 +111,56 @@ def test_create_patient(login):
         )
         message = snack_bar.text
         print("Snack bar message:", message)
+
+
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"] )
+def test_createpatient_addpicture(login):
+    try:
+        time.sleep(5)
+        WebDriverWait(login, 20).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//div[contains(text(),'Patients')]"))
+        ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH,
+                                        "//p-button[@class='p-element mat-mdc-menu-trigger mesg-btn add-btn']//span[@class='p-button-label ng-star-inserted'][normalize-space()='Add New']"))
+        ).click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//img[@alt='add Patient']"))
+        ).click()
+        login.implicitly_wait(3)
+        
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//mat-select[@placeholder='Select']")
+            )
+        ).click()
+        time.sleep(3)
+        salutation = generate_random_salutation()
+        salutation_option_xpath = f"//div[normalize-space()='{salutation}']"
+        salutation_option_element = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
+        )
+        salutation_option_element.click()
+        time.sleep(3)
+        first_name, last_name, phonenumber, email = create_users_data()
+        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
+        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
+        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        login.find_element(
+            By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
+        ).send_keys(phonenumber)
+        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        login.find_element(By.XPATH, "//span[normalize-space()='Save']").click()
+        time.sleep(3)
+    except Exception as e:
+        allure.attach( 
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e  
 
 
 
