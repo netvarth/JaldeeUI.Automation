@@ -206,53 +206,51 @@ def test_check_and_toggle(login):
 
 def disable_active_templates(login):
     wait = WebDriverWait(login, 10)
+    
     while True:
         try:
-            # Find all spans with the text 'Share Payment Link'
+            # Find all spans with the text 'Share Invoice Link'
             share_invoice_elements = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//span[contains(text(),'Share Invoice Link')]")))
-            print(f"Found {len(share_invoice_elements)} 'Share Payment Link' elements on the current page.")
-
-            if not share_invoice_elements:
-                print("No 'Share Invoice Link' elements found on this page.")
-                break  # Exit loop if no elements found on the current page
+            print(f"Found {len(share_invoice_elements)} 'Share Invoice Link' elements on the current page.")
 
             # Flag to check if any template was disabled
             template_disabled = False
 
-            # Iterate through the elements
             for share_invoice in share_invoice_elements:
                 try:
-                    # Find the status text 'Active'
+                    # Check for the status text 'Active'
                     status_text_element = share_invoice.find_element(By.XPATH, ".//span[normalize-space()='Active']")
                     
-                    if status_text_element.text == "Active":
-                        # Click the status text to deactivate it
-                        ActionChains(login).move_to_element(status_text_element).click().perform()
+                    if status_text_element.is_displayed() and status_text_element.text == "Active":
+                        # ActionChains(login).move_to_element(status_text_element).click().perform()
+                        status_text_element.click()
                         print("Template deactivated.")
                         template_disabled = True
                         break  # Exit the loop after processing one item
+                except NoSuchElementException:
+                    continue  # No 'Active' status for this element, continue to next
                 except Exception as e:
                     print(f"Error processing 'Share Invoice Link' element: {e}")
-                    continue  # Continue with the next element if an error occurs
+                    continue
 
-            # If a template was disabled, exit the loop
             if template_disabled:
-                break
+                break  # Exit if any template was disabled
 
-            # Try to find the next page button
+            # Navigate to the next page
             try:
+                scroll_to_window(login)
                 next_page_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']")))
                 next_page_button.click()
                 print("Navigating to the next page.")
-                # Wait a bit after navigating to ensure the new page loads
-                wait.until(EC.staleness_of(share_invoice_elements[0]))  # Wait until old elements are no longer attached to the DOM
+                time.sleep(5)
             except Exception as e:
-                print(f"No more pages or error finding next page button: {e}")
-                break  # Exit loop if no more pages or if an error occurs
+                print(f" error for navigating next page button: {e}")
+                continue  
 
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print(f"An error occurred while checking templates: {str(e)}")
             break
+
 
     
 @allure.severity(allure.severity_level.CRITICAL)
@@ -264,7 +262,7 @@ def test_invoicepdf_sharing(login):
         wait_and_locate_click(login, By.XPATH, "//img[contains(@src, 'settings.gif')]//following::div[contains(text(),'Settings')]")
         time.sleep(3)
         commun = wait_and_locate_click(login, By.XPATH, "//div[normalize-space()='Communications And Notifications']")
-        login.execute_script("window.scrollTo(0, document.body.scrollHeight);", commun)
+        scroll_to_element(login, commun)
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Notifications']")
         time.sleep(3)
@@ -355,6 +353,8 @@ def test_invoicepdf_sharing(login):
         wait_and_locate_click(login, By.XPATH, "(//button[@type='submit'][normalize-space()='Update'])[1]")
         time.sleep(2)
         wait_and_visible_click(login, By.XPATH, "(//span[contains(text(),'Inactive')])[1]")
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
         time.sleep(2)
         WebDriverWait(login,20).until(
             EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-bars text-light']")
