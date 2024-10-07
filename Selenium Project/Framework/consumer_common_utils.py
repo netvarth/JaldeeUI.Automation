@@ -20,14 +20,15 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 @pytest.fixture()
-def login():
+def consumer_login():
 
     driver = webdriver.Chrome(
         service=ChromeService(
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    driver.get("https://scale.jaldee.com/visionhospital/")
+    # driver.get("https://scale.jaldee.com/visionhospital/")
+    driver.get("https://scale.jaldee.com/RangSweets")
     driver.maximize_window()
     yield driver
     driver.quit() 
@@ -53,41 +54,41 @@ def create_consumer_data():
         "otp": "55555"  
     }
 
-def scroll_to_window(login):
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+def scroll_to_window(consumer_login):
+    consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-def scroll_to_element(login, element):
-    login.execute_script("arguments[0].scrollIntoView(true);", element)
+def scroll_to_element(consumer_login, element):
+    consumer_login.execute_script("arguments[0].scrollIntoView(true);", element)
 
 
-def wait_and_click(login, by, value, timeout=10):
-    element = WebDriverWait(login, timeout).until(EC.element_to_be_clickable((by, value)))
+def wait_and_click(consumer_login, by, value, timeout=10):
+    element = WebDriverWait(consumer_login, timeout).until(EC.element_to_be_clickable((by, value)))
     element.click()
     return element
 
-def wait_and_locate_click(login, by, value, timeout=10):
-    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+def wait_and_locate_click(consumer_login, by, value, timeout=10):
+    element = WebDriverWait(consumer_login, timeout).until(EC.presence_of_element_located((by, value)))
     element.click()
     return element
 
-def wait_and_visible_click(login, by, value, timeout=10):
-    element = WebDriverWait(login, timeout).until(EC.visibility_of_element_located((by, value)))
+def wait_and_visible_click(consumer_login, by, value, timeout=10):
+    element = WebDriverWait(consumer_login, timeout).until(EC.visibility_of_element_located((by, value)))
     element.click()
     return element
 
-def wait_and_send_keys(login, by, value, keys, timeout=10):
-    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+def wait_and_send_keys(consumer_login, by, value, keys, timeout=10):
+    element = WebDriverWait(consumer_login, timeout).until(EC.presence_of_element_located((by, value)))
     element.send_keys(keys)
     return element
 
-def wait_for_text(login, by, value, timeout=10):
-    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+def wait_for_text(consumer_login, by, value, timeout=10):
+    element = WebDriverWait(consumer_login, timeout).until(EC.presence_of_element_located((by, value)))
     return element.text
 
-def get_snack_bar_message(login, timeout=10):
+def get_snack_bar_message(consumer_login, timeout=10):
     try:
         # Try to get the normal snack bar message
-        snack_bar = WebDriverWait(login, timeout).until(
+        snack_bar = WebDriverWait(consumer_login, timeout).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
         message = snack_bar.text
@@ -96,7 +97,7 @@ def get_snack_bar_message(login, timeout=10):
     except:
         # If not found, try to get the error snack bar message
         try:
-            snack_bar = WebDriverWait(login, timeout).until(
+            snack_bar = WebDriverWait(consumer_login, timeout).until(
                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
             )
             message = snack_bar.text
