@@ -1,9 +1,13 @@
-
+import random
 import time
+import uuid
+
 import allure
+import pytest
 
 from Framework.common_utils import *
 from Framework.common_dates_utils import *
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from allure_commons.types import AttachmentType
@@ -41,6 +45,7 @@ def test_store_creation(login):
     )
     dropdown.click() 
 
+    time.sleep(2)
     dropdown_item = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Pharmacy']"))
@@ -67,11 +72,11 @@ def test_store_creation(login):
     ).send_keys(email)
 
 
-    invoice_prefix = "K_" + str(uuid.uuid4())[:1]
+    invoice_prefix = "KT_" + str(uuid.uuid4())[:1]
     print(invoice_prefix)
     time.sleep(3)
     WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Invoice prefix']"))
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Invoice prefix']"))  
     ).send_keys(invoice_prefix)
     
 

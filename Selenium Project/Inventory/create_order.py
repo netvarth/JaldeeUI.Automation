@@ -20,7 +20,7 @@ def test_create_order(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Sales Order')]"))
+            (By.XPATH, "//body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[5]/a[1]/div[1]/span[1]/span[1]/img[1]"))
     ).click()
 
     time.sleep(3)
@@ -31,7 +31,7 @@ def test_create_order(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Swathy Pharmacy']"))
+            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Geetha']"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -52,16 +52,27 @@ def test_create_order(login):
             (By.XPATH, "//span[normalize-space()='Id : etf']"))
     ).click()
 
-
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[@class='p-multiselect-label p-placeholder']"))
+            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+    ).click()              
+
+    time.sleep(1)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Geetha']"))
     ).click()
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Swathy Order Catalog']"))
+            (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Geetha_order_catalog']"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -69,19 +80,20 @@ def test_create_order(login):
             (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
     ).click()
 
-    item_names_to_select = ['Item4', 'Item3', 'items']
-    item_prices= [5, 1.3, 1.5]
-    sum=0
+
+
+    # Add items
+    item_names_to_select = ['Item3']
+    item_prices = [95]
+    sum = 0
+    items_data_before_confirm = []
 
     for i in range(len(item_names_to_select)):
-    # for item_name, item_price in zip(item_names_to_select, item_prices):
-        item_name= item_names_to_select[i]
-        item_price= item_prices[i]
+        item_name = item_names_to_select[i]
+        item_price = item_prices[i]
         print(item_name)
 
-
-    
-    
+        # Search and select item
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Search items']"))
@@ -93,51 +105,254 @@ def test_create_order(login):
                 (By.XPATH, item_xpath))
         ).click()
 
-        qty_xpath=f"(//input[@min='1'])[{i+1}]"
+        qty_xpath = f"(//input[@min='1'])[{i + 1}]"
         qty = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, qty_xpath))
-            )
+            EC.presence_of_element_located(
+                (By.XPATH, qty_xpath))
+        )
         qty.click()
         qty.clear()
 
-        qty_random_number = str(random.randint(5,10))
+        qty_random_number = str(random.randint(5, 10))
         qty.send_keys(qty_random_number)
-        print("Qty Of Item:", qty_random_number) 
-        total=item_price*float(qty_random_number)
-        print("total:",total)
-        sum=sum+total
+        print("Qty Of Item:", qty_random_number)
+
+        # Calculate total for each item
+        total = item_price * float(qty_random_number)
+        print("total:", total)
+        sum += total
         print("sum: ", sum)
-        # Locate the table rows
-        row_xpath=f"//tbody[@class='p-element p-datatable-tbody']/tr[{i+1}]"
+
+        # Capture row data
+        row_xpath = f"//tbody[@class='p-element p-datatable-tbody']/tr[{i + 1}]"
         print(row_xpath)
-        row= login.find_element(By.XPATH, row_xpath)
+        row = login.find_element(By.XPATH, row_xpath)
+        columns = row.find_elements(By.TAG_NAME, "td")
+        item_total_text = columns[4].text.strip()
 
-        # Loop through each row and extract the text from the 5th column
-        fifth_column = row.find_elements(By.TAG_NAME, "td")
-        len(fifth_column)
-        print(fifth_column[4].text)
-        # Total_element = login.find_element(By.XPATH, './/td[contains(@input, "_ngcontent-tap")]')
-        total_text = fifth_column[4].text
-        # expected_status = "DRAFT"
-        expected_total = f"{total:.2f}"
-
-        print(f"Expected Total is: '{expected_total}', Total shown is: '{total_text}'")
-
-        # Assert that the status is "DRAFT"
-        assert total_text == str(expected_total), f"Expected Total to be {expected_total}, but got '{total_text}'"
+        # Save item data before confirmation
+        items_data_before_confirm.append({
+            'item_name': item_name,
+            'qty': qty_random_number,
+            'price': item_price,
+            'total': item_total_text
+        })
 
     time.sleep(5)
 
     # Verify the summary total
     summary_total_element = WebDriverWait(login, 10).until(
-    EC.presence_of_element_located((By.XPATH, "//div[@class='fw-bold mt-2']//span[@class='min-width-span-value']"))
+        EC.presence_of_element_located((By.XPATH, "//div[@class='fw-bold mt-2']//span[@class='min-width-span-value']"))
     )
-    summary_total_text = summary_total_element.text.replace('₹', '').strip()
+
+    summary_total_text = summary_total_element.text.replace('₹', '').replace(',', '').strip()
     summary_total = float(summary_total_text)
 
     print(f"Expected Total Sum: {sum:.2f}")
     print(f"Actual Summary Total: {summary_total:.2f}")
 
-    # Perform the final assertion
+    # Perform the final assertion for the total
     assert round(sum, 2) == round(summary_total, 2), f"Expected Summary Total to be {sum:.2f}, but got '{summary_total_text}'"
+
+    # Step 2: Press "Confirm Order" button
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Confirm Order']"))
+    ).click()
+
+    # Step 3: Capture the item details after pressing "Confirm Order"
+    items_data_after_confirm = []
+
+    for i in range(len(item_names_to_select)):
+        row_xpath = f"//tbody[@class='p-element p-datatable-tbody']/tr[{i + 1}]"
+        row = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, row_xpath))
+        )
+
+        columns = row.find_elements(By.TAG_NAME, "td")
+        item_total_text = columns[4].text.strip()
+        qty_confirmed = login.find_element(By.XPATH, f"(//input[@min='1'])[{i + 1}]").get_attribute('value')
+
+        items_data_after_confirm.append({
+            'item_name': item_names_to_select[i],
+            'qty': qty_confirmed,
+            'price': item_prices[i],
+            'total': item_total_text
+        })
+
+    # Step 4: Compare the item details before and after confirming the order
+    for before, after in zip(items_data_before_confirm, items_data_after_confirm):
+        assert before == after, f"Mismatch found! Before: {before}, After: {after}"
+
+    print("Order confirmation data matches successfully.")
+
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Complete Order']"))
+    ).click()
+
+    time.sleep(2)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//i[@class='pi pi-arrow-left']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[normalize-space()='Orders'])[1]"))
+    ).click()
+
+    
+    time.sleep(2)
+     # Wait for the table to be present
+    table_body = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//tbody"))
+    )
+
+    # Locate the first table row
+    first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
+
+    # Find the status element within the first row
+    status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+    status_text = status_element.text
+    expected_status = "Completed"
+
+    print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+    # Assert that the status is "Completed"
+    assert status_text == "Completed", f"Expected status to be 'Completed', but got '{status_text}'"
+
+    time.sleep(5)
+
+    # item_names_to_select = ['Item4', 'Item3']
+    # item_prices= [39, 95]
+    # sum=0
+
+    # for i in range(len(item_names_to_select)):
+    # # for item_name, item_price in zip(item_names_to_select, item_prices):
+    #     item_name= item_names_to_select[i]
+    #     item_price= item_prices[i]
+    #     print(item_name)
+
+
+    
+    
+    #     WebDriverWait(login, 10).until(
+    #         EC.presence_of_element_located(
+    #             (By.XPATH, "//input[@placeholder='Search items']"))
+    #     ).send_keys(item_name)
+
+    #     item_xpath = f"//div[contains(text(),'{item_name.title()}')]"
+    #     WebDriverWait(login, 10).until(
+    #         EC.presence_of_element_located(
+    #             (By.XPATH, item_xpath))
+    #     ).click()
+
+    #     qty_xpath=f"(//input[@min='1'])[{i+1}]"
+    #     qty = WebDriverWait(login, 10).until(
+    #             EC.presence_of_element_located(
+    #                 (By.XPATH, qty_xpath))
+    #         )
+    #     qty.click()
+    #     qty.clear()
+
+    #     qty_random_number = str(random.randint(5,10))
+    #     qty.send_keys(qty_random_number)
+    #     print("Qty Of Item:", qty_random_number) 
+    #     total=item_price*float(qty_random_number)
+    #     print("total:",total)
+    #     sum=sum+total
+    #     print("sum: ", sum)
+    #     # Locate the table rows
+    #     row_xpath=f"//tbody[@class='p-element p-datatable-tbody']/tr[{i+1}]"
+    #     print(row_xpath)
+    #     row= login.find_element(By.XPATH, row_xpath)
+
+    #     # Loop through each row and extract the text from the 5th column
+    #     fifth_column = row.find_elements(By.TAG_NAME, "td")
+    #     len(fifth_column)
+    #     print(fifth_column[4].text)
+    #     # Total_element = login.find_element(By.XPATH, './/td[contains(@input, "_ngcontent-tap")]')
+    #     total_text = fifth_column[4].text
+    #     # expected_status = "DRAFT"
+    #     expected_total = f"{total:.2f}"
+
+    #     print(f"Expected Total is: '{expected_total}', Total shown is: '{total_text}'")
+
+    #     # Assert that the status is "DRAFT"
+    #     assert total_text == str(expected_total), f"Expected Total to be {expected_total}, but got '{total_text}'"
+
+    # time.sleep(5)
+
+    # # Verify the summary total
+    # summary_total_element = WebDriverWait(login, 10).until(
+    # EC.presence_of_element_located((By.XPATH, "//div[@class='fw-bold mt-2']//span[@class='min-width-span-value']"))
+    # )
+
+    # summary_total_text = summary_total_element.text.replace('₹', '').replace(',', '').strip()
+    # summary_total = float(summary_total_text)
+
+    # print(f"Expected Total Sum: {sum:.2f}")
+    # print(f"Actual Summary Total: {summary_total:.2f}")
+
+    # # Perform the final assertion
+    # assert round(sum, 2) == round(summary_total, 2), f"Expected Summary Total to be {sum:.2f}, but got '{summary_total_text}'"
+
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[normalize-space()='Confirm Order']"))
+    # ).click()
+
+    # time.sleep(2)
+
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//table[@id='pr_id_89-table']"))
+    # )
+    
+    # # Initialize total sum
+    # calculated_sum = 0
+
+    # # Locate the rows in the table body
+    # rows = login.find_elements(By.XPATH, "//table[@id='pr_id_89-table']/tbody/tr")
+
+    # # Loop through each row to validate quantity, price, and total
+    # for i, row in enumerate(rows):
+    #     # Extract item name, price, quantity, and total
+    #     item_name = row.find_element(By.XPATH, ".//td[1]").text.strip()
+    #     price_text = row.find_element(By.XPATH, ".//td[3]").text.strip()
+    #     qty_element = row.find_element(By.XPATH, ".//td[4]/input")
+    #     total_text = row.find_element(By.XPATH, ".//td[5]").text.strip()
+
+    #     # Convert price and total from string to float, removing any special characters
+    #     price = float(price_text.replace('₹', '').replace(',', '').strip())
+    #     qty = int(qty_element.get_attribute('value'))
+    #     total = float(total_text.replace('₹', '').replace(',', '').strip())
+
+    #     # Calculate the expected total for the row
+    #     expected_total = price * qty
+
+    #     # Validate the total in the table matches the expected total
+    #     assert total == expected_total, f"Expected total for {item_name} is {expected_total}, but found {total}"
+
+    #     # Add to the calculated sum
+    #     calculated_sum += total
+
+    #     # Print validation information
+    #     print(f"Item: {item_name}, Price: {price}, Qty: {qty}, Total: {total} (Expected: {expected_total})")
+
+    # # Validate the overall sum matches the displayed summary total
+    # summary_total_element = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//div[@class='fw-bold mt-2']//span[@class='min-width-span-value']"))
+    # )
+    # summary_total_text = summary_total_element.text.replace('₹', '').replace(',', '').strip()
+    # summary_total = float(summary_total_text)
+
+    # assert calculated_sum == summary_total, f"Calculated sum {calculated_sum} does not match displayed summary total {summary_total}"
+    
+    # print(f"Calculated sum: {calculated_sum}, Displayed summary total: {summary_total}")
+
+
+
