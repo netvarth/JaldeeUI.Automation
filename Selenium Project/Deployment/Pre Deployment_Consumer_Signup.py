@@ -312,6 +312,7 @@ def test_signup_token_booking(login):
     consumer_notes.send_keys("Notes added from conumser side")
     time.sleep(3)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
     ).click()
@@ -332,6 +333,7 @@ def test_signup_token_booking(login):
     confirmbutton.click()
     time.sleep(5)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
@@ -718,6 +720,7 @@ def test_signup_token_familymember_booking(login):
     confirmbutton.click()
     time.sleep(5)
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     ).click()
