@@ -192,7 +192,7 @@ def test_create_Online_order(consumer_login):
         ).click()
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH,"//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//button[contains(@class,'')][contains(text(),'Pay ₹840')]"))
+            (By.XPATH,"//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//button[contains(@class,'')][contains(text(),'Pay ₹800')]"))
         ).click()
          # Handle the popup window
         main_window_handle = consumer_login.current_window_handle
