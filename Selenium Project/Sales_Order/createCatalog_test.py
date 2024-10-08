@@ -11,7 +11,7 @@ def test_create_Item(login):
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Catalogs')]") 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//p-button[@class='p-element create-btn']")
+        wait_and_locate_click(login, By.XPATH, "//button[@class='p-ripple p-element p-button p-component']")
         time.sleep(2)
         Order_catalog = "Order_Catalog_" + str(uuid.uuid4())[:8]
         wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Catalog Name']", Order_catalog)
