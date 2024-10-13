@@ -259,7 +259,7 @@ def test_create_Online_order(consumer_login):
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert)
         time.sleep(5)
         Dessert.click()
-        time.sleep(3)
+        time.sleep(2)
         WebDriverWait(consumer_login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add']"))
         ).click()
@@ -290,6 +290,18 @@ def test_create_Online_order(consumer_login):
         consumer_login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
         time.sleep(5)
         print("Toast Message: Item added to cart")
+        # Get the price of the item before adding to cart
+        item_price_element = WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='item-rate'][contains(text(),'₹800')])[1]"))  # Adjust the XPath to your price element
+        )
+        item_price_text = item_price_element.text.strip()
+        match = re.search(r'[\d,]+(?:\.\d{2})?', item_price_text)
+        if match:
+            item_price = float(match.group(0).replace(',', ''))  # Convert to float for comparison
+            print(f"Item Price: {item_price}")
+            assert 50 <= item_price <= 5000, f"Item price {item_price} is out of the allowed range (50 to 5000)."
+        else:
+            raise Exception("Item price not below the 5000.")
         WebDriverWait(consumer_login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//span[@class='cart-count ng-star-inserted']"))
         ).click()
@@ -344,8 +356,15 @@ def test_create_Online_order(consumer_login):
         time.sleep(2)
         confirm.click()
         time.sleep(3)
-        delivery_charge_element = WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(text(), '(+)₹50.00')]"))
+        NB = WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'NET BANKING')]"))
+        )
+        scroll_to_element(consumer_login, NB)
+        time.sleep(2)
+        NB.click()
+        time.sleep(5)
+        delivery_charge_element = WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'(+)₹50.00')]"))
         )
 
         # Retrieve the text
@@ -357,20 +376,12 @@ def test_create_Online_order(consumer_login):
         if match:
             delivery_charge = match.group(0)  # This will give you '50.00'
             print(f"Extracted Delivery Charge: {delivery_charge}")
-            return delivery_charge
         else:
             print("Delivery charge not found.")
         expected_delivery_charge = "50.00"  
         print(f"Expected delivery_charge: '{expected_delivery_charge}', Actual delivery_charge: '{delivery_charge}'")
         assert delivery_charge == expected_delivery_charge, f"Expected delivery charge '{expected_delivery_charge}' but got '{delivery_charge}'"
         time.sleep(3)
-        NB = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'NET BANKING')]"))
-        )
-        scroll_to_element(consumer_login, NB)
-        time.sleep(2)
-        NB.click()
-        time.sleep(2)
         WebDriverWait(consumer_login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Pay']"))
         ).click()
