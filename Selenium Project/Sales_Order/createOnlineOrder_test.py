@@ -143,6 +143,11 @@ def test_create_Online_order(consumer_login):
         # Optionally, switch back to the main window
         consumer_login.switch_to.window(main_window_handle)
         time.sleep(5)
+        ordernumber = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@class='order-id']"))
+        )
+        order_id = ordernumber.text
+        print(order_id)
         confirmation_text = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@class='status-confirmed ng-star-inserted']"))
         )
@@ -163,6 +168,22 @@ def test_create_Online_order(consumer_login):
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Home']"))
+        ).click()
+        time.sleep(3)
+        mybooking = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@class='mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base']"))
+        )
+        time.sleep(2)
+        scroll_to_element(mybooking)
+        time.sleep(2)
+        mybooking.click()
+        time.sleep(3)
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Dashboard')]"))
+        ).click()
+        time.sleep(3)
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='My Orders']"))
         ).click()
         time.sleep(3)
     except Exception as e:
