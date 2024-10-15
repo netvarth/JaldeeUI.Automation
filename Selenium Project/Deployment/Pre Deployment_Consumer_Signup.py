@@ -167,10 +167,12 @@ def test_signup_appointment_booking(login):
     )
     consumer_notes.send_keys("Notes added from conumser side")
     time.sleep(3)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    uploadfile = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
-    ).click()
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", uploadfile)
+    time.sleep(2)
+    uploadfile.click()
     time.sleep(2)
     current_working_directory = os.getcwd()
     absolute_path = os.path.abspath(
@@ -178,22 +180,25 @@ def test_signup_appointment_booking(login):
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(3)
     confirmbutton = WebDriverWait(login, 15).until(
         EC.visibility_of_element_located(
             (By.XPATH, "//span[normalize-space()='Confirm']")
         )
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
+    time.sleep(2)
     confirmbutton.click()
     time.sleep(5)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    Ok_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+    time.sleep(2)
+    Ok_button.click()
+    time.sleep(2)
     print("New Consumer Appointment booking confirmed successfully")
     time.sleep(3)
-
 
 def test_signup_token_booking(login):
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -316,10 +321,12 @@ def test_signup_token_booking(login):
     )
     consumer_notes.send_keys("Notes added from conumser side")
     time.sleep(3)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    uploadfile = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
-    ).click()
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", uploadfile)
+    time.sleep(2)
+    uploadfile.click()
     time.sleep(2)
     current_working_directory = os.getcwd()
     absolute_path = os.path.abspath(
@@ -327,20 +334,24 @@ def test_signup_token_booking(login):
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(3)
     confirmbutton = WebDriverWait(login, 15).until(
         EC.visibility_of_element_located(
             (By.XPATH, "//span[normalize-space()='Confirm']")
         )
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
+    time.sleep(2)
     confirmbutton.click()
     time.sleep(5)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    Ok_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
-    print("New Consumer token booking confirmed successfully")
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+    time.sleep(2)
+    Ok_button.click()
+    time.sleep(2)
+    print("New Consumer Token booking confirmed successfully")
     time.sleep(3)
 
 
@@ -495,7 +506,8 @@ def test_signup_familymember_appointment_booking(login):
     )
     family_member_radio_button.click()
     time.sleep(2)
-    print("Selected Familymember:", family_member_radio_button.text)
+    radio_button_label = family_member_radio_button.find_element(By.XPATH, ".//following-sibling::label")
+    print("Selected Familymember:", radio_button_label.text)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Ok']")
@@ -509,10 +521,12 @@ def test_signup_familymember_appointment_booking(login):
     )
     consumer_notes.send_keys("Notes added from conumser side")
     time.sleep(3)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    uploadfile = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
-    ).click()
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", uploadfile)
+    time.sleep(2)
+    uploadfile.click()
     time.sleep(2)
     current_working_directory = os.getcwd()
     absolute_path = os.path.abspath(
@@ -520,19 +534,24 @@ def test_signup_familymember_appointment_booking(login):
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(3)
     confirmbutton = WebDriverWait(login, 15).until(
         EC.visibility_of_element_located(
             (By.XPATH, "//span[normalize-space()='Confirm']")
         )
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
+    time.sleep(2)
     confirmbutton.click()
     time.sleep(5)
-    WebDriverWait(login, 10).until(
+    Ok_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
-    print("New Consumer Appointment booking confirmed successfully")
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+    time.sleep(2)
+    Ok_button.click()
+    time.sleep(2)
+    print("Add Familymember Appointment booking confirmed successfully")
     time.sleep(3)
 
 
@@ -694,7 +713,8 @@ def test_signup_token_familymember_booking(login):
     )
     family_member_radio_button.click()
     time.sleep(2)
-    print("Selected Familymember:", family_member_radio_button.text)
+    radio_button_label = family_member_radio_button.find_element(By.XPATH, ".//following-sibling::label")
+    print("Selected Familymember:", radio_button_label.text)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Ok']")
@@ -708,10 +728,12 @@ def test_signup_token_familymember_booking(login):
     )
     consumer_notes.send_keys("Notes added from conumser side")
     time.sleep(3)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    uploadfile = WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
-    ).click()
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", uploadfile)
+    time.sleep(2)
+    uploadfile.click()
     time.sleep(2)
     current_working_directory = os.getcwd()
     absolute_path = os.path.abspath(
@@ -719,21 +741,28 @@ def test_signup_token_familymember_booking(login):
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(3)
     confirmbutton = WebDriverWait(login, 15).until(
         EC.visibility_of_element_located(
             (By.XPATH, "//span[normalize-space()='Confirm']")
         )
     )
+    login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
+    time.sleep(2)
     confirmbutton.click()
     time.sleep(5)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    Ok_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
-    print("New Consumer token booking confirmed successfully")
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+    time.sleep(2)
+    Ok_button.click()
+    time.sleep(2)
+    print("Add Familymember token booking confirmed successfully")
     time.sleep(3)
+
+
+
 
 
 def test_prepayment_appointment_booking(login):
@@ -937,14 +966,13 @@ def test_prepayment_appointment_booking(login):
             print("Snack bar message:", message)
 
     time.sleep(5)
-    # login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     Ok_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
     )
-    time.sleep(2)
     login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
     time.sleep(2)
     Ok_button.click()
+    time.sleep(2)
     print("New Consumer Prepayment Appointment booking confirmed successfully")
     time.sleep(3)
 
@@ -1163,10 +1191,13 @@ def test_prepayment_token_booking(login):
             print("Snack bar message:", message)
 
     time.sleep(5)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    WebDriverWait(login, 10).until(
+    Ok_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
+    )
+    login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+    time.sleep(2)
+    Ok_button.click()
+    time.sleep(2)
     print("New Consumer token booking confirmed successfully")
     time.sleep(3)
 
