@@ -8,7 +8,7 @@ from Framework.common_dates_utils import *
 
 
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
-def test_create_purchase(login):
+def test_stock_transfer(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -61,6 +61,7 @@ def test_create_purchase(login):
     time.sleep(1)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
+             
             (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
     ).click()
 

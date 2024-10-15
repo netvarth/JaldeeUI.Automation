@@ -6,7 +6,7 @@ import os
 
 import pytest
 from selenium.webdriver.common.by import By
-
+from datetime import datetime, timedelta
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from Framework.common_utils import *
@@ -20,7 +20,8 @@ from selenium.webdriver.common.action_chains import ActionChains
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
 def test_account_signup():
-    
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Pre-Deployment Provider Signup",current_date)
     login = webdriver.Chrome(
         service=ChromeService(
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
@@ -702,6 +703,9 @@ def test_account_signup():
 @allure.title("Pre deployment testing")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_walkin_appointment(login):
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Pre-Deployment Provider Appointment",current_date)
     try:
 
         time.sleep(5)
@@ -1437,7 +1441,7 @@ def test_walkin_appointment(login):
         # login.execute_script("arguments[0].click();", option_element)
 
         login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-
+        time.sleep(1)
         toast_message = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
@@ -2422,21 +2426,21 @@ def test_walkin_appointment(login):
         print(today_xpath_expression)
         tomorrow_date = today_date + timedelta(days=1)
         print(tomorrow_date.day)
+#===============================================================
+        # current_month = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located(
+        #     (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
+        # )
 
-        current_month = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
-        )
+        # current_year = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located(
+        #     (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
+        # )
 
-        current_year = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
-        )
+        # if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
 
-        if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
-
-            login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
-
+        #     login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
+#===============================================================
         tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
             tomorrow_date.day
         )

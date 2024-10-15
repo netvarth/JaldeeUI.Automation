@@ -1,3 +1,4 @@
+from xml.etree.ElementPath import xpath_tokenizer
 from Framework.common_utils import *
 import allure
 from allure_commons.types import AttachmentType
@@ -934,3 +935,333 @@ def test_Prescription_2(login):
 
 ##############################################################################################################################################
   
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("RX Push")
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_Prescription_3(login):
+
+    try:
+        time.sleep(5)
+        WebDriverWait(login, 20).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+                )
+            )
+        ).click()
+        time.sleep(3)
+        element = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                )
+            )
+        )
+        element.click()
+        time.sleep(3)
+        wait = WebDriverWait(login, 10)
+        element_appoint = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//b[contains(text(),'Create New Patient')]")
+            )
+        )
+        element_appoint.click()
+        login.implicitly_wait(3)
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+    
+        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
+            str(first_name)
+        )
+        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(
+            str(last_name)
+        )
+        login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
+        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        login.find_element(
+            By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
+        ).send_keys(phonenumber)
+        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
+        # time.sleep(2)
+        # toast_message = WebDriverWait(login, 10).until(
+        # EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
+
+        time.sleep(3)
+
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+        ).click()
+
+        wait = WebDriverWait(login, 10)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='ENT']"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Naveen KP']"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Confirm']"))
+        ).click()
+
+        time.sleep(5)
+        scroll = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[@class='p-paginator-current ng-star-inserted']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", scroll)
+
+        # while True:
+        #     try:
+        #         # Attempt to locate and click the "next" button
+        #         next_button = WebDriverWait(login, 10).until(
+        #             EC.presence_of_element_located(
+        #                 (By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[3]"))
+        #         )
+        #         print(next_button)
+        #         login.execute_script("arguments[0].click();", next_button)
+        #         # Click the next button if it is present
+        #         next_button.click()
+
+        #     except Exception as e:
+        #         # If no next button is found (or any other exception), exit the loop
+        #         print("End of pages or error encountered:", e)
+        #         break
+
+        # last_element_in_accordian = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        # )
+        # last_element_in_accordian.click()
+
+
+        while True:
+            try:
+                # Attempt to locate the "Next" button using the button's class
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                    )
+                )
+
+                # Check if the button is enabled (i.e., not disabled)
+                if next_button.is_enabled():
+                    print("Next button found and clickable.")
+                    # Click using JavaScript to avoid interception issues
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                    print("Next button is disabled. Reached the last page.")
+                    break
+
+            except Exception as e:
+                # If no next button is found or any other exception occurs, exit the loop
+                print("End of pages or error encountered:", e)
+                break
+
+        # After clicking through all pages, locate and click the last accordion
+        time.sleep(1)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        )
+        last_element_in_accordian.click()
+        
+
+        time.sleep(3)
+
+        View_Detail_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(text(), 'View Details')]")
+            )
+        )
+        View_Detail_button.click()
+        login.execute_script("arguments[0].click();", View_Detail_button)
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Prescriptions']"))
+        ).click()
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
+
+        select_doc = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Naveen KP']"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", select_doc)
+
+        select_doc.click()
+
+        # Loop through rows and interact with each row
+        for index in range(3):  # Assuming you're iterating through 3 rows
+            # Click the "+ Add Medicine" button
+            wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//button[normalize-space()='+ Add Medicine']")
+                )
+            ).click()
+
+            # Find the search box and clear it
+            search_box = login.find_element(By.CSS_SELECTOR, "input[role='searchbox']")
+            search_box.clear()
+
+            # Type 'item' into the search box (you might want to replace 'item' with actual item names if needed)
+            search_box.send_keys('item')
+            time.sleep(1)  # Wait for suggestions to load
+
+            # Get the list of suggestions
+            suggestions = login.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
+
+            # Select a suggestion based on the index or randomly
+            if suggestions:
+                suggestions[index].click()  # Click the current suggestion
+                time.sleep(1)  # Wait briefly before interacting with other fields
+
+                # Locate the current row (each row is a tr element in tbody)
+                row = wait.until(
+                    EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))  # Adjust this if needed
+                )
+
+                # Find the duration input field inside the current row and send the value
+                duration = row.find_element(By.XPATH, ".//td[2]/input[@type='number']")  # Adjust if necessary
+                duration.clear()
+                duration.send_keys("5")  # Send the duration value
+
+                time.sleep(1)  # Pause before interacting with the frequency dropdown
+
+                # Find and select a random frequency from the dropdown in the current row
+                frequency_dropdown_label = row.find_element(By.CSS_SELECTOR, ".p-dropdown-label")
+                frequency_dropdown_label.click()  # Click to open the dropdown
+
+                # Get the frequency options within the dropdown for this row
+                frequency_options = login.find_elements(By.CSS_SELECTOR, ".p-dropdown-item")  # Adjust if necessary
+                if frequency_options:
+                    random_frequency = random.choice(frequency_options)
+                    random_frequency.click()  # Select the random frequency
+
+                time.sleep(1)  # Pause before interacting with the quantity field
+
+                # Optionally, send remarks (e.g., "After food")
+                row.find_element(By.XPATH, ".//td[5]").click()
+                remarks = row.find_element(By.XPATH, ".//textarea")  # Adjust if necessary
+                remarks.clear()
+                remarks.send_keys("After food")
+
+            time.sleep(1)  # Pause before moving to the next row
+
+        # Finally, submit the prescription by clicking the "Create Prescription" button
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Create Prescription']")
+            )
+        ).click()
+
+        time.sleep(3)  # Wait for the prescription to be processed
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Push RX']"))
+        ).click()
+
+        store = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[normalize-space()='Geetha']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", store)
+        store.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Push']"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[5]/a[1]/div[1]/span[1]/span[1]/img[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-valid']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+        ).click()
+
+        stores = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Geetha']"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", stores)
+        stores.click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Rx Requests']"))
+        ).click()
+
+        # Wait for the table to be present
+        table_body = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody"))
+        )
+
+        # Locate the first table row
+        first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
+                                                                    
+        # Find the status element within the first row
+        status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+        status_text = status_element.text
+        expected_status = "PUSHED"
+
+        print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+        # Assert that the status is "PUSHED"
+        assert status_text == "IN REVIEW", f"Expected status to be 'PUSHED', but got '{status_text}'"
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody/tr[1]/td[7]/div[1]/div[1]/button[1]/span[1]"))
+        ).click()
+
+        
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
