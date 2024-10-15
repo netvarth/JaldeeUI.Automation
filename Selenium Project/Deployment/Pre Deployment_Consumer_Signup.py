@@ -18,6 +18,7 @@ from selenium.common import TimeoutException
 @pytest.fixture()
 def login():
 
+    
     driver = webdriver.Chrome(
         service=ChromeService(
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
@@ -51,6 +52,8 @@ def generate_random_salutation():
 
 
 def test_signup_appointment_booking(login):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Pre-Deployment Consumer signup and Appointment booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
     # Scroll to the element
@@ -193,6 +196,8 @@ def test_signup_appointment_booking(login):
 
 
 def test_signup_token_booking(login):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Pre-Deployment Consumer signup and Token booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
     # Scroll to the element
@@ -340,6 +345,8 @@ def test_signup_token_booking(login):
 
 
 def test_signup_familymember_appointment_booking(login):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Pre-Deployment Consumer signup, add family member and Appointment booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
     # Scroll to the element
@@ -531,6 +538,10 @@ def test_signup_familymember_appointment_booking(login):
 
 
 def test_signup_token_familymember_booking(login):
+
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Pre-Deployment Consumer signup, add family member and Token booking",current_date)
+
     consumer_data = create_consumer_data()
     time.sleep(5)
     # Scroll to the element
@@ -726,6 +737,8 @@ def test_signup_token_familymember_booking(login):
 
 
 def test_prepayment_appointment_booking(login):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Post-Deployment Consumer prepayment Appointment booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
     # Scroll to the element
@@ -938,6 +951,8 @@ def test_prepayment_appointment_booking(login):
 
 
 def test_prepayment_token_booking(login):
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    print("Pre-Deployment Consumer prepayment Token booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
     # Scroll to the element
