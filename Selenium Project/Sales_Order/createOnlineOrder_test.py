@@ -147,7 +147,8 @@ def test_create_Online_order(consumer_login):
             EC.presence_of_element_located((By.XPATH, "//div[@class='order-id']"))
         )
         order_id = ordernumber.text
-        print(order_id)
+        confirmed_order_id= order_id.split("#")[-1].strip()
+        print(confirmed_order_id)
         confirmation_text = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@class='status-confirmed ng-star-inserted']"))
         )
@@ -170,13 +171,9 @@ def test_create_Online_order(consumer_login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Home']"))
         ).click()
         time.sleep(3)
-        mybooking = WebDriverWait(consumer_login, 10).until(
+        WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[@class='mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base']"))
-        )
-        time.sleep(2)
-        scroll_to_element(mybooking)
-        time.sleep(2)
-        mybooking.click()
+        ).click()
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Dashboard')]"))
@@ -184,6 +181,24 @@ def test_create_Online_order(consumer_login):
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='My Orders']"))
+        ).click()
+        time.sleep(5)
+        order_element = consumer_login.find_element(By.XPATH, "(//div[@class = 'orderNumber'])[1]")
+        dashboard_order_id = order_element.text
+        print(dashboard_order_id)
+        print(f"Expected Order ID : '{dashboard_order_id}', Actual Order ID : '{confirmed_order_id}'")
+        assert confirmed_order_id == dashboard_order_id, f"Expected Order ID '{dashboard_order_id} but got Order ID '{confirmed_order_id}'"
+        time.sleep(2)
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located(
+            (By.XPATH, "//i[@class='fa fa-arrow-left']")
+        )
+        ).click()
+        time.sleep(2)
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Home']")
+        )
         ).click()
         time.sleep(3)
     except Exception as e:
