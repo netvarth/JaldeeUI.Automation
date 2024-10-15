@@ -47,7 +47,7 @@ def test_booking(login):
     try:
 
         time.sleep(5)
-        
+    
         element = login.find_element(By.XPATH, "//span[normalize-space()='Book Now']")
         login.execute_script("arguments[0].scrollIntoView();", element)
 
@@ -137,96 +137,36 @@ def test_booking(login):
         login.execute_script("arguments[0].scrollIntoView(true);", consumer_notes)
         consumer_notes.send_keys("Notes added from conumser side")
         time.sleep(3)
-        login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='uploadFileTxt']"))
-        ).click()
-
-        time.sleep(5)
+        uploadfile = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView(true);", uploadfile)
+        time.sleep(2)
+        uploadfile.click()
+        time.sleep(2)
         current_working_directory = os.getcwd()
         absolute_path = os.path.abspath(
             os.path.join(current_working_directory, r"Extras\test.png")
         )
-
-    login.execute_script("arguments[0].scrollIntoView(true);", consumer_notes)
-    consumer_notes.send_keys("Notes added from conumser side")
-    time.sleep(3)
-    uploadfile = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
-    )
-    login.execute_script("arguments[0].scrollIntoView(true);", uploadfile)
-    time.sleep(2)
-    uploadfile.click()
-    time.sleep(2)
-    current_working_directory = os.getcwd()
-    absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
-    )
-    pyautogui.write(absolute_path)
-    pyautogui.press("enter")
-    time.sleep(3)
-    confirmbutton = WebDriverWait(login, 15).until(
-        EC.visibility_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Confirm']")
-        )
-    )
-    login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
-    time.sleep(2)
-    confirmbutton.click()
-    time.sleep(5)
-    Ok_button = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    )
-    login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
-    time.sleep(2)
-    Ok_button.click()
-    time.sleep(2)
-    print("Consumer create appointment successfully")
-
-    time.sleep(3)
-
-    bookings = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'My Bookings')]")
-        )
-    )
-    bookings.click()
-    time.sleep(3)
-    while True:
-        try:
-            more_button = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Show more')]")))  # Update with the actual ID or selector
-            # Scroll until the button is visible
-            scroll_until_visible(login, more_button)
-            WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(text(),'Show more')]"))).click()
-            time.sleep(3)
-            login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-        except:
-            break
-    my_Bookings = WebDriverWait(login, 10).until(
-        EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
-    )
-    if my_Bookings:
-            last_booking = my_Bookings[-1]
-            # Ensure the last booking is visible and clickable
-            scroll_until_visible(login, last_booking)
-            WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
-    else:
-        print("No bookings found. Waiting for new bookings to load...")
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
         time.sleep(3)
-
-        WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
+        confirmbutton = WebDriverWait(login, 15).until(
+            EC.visibility_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Confirm']")
             )
-        ).click()
-
-        time.sleep(3)
-        login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        WebDriverWait(login, 10).until(
+        )
+        login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
+        time.sleep(2)
+        confirmbutton.click()
+        time.sleep(5)
+        Ok_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-        ).click()
-
+        )
+        login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+        time.sleep(2)
+        Ok_button.click()
+        time.sleep(2)
         print("Consumer create appointment successfully")
 
         time.sleep(3)
@@ -247,225 +187,7 @@ def test_booking(login):
                 time.sleep(3)
                 login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-    time.sleep(8)
-
-    current_working_directory = os.getcwd()
-    absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
-    )
-    pyautogui.write(absolute_path)
-    pyautogui.press("enter")
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//span[@class='mdc-button__label']")
-        )
-    ).click()
-
-    snack_bar = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-    )
-    message = snack_bar.text
-    print("Snack bar message:", message)
-
-    ################## Sending attachment to provider #################
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Send Attachments']")
-        )
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//label[normalize-space()='Click here to select the files']")
-        )
-    ).click()
-
-    time.sleep(8)
- 
-    current_working_directory = os.getcwd()
-    absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\test.png")
-    )
-    pyautogui.write(absolute_path)
-    pyautogui.press("enter")
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='send']"))
-    ).click()
-    
-    snack_bar = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-    )
-    message = snack_bar.text
-    print("Snack bar message:", message)
-    time.sleep(2)
-    ################## View Attachment to the Booking ##################
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='mat-mdc-menu-item-text'])[5]")
-        )
-    ).click()
-    time.sleep(2)
-    print("View attachment successfully")
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='fa fa-window-close']")
-        )
-    ).click()
-    time.sleep(3)
-    
-    ################# Rescheduling the Appointment ##################
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Reschedule']")
-        )
-    ).click()
-    time.sleep(3)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(2)
-    # Calculate tomorrow's date
-    tomorrow_date = datetime.now() + timedelta(days=1)
-    # Get the day as an integer to avoid leading zeros
-    day = tomorrow_date.day  # e.g., 1 for October 1
-    # Format for the XPath
-    tomorrow_xpath_expression = f"//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{day}']"
-
-    print("Tomorrow's XPath Expression:", tomorrow_xpath_expression)
-
-    # Get current month/year element
-    current_month_year = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//button[@aria-label='Choose month and year']//span[@class='mat-mdc-button-persistent-ripple mdc-button__ripple']",
-            )
-        )
-    )
-
-    login.execute_script("arguments[0].scrollIntoView(true);", current_month_year)
-
-    # Click next month if needed
-    if current_month_year.text.lower() != tomorrow_date.strftime('%B %Y').lower():
-        login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
-    time.sleep(3)
-
-    # Wait for tomorrow's date element to be clickable
-    Tomorrow_Date = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
-    )
-    # Click on tomorrow's date
-    Tomorrow_Date.click()
-    print("Clicked on Tomorrow Date:", day)
-    time.sleep(2)
-    wait = WebDriverWait(login, 20)
-    time_slot = wait.until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                "(//span[@class='mdc-evolution-chip__action mat-mdc-chip-action mdc-evolution-chip__action--primary mdc-evolution-chip__action--presentational'])[1]"
-            )
-        )
-    )
-    time_slot.click()
-    print("Time Slot:", time_slot.text)
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Next']"))
-    ).click()
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Reschedule']")
-        )
-    ).click()
-    time.sleep(3)
-    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(3)
-    confirmation_button = WebDriverWait(login, 10).until(
-    EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Ok']"))
-    )
-    confirmation_button.click()
-    print("Appointment Rescheduled successfully")
-    time.sleep(2)
-
-    ################## Enquiry to the Provider ##################
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//mat-icon[normalize-space()='home']"))
-    ).click()
-
-    login.find_element(By.XPATH, "//i[@class='fa fa-commenting-o']").click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//textarea[@id='message']"))
-    ).send_keys("Message to Provider")
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//i[@class='material-icons']"))
-    ).click()
-
-    time.sleep(3)
-   
-    current_working_directory = os.getcwd()
-    absolute_path = os.path.abspath(
-        os.path.join(current_working_directory, r"Extras\sea.jpg")
-    )
-    pyautogui.write(absolute_path)
-    pyautogui.press("enter")
-    print("Successfully upload the file")
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted']"))
-    ).click()
-    print("Send enquriy successfully")    
-    time.sleep(5)
-    ################# Cancel the appointment from Upcoming bookings. #################
-    login.refresh()
-    time.sleep(5)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[@class='mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base']")
-        )
-    ).click()
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'Dashboard')]")
-        )
-    ).click()
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//div[normalize-space()='My Bookings']")
-        )
-    ).click()
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//mat-select[@role='combobox']"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'Upcoming Bookings')]")
-        )
-    ).click()
-    time.sleep(3)
-    while True:
-        try:
-            more_button = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Show more')]")))  # Update with the actual ID or selector
-            # Scroll until the button is visible
-            scroll_until_visible(login, more_button)
-            WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(text(),'Show more')]"))).click()
-            time.sleep(3)
-            login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-        except:
-            break
-    while True:
-        try:
-            my_Bookings = WebDriverWait(login, 10).until(
-                EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
-            )
-            if not my_Bookings:
-                print("No bookings found.")
+            except:
                 break
         my_Bookings = WebDriverWait(login, 10).until(
             EC.presence_of_all_elements_located((By.XPATH, "//mat-icon[@role='img']"))
@@ -511,7 +233,7 @@ def test_booking(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Send']")
+                (By.XPATH, "//span[@class='mdc-button__label']")
             )
         ).click()
 
@@ -522,7 +244,7 @@ def test_booking(login):
         print("Snack bar message:", message)
 
         ################## Sending attachment to provider #################
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Send Attachments']")
@@ -552,13 +274,14 @@ def test_booking(login):
         )
         message = snack_bar.text
         print("Snack bar message:", message)
+        time.sleep(2)
+        ################## View Attachment to the Booking ##################
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='mat-mdc-menu-item-text'])[5]")
             )
         ).click()
         time.sleep(2)
-        ################## View Attachment to the Booking ##################
         print("View attachment successfully")
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(

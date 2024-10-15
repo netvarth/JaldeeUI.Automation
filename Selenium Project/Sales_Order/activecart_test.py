@@ -21,7 +21,7 @@ def test_activecarts(login):
                     time.sleep(3)
                     first_item = wait_and_locate_click(login, By.XPATH, "//th[normalize-space()='Quantity']")
                     scroll_to_element(login, first_item)
-                    time.sleep(5) 
+                    time.sleep(3) 
                 else:
                     break 
             except NoSuchElementException:
