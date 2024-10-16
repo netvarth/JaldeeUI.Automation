@@ -16,9 +16,7 @@ def test_create_Online_order(consumer_login):
         time.sleep(5)
         Dessert.click()
         time.sleep(3)
-        WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add']"))
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
@@ -46,13 +44,9 @@ def test_create_Online_order(consumer_login):
         consumer_login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
         time.sleep(5)
         print("Toast Message: Item added to cart")
-        WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='cart-count ng-star-inserted']"))
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//span[@class='cart-count ng-star-inserted']")
         time.sleep(3)
-        WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Checkout']"))
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Checkout']")
         time.sleep(3)
         WebDriverWait(consumer_login, 15).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='ownerName'])[1]"))
@@ -139,7 +133,7 @@ def test_create_Online_order(consumer_login):
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Successful']"))
         ).click()
-        time.sleep(3)
+        time.sleep(5)
         # Optionally, switch back to the main window
         consumer_login.switch_to.window(main_window_handle)
         time.sleep(5)
@@ -148,7 +142,7 @@ def test_create_Online_order(consumer_login):
         )
         order_id = ordernumber.text
         confirmed_order_id= order_id.split("#")[-1].strip()
-        print(confirmed_order_id)
+        print("Confirmed Order ID :", confirmed_order_id)
         confirmation_text = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@class='status-confirmed ng-star-inserted']"))
         )
@@ -163,44 +157,28 @@ def test_create_Online_order(consumer_login):
         time.sleep(2)
         invoice.click()
         time.sleep(3)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-arrow-left']")
         time.sleep(3)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Home']"))
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Home']")
+        time.sleep(2)
+        consumer_login.execute_script("window.scrollTo(0, 0);")
+        time.sleep(2)
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[@class='mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base']")
         time.sleep(3)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[@class='mat-mdc-menu-trigger mdc-icon-button mat-mdc-icon-button mat-unthemed mat-mdc-button-base']"))
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//span[contains(text(),'Dashboard')]")
         time.sleep(3)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Dashboard')]"))
-        ).click()
-        time.sleep(3)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='My Orders']"))
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//div[normalize-space()='My Orders']")
         time.sleep(5)
         order_element = consumer_login.find_element(By.XPATH, "(//div[@class = 'orderNumber'])[1]")
         dashboard_order_id = order_element.text
-        print(dashboard_order_id)
+        print("Dashboard Order ID :", dashboard_order_id)
         print(f"Expected Order ID : '{dashboard_order_id}', Actual Order ID : '{confirmed_order_id}'")
         assert confirmed_order_id == dashboard_order_id, f"Expected Order ID '{dashboard_order_id} but got Order ID '{confirmed_order_id}'"
         time.sleep(2)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='fa fa-arrow-left']")
-        )
-        ).click()
+        wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-arrow-left']")
         time.sleep(2)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Home']")
-        )
-        ).click()
-        time.sleep(3)
+        wait_and_locate_click(consumer_login, By.XPATH, "//span[normalize-space()='Home']")
+        time.sleep(2)
     except Exception as e:
         allure.attach(  
             consumer_login.get_screenshot_as_png(),  
