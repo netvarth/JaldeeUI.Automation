@@ -1020,28 +1020,31 @@ def test_walkin_appointment(login):
 
         while True:
             try:
+                # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
-                        ) 
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                     )
                 )
 
-                next_button.click()
+                # Check if the button is enabled (i.e., not disabled)
+                if next_button.is_enabled():
+                    # print("Next button found and clickable.")
+                    # Click using JavaScript to avoid interception issues
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                    # print("Next button is disabled. Reached the last page.")
+                    break
 
-            except:
-                print("error")
+            except Exception as e:
+                # # If no next button is found or any other exception occurs, exit the loop
+                # print("End of pages or error encountered:", e)
                 break
 
+        # After clicking through all pages, locate and click the last accordion
+        time.sleep(1)
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
 
@@ -1086,7 +1089,7 @@ def test_walkin_appointment(login):
                 (By.XPATH, "//button[normalize-space()='Create']"))
         ).click()
         
-        label_xpath = f"//label[normalize-space()='{label_name}']"
+        label_xpath = f"//label[normalize-space()='{label_name}']"  
 
         # Wait for the label to appear and click on it
         label = WebDriverWait(login, 10).until(
@@ -1204,45 +1207,44 @@ def test_walkin_appointment(login):
         time.sleep(2)
         login.refresh()
         
-        time.sleep(5)
+        # time.sleep(5)
         while True:
             try:
+                # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']"))
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                    )
                 )
 
-                next_button.click()
+                # Check if the button is enabled (i.e., not disabled)
+                if next_button.is_enabled():
+                    # print("Next button found and clickable.")
+                    # Click using JavaScript to avoid interception issues
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                    # print("Next button is disabled. Reached the last page.")
+                    break
 
-            except:
-                print("error")
+            except Exception as e:
+                # # If no next button is found or any other exception occurs, exit the loop
+                # print("End of pages or error encountered:", e)
                 break
 
+        # After clicking through all pages, locate and click the last accordion
+        time.sleep(3)
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
-
-        time.sleep(3)
-        View_Detail_button = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
-            )
-        )
-        View_Detail_button.click()
         
-        time.sleep(3)
-        more_actions_button = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//button[normalize-space()='More Actions']")
-            )
-        )
-        more_actions_button.click()
+        # time.sleep(3)
+        # more_actions_button = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='More Actions']")
+        #     )
+        # )
+        # more_actions_button.click()
         
         
             
@@ -1945,28 +1947,31 @@ def test_walkin_appointment(login):
 
         while True:
             try:
+                # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
-                        )
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                     )
                 )
 
-                next_button.click()
+                # Check if the button is enabled (i.e., not disabled)
+                if next_button.is_enabled():
+                    # print("Next button found and clickable.")
+                    # Click using JavaScript to avoid interception issues
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                    # print("Next button is disabled. Reached the last page.")
+                    break
 
-            except:
+            except Exception as e:
+                # # If no next button is found or any other exception occurs, exit the loop
+                # print("End of pages or error encountered:", e)
                 break
 
-        time.sleep(3)
+        # After clicking through all pages, locate and click the last accordion
+        time.sleep(1)
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
 
@@ -2138,29 +2143,31 @@ def test_walkin_appointment(login):
 
         while True:
             try:
+                # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
-                        )
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                     )
                 )
 
-                next_button.click()
+                # Check if the button is enabled (i.e., not disabled)
+                if next_button.is_enabled():
+                    # print("Next button found and clickable.")
+                    # Click using JavaScript to avoid interception issues
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                    # print("Next button is disabled. Reached the last page.")
+                    break
 
-            except:
-
+            except Exception as e:
+                # # If no next button is found or any other exception occurs, exit the loop
+                # print("End of pages or error encountered:", e)
                 break
 
-        time.sleep(3)
+        # After clicking through all pages, locate and click the last accordion
+        time.sleep(1)
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
 
@@ -2373,28 +2380,31 @@ def test_walkin_appointment(login):
 
         while True:
             try:
+                # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
-                        )
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                     )
                 )
 
-                next_button.click()
+                # Check if the button is enabled (i.e., not disabled)
+                if next_button.is_enabled():
+                    # print("Next button found and clickable.")
+                    # Click using JavaScript to avoid interception issues
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                    # print("Next button is disabled. Reached the last page.")
+                    break
 
-            except:
+            except Exception as e:
+                # # If no next button is found or any other exception occurs, exit the loop
+                # print("End of pages or error encountered:", e)
                 break
 
-        time.sleep(3)
+        # After clicking through all pages, locate and click the last accordion
+        time.sleep(1)
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
 
