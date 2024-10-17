@@ -1,57 +1,44 @@
-import pytest
-import allure
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from allure_commons.types import AttachmentType
-import time
 
-@pytest.fixture(scope='session')
-def driver():
-    service = ChromeService(executable_path=r"Drivers\chromedriver-win64\chromedriver.exe")
-    driver = webdriver.Chrome(service=service)
-    yield driver
-    driver.quit()
+from Framework.common_utils import *
+
 
 @pytest.fixture()
-def consumer_login(driver):
+def consumer_login():
+
+    driver = webdriver.Chrome(
+        service=ChromeService(
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
     driver.get("https://scale.jaldee.com/RangSweets")
     driver.maximize_window()
     yield driver
+    driver.quit() 
 
-@pytest.fixture()
-def provider_login(driver):
-    driver.get("https://scale.jaldee.com/business/")
-    driver.maximize_window()
-    
-    # Use explicit waits instead of sleep
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "loginId"))
-    ).send_keys("5555998844")  # Ideally use environment variables here
+def create_consumer_data():
+    fake = Faker()
+    first_name = fake.first_name()
+    last_name = fake.last_name()
+    random_digits = fake.numerify(text="#######")
+    phonenumber = f"555{random_digits}"
+    test_email = "@jaldee.com"
+    email = f"{first_name}.{last_name}{test_email}"
 
-    driver.find_element(By.ID, "password").send_keys("Jaldee123")  # Avoid hardcoding
-    driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
+    return {
+        "first_name": first_name,
+        "last_name": last_name,
+        "phonenumber": phonenumber,
+        "email": email,
+        "otp": "55555"  
+    }
 
-    # Wait for the next page to load
-    WebDriverWait(driver, 10).until(
-        EC.url_changes("https://scale.jaldee.com/business/")
-    )
-    
-    yield driver
-
-    # Attach a screenshot if needed for debugging
-    allure.attach(driver.get_screenshot_as_png(), name="Screenshot", attachment_type=AttachmentType.PNG)
-    driver.quit()
-
-@pytest.mark.usefixtures("consumer_login", "provider_login")
-class TestShoppingFlow:
-
-    def test_add_item_to_cart(self, consumer_login):
-        # Example test logic: Add item to cart on the consumer side
-        # You will need to replace this with actual logic for your test case
-        # Wait for the item element and click it
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create_Online_Order")
+def test_create_Online_order(consumer_login):
+    try:
+        time.sleep(5)
+        global consumer_data
+        consumer_data = create_consumer_data()
         Dessert = WebDriverWait(consumer_login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//div[@class='category-name d-flex justify-content-between'][normalize-space()='Dessert']"))
         )
@@ -59,28 +46,110 @@ class TestShoppingFlow:
         time.sleep(5)
         Dessert.click()
         time.sleep(3)
-        WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add']"))
-        )
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
         time.sleep(3)
-        WebDriverWait(driver, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//div[@class='item-class'][1]"))
-        ).click()  # Replace with actual XPath of the item
-
-        # Click on the "Add to Cart" button
-        driver.find_element(By.XPATH, "//button[@id='add-to-cart']").click()  # Replace with actual XPath
-
-        # Verify item is added successfully
-        WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='success-message']"))
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys(consumer_data['phonenumber'])
+        print("New Consumer Phone Number:", consumer_data['phonenumber'])
+        consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+        time.sleep(5)
+        otp_inputs = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//input[contains(@id, 'otp_')]")
+            )
         )
-        assert "Item added successfully" in driver.page_source  # Adjust based on your confirmation message
+        for i, otp_input in enumerate(otp_inputs):
+            otp_input.send_keys(consumer_data['otp'][i])
+        consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+        time.sleep(3)
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
+        ).send_keys(consumer_data['first_name'])
+        print("New Consumer Firstname:", consumer_data['first_name'])
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[2]"))
+        ).send_keys(consumer_data['last_name'])
+        print("New Consumer Lastname:", consumer_data['last_name'])
+        consumer_login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
+        time.sleep(5)
+        # Verify item is added to cart
+        print("Toast Message: Item added to cart")
+        global cart_item_counts
+        cart_item_count = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='cart-count ng-star-inserted']"))
+        )
+        cart_item_counts = cart_item_count.text
+        print ("cart_Added_item_counts :",cart_item_counts)
+        assert int(cart_item_counts) > 0, "Cart is empty. Item not added successfully."
+        cart_item_count.click()
+        time.sleep(3)
+        global cart_item_name
+        cart_item_names = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[@class='fw-bold item-name']"))
+        )
+        cart_item_name = cart_item_names.text
+        print("Added_cart_item_name :",cart_item_name)
+        time.sleep(2)
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e  
+    
+from Framework.common_utils import *
+from Framework.common_dates_utils import *
 
-    # def test_check_provider_cart(self, provider_login):
-    #     # Example test logic: Check if the item is in the provider cart
-    #     WebDriverWait(provider_login, 10).until(
-    #         EC.presence_of_element_located((By.XPATH, "//div[@class='provider-cart-item']"))
-    #     )
 
-    #     cart_items = provider_login.find_elements(By.XPATH, "//div[@class='provider-cart-item']")
-    #     assert any("Expected Item Name" in item.text for item in cart_items)  # Replace with actual expected text
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Active Carts")
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_activecarts(login):
+    try:
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Active Cart')]")
+        time.sleep(3)
+        scroll_to_window(login)
+        time.sleep(3)
+        next_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//angledoublerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']"))
+        )
+        next_button.click()
+        time.sleep(3)
+        # Locate the last added cart item (most recent)
+        recent_added_cart_element = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//tr[@class='mobile-card ng-star-inserted'])[last()]"))
+        )
+
+        # Extract details of the last item in the cart
+        expected_item_name = recent_added_cart_element.find_element(By.XPATH, "./td[1]").text
+        print(f"Expected Item Name: {expected_item_name}")
+
+        expected_consumer_name = recent_added_cart_element.find_element(By.XPATH, "./td[2]").text
+        print(f"Expected Consumer Name: {expected_consumer_name}")
+
+        expected_item_quantity = recent_added_cart_element.find_element(By.XPATH, "./td[5]").text
+        print(f"Expected Item Quantity: {expected_item_quantity}")
+
+        # Assert that the item in the active cart matches the item added by the consumer
+        print(f"Actual Item name :'{cart_item_name.strip()}', Active_cart Item name :'{expected_item_name.strip()}'")
+        print(f"Actual Consumer name :'{consumer_data['first_name']} {consumer_data['last_name']}', Active_cart Consumer name :'{expected_consumer_name}'")
+        print(f"Actual Item quantity  :'{cart_item_counts}', Active_cart Item quantity :'{expected_item_quantity}'")
+        assert cart_item_name.strip() == expected_item_name.strip(), f"Item name mismatch: Expected '{cart_item_name.strip()}', but found '{expected_item_name.strip()}'"
+        assert f"{consumer_data['first_name']} {consumer_data['last_name']}" == expected_consumer_name, f"Consumer name mismatch: Expected '{consumer_data['first_name']} {consumer_data['last_name']}', but found '{expected_consumer_name}'"
+        assert cart_item_counts == expected_item_quantity , f"Item quantity mismatch: Expected '{cart_item_counts}', but found '{expected_item_quantity}'"
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e  
+
+
+
