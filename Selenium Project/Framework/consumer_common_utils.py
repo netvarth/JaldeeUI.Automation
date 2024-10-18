@@ -28,7 +28,8 @@ def consumer_login():
         )
     )
     # driver.get("https://scale.jaldee.com/visionhospital/")
-    driver.get("https://scale.jaldee.com/RangSweets")
+    # driver.get("https://scale.jaldee.com/RangSweets")
+    driver.get("https://www.jaldee.com/02s7i59")
     driver.maximize_window()
     yield driver
     driver.quit() 

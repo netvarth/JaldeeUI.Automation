@@ -10,7 +10,7 @@ def consumer_login():
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    driver.get("https://scale.jaldee.com/RangSweets")
+    driver.get("https://www.jaldee.com/02s7i59")
     driver.maximize_window()
     yield driver
     driver.quit() 
@@ -39,14 +39,17 @@ def test_create_Online_order(consumer_login):
         time.sleep(5)
         global consumer_data
         consumer_data = create_consumer_data()
+        # Dessert = WebDriverWait(consumer_login, 20).until(
+        #     EC.presence_of_element_located((By.XPATH, "//div[@class='category-name d-flex justify-content-between'][normalize-space()='Dessert']"))
+        # )
         Dessert = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='category-name d-flex justify-content-between'][normalize-space()='Dessert']"))
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dessert')]"))
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert)
         time.sleep(5)
         Dessert.click()
         time.sleep(3)
-        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
+        wait_and_locate_click(consumer_login, By.XPATH, "(//button[@type='button'][normalize-space()='Add'])[2]")
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
@@ -105,7 +108,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Active Carts")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://www.jaldee.com/business"])
 def test_activecarts(login):
     try:
         time.sleep(5)
@@ -125,7 +128,6 @@ def test_activecarts(login):
             except:
                 print("EC Caught:Next button not found or clicked.")
                 break
-            
         # Locate the last added cart item (most recent)
         recent_added_cart_element = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//tr[@class='mobile-card ng-star-inserted'])[last()]"))
