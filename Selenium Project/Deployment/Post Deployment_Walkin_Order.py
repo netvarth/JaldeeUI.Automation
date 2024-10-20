@@ -20,7 +20,7 @@ def test_create_walkin_Order(login):
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//div[@class='d-flex item-btn align-items-center']")
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='mdc-checkbox'])[2]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@class='mdc-checkbox'])[3]")
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']")
         time.sleep(2)
