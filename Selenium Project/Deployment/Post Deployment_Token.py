@@ -63,14 +63,22 @@ def test_create_patient(login):
         )
         element.click()
 
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
+        # ).send_keys("9207206005")
+
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
-        ).send_keys("9207206005")
+        ).send_keys("9400553615")
 
         time.sleep(3)
 
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#87')]"))
+        # ).click()
+ 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#87')]"))
+            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#115')]"))
         ).click()
 
         service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"

@@ -612,7 +612,7 @@ def test_signup():
         ).click()
 
         time.sleep(5)
-        print("New patient create")
+        print("New patient created")
         WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
                 (
@@ -716,7 +716,7 @@ def test_create_patient(login):
     print("Post-Deployment Provider Appointment",current_date)
     try:
         time.sleep(5)
-        print("New patient create")
+        print("New patient created")
         
         
         WebDriverWait(login, 20).until(
@@ -825,17 +825,27 @@ def test_create_patient(login):
         element.click()
         
 
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
+        #     )
+        # ).send_keys("920720600")
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("920720600")
+        ).send_keys("9400553615")
 
         time.sleep(3)
 
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[contains(text(),'Id : temp#87')]")
+        #     )
+        # ).click()
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Id : temp#87')]")
+                (By.XPATH, "//span[contains(text(),'Id : temp#115')]")
             )
         ).click()
 

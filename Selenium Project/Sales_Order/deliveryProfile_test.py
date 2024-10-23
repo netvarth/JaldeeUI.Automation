@@ -117,9 +117,9 @@ def test_create_Store_Pickup_deliveryProfile(login):
     
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Create_WalkinOrder_completed")
+@allure.title("Create_WalkinOrder_completed_with Storepickup_deliverycharge")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_create_walkin_Order(login):
+def test_create_walkin_Order_Storepickup_deliverycharge(login):
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
@@ -226,8 +226,8 @@ from Framework.consumer_common_utils import *
 from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Create_Online_Order")
-def test_create_Online_order(consumer_login):
+@allure.title("Create_Online_Order_With_Homedelivery")
+def test_create_Online_order_With_Homedelivery(consumer_login):
     try:
         time.sleep(5)
         consumer_data = create_consumer_data()

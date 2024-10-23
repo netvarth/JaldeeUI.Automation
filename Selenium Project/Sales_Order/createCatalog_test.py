@@ -4,7 +4,7 @@ from Framework.common_dates_utils import *
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_Catalog")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_create_Item(login):
+def test_create_Catalog(login):
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
