@@ -339,3 +339,118 @@ def test_create_store_Online_POS(login):
             attachment_type=AttachmentType.PNG,
         ) 
         raise e  
+    
+
+
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@allure.title("Store Active Filter")
+def test_Store_Activefilter(login):
+
+    try:
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Stores')]") 
+        time.sleep(2)
+
+        time.sleep(2)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+        ).click()
+
+  
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Status']"))
+        ).click()
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Active']"))
+        )
+          
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Apply']"))
+        ).click()
+
+        # Wait for the table to load after applying the filter
+        time.sleep(5)
+
+        # Locate the table body containing the filtered results
+        table_body = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody")
+            )
+        )
+
+        # Get all rows in the table
+        table_rows = table_body.find_elements(By.XPATH, ".//tr")
+
+        # Check if all store status
+        for row in table_rows:
+            # Locate the cell containing the store location (adjust column index based on actual table structure)
+            store_status = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only'][3]").text
+            
+            # Assert that the store status
+            assert store_status == "Active", f"Store Status '{store_status}' does not match the filter 'Active'"
+
+        
+
+        time.sleep(2)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+        ).click()
+
+
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Inactive']"))
+        ).click()
+
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Apply']"))
+        ).click()
+
+        # Wait for the table to load after applying the filter
+        time.sleep(3)
+
+        # Locate the table body containing the filtered results
+        table_body = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody")
+            )
+        )
+
+        # Get all rows in the table
+        table_rows = table_body.find_elements(By.XPATH, ".//tr")
+
+        # Check if all store status
+        for row in table_rows:
+            # Locate the cell containing the store location (adjust column index based on actual table structure)
+            store_status = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only'][3]").text
+            
+            # Assert that the store status
+            assert store_status == "Inactive", f"Store Status '{store_status}' does not match the filter 'Inactive'"
+
+        print ("test result")
+    except Exception as e: 
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e 
+    
