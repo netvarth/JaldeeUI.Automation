@@ -83,8 +83,8 @@ def test_create_order(login):
 
 
     # Add items
-    item_names_to_select = ['Item3']
-    item_prices = [95]
+    item_names_to_select = ['Items']
+    item_prices = [115]
     sum = 0
     items_data_before_confirm = []
 
