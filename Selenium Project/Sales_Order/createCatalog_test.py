@@ -87,3 +87,91 @@ def test_create_Catalog(login):
             attachment_type=AttachmentType.PNG,
         ) 
         raise e  
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Active_Catalog_Filter")
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_Active_Catalog_Filter(login):
+    try:
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Catalogs')]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//i[@class='pi pi-filter-fill']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@role='tablist'])[3]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[contains(text(),'Select Status')]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Active']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@class='p-element p-button-raised p-button-primary font-weight-bold p-button p-component']")
+        time.sleep(5)
+        
+        while True:
+            try:
+                print("Checking current page for Active catalogs...")
+                time.sleep(3) 
+                table_body = WebDriverWait(login, 20).until(
+                    EC.presence_of_element_located((By.XPATH, "//tbody"))
+                )
+                active_catalogs = []
+                # Get all rows in the table
+                table_rows = table_body.find_elements(By.XPATH, ".//tr")
+                print(f"Found {len(table_rows)} rows on this page.")
+                if not table_rows:
+                    print("No more rows found. Stopping iteration.")
+                    break
+                for row in table_rows:
+                    try:
+                        
+                        toggle_button = row.find_element(By.XPATH, ".//div[contains(@class,'p-inputswitch')]")
+                        is_active = 'p-inputswitch-checked' in toggle_button.get_attribute('class')
+                        print(f"Toggle button status: {'Active' if is_active else 'Inactive'}")
+
+                        catalog_name = row.find_element(By.XPATH, ".//div[contains(@class, 'fw-bold')]").text
+                        if is_active:
+                            active_catalogs.append(catalog_name)
+                            print("Active catalog found:", catalog_name)
+                        
+                    except Exception as row_error:
+                        print(f"Error processing row: {row_error}")
+                # Check for the next button and click if available
+                try:
+                    next_page_button = login.find_element(By.XPATH, "//button[@class='p-ripple p-element p-paginator-next p-paginator-element p-link']")
+                    scroll_to_element(login, next_page_button)
+                    if next_page_button.is_enabled():
+                        next_page_button.click()
+                        time.sleep(3)
+                        tbody = WebDriverWait(login, 20).until(
+                        EC.visibility_of_element_located((By.XPATH, "//tbody"))
+                        )
+                        scroll_to_element(login, tbody)
+                        time.sleep(3) 
+                    else:
+                        break 
+                except NoSuchElementException:
+                    break
+                # Assertions for the active catalogs
+                assert len(active_catalogs) > 0, "Expected active catalogs but found none."
+
+            except TimeoutException:
+                print("A timeout occurred while waiting for the table.")
+                break
+
+        # Click to refresh and close
+        wait_and_locate_click(login, By.XPATH, "//i[@class='pi pi-filter-fill']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[@class='p-button-icon p-button-icon-left pi pi-refresh']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-sidebar-close-icon'])[1]")
+        time.sleep(2)
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e  
