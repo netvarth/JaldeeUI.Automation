@@ -25,7 +25,8 @@ from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import NoSuchElementException 
+from selenium.common.exceptions import TimeoutException
 
 
 
@@ -96,10 +97,10 @@ def login(url):
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555557799")#Whole
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    driver.find_element(By.ID, "loginId").send_keys("login12347")#Production sales order
+    driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
     driver.find_element(By.ID, "password").send_keys("Jaldee123")
+    # driver.find_element(By.ID, "loginId").send_keys("login12347")#Production sales order
+    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     
     # time.sleep(10)
