@@ -352,8 +352,6 @@ def test_Store_Activefilter(login):
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Stores')]") 
         time.sleep(2)
-
-        time.sleep(2)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//i[@class='pi pi-filter-fill']"))
@@ -429,6 +427,164 @@ def test_Store_Activefilter(login):
             store_status = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only']//div[@class='inactive ng-star-inserted']").text
             assert store_status == "Inactive", f"Store Status '{store_status}' does not match the filter 'Inactive'"
 
+    except Exception as e: 
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e 
+    
+
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@allure.title("Store Filters")
+def test_Store_filter(login):
+
+    try:
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Stores')]") 
+        time.sleep(2)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@role='tablist'])[1]"))
+        ).click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='text-left p-dropdown p-component'])[1]"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Round North']"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@role='tablist'])[2]"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='text-left p-dropdown p-component'])[2]"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='BAKERY'])[1]"))
+        ).click()
+        time.sleep(2)
+        # C
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//div[@class='text-left p-dropdown p-component'])[3]"))
+        # ).click()
+        # time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Apply']"))
+        ).click()
+        time.sleep(5)
+        table_body = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody")
+            )
+        )
+        table_rows = table_body.find_elements(By.XPATH, ".//tr")
+        for row in table_rows:
+            store_location = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only'][1]").text
+            assert store_location == "Round North", f"Store location '{store_location}' does not match the filter 'Round North'"
+            store_type = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only'][2]").text
+            assert store_type == "BAKERY", f"Store location '{store_type}' does not match the filter 'BAKERY'"
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@role='tablist'])[4]"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='text-left p-dropdown p-component'])[4]"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Inactive']"))
+        ).click()
+        time.sleep(3)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Apply']"))
+        ).click()
+        time.sleep(5)
+        table_body = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody")
+            )
+        )
+
+       
+        table_rows = table_body.find_elements(By.XPATH, ".//tr")
+        for row in table_rows:
+           
+            store_status = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only']//div[@class='inactive ng-star-inserted']").text
+            assert store_status == "Inactive", f"Store Status '{store_status}' does not match the filter 'Inactive'"
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+        ).click()
+        time.sleep(3)
+        scroll_to_window(login)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='text-left p-dropdown p-component'])[4]"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//li[@aria-label='Active']"))
+        ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Apply']"))
+        ).click()
+        time.sleep(5)
+        table_body = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody")
+            )
+        )
+        table_rows = table_body.find_elements(By.XPATH, ".//tr")
+
+       
+        for row in table_rows:
+          
+            store_status = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only']//div[@class='active ng-star-inserted']").text
+            assert store_status == "Active", f"Store Status '{store_status}' does not match the filter 'Active'"
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//i[@class='pi pi-filter-fill']") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Reset']") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-sidebar-close-icon'])[1]") 
+        time.sleep(2)
     except Exception as e: 
         allure.attach(  
             login.get_screenshot_as_png(),  
