@@ -100,7 +100,16 @@ def test_Orderlog(login):
         print(invoicelogs)
         assert f"{createinvoicelog}  in invoicelogs," "Log entry not found!"
         print(f"{createinvoicelog}  in invoicelogs")
-        
+        wait_and_locate_click(login, By.XPATH, "//i[@class='fa fa-times']")
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='View Invoice']")
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@class='p-element log-btn me-1 p-button p-component ng-star-inserted'])[1]")
+        time.sleep(3)
+        logs_table = login.find_element(By.XPATH, "(//tbody)[3]//tr//td[4]")
+        viewinvoiceslogs = logs_table.text
+        print(viewinvoiceslogs)
+        assert f"Invoice created for the {actual_order_id} in viewinvoiceslogs," "Log entry not found!"
     except Exception as e:  
         allure.attach(  
             login.get_screenshot_as_png(),  
