@@ -457,6 +457,7 @@ def test_booking(login):
             )
         ).click()
         time.sleep(3)
+        
         while True:
             try:
                 more_button = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Show more')]")))  # Update with the actual ID or selector
@@ -489,17 +490,16 @@ def test_booking(login):
                     confirmed_xpath = f"(//span[@class='greenc ng-star-inserted'][normalize-space()='Confirmed'])[position()={i+1}]"
 
                     try:
+                        status_element = WebDriverWait(login, 10).until(
+                            EC.presence_of_element_located((By.XPATH, status_xpath))
+                        )
                         confirmed_element = WebDriverWait(login, 10).until(
-                        EC.presence_of_element_located((By.XPATH, confirmed_xpath))
-                            )
-
-                        confirmed_text = confirmed_element.text.strip()
-                        print(f"Booking {i} confirmed status: {confirmed_text}")
-
-                        # Proceed only if the booking is confirmed
-                        if confirmed_text == "Confirmed":
+                            EC.presence_of_element_located((By.XPATH, confirmed_xpath))
+                        )
+                        # Check if the status is 'Confirmed'
+                        if status_element.text.strip() == "Status" and confirmed_element.text.strip() == "Confirmed":
                             WebDriverWait(login, 10).until(EC.element_to_be_clickable(last_booking)).click()
-                            print(f"Clicked on booking {i}")
+
                             WebDriverWait(login, 10).until(
                                 EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Cancel']"))
                             ).click()
@@ -517,17 +517,17 @@ def test_booking(login):
                             print("Appointment cancelled successfully")
                             Confirmed_booking_found = True # Confirmed_booking_found booking is  processed 
                             break  # Exit the loop after successfully canceling
-                    except:
-                        print(f"Confirmed element not found for booking {i}")
-                        continue  # Skip to the next booking
+                    except Exception as e:
+                        print(f"Error processing booking {i}: {e}")
 
                 if not Confirmed_booking_found:
                     print("No need to processed further Confirmed booking")
                     break  # While loop exit
 
             except Exception as e:
+                # print(f"Error in processing bookings: {e}")
                 break
-        time.sleep(3)
+    
     except Exception as e:
             allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
