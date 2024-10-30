@@ -72,7 +72,7 @@ def test_lead_workflow(login):
                 (By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
         ).click()
 
-        prod_service = "Appointment_" + str(uuid.uuid4())[:4]
+        prod_service = "Appointment" + str(uuid.uuid4())[:4]
 
         wait.until(
             EC.presence_of_element_located(
@@ -472,9 +472,9 @@ def test_lead_workflow(login):
                 (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
         ).click()
 
-        
-        message_element = WebDriverWait(login, 15).until(
-            EC.visibility_of_element_located((By.XPATH, "//span[@class='p-button-label ng-star-inserted']"))
+        time.sleep(3)
+        message_element = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//*[text()='Converted to Appointment']"))
         )
 
         # Retrieve the text and print it for verification
