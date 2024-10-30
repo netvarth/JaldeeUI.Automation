@@ -334,7 +334,7 @@ def test_booking(login):
         time.sleep(2)
         time.sleep(2)
         # Calculate tomorrow's date
-        tomorrow_date = datetime.now() + timedelta(days=1)
+        tomorrow_date = datetime.now() + timedelta(days=2)
         # Get the day as an integer to avoid leading zeros
         day = tomorrow_date.day  # e.g., 1 for October 1
         # Format for the XPath

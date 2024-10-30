@@ -179,13 +179,17 @@ def test_consumer_token_booking(login):
                 (By.XPATH, "//span[normalize-space()='Confirm']")
             )
         )
+        login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
+        time.sleep(2)
         confirmbutton.click()
         time.sleep(5)
-        login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        button = login.find_element(By.CSS_SELECTOR, "button[type='submit']")
-        button.click()
-        print("Consumer create token successfully")
-        time.sleep(3)
+        Ok_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+        time.sleep(2)
+        Ok_button.click()
+        time.sleep(2)
         bookings = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[contains(text(),'My Bookings')]")
@@ -316,7 +320,7 @@ def test_consumer_token_booking(login):
         login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)
         # Calculate tomorrow's date
-        tomorrow_date = datetime.now() + timedelta(days=1)
+        tomorrow_date = datetime.now() + timedelta(days=2)
         # Get the day as an integer to avoid leading zeros
         day = tomorrow_date.day  # e.g., 1 for October 1
         # Format for the XPath

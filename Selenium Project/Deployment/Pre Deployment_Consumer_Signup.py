@@ -891,7 +891,7 @@ def test_prepayment_appointment_booking(login):
         EC.presence_of_element_located(
             (
                 By.XPATH,
-                    "//div[@class='text-center mgn-up-10']//button[@type='button']",
+                    "//button[@type='button']//span[@class='mat-mdc-button-touch-target']",
             )
         )
     )
@@ -1116,7 +1116,7 @@ def test_prepayment_token_booking(login):
         EC.presence_of_element_located(
             (
                 By.XPATH,
-                    "//div[@class='text-center mgn-up-10']//button[@type='button']",
+                    "//button[@type='button']//span[@class='mat-mdc-button-touch-target']",
             )
         )
     )
