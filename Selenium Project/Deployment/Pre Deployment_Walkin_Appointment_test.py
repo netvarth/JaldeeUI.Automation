@@ -36,8 +36,8 @@ def test_account_signup():
     ).click()
 
     time.sleep(3)
-    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-    login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+    first_name, last_name, cons_manual_id, phonenumber1, email = create_user_data()
+    login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber1)
     login.find_element(By.XPATH, "//input[@id='Firstname']").send_keys(str(first_name))
     login.find_element(By.XPATH, "//input[@id='Lastname']").send_keys(str(last_name))
 
@@ -126,7 +126,7 @@ def test_account_signup():
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='loginId']"))
-    ).send_keys(phonenumber)
+    ).send_keys(phonenumber1)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='newpassfield']"))
@@ -497,6 +497,10 @@ def test_account_signup():
     )
     MM.clear()
     MM.send_keys("55")
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//button[@type='button'][normalize-space()='AM'])[2]"))
+    ).click()
 
     time.sleep(2)
     select_btn = WebDriverWait(login, 10).until(
@@ -592,9 +596,11 @@ def test_account_signup():
 
     login.execute_script("arguments[0].click();", mdc_switch)
 
+    time.sleep(2)
     login.find_element(
         By.XPATH, "//label[normalize-space()='Allow online appointments for today']"
     ).click()
+    time.sleep(2)
     login.find_element(
         By.XPATH, "//label[normalize-space()='Allow online appointments for future']"
     ).click()
@@ -654,9 +660,9 @@ def test_account_signup():
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
 
-    time.sleep(5)
+    time.sleep(4)
 
-    Today_Date = WebDriverWait(login, 10).until(
+    Today_Date = WebDriverWait(login, 30).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
@@ -664,7 +670,8 @@ def test_account_signup():
                 )
             )
         )
-    login.implicitly_wait(10)
+    login.execute_script("arguments[0].click();", Today_Date)
+    # login.implicitly_wait(10)
     Today_Date.click()
 
     print("Today Date:", Today_Date.text)
@@ -693,9 +700,81 @@ def test_account_signup():
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
-        print("Snack bar message:", message)
+        print("Snack bar message:", message) 
 
     time.sleep(3)
+
+    home_button = WebDriverWait(login, 30).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[@id='kt_quick_user_toggle']//span[contains(@class, 'bname')]")
+    ))
+    
+    login.execute_script("arguments[0].click();", home_button)
+    # home_button.click()
+
+    time.sleep(2)
+
+    signout_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//a[normalize-space()='Sign Out']"))
+    )
+    login.execute_script("arguments[0].click();", signout_button)
+    # signout_button.click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//a[normalize-space()='Forgot Password ?']"))
+    ).click()
+   
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//input[@id='loginId'])[2]"))
+    ).send_keys(phonenumber1)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='mdc-button__label']"))
+    ).click()
+
+    time.sleep(3)
+    # otp_digits = "5555"
+    otp_digits = "55555"
+    # Wait for the OTP input fields to be present
+    otp_inputs = WebDriverWait(login, 10).until(
+        EC.presence_of_all_elements_located(
+            (By.XPATH, "//input[contains(@id, 'otp_')]")
+        )
+    )
+    for i, otp_input in enumerate(otp_inputs):
+        otp_input.send_keys(otp_digits[i])
+
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='mdc-button__label']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='newpassfield']"))
+    ).send_keys("Jaldee123")
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@placeholder='Re-enter Password']"))
+    ).send_keys("Jaldee123")
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='mdc-button__label']"))
+    ).click()
+    print("Password change successfully")
+
+    time.sleep(5)
+
+
 
 ##########################################################################################################################################################
 

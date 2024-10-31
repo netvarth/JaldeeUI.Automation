@@ -26,8 +26,8 @@ def test_signup():
         ).click()
 
         time.sleep(3)
-        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        first_name, last_name, cons_manual_id, phonenumber1, email = create_user_data()
+        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber1)
         login.find_element(By.XPATH, "//input[@id='Firstname']").send_keys(str(first_name))
         login.find_element(By.XPATH, "//input[@id='Lastname']").send_keys(str(last_name))
 
@@ -116,7 +116,7 @@ def test_signup():
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@id='loginId']"))
-        ).send_keys(phonenumber)
+        ).send_keys(phonenumber1)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@id='newpassfield']"))
@@ -694,6 +694,76 @@ def test_signup():
             print("Snack bar message:", message)
 
         time.sleep(3)
+
+        home_button = WebDriverWait(login, 30).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[@id='kt_quick_user_toggle']//span[contains(@class, 'bname')]")
+        ))
+        
+        login.execute_script("arguments[0].click();", home_button)
+        # home_button.click()
+
+        time.sleep(2)
+
+        signout_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//a[normalize-space()='Sign Out']"))
+        )
+        login.execute_script("arguments[0].click();", signout_button)
+        # signout_button.click()
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//a[normalize-space()='Forgot Password ?']"))
+        ).click()
+    
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='loginId'])[2]"))
+        ).send_keys(phonenumber1)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[@class='mdc-button__label']"))
+        ).click()
+
+        time.sleep(3)
+        # otp_digits = "5555"
+        otp_digits = "55555"
+        # Wait for the OTP input fields to be present
+        otp_inputs = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//input[contains(@id, 'otp_')]")
+            )
+        )
+        for i, otp_input in enumerate(otp_inputs):
+            otp_input.send_keys(otp_digits[i])
+
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[@class='mdc-button__label']"))
+        ).click()
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='newpassfield']"))
+        ).send_keys("Jaldee123")
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Re-enter Password']"))
+        ).send_keys("Jaldee123")
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[@class='mdc-button__label']"))
+        ).click()
+        print("Password change successfully")
+
+        time.sleep(5)
     
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
