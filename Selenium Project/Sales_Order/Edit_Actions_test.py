@@ -52,7 +52,7 @@ def test_Edit_Actions(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Max,Min and CloseTab")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_Edit_Actions(login):
+def test_MaxMinCloseTab_Actions(login):
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
