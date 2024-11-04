@@ -276,12 +276,12 @@ def test_booking(login):
         print("Snack bar message:", message)
         time.sleep(2)
         ################## View Attachment to the Booking ##################
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[@class='mat-mdc-menu-item-text'])[5]")
-        #     )
-        # ).click()
-        # time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='mat-mdc-menu-item-text'])[5]")
+            )
+        ).click()
+        time.sleep(2)
         print("View attachment successfully")
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(

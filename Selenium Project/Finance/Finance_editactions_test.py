@@ -3,14 +3,14 @@ from Framework.common_dates_utils import *
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Edit Actions")
+@allure.title("Finance Edit Actions Tab")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_Edit_Actions(login):
+def test_FinanceEdit_Actions(login):
     try:
         time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        wait_and_locate_click(login, By.XPATH, "//li[4]//a[1]//div[1]//span[1]//span[1]//img[1]") 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[@class='font-small']")
+        wait_and_locate_click(login, By.XPATH, "//img[@src='assets/images/dashboard/edit-actions.svg']")
         time.sleep(3)
         WebDriverWait(login, 10).until(
         EC.visibility_of_all_elements_located((By.XPATH, "//div[contains(@class,'card action-card')]"))
@@ -36,35 +36,9 @@ def test_Edit_Actions(login):
                 time.sleep(3)
        
         wait_and_locate_click(login, By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']")
-        print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))
         print("All cards have been selected.")
 
 
-    except Exception as e:
-        allure.attach(  
-            login.get_screenshot_as_png(),  
-            name="full_page",  
-            attachment_type=AttachmentType.PNG,
-        ) 
-        raise e
-
-
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Max,Min and CloseTab")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_MaxMinCloseTab_Actions(login):
-    try:
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[@class='font-small']")
-        time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//button[@type='button'])[11]")
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//button[@type='button'])[11]")
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//button[@type='button'])[12]")
-        time.sleep(5)
     except Exception as e:
         allure.attach(  
             login.get_screenshot_as_png(),  
