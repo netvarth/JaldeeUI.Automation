@@ -904,7 +904,7 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("9400553615")
+        ).send_keys("9207206005")
 
         time.sleep(3)
 
@@ -915,7 +915,7 @@ def test_create_patient(login):
         # ).click()
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Id : temp#115')]")
+                (By.XPATH, "//span[contains(text(),'Id : temp#87')]")
             )
         ).click()
 
@@ -1408,7 +1408,7 @@ def test_create_patient(login):
 
         # ************************* Case Creation and Sharing *********************
 
-        time.sleep(5)
+        time.sleep(6)
         WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//span[normalize-space()='Patient Record']")
@@ -1455,6 +1455,7 @@ def test_create_patient(login):
             )
         ).send_keys("Viral fever")
 
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -1470,7 +1471,8 @@ def test_create_patient(login):
                 (By.XPATH, "//input[@placeholder='Enter Medication']")
             )
         ).send_keys(" No medication")
-
+        
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -1497,6 +1499,7 @@ def test_create_patient(login):
             By.XPATH, "//input[@placeholder='Enter Diastolic , Max : 500']"
         ).send_keys("287")
 
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -1515,6 +1518,7 @@ def test_create_patient(login):
             )
         ).send_keys("No History of Immunization History")
 
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -1729,6 +1733,7 @@ def test_create_patient(login):
             )
         ).send_keys("High temperature")
 
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()

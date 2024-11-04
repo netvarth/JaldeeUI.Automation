@@ -69,7 +69,7 @@ def test_create_patient(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
-        ).send_keys("9400553615")
+        ).send_keys("9207206005")
 
         time.sleep(3)
 
@@ -78,7 +78,7 @@ def test_create_patient(login):
         # ).click()
  
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#115')]"))
+            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#87')]"))
         ).click()
 
         service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"

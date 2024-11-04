@@ -2219,13 +2219,14 @@ def test_walkin_appointment(login):
             message = snack_bar.text
             print("Snack bar message:", message)
 
-        time.sleep(2)
+        time.sleep(4)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Get Payment']")
             )
         ).click()
-
+        
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Pay by Cash']"))

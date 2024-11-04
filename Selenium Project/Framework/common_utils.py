@@ -97,12 +97,12 @@ def login(url):
     driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555557799")#Whole
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
-    driver.find_element(By.ID, "password").send_keys("Jaldee123")
+    # driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
+    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     # driver.find_element(By.ID, "loginId").send_keys("login12347")#Production sales order
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    driver.find_element(By.ID, "loginId").send_keys("login12347")#Production sales order
-    driver.find_element(By.ID, "password").send_keys("Jaldee123")
+    # driver.find_element(By.ID, "loginId").send_keys("login12347")#Production sales order
+    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
     
     # time.sleep(10)
@@ -145,6 +145,16 @@ def create_users_data():
     email = f"{first_name}.{last_name}{test_mail}"
     print(email)
     return [first_name, last_name, phonenumber, email]
+
+def create_business_detail():
+    fake = Faker()
+    bs_name = fake.bs()
+    print(bs_name)
+    vendors_id = "".join(random.choices(string.ascii_letters + string.digits, k=3))
+    print(vendors_id)
+    return [bs_name, vendors_id]
+ 
+
 
 def wait_and_click(login, by, value, timeout=10):
     element = WebDriverWait(login, timeout).until(EC.element_to_be_clickable((by, value)))
