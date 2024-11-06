@@ -93,8 +93,8 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("5551111557")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
 
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")#ScaleInventory
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("5555556030")#ScaleInventory
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555557799")#Whole
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
@@ -206,3 +206,17 @@ def scroll_to_window(login):
 def scroll_to_element(login, element):
     login.execute_script("arguments[0].scrollIntoView(true);", element)
 
+
+# Generate a random billing address
+def generate_random_billing_address():
+    fake = Faker()
+    street_address = fake.street_address()  # e.g., '1234 Elm St.'
+    city = fake.city()  # e.g., 'Springfield'
+    state = fake.state()  # e.g., 'Illinois'
+    zip_code = fake.zipcode()  # e.g., '62704'
+    country = fake.country()  # e.g., 'United States'
+    
+    # Combine to form a full billing address
+    billing_address = f"{street_address}, {city}, {state} {zip_code}, {country}"
+    
+    return billing_address
