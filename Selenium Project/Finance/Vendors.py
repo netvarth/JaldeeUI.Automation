@@ -187,9 +187,3 @@ def test_create_same_vendors(login):
         )
         raise e
 
-
-
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: ")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
-def test_(login):

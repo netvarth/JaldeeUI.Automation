@@ -10,7 +10,7 @@ from selenium.webdriver.common.keys import Keys
 from Framework.common_utils import *
  
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Create confirmation template")
+@allure.title(" ")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_token_confirmation(login):
     
