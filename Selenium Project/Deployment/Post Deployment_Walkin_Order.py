@@ -418,7 +418,7 @@ def test_create_walkin_Order_paybycash(login):
         expected_message = "Payment completed successfully"
         print(f"Expected status: '{expected_message}', Actual status: '{message}'")
         assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
-        time.sleep(3)
+        time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Settle Invoice']")
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Yes']")
@@ -454,7 +454,7 @@ def test_create_walkin_Order_paybycash(login):
         raise e  
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Create_WalkinOrder_completed_Paybycash")
+@allure.title("Create_WalkinOrder_completed_Paybyothers")
 @pytest.mark.parametrize("url", ["https://www.jaldee.com/business/"])
 def test_create_walkin_Order_paybyothers(login):
     try:

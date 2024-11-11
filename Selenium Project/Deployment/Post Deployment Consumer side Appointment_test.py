@@ -265,8 +265,9 @@ def test_booking(login):
         )
         pyautogui.write(absolute_path)
         pyautogui.press("enter")
+        time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='send']"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='mdc-button__label']"))
         ).click()
         
         snack_bar = WebDriverWait(login, 10).until(
