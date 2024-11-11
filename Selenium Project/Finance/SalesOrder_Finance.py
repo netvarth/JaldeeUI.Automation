@@ -125,7 +125,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_Online_Order")
-# @pytest.fixture
+@pytest.fixture()
 
 def orderinvoiceid(consumer_login):
     try:
@@ -375,9 +375,9 @@ def test_print_order_invoice(login):
         ).click()
         
         login.switch_to.window(login.window_handles[-1])
-        # dropdown = WebDriverWait(login, 20).until(
-        #     EC.presence_of_element_located((By.CSS_SELECTOR, 'print-preview-app'))
-        # )
+        dropdown = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, 'print-preview-app'))
+        )
         try:
             dropdown = WebDriverWait(login, 20).until(
                 EC.presence_of_element_located((By.XPATH, "//print-preview-app//print-preview-sidebar//print-preview-destination-settings//print-preview-destination-select//select[@class='md-select']"))

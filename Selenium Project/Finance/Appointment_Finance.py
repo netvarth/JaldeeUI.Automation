@@ -949,7 +949,7 @@ from Framework.consumer_common_utils import *
 import allure
 from allure_commons.types import AttachmentType
 import os
-@pytest.fixture
+@pytest.fixture()
 def consumer_onlineappointment_booking_id(consumer_login):
     print("Online Appointment")
     try:
@@ -1177,7 +1177,7 @@ from Framework.consumer_common_utils import *
 import allure
 from allure_commons.types import AttachmentType
 import os
-@pytest.fixture
+@pytest.fixture()
 def onlineprepayment_appointment_booking_id(consumer_login):
     try:
         print("Prepayment Appointment")
@@ -1486,7 +1486,7 @@ from Framework.consumer_common_utils import *
 import allure
 from allure_commons.types import AttachmentType
 import os
-@pytest.fixture
+@pytest.fixture()
 def onlineprepayment_appointment_AGOFF(consumer_login):
     try:
         print("Prepayment Appointment Autogenerate Invoice Off")
