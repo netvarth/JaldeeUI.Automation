@@ -142,7 +142,7 @@ def test_consumer_token_booking(login):
 
         time.sleep(5)
         # otp_digits = "5555"
-        otp_digits = "55555"
+        otp_digits = "5555"
         # Wait for the OTP input fields to be present
         otp_inputs = WebDriverWait(login, 10).until(
             EC.presence_of_all_elements_located(

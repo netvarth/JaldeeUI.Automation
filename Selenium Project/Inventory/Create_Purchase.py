@@ -14,13 +14,14 @@ def title_to_item(title_case_string):
     return title_case_string.title()
 
 
-
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Create purchase and push to Expense")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_create_purchase(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "//li[5]//a[1]//div[1]//span[1]//span[1]//img[1]"))
     ).click()
 
     time.sleep(5)
@@ -60,6 +61,7 @@ def test_create_purchase(login):
 
     login.find_element(By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
 
+    time.sleep(2)
     Inventory_Catalog = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
     )
@@ -74,7 +76,7 @@ def test_create_purchase(login):
     random_number = str(random.randint(10000, 99999))
     Bill_no.send_keys(random_number)
     print("Bill no:", random_number)
-
+    bill_number = random_number
     login.find_element(By.XPATH, "//p-calendar//input[@type='text']").click()
 
     Today_Date = WebDriverWait(login, 10).until(
@@ -88,9 +90,9 @@ def test_create_purchase(login):
     element1 = login.find_element(By.XPATH, "//span[normalize-space()='Add Items']")
     login.execute_script("arguments[0].scrollIntoView();", element1)
 
-    item_list = ["Items", "Item3"]
-    random_batch_number = str(random.randint(5, 99))
-
+    item_list = ["Item3"]
+    random_batch_number = str(random.randint(100, 1000))
+    time.sleep(2)
     for i in range(len(item_list)):
         print(item_list[i])
         item_xpath = item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{title_to_item(item_list[i])}']"
@@ -202,7 +204,7 @@ def test_create_purchase(login):
         )
         mrpprice.click()
         mrpprice.clear()
-        mrpprice_random_number = str(random.randint(60, 200))
+        mrpprice_random_number = str(random.randint(100, 200))
         mrpprice.send_keys(mrpprice_random_number)
         print("MRP of the item:", mrpprice_random_number)
 
@@ -214,7 +216,7 @@ def test_create_purchase(login):
         )
         price.click()
         price.clear()
-        price_random_number = str(random.randint(40, 100))
+        price_random_number = str(random.randint(40, 90))
         price.send_keys(price_random_number)
         print("Price of the item:", price_random_number)
 
@@ -331,10 +333,64 @@ def test_create_purchase(login):
 
     # Assert that the status is "APPROVED"
     assert status_text == "APPROVED", f"Expected status to be 'APPROVED', but got '{status_text}'"
+    
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//button[@aria-haspopup='menu'][normalize-space()='Actions'])[1]"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[2]"))
+    ).click()
+
+    toast_detail = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_detail.text
+    print("toast_Message:", message)
+
+    time.sleep(2)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='ng-star-inserted'])[7]"))
+    ).click()
+
+    time.sleep(2)
+    expenses_card = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[normalize-space()='Expenses'])[1]"))
+    )
+    login.execute_script("arguments[0].click();", expenses_card)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[contains(text(),'View')])[1]"))
+    ).click()
+
+    time.sleep(2)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//img[@src='./assets/images/finance/uil.svg']"))
+    ).click()
+
+    time.sleep(3)
+
+    bill_input = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Purchase Bill#']"))
+    )
+
+    # Get the value (this will give the dynamically entered bill number)
+    bill_value = bill_input.get_attribute("value")
+    print("Entered Bill Number:", bill_value)
+
+    print(f"Expected bill_number: '{bill_value}', Actual bill_number: '{bill_number}'")
+    # Assert that the patient's name matches
+    assert bill_number == bill_value, f"Expected bill_number '{bill_value}', but found '{bill_number}' on invoice."
 
     time.sleep(5)
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Sales Price Higher than MRP with Toast Message Validation")
@@ -564,7 +620,6 @@ def test_sales_price_higher_than_mrp(login):
         expected_toast_message = "Purchase price should not exceed than MRP"
         assert expected_toast_message in toast_text, f"Expected toast message not found! Got: {toast_text}"
         print("Toast message validation passed!")
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Discount in percentage")
@@ -807,9 +862,6 @@ def test_discount_in_percentage(login):
     print("Actual amount after discount:", amount_after_discount)
     # Assertion to verify discount applied correctly
     assert round(amount_after_discount, 2) == round(expected_bill_amount, 2), "Discount amount is incorrect!"
-
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Discount in amount")

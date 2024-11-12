@@ -17,9 +17,6 @@ from selenium.common.exceptions import TimeoutException
 
 
 
-
-
-
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 @allure.title("Vendors Creation")
 def test_vendor_creation(login):
@@ -59,10 +56,6 @@ def test_vendor_creation(login):
         ).send_keys(vendor_id)
 
         print("Vendor_ID : ", vendor_id)
-
-        
-
-
 
     except Exception as e:
         allure.attach(  

@@ -1,7 +1,7 @@
 import pytest
 from Framework.common_utils import *
 
-# global bs_name, vendors_id, first_name, last_name, phonenumber, email
+
 bs_name, vendors_id = create_business_detail()
 
 first_name, last_name, phonenumber, email = create_users_data()
@@ -24,9 +24,6 @@ def test_create_vendors(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Create Vendor']"))
         ).click()
-
-        # bs_name, vendors_id = create_business_detail()
-        # first_name, last_name, phonenumber, email = create_users_data()
         
         wait.until(
             EC.presence_of_element_located(
@@ -95,8 +92,6 @@ def test_create_vendors(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create same Vendors with same vendor id")

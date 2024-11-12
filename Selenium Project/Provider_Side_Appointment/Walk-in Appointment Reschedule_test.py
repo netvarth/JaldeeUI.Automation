@@ -252,7 +252,7 @@ def test_appt_reschedule(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to another day")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_appt_reschedule_1(login):
+def  test_appt_reschedule_1(login):
 
     try:
         time.sleep(5)

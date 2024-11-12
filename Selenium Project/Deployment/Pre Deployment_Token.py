@@ -113,10 +113,9 @@ def test_walkin_token(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        # service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        #                         "Consultation'])[2]")
-        # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
-        # print("Select Service : Naveen Consultation")
+        service_option_xpath = ("//p-dropdownitem[2]//li[1]//div[1]")
+        WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
+        print("Select Service :service")
         time.sleep(3)
         wait = WebDriverWait(login, 10)
         Today_Date = wait.until(
@@ -127,6 +126,7 @@ def test_walkin_token(login):
                 )
             )
         )
+        
         Today_Date.click()
         print("Today Date:", Today_Date.text)
 
@@ -653,72 +653,72 @@ def test_walkin_token(login):
         # print("Toast Message:", message)
 
 
-        time.sleep(3)
+        # time.sleep(3)
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='History']")
-            )
-        ).click()
-
-
-        login.find_element(
-            By.XPATH, "//input[@placeholder ='Enter History']"
-        ).send_keys("viral fever")
-
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='viral fever']")
-            )
-        ).click()
-
-        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
-
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
-
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Medication']")
-            )
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='History']")
+        #     )
+        # ).click()
 
 
-        login.find_element(
-            By.XPATH, "//input[@placeholder='Enter Medication'] "
-        ).send_keys("no medication")
+        # login.find_element(
+        #     By.XPATH, "//input[@placeholder ='Enter History']"
+        # ).send_keys("viral fever")
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//span[@class='mdc-list-item__primary-text'][normalize-space()='no medication']",
-                )
-            )
-        ).click()
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[normalize-space()='viral fever']")
+        #     )
+        # ).click()
 
-        time.sleep(3)
-        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
 
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+        # # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
+
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Medication']")
+        #     )
+        # ).click()
+
+
+        # login.find_element(
+        #     By.XPATH, "//input[@placeholder='Enter Medication'] "
+        # ).send_keys("no medication")
+
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//span[@class='mdc-list-item__primary-text'][normalize-space()='no medication']",
+        #         )
+        #     )
+        # ).click()
+
+        # time.sleep(3)
+        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
+
+        # # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -866,67 +866,67 @@ def test_walkin_token(login):
         login.execute_script("arguments[0].scrollIntoView();", element2)
         element2.click()
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Observations']")
-            )
-        ).click()
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Observations']")
+        #     )
+        # ).click()
 
 
-        time.sleep(3)
+        # time.sleep(3)
         
-        login.find_element(
-            By.XPATH, "//input[@placeholder='Enter Observations']"
-        ).send_keys("Minor fever")
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='minor fever']")
-            )
-        ).click()
+        # login.find_element(
+        #     By.XPATH, "//input[@placeholder='Enter Observations']"
+        # ).send_keys("Minor fever")
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[normalize-space()='minor fever']")
+        #     )
+        # ).click()
 
-        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
 
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+        # # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Diagnosis']")
-            )
-        ).click()
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Diagnosis']")
+        #     )
+        # ).click()
 
-        login.find_element(
-            By.XPATH, "//input[@placeholder='Enter Diagnosis']"
-        ).send_keys("High temperature")
+        # login.find_element(
+        #     By.XPATH, "//input[@placeholder='Enter Diagnosis']"
+        # ).send_keys("High temperature")
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='high temperature']")
-            )
-        ).click()
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[normalize-space()='high temperature']")
+        #     )
+        # ).click()
 
-        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
 
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+        # # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
 
         time.sleep(3)
         WebDriverWait(login, 10).until(

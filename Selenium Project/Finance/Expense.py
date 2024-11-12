@@ -167,9 +167,6 @@ def test_create_expense(login):
         raise e
 
 
-
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Expense Converted to Pay")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])

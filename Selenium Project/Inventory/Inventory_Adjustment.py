@@ -354,10 +354,7 @@ def test_stock_adjustment(login):
     # Assert that the stock increased correctly
     assert updated_stock == expected_stock, f"Expected stock to be {expected_stock}, but got {updated_stock}"
     print(f"Stock updated successfully: {updated_stock}")
-
-#####################################################################################################################################################
-    
-    
+   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock adjustment with Batch disable Item")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
@@ -720,8 +717,6 @@ def test_stock_adjustment_1(login):
     print(f"Stock updated successfully: {updated_stock}")
     
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock Ajustment with one batch enabled item and one batch disabled item.")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
@@ -989,7 +984,6 @@ def test_stock_adjustment_2(login):
             (By.XPATH, "(//span[@class='fw-bold card shadow p-1 pointer-cursor'])[1]"))
     ).click()
 
-
     # Click to see the current stock
     wait.until(
         EC.presence_of_element_located(
@@ -1121,13 +1115,10 @@ def test_stock_adjustment_2(login):
     assert updated_stock == expected_stock, f"Expected stock to be {expected_stock}, but got {updated_stock}"
     print(f"Stock updated successfully: {updated_stock}")
 
-
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Batch Wise Stock'])[5]"))
     ).click()
-
-    
 
     # Capture the updated stock after clicking "View"
     updated_stock_element_1 = wait.until(
@@ -1151,8 +1142,6 @@ def test_stock_adjustment_2(login):
     # Assert that the stock increased correctly
     assert updated_stock_1 == expected_stock_1, f"Expected stock to be {expected_stock_1}, but got {updated_stock_1}"
     print(f"Stock updated successfully: {updated_stock_1}")
-
-
     
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock Ajustment")
