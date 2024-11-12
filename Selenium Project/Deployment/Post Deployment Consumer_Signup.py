@@ -40,8 +40,8 @@ def create_consumer_data():
     last_name = fake.last_name()
     random_digits = fake.numerify(text="#######")
     phonenumber = f"555{random_digits}"
-    test_email = "@jaldee.com"
-    email = f"{first_name}.{last_name}.{test_email}"
+    test_email = "test@jaldee.com"
+    email = f"{first_name}.{test_email}"
 
     return {
         "first_name": first_name,
