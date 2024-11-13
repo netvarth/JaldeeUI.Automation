@@ -7,7 +7,7 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Auto Invoice for Walkin Appointment")
+@allure.title("Auto Invoice for Walkin Appointment and Sharepayment link and Settled")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appointment_autoinvoice(login):
     try:
@@ -157,7 +157,7 @@ def test_appointment_autoinvoice(login):
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Auto Invoice paybycash for Walkin Appointment")
+@allure.title("Auto Invoice paybycash for Walkin Appointment and Settled Invoice")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appointment_paybycash(login):
     try:
@@ -309,7 +309,7 @@ def test_appointment_paybycash(login):
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Auto Invoice paybyothers for Walkin Appointment")
+@allure.title("Auto Invoice paybyothers for Walkin Appointment and Cancelled Invoice")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appointment_paybyothers(login):
     try:
@@ -946,9 +946,7 @@ def test_appointment_adhocitem_subservice_sharepdf(login):
         raise e
  
 from Framework.consumer_common_utils import *
-import allure
-from allure_commons.types import AttachmentType
-import os
+
 @pytest.fixture()
 def consumer_onlineappointment_booking_id(consumer_login):
     print("Online Appointment")
@@ -1174,9 +1172,7 @@ def test_onlineappointment_autoinvoice(consumer_onlineappointment_booking_id,log
     
 
 from Framework.consumer_common_utils import *
-import allure
-from allure_commons.types import AttachmentType
-import os
+
 @pytest.fixture()
 def onlineprepayment_appointment_booking_id(consumer_login):
     try:
@@ -1678,7 +1674,7 @@ def onlineprepayment_appointment_AGOFF(consumer_login):
         consumer_login.quit()
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Auto Invoice for online Prepayment Appointment and Refund")
+@allure.title("Manual Invoice for online Prepayment Appointment")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_onlineprepaidappointment_AGOFF(onlineprepayment_appointment_AGOFF,login):
     try:

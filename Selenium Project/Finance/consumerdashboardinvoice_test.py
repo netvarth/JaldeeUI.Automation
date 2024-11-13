@@ -1,11 +1,9 @@
 
 from Framework.consumer_common_utils import *
-from Framework.common_utils import *
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Online Token Invoice")
 
-def test_Online_Token_Invoice(consumer_login):
+@pytest.fixture()
+def onlinetokeninvoiceid(consumer_login):
     try:
         time.sleep(5)
         consumer_data = create_consumer_data()
@@ -162,6 +160,12 @@ def test_Online_Token_Invoice(consumer_login):
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//button[@class='amountDueBtn'][normalize-space()='Invoice'])[1]"))
         ).click()
+        time.sleep(2)
+        tokeninvoiceid = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='ng-star-inserted'])[2]"))
+        ).text
+        onlinetokeninvoiceid = tokeninvoiceid.split('#')[1].strip()
+        print("Online Token Invoice Id:", onlinetokeninvoiceid)
         Net_banking = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-radio'])[4]"))
         )
@@ -203,22 +207,17 @@ def test_Online_Token_Invoice(consumer_login):
         message = get_snack_bar_message(consumer_login)
         print("Snack bar message:", message)
         time.sleep(2)
-    except Exception as e:
-        allure.attach(
-            consumer_login.get_screenshot_as_png(),
-            name = "fullpage",
-            attachment_type= AttachmentType.PNG,
-            )
-        raise e
+        return onlinetokeninvoiceid
+    finally:
+        consumer_login.quit()
 
 
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Online Appointment Invoice")
+from Framework.consumer_common_utils import *
 
 
-
-def test_Online_Appointment_Invoice(consumer_login):
+@pytest.fixture()
+def onlineappointmentinvoiceid(consumer_login):
     try:
         time.sleep(5)
         consumer_data = create_consumer_data()
@@ -386,6 +385,12 @@ def test_Online_Appointment_Invoice(consumer_login):
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//button[@class='amountDueBtn'][normalize-space()='Invoice'])[1]"))
         ).click()
+        time.sleep(2)
+        appointmentinvoiceid = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='ng-star-inserted'])[2]"))
+        ).text
+        onlineappointmentinvoiceid = appointmentinvoiceid.split('#')[1].strip()
+        print("Online Appointment Invoice Id:", onlineappointmentinvoiceid)
         Net_banking = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-radio'])[4]"))
         )
@@ -427,10 +432,93 @@ def test_Online_Appointment_Invoice(consumer_login):
         message = get_snack_bar_message(consumer_login)
         print("Snack bar message:", message)
         time.sleep(2)
+        return onlineappointmentinvoiceid
+
+    finally:
+        consumer_login.quit() 
+
+
+from Framework.common_utils import *
+import allure
+from allure_commons.types import AttachmentType
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Consumer Appointment Invoice Id and Assign User on Finance Invoices")
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+def test_consumer_appointment_invoiceId(onlineappointmentinvoiceid, login):
+    try:
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        invoices = WebDriverWait(login, 15).until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Invoices'])[1]"))
+        )
+        scroll_to_element(login,invoices)
+        time.sleep(2) 
+        invoices.click()
+        time.sleep(2)
+        invoice_booking_Id = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody/tr[1]/td[1]"))
+        ).text
+    
+        print("Expected_Appointment_BookingId:",invoice_booking_Id)
+        print(f"Expected_Appointment_BookingId: '{invoice_booking_Id}', Actual_Appointment_BookingId: '{onlineappointmentinvoiceid}'")
+        assert onlineappointmentinvoiceid == invoice_booking_Id, f"Expected_Appointment_BookingId: '{invoice_booking_Id}', but got Actual_Appointment_BookingId: '{onlineappointmentinvoiceid}'"
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//tbody/tr[1]/td[10]/div[1]/button[2]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Assign User']") 
+        time.sleep(3)
+        wait_and_click(login, By.XPATH, "//span[@class='mdc-button__label']") 
+        time.sleep(2)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+        time.sleep(2)
     except Exception as e:
-        allure.attach(
-            consumer_login.get_screenshot_as_png(),
-            name = "fullpage",
-            attachment_type= AttachmentType.PNG,
-            )
+        allure.attach(  
+        login.get_screenshot_as_png(),  
+        name="full_page",  
+        attachment_type=AttachmentType.PNG,
+        ) 
+        raise e  
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Consumer Token Invoice Id and Assign User on Finance Invoices")
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+def test_consumer_token_invoiceId(onlinetokeninvoiceid, login):
+    try:
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        invoices = WebDriverWait(login, 15).until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Invoices'])[1]"))
+        )
+        scroll_to_element(login,invoices)
+        time.sleep(2) 
+        invoices.click()
+        time.sleep(2)
+        invoice_booking_Id = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody/tr[1]/td[1]"))
+        ).text
+    
+        print("Expected_Appointment_BookingId:",invoice_booking_Id)
+        print(f"Expected_Appointment_BookingId: '{invoice_booking_Id}', Actual_Appointment_BookingId: '{onlinetokeninvoiceid}'")
+        assert onlinetokeninvoiceid == invoice_booking_Id, f"Expected_Appointment_BookingId: '{invoice_booking_Id}', but got Actual_Appointment_BookingId: '{onlinetokeninvoiceid}'"
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//tbody/tr[1]/td[10]/div[1]/button[2]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Assign User']") 
+        time.sleep(3)
+        wait_and_click(login, By.XPATH, "//span[@class='mdc-button__label']") 
+        time.sleep(2)
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+        time.sleep(2)
+    except Exception as e:
+        allure.attach(  
+        login.get_screenshot_as_png(),  
+        name="full_page",  
+        attachment_type=AttachmentType.PNG,
+        ) 
         raise e
