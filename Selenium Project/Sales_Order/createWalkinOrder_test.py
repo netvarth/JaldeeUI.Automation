@@ -904,4 +904,216 @@ def test_create_walkin_Order_Increased_Item_Quantity(login):
         ) 
         raise e  
     
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create_WalkinOrder_confirmed and completed_order and applied Discount ")
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_create_walkin_Order_discount(login):
+    try:
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Create Order')]")
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Search customers']", "5550004454")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 1']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Next']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[@class='d-flex item-btn align-items-center']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@class='mdc-checkbox'])[2]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']")
+        time.sleep(2)
+        confirmorder = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Confirm Order']"))
+        )
+        scroll_to_element(login, confirmorder)
+        time.sleep(2)
+        confirmorder.click()
+        time.sleep(5)
+        create_Invoice = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create Invoice']"))
+        )
+        create_Invoice.click()
+        time.sleep(3)
+        add_discount = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//th[@class='btn btn-primary ng-star-inserted']"))
+        )
+        scroll_to_element(login, add_discount)
+        add_discount.click()
+        time.sleep(2)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']"))
+        ).click()
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='On Demand Discount']"))
+        ).click()
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter amount']", "100")
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Private note']", "Apply on demand discount 100 Rupees")
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Notes for customer']", "Applied On Demand Discount 100 Rupees")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Apply']")
+        print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))
+        time.sleep(2)
+        confirmedorder = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='status-Completed ng-star-inserted']"))
+        )
+        actual_message = confirmedorder.text
+        expected_message = "Confirmed"
+        print(f"Expected status: '{expected_message}', Actual status: '{actual_message}'")
+        assert actual_message == expected_message, f"Expected message '{expected_message} but got Message '{actual_message}'"
+        complete_Order = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Complete Order']"))
+        )
+        scroll_to_element(login, complete_Order)
+        time.sleep(2)
+        complete_Order.click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        print("Toast Message:", toast_message.text)
+        expected_message = "Order Completed Successfully"
+        print(f"Expected status: '{expected_message}', Actual status: '{toast_message.text}'")
+        assert toast_message.text == expected_message, f"Expected toast message '{expected_message}', but got '{toast_message.text}'"
+        time.sleep(5)
+        
+        view_Invoice = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='View Invoice']"))
+        )
+        scroll_to_element(login, view_Invoice)
+        view_Invoice.click()
+        time.sleep(3)
+        paymentlink = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']"))
+        )
+        scroll_to_element(login, paymentlink)
+        paymentlink.click()
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//li[@aria-label='Share Payment Link']")
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//span[@class='mdc-button__label']")
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+        expected_message = "The invoice has been sent to the customer"
+        print(f"Expected status: '{expected_message}', Actual status: '{message}'")
+        assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
+        time.sleep(2)
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e  
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create_WalkinOrder_confirmed and completed_order and applied coupon ")
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+def test_create_walkin_Order_Coupon(login):
+    try:
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Create Order')]")
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Search customers']", "5550004454")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 1']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Next']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[@class='d-flex item-btn align-items-center']")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@class='mdc-checkbox'])[2]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']")
+        time.sleep(2)
+        confirmorder = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Confirm Order']"))
+        )
+        scroll_to_element(login, confirmorder)
+        time.sleep(2)
+        confirmorder.click()
+        time.sleep(5)
+        create_Invoice = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create Invoice']"))
+        )
+        create_Invoice.click()
+        time.sleep(3)
+        add_coupon = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "(//th[@class='btn btn-primary ms-2'])[1]"))
+        )
+        scroll_to_element(login, add_coupon)
+        add_coupon.click()
+        time.sleep(2)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']"))
+        ).click()
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Christmas']"))
+        ).click()
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Apply']")
+        print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))
+        time.sleep(3)
+        confirmedorder = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='status-Completed ng-star-inserted']"))
+        )
+        actual_message = confirmedorder.text
+        expected_message = "Confirmed"
+        print(f"Expected status: '{expected_message}', Actual status: '{actual_message}'")
+        assert actual_message == expected_message, f"Expected message '{expected_message} but got Message '{actual_message}'"
+        complete_Order = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Complete Order']"))
+        )
+        scroll_to_element(login, complete_Order)
+        time.sleep(2)
+        complete_Order.click()
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        print("Toast Message:", toast_message.text)
+        expected_message = "Order Completed Successfully"
+        print(f"Expected status: '{expected_message}', Actual status: '{toast_message.text}'")
+        assert toast_message.text == expected_message, f"Expected toast message '{expected_message}', but got '{toast_message.text}'"
+        time.sleep(5)
+        
+        view_Invoice = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='View Invoice']"))
+        )
+        scroll_to_element(login, view_Invoice)
+        view_Invoice.click()
+        time.sleep(3)
+        paymentlink = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']"))
+        )
+        scroll_to_element(login, paymentlink)
+        paymentlink.click()
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//li[@aria-label='Share Payment Link']")
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//span[@class='mdc-button__label']")
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+        expected_message = "The invoice has been sent to the customer"
+        print(f"Expected status: '{expected_message}', Actual status: '{message}'")
+        assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
+        time.sleep(2)
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e  
+    
+
+    
     
