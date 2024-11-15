@@ -904,7 +904,7 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("9207206005")
+        ).send_keys("9567570961")
 
         time.sleep(3)
 
@@ -915,7 +915,7 @@ def test_create_patient(login):
         # ).click()
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Id : temp#87')]")
+                (By.XPATH, "//span[contains(text(),'Id : 11')]")
             )
         ).click()
 
@@ -1408,13 +1408,15 @@ def test_create_patient(login):
 
         # ************************* Case Creation and Sharing *********************
 
-        time.sleep(6)
-        WebDriverWait(login, 20).until(
+        time.sleep(3)
+        Patient_Record_tab = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Patient Record']")
             )
-        ).click()
+        )
+        login.execute_script("arguments[0].click();", Patient_Record_tab)
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='+ Create Case']")
@@ -1435,48 +1437,51 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']")
             )
-        ).send_keys("Fever")
+        ).send_keys("Fever",Keys.RETURN)
 
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
         time.sleep(3)
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[normalize-space()='History']")
-        #     )
-        # ).click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='History']")
+            )
+        ).click()
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//input[@placeholder = 'Enter History']")
-        #     )
-        # ).send_keys("Viral fever")
-        # login.enter()
-        # time.sleep(2)
-        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder = 'Enter History']")
+            )
+        ).send_keys("Viral fever",Keys.RETURN)
+       
+        time.sleep(2)
+        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[normalize-space()='Medication']")
-        #     )
-        # ).click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Medication']")
+            )
+        ).click()
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//input[@placeholder='Enter Medication']")
-        #     )
-        # ).send_keys(" No medication")
-        # login.enter()
-        # time.sleep(2)
-        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Enter Medication']")
+            )
+        ).send_keys(" No medication",Keys.RETURN)
+        
+        time.sleep(2)
+        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
 
+        time.sleep(1)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Vital Signs']")
@@ -1504,24 +1509,24 @@ def test_create_patient(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[normalize-space()='Immunization History']")
-        #     )
-        # ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Immunization History']")
+            )
+        ).click()
 
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//input[@placeholder='Enter Immunization History']")
-        #     )
-        # ).send_keys("No History of Immunization History")
-        # login.enter()
-        # time.sleep(2)
-        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Enter Immunization History']")
+            )
+        ).send_keys("No History of Immunization History",Keys.RETURN)
+        
+        time.sleep(1)
+        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -1702,41 +1707,42 @@ def test_create_patient(login):
         print("Toast Message:", message)
 
         time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[normalize-space()='Observations']")
-        #     )
-        # ).click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Observations']")
+            )
+        ).click()
 
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//input[@placeholder='Enter Observations']")
-        #     )
-        # ).send_keys("Minor fever")
-        # login.enter()
-        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Enter Observations']")
+            )
+        ).send_keys("Minor fever",Keys.RETURN)
+        
+        time.sleep(1)
+        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
 
-        # time.sleep(2)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[normalize-space()='Diagnosis']")
-        #     )
-        # ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Diagnosis']")
+            )
+        ).click()
 
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//input[@placeholder='Enter Diagnosis']")
-        #     )
-        # ).send_keys("High temperature")
-        # login.enter()
-        # time.sleep(2)
-        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Enter Diagnosis']")
+            )
+        ).send_keys("High temperature",Keys.RETURN)
+        
+        time.sleep(2)
+        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
 
 
         WebDriverWait(login, 10).until(

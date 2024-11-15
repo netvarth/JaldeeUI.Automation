@@ -1058,7 +1058,7 @@ def test_walkin_token(login):
                 (By.XPATH, "//span[contains(text(),'Whatsapp')]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(text(),'Share')]"))
@@ -1071,7 +1071,7 @@ def test_walkin_token(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//i[@class='pi pi-arrow-left back-btn-arrow']")

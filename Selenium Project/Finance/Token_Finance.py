@@ -2283,91 +2283,19 @@ def test_add_con_prepayment(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: for donation")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/visionhospital/"])
 def test_donation(con_login):
-    global con_booking_id_1  
+    # global con_booking_id_1  
     time.sleep(5)
-    book_now_button = WebDriverWait(con_login, 10).until(
+    dontate_button = WebDriverWait(con_login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Book Now']")
+            (By.XPATH, "//span[normalize-space()='Donate']")
         )
     )
-    con_login.execute_script("arguments[0].scrollIntoView();", book_now_button)
-
-    # Wait for the element to be clickable
-    clickable_book_now_button = WebDriverWait(con_login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
-    )
-    try:
-        clickable_book_now_button.click()
-    except:
-        con_login.execute_script("arguments[0].click();", clickable_book_now_button)
-        # wait = WebDriverWait(login, 10)
-    location_button = WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]",
-            )
-        )
-    )
-    location_button.click()
-
-    # wait = WebDriverWait(login, 10)
-    depart_button = WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[@class='deptName ng-star-inserted'][normalize-space()='ENT']",
-            )
-        )
-    )
-    depart_button.click()
-
-    # wait = WebDriverWait(login, 10)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]")
-        )
-    ).click()
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[normalize-space()='Naveen service prepayment']",
-            )
-        )
-    ).click()
-    time.sleep(3)
-    Today_Date = WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[@aria-pressed='true'][@aria-current='date']")
-        )
-    )
-    con_login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
-    time.sleep(2)
-    Today_Date.click()
-    time.sleep(2)
-    print("Today Date:", Today_Date.text)
-    wait = WebDriverWait(con_login, 10)
-    queue = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']"))
-    )
-    con_login.execute_script("arguments[0].scrollIntoView(true);", queue)
-    time.sleep(2)
-    queue.click()
-    print("Queue:", queue.text)
-    time.sleep(2)
-    next_button = WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Next']")
-        )
-    )
-    con_login.execute_script("arguments[0].scrollIntoView(true);", next_button)
-    time.sleep(3)
-    next_button.click()
-    time.sleep(3)  
+    con_login.execute_script("arguments[0].click();", dontate_button)
+    
+    
+    
     WebDriverWait(con_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
     ).send_keys("9207206005") 
@@ -2387,28 +2315,43 @@ def test_donation(con_login):
         otp_input.send_keys(otp_digits[i])
 
     con_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
-    time.sleep(3)
+
+
+    WebDriverWait(con_login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@placeholder='₹400 - ₹800']"))
+    ).send_keys("500")
     
     WebDriverWait(con_login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'NET BANKING')]")
-        )
+            (By.XPATH, "(//img[@src='assets/images/payment-modes/NB.png'])[1]"))
     ).click()
 
-    time.sleep(3)
-    # Scroll to the bottom of the page
-    con_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-    makepayment = WebDriverWait(con_login, 10).until(
+    WebDriverWait(con_login, 10).until(
         EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//button[@type='button']//span[@class='mat-mdc-button-touch-target']",
-            )
-        )
-    )
-    # con_login.execute_script("arguments[0].scrollInView();", makepayment)
-    con_login.execute_script("arguments[0].click();", makepayment)
+            (By.XPATH, "//button[normalize-space()='Proceed']"))
+    ).click()
+
+    # WebDriverWait(con_login, 10).until(
+    #     EC.presence_of_element_located(By.XPATH, "//p[@class='ptm-paymode-name ptm-lightbold ']")
+    # ).click()
+
+
+    time.sleep(3)
+    # # Scroll to the bottom of the page
+    # con_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    # makepayment = WebDriverWait(con_login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (
+    #             By.XPATH,
+    #             "//button[@type='button']//span[@class='mat-mdc-button-touch-target']",
+    #         )
+    #     )
+    # )
+    # # con_login.execute_script("arguments[0].scrollInView();", makepayment)
+    # con_login.execute_script("arguments[0].click();", makepayment)
     WebDriverWait(con_login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
@@ -2425,7 +2368,7 @@ def test_donation(con_login):
         EC.presence_of_element_located(
             (
                 By.XPATH,
-                "//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//button[contains(@class,'')][contains(text(),'Pay ₹175')]",
+                "//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//button[contains(@class,'')][contains(text(),'Pay ₹500')]",
             )
         )
     ).click()
@@ -2477,32 +2420,12 @@ def test_donation(con_login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
-
+    
+    
     time.sleep(3)
-
-    con_booking_element = WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[@class='bookingIdFlex ng-star-inserted']"))
-    )
-
-    bookings_id_number = con_login.find_element(By.XPATH, "//div[@class='bookingIdFlex ng-star-inserted']")
-    full_texts = bookings_id_number.text
-    con_booking_id_1 = full_texts.split(":")[1].strip()
-    print("Consumer Booking ID:", con_booking_id_1)
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
-
-    time.sleep(2)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[normalize-space()='My Bookings']"))
-    ).click()
     
     con_login.quit()
-    # con_login.close()
+    # con_login.close() 
 
      # Provider Login Section
     login_data = {'username': '5555556030', 'password': 'Jaldee01'}
@@ -2529,53 +2452,75 @@ def test_donation(con_login):
     ).click()
 
     time.sleep(2)
-    invoice_card1 = WebDriverWait(pro_driver, 10).until(
+    revenue_card1 = WebDriverWait(pro_driver, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[normalize-space()='Invoices'])[1]"))
+            (By.XPATH, "(//span[normalize-space()='Revenue'])[1]"))
 
     )
-    pro_driver.execute_script("arguments[0].click();", invoice_card1)
+    pro_driver.execute_script("arguments[0].click();", revenue_card1)
     
+    # WebDriverWait(pro_driver, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "(//span[contains(text(),'View')])[1]"))
+    # ).click()
+    time.sleep(2)
+    # Wait for the table to be present
+    table_body = WebDriverWait(pro_driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//tbody"))
+    )
+
+    # Locate the first table row
+    first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[2]")
+
+    # Find the status element within the first row
+    time.sleep(2)
+    status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+    status_text = status_element.text
+    expected_status = "New"
+
+    print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+    # Assert that the status is "New"
+    assert status_text == "New", f"Expected status to be 'New', but got '{status_text}'"
+
     WebDriverWait(pro_driver, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[contains(text(),'View')])[1]"))
+            (By.XPATH, "(//button[@type='button'])[3]"))
     ).click()
 
-        # Capture the booking id on the invoice page for assertion
-    invoice_booking_id = WebDriverWait(pro_driver, 10).until(
+    time.sleep(1)
+    WebDriverWait(pro_driver, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//div[@class='col-lg-3 col-md-6 invoice-detail-style d-flex text-start'])[1]"))
-    ).text
+            (By.XPATH, "//span[@class='mdc-list-item__primary-text']"))
+    ).click()
 
-    print(f"Expected booking id: '{con_booking_id_1}', Actual booking id: '{invoice_booking_id}'")
-
-    # Assert that the patient's name matches
-    assert invoice_booking_id.strip() == con_booking_id_1.strip(), f"Expected booking id '{con_booking_id_1.strip()}', but found '{invoice_booking_id.strip()}' on invoice."
+    WebDriverWait(pro_driver, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[contains(text(),'Approved')]"))
+    ).click()
 
     time.sleep(2)
-    payment_button = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']"))
+     # Wait for the table to be present
+    table_body = WebDriverWait(pro_driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//tbody"))
     )
-    login.execute_script("arguments[0].scrollIntoView();", payment_button)
-    payment_button.click()
+
+    # Locate the first table row
+    first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[2]")
+
+    # Find the status element within the first row
+    time.sleep(2)
+    status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+    status_text = status_element.text
+    expected_status = "Approved"
+
+    print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+    # Assert that the status is "APPROVED"
+    assert status_text == "Approved", f"Expected status to be 'Approved', but got '{status_text}'"
+
     
-    time.sleep(1)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Share Payment Link']"))
-    ).click()
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='mdc-button__label']"))
-    ).click()
-
-    snack_bar = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-    )
-    message = snack_bar.text
-    print("Snack bar message:", message)
 
 
     
