@@ -30,7 +30,18 @@ def test_create_Online_order(consumer_login):
         for i, otp_input in enumerate(otp_inputs):
             otp_input.send_keys(consumer_data['otp'][i])
         consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
-        time.sleep(3)
+        time.sleep(2)
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[@aria-label='Select']"))
+        ).click()
+        time.sleep(2)
+        salutation = generate_random_salutation()
+        salutation_option_xpath = f"//li[@aria-label='{salutation}']"
+        salutation_option_element = WebDriverWait(consumer_login, 15).until(
+            EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
+        )
+        salutation_option_element.click()
+        time.sleep(2)
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
         ).send_keys(consumer_data['first_name'])
