@@ -4,7 +4,7 @@ from selenium.common import TimeoutException
 
 
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_followup_create_patient(login):
+def test_send_message(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
@@ -46,7 +46,7 @@ def test_followup_create_patient(login):
         By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
     ).send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-    login.find_element(By.XPATH, "//button[@type='submit']").click()
+    login.find_element(By.XPATH, "//span[normalize-space()='Save']").click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(

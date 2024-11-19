@@ -109,7 +109,7 @@ def test_booking(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-        ).send_keys("5551117754")
+        ).send_keys("5550004454")
 
         login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
 
@@ -247,10 +247,10 @@ def test_booking(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Send Attachments']")
+                (By.XPATH, "(//button[@role='menuitem'])[4]")
             )
         ).click()
-
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//label[normalize-space()='Click here to select the files']")
