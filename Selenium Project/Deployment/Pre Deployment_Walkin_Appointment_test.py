@@ -779,7 +779,7 @@ def test_account_signup():
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_walkin_appointment(login):
 
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -865,15 +865,13 @@ def test_walkin_appointment(login):
         ).click()
         print("Select user : Naveen")
 
+        time.sleep(3)
         service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
         element= login.find_element(By.XPATH, service_dropdown_xpath)
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        service_option_xpath = (
-            "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-            "Consultation'])[2]"
-        )
+        service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, service_option_xpath))
@@ -1009,10 +1007,7 @@ def test_walkin_appointment(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        service_option_xpath = (
-            "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-            "Consultation'])[2]"
-        )
+        service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, service_option_xpath))
         ).click()

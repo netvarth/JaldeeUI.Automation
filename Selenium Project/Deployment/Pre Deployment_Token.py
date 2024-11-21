@@ -1,3 +1,4 @@
+from ast import arguments
 import time
 
 from Framework.common_utils import *
@@ -1299,12 +1300,15 @@ def test_walkin_token(login):
             )
         ).click()
 
-        WebDriverWait(login, 10).until(
+        time.sleep(2)
+        add_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Add Procedure/Item']")
             )
-        ).click()
-
+        )
+        login.execute_script("arguments[0].scrollIntoView();", add_button)
+        login.execute_script("arguments[0].click();", add_button)
+        # login.execute_script("arguments[0].click();", view_details_button)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Choose Procedure/Item']")
