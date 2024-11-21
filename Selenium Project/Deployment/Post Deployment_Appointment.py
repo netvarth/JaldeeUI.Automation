@@ -904,7 +904,7 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("9567570961")
+        ).send_keys("9207206005")
 
         time.sleep(3)
 
@@ -915,7 +915,7 @@ def test_create_patient(login):
         # ).click()
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Id : 11')]")
+                (By.XPATH, "//span[contains(text(),'Id : temp#87')]")
             )
         ).click()
 

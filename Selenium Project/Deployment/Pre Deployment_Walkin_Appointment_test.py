@@ -775,13 +775,11 @@ def test_account_signup():
 
     time.sleep(5)
 
-
-
 ##########################################################################################################################################################
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
 def test_walkin_appointment(login):
 
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -876,7 +874,7 @@ def test_walkin_appointment(login):
             "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
             "Consultation'])[2]"
         )
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, service_option_xpath))
         ).click()

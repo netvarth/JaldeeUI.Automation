@@ -206,7 +206,6 @@ def test_appt_autoinvoice(login):
 
     time.sleep(5)
 
-
 # Apply the discount in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Apply the discount in the Invoice")
@@ -339,7 +338,6 @@ def test_appt_autoinvoice1(login):
 
     time.sleep(5)
 
-
 # Add the item in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item in the Invoice")
@@ -440,7 +438,6 @@ def test_appt_autoinvoice2(login):
         message = snack_bar.text
         print("Snack bar message:", message)
     time.sleep(5)
-
 
 # Add the item and apply the discount in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
@@ -689,7 +686,6 @@ def test_appt_autoinvoice3(login):
 
     time.sleep(5)
 
-
 # Change the Qty/Price of the Service in the invoice and share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Change the Qty/Price of the Service and share the payment link")
@@ -796,7 +792,6 @@ def test_appt_autoinvoice4(login):
         print("Snack bar message:", message)
 
     time.sleep(5)
-
 
 # Share PDF to the consumer 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -958,7 +953,6 @@ def test_appt_autoinvoice5(login):
 
     time.sleep(3)
 
-
 # Settle the auto Invoice 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Settle the auto Invoice")
@@ -1117,8 +1111,6 @@ def test_appt_autoinvoice6(login):
         )
         message = snack_bar.text
         print("Snack bar message:", message)
-
-
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by cash in Auto Invoice")
@@ -1293,8 +1285,6 @@ def test_appt_autoinvoice7(login):
 
     time.sleep(3)
 
-
-
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by other with Credit Card (CC)")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
@@ -1468,9 +1458,6 @@ def test_appt_autoinvoice9(login):
         print("Snack bar message:", message)
 
         time.sleep(3)
-
-
-
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by other with UPI")

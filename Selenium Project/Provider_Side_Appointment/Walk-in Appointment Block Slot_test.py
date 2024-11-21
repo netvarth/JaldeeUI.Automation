@@ -157,7 +157,7 @@ def test_create_patient(login):
         # Check if any of the selected slots' times are found
         for dashboard_slot in dashboard_slots:
             try:
-                slot_time = dashboard_slot.find_element(By.XPATH, ".//span[contains(@class, 'slot-time')]").text  # Adjust XPath if needed
+                slot_time = dashboard_slot.find_element(By.XPATH, "//div[@class='text-capitalize me-5 fw-bold accordion-column-text text-success ng-star-inserted']").text  # Adjust XPath if needed
                 if slot_time in selected_slots_text:
                     matched_slots.append(slot_time)
                     print(f"Found blocked slot: {slot_time}")

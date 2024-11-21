@@ -79,10 +79,7 @@ def test_followup_sameday(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
+    service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, service_option_xpath))
     ).click()
@@ -137,10 +134,35 @@ def test_followup_sameday(login):
     ).click()
 
     time.sleep(3)
-    accordion_tab = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//p-table[@class='p-element']"))
+    while True:
+        try:
+            # Attempt to locate the "Next" button using the button's class
+            next_button = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                )
+            )
+
+            # Check if the button is enabled (i.e., not disabled)
+            if next_button.is_enabled():
+                # print("Next button found and clickable.")
+                # Click using JavaScript to avoid interception issues
+                login.execute_script("arguments[0].click();", next_button)
+            else:
+                # print("Next button is disabled. Reached the last page.")
+                break
+
+        except Exception as e:
+            # # If no next button is found or any other exception occurs, exit the loop
+            # print("End of pages or error encountered:", e)
+            break
+
+    # After clicking through all pages, locate and click the last accordion
+    time.sleep(1)
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
-    accordion_tab.click()
+    last_element_in_accordian.click()
     time.sleep(3)
     print("Before clicking View Details button")
     view_details_button = WebDriverWait(login, 30).until(
@@ -209,10 +231,6 @@ def test_followup_sameday(login):
     time.sleep(3)
     login.find_element(By.XPATH, "//span[normalize-space()='Confirm']").click()
     print("Followup Complete Successful")
-
-
-#####################################################################################################################################
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup for nextday")
@@ -290,10 +308,7 @@ def test_followup_nextday(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
+    service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, service_option_xpath))
     ).click()
@@ -339,29 +354,31 @@ def test_followup_nextday(login):
 
     while True:
         try:
+            # Attempt to locate the "Next" button using the button's class
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
+                    (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                 )
             )
 
-            next_button.click()
+            # Check if the button is enabled (i.e., not disabled)
+            if next_button.is_enabled():
+                # print("Next button found and clickable.")
+                # Click using JavaScript to avoid interception issues
+                login.execute_script("arguments[0].click();", next_button)
+            else:
+                # print("Next button is disabled. Reached the last page.")
+                break
 
-        except:
+        except Exception as e:
+            # # If no next button is found or any other exception occurs, exit the loop
+            # print("End of pages or error encountered:", e)
             break
 
-    time.sleep(3)
-
+    # After clicking through all pages, locate and click the last accordion
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 
@@ -387,7 +404,7 @@ def test_followup_nextday(login):
         today_date.day
     )
     print(today_xpath_expression)
-    tomorrow_date = today_date + timedelta(days=10)
+    tomorrow_date = today_date + timedelta(days=1)
     print(tomorrow_date.day)
     tomorrow_xpath_expression = "//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
         tomorrow_date.day
@@ -452,8 +469,6 @@ def test_followup_nextday(login):
 
         time.sleep(5)
 
-
-########################################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup for 180day")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
@@ -530,10 +545,7 @@ def test_followup_180day(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
+    service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, service_option_xpath))
     ).click()
@@ -581,27 +593,31 @@ def test_followup_180day(login):
 
     while True:
         try:
+            # Attempt to locate the "Next" button using the button's class
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
+                    (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                 )
             )
 
-            next_button.click()
+            # Check if the button is enabled (i.e., not disabled)
+            if next_button.is_enabled():
+                # print("Next button found and clickable.")
+                # Click using JavaScript to avoid interception issues
+                login.execute_script("arguments[0].click();", next_button)
+            else:
+                # print("Next button is disabled. Reached the last page.")
+                break
 
-        except:
+        except Exception as e:
+            # # If no next button is found or any other exception occurs, exit the loop
+            # print("End of pages or error encountered:", e)
             break
 
+    # After clicking through all pages, locate and click the last accordion
+    time.sleep(1)
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 
@@ -679,9 +695,6 @@ def test_followup_180day(login):
 
         time.sleep(5)
 
-
-#######################################################################################################################################
-@allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup form History")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_followup_history(login):
@@ -708,29 +721,11 @@ def test_followup_history(login):
 
     time.sleep(4)
 
-    while True:
-        try:
-            next_button = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
-                )
-            )
 
-            next_button.click()
-
-        except:
-            break
-
+  #locate and click the last accordion
+    time.sleep(1)
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 
@@ -885,10 +880,7 @@ def test_followup_nextmonth(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
+    service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, service_option_xpath))
     ).click()
@@ -936,30 +928,33 @@ def test_followup_nextmonth(login):
 
     while True:
         try:
+            # Attempt to locate the "Next" button using the button's class
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
+                    (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                 )
             )
 
-            next_button.click()
+            # Check if the button is enabled (i.e., not disabled)
+            if next_button.is_enabled():
+                # print("Next button found and clickable.")
+                # Click using JavaScript to avoid interception issues
+                login.execute_script("arguments[0].click();", next_button)
+            else:
+                # print("Next button is disabled. Reached the last page.")
+                break
 
-        except:
+        except Exception as e:
+            # # If no next button is found or any other exception occurs, exit the loop
+            # print("End of pages or error encountered:", e)
             break
 
+    # After clicking through all pages, locate and click the last accordion
+    time.sleep(1)
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-
     time.sleep(3)
     View_Detail_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(

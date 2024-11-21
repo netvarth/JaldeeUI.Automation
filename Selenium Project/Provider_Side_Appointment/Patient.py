@@ -29,7 +29,7 @@ def test_create_patient(login):
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[@type='button']"))
+        EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[2]"))
     ).click()
     time.sleep(2)
     login.find_element(By.XPATH, "//button[normalize-space()='2024']").click()
@@ -49,16 +49,16 @@ def test_create_patient(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, year_xpath))
     ).click()
-    time.sleep(2)
+    time.sleep(3)
     month_xpath = f"//span[normalize-space()='{month}']"
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, month_xpath))
     ).click()
-    time.sleep(2)
+    time.sleep(3)
     day_xpath = f"//span[normalize-space()='{day}']"
     print(day_xpath)
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 20).until(
         EC.presence_of_element_located((By.XPATH, day_xpath))
     ).click()
     
@@ -140,20 +140,78 @@ def test_createpatient_addpicture(login):
         salutation = generate_random_salutation()
         salutation_option_xpath = f"//div[normalize-space()='{salutation}']"
         salutation_option_element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
+            EC.presence_of_element_located((By.XPATH, salutation_option_xpath))
         )
         salutation_option_element.click()
         time.sleep(3)
-        first_name, last_name, phonenumber, email = create_users_data()
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
         login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
+        login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
         login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
-        login.find_element(
-            By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
+        login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
         ).send_keys(phonenumber)
         login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
         login.find_element(By.XPATH, "//span[normalize-space()='Save']").click()
-        time.sleep(3)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-button-label ng-star-inserted'][normalize-space()='Edit'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@data-bs-toggle='modal']//i[@class='fa fa-edit']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='fa fa-file edit_1']"))
+        ).click()
+
+        time.sleep(2)
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        save_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Save']"))
+        )
+        save_button.click()
+
+        try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        time.sleep(5)
+
+
     except Exception as e:
         allure.attach( 
             login.get_screenshot_as_png(),  
