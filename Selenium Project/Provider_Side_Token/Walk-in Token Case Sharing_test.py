@@ -36,7 +36,7 @@ def test_casesharing_create_patient(login):
             By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']"
         ).send_keys(phonenumber)
         login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-        login.find_element(By.XPATH, "//button[@type='submit']").click()
+        login.find_element(By.XPATH, "//span[normalize-space()='Save']").click()
         login.implicitly_wait(3)
         wait_and_locate_click(login, By.XPATH, "//label[normalize-space()='Select Location']")
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@optionlabel='place']")
