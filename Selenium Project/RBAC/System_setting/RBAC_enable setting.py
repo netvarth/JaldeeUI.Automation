@@ -99,6 +99,14 @@ def test_enable_rbac(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
+    time.sleep(5)
+
+
+
+
+
+
+
 
 
 
