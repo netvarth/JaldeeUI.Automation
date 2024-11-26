@@ -1275,7 +1275,7 @@ def test_walkin_token(login):
                 )
 
                 next_button.click()
-
+  
             except:
 
                 break

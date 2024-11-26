@@ -2634,7 +2634,7 @@ def test_walkin_appointment(login):
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
         message = toast_message.text
-        print("Toast Message:", message)
+        print("Toast Message:", message) 
 
         time.sleep(3)
     except Exception as e:
