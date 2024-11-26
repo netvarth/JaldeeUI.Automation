@@ -78,56 +78,58 @@ def test_patient_MR_Sharing(login):
         login.execute_script("arguments[0].scrollIntoView();", prescription)
         prescription.click()
         time.sleep(3)
-        addmedicine = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
-            )
-        addmedicine.click()
-        time.sleep(1)
-        medicinename = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[@class= 'p-element medicine-name p-editable-column p-cell-editing']//input[@type='text']"))
-            )
-        medicinename.send_keys('p')
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'paracetamol')]"))
+
+        for i in range(5):
+            login.find_element(
+                By.XPATH, "//button[normalize-space()='+ Add Medicine']"
             ).click()
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[@class='p-element first-cell p-editable-column']"))
-            ).click()
-        time.sleep(1)
-        dose = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][2]//input[@type='text']"))
+            login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
+                "Medicine"
             )
-        dose.send_keys('650 mg')
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[3]"))
-            ).click()
-        time.sleep(1)
-        frequency = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][3]//input[@type='text']"))
-            )
-        frequency.send_keys('Once daily')
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[4]"))
-            ).click()
-        time.sleep(1)
-        duration = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][4]//input[@type='text']"))
-            )
-        duration.send_keys('2 weeks')
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[5]"))
-            ).click()
-        time.sleep(1)
-        pre_notes = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][5]//input[@type='text']"))
-            )
-        pre_notes.send_keys('Take with food')
-        time.sleep(3)
+
+            before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
+            aftertd_XPath_1 = "/td[2]"
+            aftertd_XPath_2 = "/td[3]"
+            aftertd_XPath_3 = "/td[4]"
+            aftertd_XPath_4 = "/td[5]"
+            textarea_xpath = "//input[@role='searchbox']"
+            row = i + 1
+            if i > 0:
+                trXPath = before_XPath + str([row])
+            else:
+                trXPath = before_XPath
+
+            PreFinalXPath = trXPath + aftertd_XPath_1
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Dose = login.find_element(By.XPATH, PreFinalXPath)
+            Dose.click()
+            Dose1 = login.find_element(By.XPATH, FinalXPath)
+            Dose1.send_keys("650 mg")
+
+            PreFinalXPath = trXPath + aftertd_XPath_2
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Frequency = login.find_element(By.XPATH, PreFinalXPath)
+            Frequency.click()
+            Frequency1 = login.find_element(By.XPATH, FinalXPath)
+            Frequency1.send_keys("1-1-1")
+
+            PreFinalXPath = trXPath + aftertd_XPath_3
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Duration = login.find_element(By.XPATH, PreFinalXPath)
+            Duration.click()
+            Duration1 = login.find_element(By.XPATH, FinalXPath)
+            Duration1.send_keys("5 Days")
+
+            PreFinalXPath = trXPath + aftertd_XPath_4
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Notes = login.find_element(By.XPATH, PreFinalXPath)
+            Notes.click()
+            Notes1 = login.find_element(By.XPATH, FinalXPath)
+            Notes1.send_keys("After Food")
+
+
         Notesif_any = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']"))
             )
@@ -759,56 +761,65 @@ def test_patient_MR_Edit(login):
         login.execute_script("arguments[0].scrollIntoView();", prescription)
         prescription.click()
         time.sleep(3)
-        addmedicine = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
+        for i in range(5):
+            login.find_element(
+                By.XPATH, "//button[normalize-space()='+ Add Medicine']"
+            ).click()
+            login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
+                "Medicine"
             )
-        addmedicine.click()
-        time.sleep(1)
-        medicinename = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[@class= 'p-element medicine-name p-editable-column p-cell-editing']//input[@type='text']"))
+
+            before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
+            aftertd_XPath_1 = "/td[2]"
+            aftertd_XPath_2 = "/td[3]"
+            aftertd_XPath_3 = "/td[4]"
+            aftertd_XPath_4 = "/td[5]"
+            textarea_xpath = "//input[@role='searchbox']"
+            row = i + 1
+            if i > 0:
+                trXPath = before_XPath + str([row])
+            else:
+                trXPath = before_XPath
+
+            PreFinalXPath = trXPath + aftertd_XPath_1
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Dose = login.find_element(By.XPATH, PreFinalXPath)
+            Dose.click()
+            Dose1 = login.find_element(By.XPATH, FinalXPath)
+            Dose1.send_keys("650 mg")
+
+            PreFinalXPath = trXPath + aftertd_XPath_2
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Frequency = login.find_element(By.XPATH, PreFinalXPath)
+            Frequency.click()
+            Frequency1 = login.find_element(By.XPATH, FinalXPath)
+            Frequency1.send_keys("1-1-1")
+
+            PreFinalXPath = trXPath + aftertd_XPath_3
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Duration = login.find_element(By.XPATH, PreFinalXPath)
+            Duration.click()
+            Duration1 = login.find_element(By.XPATH, FinalXPath)
+            Duration1.send_keys("5 Days")
+
+            PreFinalXPath = trXPath + aftertd_XPath_4
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Notes = login.find_element(By.XPATH, PreFinalXPath)
+            Notes.click()
+            Notes1 = login.find_element(By.XPATH, FinalXPath)
+            Notes1.send_keys("After Food")
+
+        Notesif_any = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']"))
             )
-        medicinename.send_keys('p')
+        Notesif_any.send_keys('Please schedule a follow-up consultation after two weeks if the condition does not improve.')
         time.sleep(3)
         WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'paracetamol')]"))
+                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
             ).click()
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[@class='p-element first-cell p-editable-column']"))
-            ).click()
-        time.sleep(1)
-        dose = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][2]//input[@type='text']"))
-            )
-        dose.send_keys('650 mg')
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[3]"))
-            ).click()
-        time.sleep(1)
-        frequency = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][3]//input[@type='text']"))
-            )
-        frequency.send_keys('Once daily')
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[4]"))
-            ).click()
-        time.sleep(1)
-        duration = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][4]//input[@type='text']"))
-            )
-        duration.send_keys('2 weeks')
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[5]"))
-            ).click()
-        time.sleep(1)
-        pre_notes = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][5]//input[@type='text']"))
-            )
-        pre_notes.send_keys('Take with food')
-        time.sleep(1)
+        time.sleep(3)
         Notesif_any = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']"))
             )
@@ -1099,52 +1110,56 @@ def test_patient_prescriptionslist(login):
         login.execute_script("arguments[0].scrollIntoView();", prescription)
         prescription.click()
         time.sleep(3)
-        addmedicine = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
-            )
-        addmedicine.click()
-        time.sleep(1)
-        medicinename = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[@class= 'p-element medicine-name p-editable-column p-cell-editing']//input[@type='text']"))
-            )
-        medicinename.send_keys('chlorpheniramine')
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[@class='p-element first-cell p-editable-column']"))
+        for i in range(5):
+            login.find_element(
+                By.XPATH, "//button[normalize-space()='+ Add Medicine']"
             ).click()
-        time.sleep(1)
-        dose = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][2]//input[@type='text']"))
+            login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
+                "Medicine"
             )
-        dose.send_keys('100 mg')
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[3]"))
-            ).click()
-        time.sleep(1)
-        frequency = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][3]//input[@type='text']"))
-            )
-        frequency.send_keys('twice daily')
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[4]"))
-            ).click()
-        time.sleep(1)
-        duration = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][4]//input[@type='text']"))
-            )
-        duration.send_keys('1 week')
-        time.sleep(1)
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//tr[@class='mobile-card ng-star-inserted']//td[5]"))
-            ).click()
-        time.sleep(1)
-        pre_notes = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//td[contains(@class, 'p-editable-column')][5]//input[@type='text']"))
-            )
-        pre_notes.send_keys('Take before food')
-        time.sleep(3)
+
+            before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
+            aftertd_XPath_1 = "/td[2]"
+            aftertd_XPath_2 = "/td[3]"
+            aftertd_XPath_3 = "/td[4]"
+            aftertd_XPath_4 = "/td[5]"
+            textarea_xpath = "//input[@role='searchbox']"
+            row = i + 1
+            if i > 0:
+                trXPath = before_XPath + str([row])
+            else:
+                trXPath = before_XPath
+
+            PreFinalXPath = trXPath + aftertd_XPath_1
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Dose = login.find_element(By.XPATH, PreFinalXPath)
+            Dose.click()
+            Dose1 = login.find_element(By.XPATH, FinalXPath)
+            Dose1.send_keys("650 mg")
+
+            PreFinalXPath = trXPath + aftertd_XPath_2
+            FinalXPath = PreFinalXPath + textarea_xpath
+
+            Frequency = login.find_element(By.XPATH, PreFinalXPath)
+            Frequency.click()
+            Frequency1 = login.find_element(By.XPATH, FinalXPath)
+            Frequency1.send_keys("1-1-1")
+
+            PreFinalXPath = trXPath + aftertd_XPath_3
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Duration = login.find_element(By.XPATH, PreFinalXPath)
+            Duration.click()
+            Duration1 = login.find_element(By.XPATH, FinalXPath)
+            Duration1.send_keys("5 Days")
+
+            PreFinalXPath = trXPath + aftertd_XPath_4
+            FinalXPath = PreFinalXPath + textarea_xpath
+            Notes = login.find_element(By.XPATH, PreFinalXPath)
+            Notes.click()
+            Notes1 = login.find_element(By.XPATH, FinalXPath)
+            Notes1.send_keys("After Food")
+
         Notesif_any = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']"))
             )
@@ -1155,12 +1170,9 @@ def test_patient_prescriptionslist(login):
             ).click()
         time.sleep(3)
         login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        latest_row_xpath = "(//tr[@class='ng-star-inserted'])[2]"
-        latest_row = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, latest_row_xpath)))
-        print(latest_row.text.strip())
-        sharebutton_xpath= ".//span[contains(@class, 'more-actions-btn')]/img[@alt='share']"
-        sharebutton = latest_row.find_element(By.XPATH, sharebutton_xpath)
-        sharebutton.click()
+        share_xpath_firstrow = "//tbody/tr[1]/td[1]/div[1]/div[2]/div[1]/span[1]"
+        share_xpath = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, share_xpath_firstrow)))
+        share_xpath.click()
         time.sleep(3)
         WebDriverWait(login, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter message description']"))

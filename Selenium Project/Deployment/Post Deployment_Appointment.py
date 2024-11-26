@@ -257,10 +257,11 @@ def test_signup():
         )
         time.sleep(4)
         login.find_element(By.XPATH, "//mat-label[normalize-space()='Month']").click()
-        WebDriverWait(login, 10).until(
+        
+        select_month = WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='June']"))
-        ).click()
-
+        )
+        login.execute_script("arguments[0].click();", select_month)
         login.find_element(By.XPATH, "//mat-label[normalize-space()='Year']").click()
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -1013,23 +1014,23 @@ def test_create_patient(login):
 
                 break
 
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
-        )
-        last_element_in_accordian.click()
+        # last_element_in_accordian = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+        #         )
+        #     )
+        # )
+        # last_element_in_accordian.click()
 
-        time.sleep(3)
-        View_Detail_button = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
-            )
-        )
-        View_Detail_button.click()
+        # time.sleep(3)
+        # View_Detail_button = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[contains(text(), 'View Details')]")
+        #     )
+        # )
+        # View_Detail_button.click()
 
     #********************************Apply Label************************************
 
@@ -1225,6 +1226,7 @@ def test_create_patient(login):
         #         break
 
         # last_element_in_accordian = WebDriverWait(login, 10).until(
+<<<<<<< HEAD
         #     EC.presence_of_element_located(
         #         (
         #             By.XPATH,
@@ -1241,6 +1243,81 @@ def test_create_patient(login):
         #     )
         # )
         # View_Detail_button.click()
+=======
+        #     EC.presence_of_element_located(
+        #         (
+        #             By.XPATH,
+        #             "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+        #         )
+        #     )
+        # )
+        # last_element_in_accordian.click()
+        
+
+        # assert (
+        #     actual_label == expected_label
+        # ), f"Expected '{expected_label}', but got '{actual_label}'"
+        
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//i[@class='pi pi-filter-fill']"))
+        # ).click()
+        
+        # # WebDriverWait(login, 10).until(
+        # #     EC.presence_of_element_located(
+        # #         (By.XPATH, "//span[normalize-space()='Reset']"))
+        # # ).click()
+
+        # reset_button = WebDriverWait(login, 15).until(
+        #     EC.presence_of_element_located(
+        #     (By.XPATH, "//span[normalize-space()='Reset']"))
+        #     )        
+        # login.execute_script("arguments[0].click();", reset_button)
+        
+        # time.sleep(1)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//timesicon[contains(@class, 'p-element') and contains(@class, 'p-icon-wrapper') and contains(@class, 'ng-star-inserted')]//*[contains(@class, 'p-icon')]"))
+        # ).click()
+        
+        # time.sleep(1)
+        # login.refresh()
+
+        # time.sleep(2)
+        # while True:
+        #     try:
+        #         WebDriverWait(login, 10).until(
+        #             EC.presence_of_element_located(
+        #                 (
+        #                     By.XPATH,
+        #                     "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",   
+        #                 ) 
+        #             )
+        #         ).click()
+                
+
+        #     except:
+        #         break
+
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+                )
+            )
+        )
+        last_element_in_accordian.click()
+
+        time.sleep(3)
+        View_Detail_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(text(), 'View Details')]")
+            )
+        )
+        View_Detail_button.click()
+>>>>>>> 2cdf3134d5ceabbf73b2d25e5f196b0c61283a1f
         
         time.sleep(3)
         more_actions_button = WebDriverWait(login, 10).until(
@@ -2026,8 +2103,8 @@ def test_create_patient(login):
             )
         )
         login.execute_script("arguments[0].scrollIntoView();", add_button)
-        login.execute_script("arguments[0].click();", add_button)
-
+        add_button.click()
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Choose Procedure/Item']")
