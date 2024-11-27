@@ -1226,24 +1226,6 @@ def test_create_patient(login):
         #         break
 
         # last_element_in_accordian = WebDriverWait(login, 10).until(
-<<<<<<< HEAD
-        #     EC.presence_of_element_located(
-        #         (
-        #             By.XPATH,
-        #             "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-        #         )
-        #     )
-        # )
-        # last_element_in_accordian.click()
-
-        # time.sleep(3)
-        # View_Detail_button = WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[contains(text(), 'View Details')]")
-        #     )
-        # )
-        # View_Detail_button.click()
-=======
         #     EC.presence_of_element_located(
         #         (
         #             By.XPATH,
@@ -1317,7 +1299,6 @@ def test_create_patient(login):
             )
         )
         View_Detail_button.click()
->>>>>>> 2cdf3134d5ceabbf73b2d25e5f196b0c61283a1f
         
         time.sleep(3)
         more_actions_button = WebDriverWait(login, 10).until(
