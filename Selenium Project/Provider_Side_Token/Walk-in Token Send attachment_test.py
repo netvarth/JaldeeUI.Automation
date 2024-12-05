@@ -328,16 +328,11 @@ def test_sendattachment_unsupportedfiletype(login):
         absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\GIF.gif'))
         pyautogui.write(absolute_path)
         pyautogui.press('enter')
-        # api_error = WebDriverWait(login, 10).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, ".sts-msg.error"))
-        # )
-        # message = api_error.text
-        # print("API error message:", message)
-        print("Selected file type not supported")
-        # logs = login.get_log('browser')
-        # for log in logs:
-        #     if 'Selected file type not supported' in log['message']:
-        #         print("API Error Message Found in Console:", log['message'])
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//div[@class='mat-mdc-snack-bar-label mdc-snackbar__label']"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH,  "//button[normalize-space()='cancel']")
         time.sleep(3)
