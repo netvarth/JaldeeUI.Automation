@@ -658,7 +658,7 @@ def test_signup():
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']",
                 )
             )
         )
@@ -942,7 +942,7 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
+                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']",
                 )
             )
         )

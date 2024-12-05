@@ -598,13 +598,13 @@ def test_account_signup():
     login.execute_script("arguments[0].click();", mdc_switch)
 
     time.sleep(2)
-    login.find_element(
-        By.XPATH, "//label[normalize-space()='Allow online appointments for today']"
-    ).click()
-    time.sleep(2)
-    login.find_element(
-        By.XPATH, "//label[normalize-space()='Allow online appointments for future']"
-    ).click()
+    # login.find_element(
+    #     By.XPATH, "//label[normalize-space()='Allow online appointments for today']"
+    # ).click()
+    # time.sleep(2)
+    # login.find_element(
+    #     By.XPATH, "//label[normalize-space()='Allow online appointments for future']"
+    # ).click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -779,7 +779,7 @@ def test_account_signup():
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
 def test_walkin_appointment(login):
 
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -886,8 +886,7 @@ def test_walkin_appointment(login):
                 )
             )
         )
-        login.implicitly_wait(10)
-        Today_Date.click()
+        login.execute_script("arguments[0].click();", Today_Date)
         print("Today Date:", Today_Date.text)
         wait = WebDriverWait(login, 10)
         time_slot = wait.until(
@@ -1021,7 +1020,7 @@ def test_walkin_appointment(login):
                 )
             )
         )
-        login.implicitly_wait(10)
+        time.sleep(2)
         Today_Date.click()
         print("Today Date:", Today_Date.text)
         wait = WebDriverWait(login, 10)

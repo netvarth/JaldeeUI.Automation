@@ -79,8 +79,8 @@ def test_walkin_token(login):
             )
         ).click()
 
-
-        login.implicitly_wait(3)
+        time.sleep(3)
+        # login.implicitly_wait(3)
         WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
         ).click()

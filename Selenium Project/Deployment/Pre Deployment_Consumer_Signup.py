@@ -161,7 +161,7 @@ def test_signup_appointment_booking(login):
     salutation_option_element = WebDriverWait(login, 15).until(
         EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
     )
-    salutation_option_element.click()
+    login.execute_script("arguments[0].click();", salutation_option_element)
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
@@ -529,7 +529,7 @@ def test_signup_familymember_appointment_booking(login):
     salutation_option_element = WebDriverWait(login, 15).until(
         EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
     )
-    salutation_option_element.click()
+    login.execute_script("arguments[0].click();", salutation_option_element)
     time.sleep(3)
     consumer_data = create_consumer_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(consumer_data['first_name'])
