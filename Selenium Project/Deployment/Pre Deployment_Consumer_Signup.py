@@ -52,7 +52,7 @@ def generate_random_salutation():
 
 
 def test_signup_appointment_booking(login):
-    current_date = datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.now().strftime("%d-%m-%Y")
     print("Pre-Deployment Consumer signup and Appointment booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
@@ -214,7 +214,7 @@ def test_signup_appointment_booking(login):
     time.sleep(3)
 
 def test_signup_token_booking(login):
-    current_date = datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.now().strftime("%d-%m-%Y")
     print("Pre-Deployment Consumer signup and Token booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
@@ -382,7 +382,7 @@ def test_signup_token_booking(login):
 
 
 def test_signup_familymember_appointment_booking(login):
-    current_date = datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.now().strftime("%d-%m-%Y")
     print("Pre-Deployment Consumer signup, add family member and Appointment booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
@@ -597,7 +597,7 @@ def test_signup_familymember_appointment_booking(login):
 
 def test_signup_token_familymember_booking(login):
 
-    current_date = datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.now().strftime("%d-%m-%Y")
     print("Pre-Deployment Consumer signup, add family member and Token booking",current_date)
 
     consumer_data = create_consumer_data()
@@ -806,8 +806,8 @@ def test_signup_token_familymember_booking(login):
 
 
 def test_prepayment_appointment_booking(login):
-    current_date = datetime.now().strftime("%Y-%m-%d")
-    print("Post-Deployment Consumer prepayment Appointment booking",current_date)
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Pre-Deployment Consumer prepayment Appointment booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
     # Scroll to the element
@@ -1032,7 +1032,7 @@ def test_prepayment_appointment_booking(login):
 
 
 def test_prepayment_token_booking(login):
-    current_date = datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.now().strftime("%d-%m-%Y")
     print("Pre-Deployment Consumer prepayment Token booking",current_date)
     consumer_data = create_consumer_data()
     time.sleep(5)
