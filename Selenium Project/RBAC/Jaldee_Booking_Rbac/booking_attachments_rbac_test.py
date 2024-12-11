@@ -120,7 +120,7 @@ def test_Rbac_Disabled_send_booking_attachment(login):
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("RBAC Booking Management with disabling Send-attachments")
+@allure.title("RBAC Booking Management with enabling Send-attachments")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_Rbac_Enabled_send_booking_attachment(login):
     try:
