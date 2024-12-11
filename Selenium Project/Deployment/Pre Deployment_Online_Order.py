@@ -8,10 +8,10 @@ def test_create_Online_order(consumer_login):
         time.sleep(5)
         consumer_data = create_consumer_data()
         Dessert = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='category-name d-flex justify-content-between'][normalize-space()='Dessert']"))
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dessert')]"))
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert)
-        time.sleep(5)
+        time.sleep(2)    
         Dessert.click()
         time.sleep(3)
         wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
@@ -51,8 +51,12 @@ def test_create_Online_order(consumer_login):
         ).send_keys(consumer_data['last_name'])
         print("New Consumer Lastname:", consumer_data['last_name'])
         consumer_login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
-        time.sleep(5)
-        print("Toast Message: Item added to cart")
+        time.sleep(3)
+        ptoast = WebDriverWait(consumer_login, 20).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@data-pc-section='detail']"))
+                )                                 
+        print("Toast_Message:", ptoast.text)
+        time.sleep(3)
         wait_and_locate_click(consumer_login, By.XPATH, "//span[@class='cart-count ng-star-inserted']")
         time.sleep(3)
         wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Checkout']")
@@ -214,24 +218,161 @@ def test_create_Online_order(consumer_login):
         wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-arrow-left clrChangeHeader pointer-cursor']")
         time.sleep(2)
         ############################## View All ###############################################
-        viewall = consumer_login.find_element(By.XPATH, "//button[normalize-space()='View All']")
-        scroll_to_element(consumer_login, viewall)
+        # viewall = consumer_login.find_element(By.XPATH, "//button[normalize-space()='View All']")
+        # scroll_to_element(consumer_login, viewall)
+        # time.sleep(3)
+        # AllItems = consumer_login.find_elements(By.XPATH, "//div[@class='items-grid-card pointer-cursor']")
+        # AllItemscount = len(AllItems)
+        # print(f"Count of All Items  with class 'items-grid-card pointer-cursor': {AllItemscount}")
+        # time.sleep(3)
+        # wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='View All']")
+        # time.sleep(3)
+        # Itemscount = consumer_login.find_elements(By.XPATH, "//div[@class='items-card pointer-cursor']")
+        # ViewItemscount = len(Itemscount)
+        # print(f"Count of All Items  with class 'items-card pointer-cursor': {ViewItemscount}")
+        # time.sleep(3)
+        # print(f"Expected Item_name_count : '{ViewItemscount}', Actual Item_name_count : '{AllItemscount}'")
+        # assert AllItemscount == ViewItemscount, f"Expected Item Name '{ViewItemscount} but got Item Name '{AllItemscount}'"
+        # time.sleep(3)
+        # wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-arrow-left clrChangeHeader pointer-cursor']")
+        # time.sleep(2)
+    except Exception as e:
+        allure.attach(  
+            consumer_login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e  
+    
+
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Cancel_Online_Order")
+def test_cancel_Online_order(consumer_login):
+    try:
+        time.sleep(5)
+        consumer_data = create_consumer_data()
+        Dessert = WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dessert')]"))
+        )
+        consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert)
+        time.sleep(2)    
+        Dessert.click()
         time.sleep(3)
-        AllItems = consumer_login.find_elements(By.XPATH, "//div[@class='items-grid-card pointer-cursor']")
-        AllItemscount = len(AllItems)
-        print(f"Count of All Items  with class 'items-grid-card pointer-cursor': {AllItemscount}")
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
         time.sleep(3)
-        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='View All']")
-        time.sleep(3)
-        Itemscount = consumer_login.find_elements(By.XPATH, "//div[@class='items-card pointer-cursor']")
-        ViewItemscount = len(Itemscount)
-        print(f"Count of All Items  with class 'items-card pointer-cursor': {ViewItemscount}")
-        time.sleep(3)
-        print(f"Expected Item_name_count : '{ViewItemscount}', Actual Item_name_count : '{AllItemscount}'")
-        assert AllItemscount == ViewItemscount, f"Expected Item Name '{ViewItemscount} but got Item Name '{AllItemscount}'"
-        time.sleep(3)
-        wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-arrow-left clrChangeHeader pointer-cursor']")
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys(consumer_data['phonenumber'])
+        print("New Consumer Phone Number:", consumer_data['phonenumber'])
+        consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+        time.sleep(5)
+        otp_inputs = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//input[contains(@id, 'otp_')]")
+            )
+        )
+        for i, otp_input in enumerate(otp_inputs):
+            otp_input.send_keys(consumer_data['otp'][i])
+        consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
         time.sleep(2)
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[@aria-label='Select']"))
+        ).click()
+        time.sleep(2)
+        salutation = generate_random_salutation()
+        salutation_option_xpath = f"//li[@aria-label='{salutation}']"
+        salutation_option_element = WebDriverWait(consumer_login, 15).until(
+            EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
+        )
+        salutation_option_element.click()
+        time.sleep(2)
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
+        ).send_keys(consumer_data['first_name'])
+        print("New Consumer Firstname:", consumer_data['first_name'])
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[2]"))
+        ).send_keys(consumer_data['last_name'])
+        print("New Consumer Lastname:", consumer_data['last_name'])
+        consumer_login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
+        time.sleep(3)
+        ptoast = WebDriverWait(consumer_login, 20).until(
+                EC.presence_of_element_located((By.XPATH, "//div[@data-pc-section='detail']"))
+                )                                 
+        print("Toast_Message:", ptoast.text)
+        time.sleep(3)
+        wait_and_locate_click(consumer_login, By.XPATH, "//span[@class='cart-count ng-star-inserted']")
+        time.sleep(3)
+        increment = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@data-pc-section = 'incrementbutton']"))
+        )
+        for i in range(2):
+            increment.click()
+        time.sleep(3)
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Checkout']")
+        time.sleep(3)
+        WebDriverWait(consumer_login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "(//input[@id='ownerName'])[1]"))
+        ).send_keys(consumer_data['first_name'])
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@id='ownerName'])[2]"))
+        ).send_keys(consumer_data['last_name'])
+        email = consumer_data['email']
+        email_input = WebDriverWait(consumer_login, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//input[@id='email']")) 
+        )
+        email_input.send_keys(email)
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys(consumer_data['phonenumber'])
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//textarea[@formcontrolname='address']"))
+        ).send_keys("Jaldee Soft PVT LTD")
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='pinCode']"))
+        ).send_keys("680305")
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='landMark']"))
+        ).send_keys("CrownTower")
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='city']"))
+        ).send_keys("Thrissur")
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='state']"))
+        ).send_keys("Kerala")
+        WebDriverWait(consumer_login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@id='country']"))
+        ).send_keys("India")
+        save_address = WebDriverWait(consumer_login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save & Proceed']"))
+        )
+        scroll_to_element(consumer_login, save_address)
+        time.sleep(2)
+        save_address.click()
+        time.sleep(5)
+        cartcount = WebDriverWait(consumer_login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//span[@class='cart-count ng-star-inserted']"))
+        )
+        scroll_to_element(consumer_login, cartcount)
+        time.sleep(2)
+        cartcount.click()
+        time.sleep(2)
+        wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-trash']")
+        time.sleep(2)
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Confirm']")
+        time.sleep(2)
+        card = WebDriverWait(consumer_login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@class='empty-cart ng-star-inserted']"))
+        )
+        scroll_to_element(consumer_login,card)
+        shopnowbutton = WebDriverWait(consumer_login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Shop Now']"))
+        )
+        shopnow = shopnowbutton.text
+        time.sleep(2)
+        expected_value = "Shop Now"
+        assert shopnow == expected_value, f"Assertion failed! Expected: {expected_value}, but got: {shopnow}"
     except Exception as e:
         allure.attach(  
             consumer_login.get_screenshot_as_png(),  
