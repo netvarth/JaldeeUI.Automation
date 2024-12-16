@@ -109,25 +109,23 @@ def test_walkin_token(login):
         ).click()
         print("Select user : Naveen")
 
-        service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        element = login.find_element(By.XPATH, service_dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
-
-        service_option_xpath = ("//p-dropdownitem[2]//li[1]//div[1]")
-        WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
-        print("Select Service :service")
+        # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+        # element = login.find_element(By.XPATH, service_dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
+        
+        # time.sleep(3)
+        # service_option_xpath = ("//p-dropdownitem[2]//li[1]//div[1]")
+        # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
+        # print("Select Service :service")
         time.sleep(3)
         wait = WebDriverWait(login, 10)
         Today_Date = wait.until(
             EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
-                )
+                (By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")   
             )
         )
-        
+        # //span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']
         Today_Date.click()
         print("Today Date:", Today_Date.text)
 
@@ -1197,10 +1195,12 @@ def test_walkin_token(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        update_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Update']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", update_button)
+        update_button.click()
         
         
         
@@ -1365,7 +1365,7 @@ def test_walkin_token(login):
                 (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
         ).click()
         
-        time.sleep(2)    
+        time.sleep(3)    
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[normalize-space()='Naveen Consultation 1']"))
@@ -1406,10 +1406,12 @@ def test_walkin_token(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        update_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Update']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", update_button)
+        update_button.click()
         
         
         
