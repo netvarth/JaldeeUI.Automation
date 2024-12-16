@@ -10,10 +10,10 @@ def test_create_Online_order(consumer_login):
         # consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         
         Dessert = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='category-name d-flex justify-content-between'][normalize-space()='Dessert']"))
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dessert')]"))
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert)
-        time.sleep(5)
+        time.sleep(2)    
         Dessert.click()
         time.sleep(3)
         wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
@@ -368,18 +368,22 @@ def test_create_Online_order_itemsearch(consumer_login):
 
 from Framework.consumer_common_utils import *
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Create_Online_Order_Allitems")
-def test_create_Online_order_allitems(consumer_login):
+@allure.title("Create_Online_Order_OurProducts")
+def test_create_Online_order_products(consumer_login):
     try:
         time.sleep(5)
         consumer_data = create_consumer_data()
         Dessert2 = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'][normalize-space()='Add'])[2]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='d-flex item-grid2 align-items-center justify-content-between'])[2]"))
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert2)
         time.sleep(5)
         Dessert2.click()
         time.sleep(3)
+        WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add to cart']"))
+        ).click()
+        time.sleep(2)
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
         ).send_keys(consumer_data['phonenumber'])
@@ -542,7 +546,7 @@ def test_create_Online_order_Viewall(consumer_login):
         time.sleep(5)
         consumer_data = create_consumer_data()
         Viewall = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View All']"))
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View All Products']"))
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Viewall)
         time.sleep(5)
@@ -1076,12 +1080,16 @@ def test_create_Online_order_login_shopnow(consumer_login):
         Home.click()
         time.sleep(3)
         WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//span[@class='ms-1 display-large'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='ms-1 display-large']"))
         ).click()
         time.sleep(3)
-        WebDriverWait(consumer_login, 20).until(
+        shop_now = WebDriverWait(consumer_login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Shop Now']"))
-        ).click()
+        )
+        time.sleep(2)
+        scroll_to_element(consumer_login, shop_now)
+        time.sleep(2)
+        shop_now.click()
         time.sleep(3)
         itemsearch =WebDriverWait(consumer_login,10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='what are you looking for?']"))
@@ -1181,13 +1189,6 @@ def test_create_Online_order_login_shopnow(consumer_login):
          # Switch to the new window
         consumer_login.switch_to.window(new_window_handle)
         time.sleep(3)
-        confirmation_text = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='status-confirmed ng-star-inserted']"))
-        )
-        message = confirmation_text.text
-        expected_message = "ORDER CONFIRMED"
-        assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
-        print("Test passed:", message)
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Successful']"))
         ).click()
@@ -1195,6 +1196,14 @@ def test_create_Online_order_login_shopnow(consumer_login):
         # Optionally, switch back to the main window
         consumer_login.switch_to.window(main_window_handle)
         time.sleep(5)
+        confirmation_text = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='status-confirmed ng-star-inserted']"))
+        )
+        message = confirmation_text.text
+        expected_message = "ORDER CONFIRMED"
+        assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
+        print("Test passed:", message)
+        
         invoice = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Invoice']"))
         )
@@ -1288,9 +1297,13 @@ def test_create_Online_order_login_delete(consumer_login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Confirm']"))
         ).click()
         time.sleep(3)
-        WebDriverWait(consumer_login, 20).until(
+        shop_now = WebDriverWait(consumer_login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Shop Now']"))
-        ).click()
+        )
+        time.sleep(2)
+        scroll_to_element(consumer_login, shop_now)
+        time.sleep(2)
+        shop_now.click()
         time.sleep(3)
         itemsearch =WebDriverWait(consumer_login,10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='what are you looking for?']"))
@@ -1401,7 +1414,8 @@ def test_create_Online_order_login_delete(consumer_login):
             EC.presence_of_element_located((By.XPATH, "//span[@class='status-confirmed ng-star-inserted']"))
         )
         message = confirmation_text.text
-        expected_message = "Confirmed"
+        print(message)
+        expected_message = "ORDER CONFIRMED"
         assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
         print("Test passed:", message)
         invoice = WebDriverWait(consumer_login, 10).until(
@@ -1436,10 +1450,10 @@ def test_create_Online_order_Coupon(consumer_login):
         # consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         
         Dessert = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='category-name d-flex justify-content-between'][normalize-space()='Dessert']"))
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dessert')]"))
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert)
-        time.sleep(5)
+        time.sleep(2)    
         Dessert.click()
         time.sleep(3)
         wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
@@ -1447,7 +1461,7 @@ def test_create_Online_order_Coupon(consumer_login):
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
         ).send_keys(consumer_data['phonenumber'])
-        print("New Consumer Phone Number:", consumer_data['phonenumber'])
+        print("New ConsuDessertmer Phone Number:", consumer_data['phonenumber'])
         consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
         time.sleep(5)
         otp_inputs = WebDriverWait(consumer_login, 10).until(
