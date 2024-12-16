@@ -41,6 +41,9 @@ def scroll_until_visible(login, element):
             break
 
 def test_booking(login):
+
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Pre-Deployment Existing Consumer Appointment",current_date)   
     try:    
         time.sleep(5)
         # Scroll to the element
@@ -186,6 +189,7 @@ def test_booking(login):
             os.path.join(current_working_directory, r"Extras\test.png")
         )
         pyautogui.write(absolute_path)
+
         pyautogui.press("enter")
         login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)

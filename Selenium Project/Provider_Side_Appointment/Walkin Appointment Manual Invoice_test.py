@@ -35,7 +35,7 @@ def test_appt_manualinvoice(login):
         )
     )
     element_appoint.click()
-    login.implicitly_wait(3)
+    time.sleep(3)
 
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
     login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
@@ -63,48 +63,34 @@ def test_appt_manualinvoice(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    login.implicitly_wait(3)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
     ).click()
 
-    login.implicitly_wait(5)
+    time.sleep(3)
     login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
     print("location : Chavakkad")
-    login.implicitly_wait(5)
+    time.sleep(2)
 
-    login.find_element(
-        By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
-    ).click()
-    login.implicitly_wait(5)
+    login.find_element(By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']").click()
+    time.sleep(3)
     login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
     print("Department : ENT")
-    user_dropdown_xpath = (
-        "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-        "ng-dirty'])[1]"
-    )
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))
-    ).click()
+    user_dropdown_xpath = ("(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
+                           "ng-dirty'])[1]")
+    WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))).click()
     user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, user_option_xpath))
-    ).click()
+    WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
     print("Select user : Naveen")
-    # time.sleep(3)
+
     service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
-    login.execute_script("arguments[0].click();", element)
+    element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, service_option_xpath))
-    ).click()
+    service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
+    WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
     print("Select Service : Naveen Consultation")
     time.sleep(3)
     Today_Date = wait.until(
@@ -131,6 +117,8 @@ def test_appt_manualinvoice(login):
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))
     ).click()
+
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Confirm']")
@@ -156,29 +144,28 @@ def test_appt_manualinvoice(login):
 
     while True:
         try:
-            print("before in loop")
+            
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
+                    (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                 )
             )
 
-            next_button.click()
+            
+            if next_button.is_enabled():
+            
+                login.execute_script("arguments[0].click();", next_button)
+            else:
+            
+                break
 
-        except:
-            print("EC caught:")
+        except Exception as e:
+            
             break
 
+    time.sleep(1)
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 
@@ -189,11 +176,14 @@ def test_appt_manualinvoice(login):
         )
     ).click()
 
-    WebDriverWait(login, 10).until(
+    time.sleep(3)
+    update_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Update']")
         )
-    ).click()
+    )
+    update_button.click()
+    
 
     try:
 
@@ -2276,7 +2266,7 @@ def test_prepaymentbooking(con_login):
 
         wait = WebDriverWait(con_login, 10)
         time_slot = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+            EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__action mat-mdc-chip-action mdc-evolution-chip__action--primary mdc-evolution-chip__action--presentational'])[1]"))
         )
         time_slot.click()
         print("Time Slot:", time_slot.text)

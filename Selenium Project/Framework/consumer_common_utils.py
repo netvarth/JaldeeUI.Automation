@@ -27,8 +27,8 @@ def consumer_login():
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    driver.get("https://scale.jaldee.com/visionhospital/")
-    # driver.get("https://scale.jaldee.com/RangSweets")
+    # driver.get("https://scale.jaldee.com/visionhospital/")
+    driver.get("https://scale.jaldee.com/RangSweets")
     # driver.get("https://www.jaldee.com/02s7i59")#ProductionOrder
     driver.maximize_window()
     yield driver

@@ -5,13 +5,17 @@ from selenium.webdriver.common.action_chains import ActionChains
 import allure
 from allure_commons.types import AttachmentType
 import os
-first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+from functools import wraps
+
+
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice(login):
+
     time.sleep(5)
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
@@ -95,8 +99,8 @@ def test_appt_autoinvoice(login):
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
-    login.find_element(By.XPATH,
-                       "//span[normalize-space()='Confirm']").click()
+    login.find_element(By.XPATH, "//span[normalize-space()='Confirm']").click()
+
     try:
 
         snack_bar = WebDriverWait(login, 10).until(
@@ -215,7 +219,7 @@ def test_appt_autoinvoice(login):
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice1(login):
     print("Apply discount and share the payment link")
-
+    
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
@@ -494,6 +498,8 @@ def test_appt_autoinvoice2(login):
 @allure.title("Add the item and apply the discount")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice3(login):
+
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     # Add the item and apply the discount in the Invoice and Share the payment link
     print("Add item, Apply the discount and Share the payment link")
     WebDriverWait(login, 20).until(
@@ -859,6 +865,7 @@ def test_appt_autoinvoice4(login):
 @allure.title("Share PDF to the consumer")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice5(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -1018,6 +1025,7 @@ def test_appt_autoinvoice5(login):
 @allure.title("Settle the auto Invoice")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice6(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -1175,6 +1183,7 @@ def test_appt_autoinvoice6(login):
 @allure.title("Pay by cash in Auto Invoice")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice7(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -1347,6 +1356,7 @@ def test_appt_autoinvoice7(login):
 @allure.title("Pay by other with UPI")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice8(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -1530,6 +1540,7 @@ def test_appt_autoinvoice8(login):
 @allure.title("Pay by other with Credit Card (CC)")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice9(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -1703,6 +1714,7 @@ def test_appt_autoinvoice9(login):
 @allure.title("Create invoice template")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice10(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -1909,11 +1921,11 @@ def test_appt_autoinvoice10(login):
 
     time.sleep(3)
 
-
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Apply Invoice template")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice11(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -2131,12 +2143,11 @@ def test_appt_autoinvoice11(login):
 
     time.sleep(3)
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice without mobile number")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice12(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -2346,6 +2357,7 @@ def test_appt_autoinvoice12(login):
 @allure.title("Auto Invoice without mobile number and email Id")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice13(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -2523,6 +2535,7 @@ def test_appt_autoinvoice13(login):
 @allure.title("Auto Invoice without mobile number, email Id and Name of the patient")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appt_autoinvoice14(login):
+    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(

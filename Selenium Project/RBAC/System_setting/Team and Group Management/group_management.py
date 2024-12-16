@@ -119,7 +119,7 @@ def test_create_patient_group_checked(login):
         EC.presence_of_element_located(
             (By.XPATH, "//li[4]//a[1]//div[1]//span[1]//span[1]//img[1]")
         ) 
-    ).click()
+    ).click() 
 
 
     time.sleep(3)

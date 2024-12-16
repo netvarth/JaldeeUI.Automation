@@ -92,9 +92,13 @@ def login(url):
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     # driver.find_element(By.ID, "loginId").send_keys("5551111557")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    # driver.find_element(By.ID, "loginId").send_keys("6030")#Test
+    #   
+    # driver.find_element(By.ID, "loginId").send_keys("praven@0291")#Scal RBAC Basic User
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("5555550603")#Scal
+    # driver.find_element(By.ID, "loginId").send_keys("422522")
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+
+    # driver.find_element(By.ID, "loginId").send_keys("5555550603")#Scal RBAC Admin, Provider
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     driver.find_element(By.ID, "loginId").send_keys("5555556030")#Scale
     driver.find_element(By.ID, "password").send_keys("Jaldee01")
@@ -112,8 +116,7 @@ def login(url):
     # time.sleep(10)
     driver.implicitly_wait(5)
     yield driver
-    driver.close()
-    driver.quit()
+    driver.close() 
 
 
 

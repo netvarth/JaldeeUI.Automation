@@ -658,7 +658,7 @@ def test_signup():
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']",
+                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
                 )
             )
         )
@@ -942,7 +942,7 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']",
+                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
                 )
             )
         )
@@ -1973,10 +1973,12 @@ def test_create_patient(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        save_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Save']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", save_button)
+        save_button.click()
         
         
         
@@ -2184,10 +2186,12 @@ def test_create_patient(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        save_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Save']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", save_button)
+        save_button.click()
         
         
         

@@ -35,6 +35,7 @@ def create_consumer_data():
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_Online_Order")
 def test_create_Online_order(consumer_login):
+    print("Consumer Added Items into Cart")
     try:
         time.sleep(5)
         global consumer_data
@@ -121,6 +122,8 @@ from Framework.common_dates_utils import *
 @allure.title("Active Carts")
 @pytest.mark.parametrize("url", ["https://www.jaldee.com/business"])
 def test_activecarts(login):
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Active Cart",current_date)   
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 

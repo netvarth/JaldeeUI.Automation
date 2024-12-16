@@ -15,7 +15,7 @@ import os
 
 @pytest.fixture()
 def login():
-    current_date = datetime.now().strftime("%Y-%m-%d")
+    current_date = datetime.now().strftime("%d-%m-%Y")
     print("Pre-Deployment Consumer Token",current_date)
 
     driver = webdriver.Chrome(
@@ -42,7 +42,8 @@ def scroll_until_visible(login, element):
             break   
 
 def test_consumer_token_booking(login):
-
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Pre-Deployment Existing Consumer Token",current_date)
     try:
         time.sleep(5)
         # Scroll to the element
@@ -129,7 +130,7 @@ def test_consumer_token_booking(login):
         time.sleep(3)  
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-        ).send_keys("9207206005")
+        ).send_keys("9400553615")
         # WebDriverWait(login, 10).until(
         #     EC.presence_of_element_located(
         #        (By.XPATH, "//a[normalize-space()='My Bookings']")

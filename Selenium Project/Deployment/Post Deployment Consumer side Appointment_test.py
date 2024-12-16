@@ -43,7 +43,7 @@ def scroll_until_visible(login, element):
 def test_booking(login):
 
     current_date = datetime.now().strftime("%d-%m-%Y")
-    print("Post-Deployment Consumer Appointment",current_date)   
+    print("Post-Deployment Existing Consumer Appointment",current_date)   
     try:
 
         time.sleep(5)

@@ -44,7 +44,7 @@ def scroll_until_visible(login, element):
 def test_booking(login):
 
     current_date = datetime.now().strftime("%d-%m-%Y")
-    print("Post-Deployment Consumer Token",current_date)
+    print("Post-Deployment Existing Consumer Token",current_date)
     try:
         time.sleep(5)
     
@@ -258,7 +258,7 @@ def test_booking(login):
         print("Successfully upload the file")
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='send']"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='mdc-button__label']"))
         ).click()
 
         print("Send attachment successfully")

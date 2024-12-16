@@ -1,5 +1,5 @@
 import sys
-import os
+import os 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
 from Framework.common_utils import *
@@ -175,8 +175,6 @@ def test_create_location_checked(login):
     finally:
         print("Loaction : Thrissur, Kerala, India")
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Basic user capabilities create location unchecked")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
@@ -317,8 +315,6 @@ def test_create_location_unchecked(login):
     assert len(add_location_buttons) == 0 or not add_location_buttons[0].is_displayed(), \
         "'Add Location' button is visible, but it should not be when 'Create Location' is unchecked."
     print("Add Location button is not visible as expected.")
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Basic user capabilities update locations checked")
@@ -465,4 +461,3 @@ def test_update_locations_checked(login):
     )
     login.execute_script("arguments[0].click();", enable_button)
 
-  

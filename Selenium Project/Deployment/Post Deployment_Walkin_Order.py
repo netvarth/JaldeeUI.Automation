@@ -6,6 +6,8 @@ from Framework.common_dates_utils import *
 @allure.title("Create_WalkinOrder_completed")
 @pytest.mark.parametrize("url", ["https://www.jaldee.com/business/"])
 def test_create_walkin_Order(login):
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Post-Deployment Walkin Order via Payment Link",current_date)
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
@@ -115,6 +117,8 @@ from Framework.common_dates_utils import *
 @allure.title("Create_WalkinOrder_completed")
 @pytest.mark.parametrize("url", ["https://www.jaldee.com/business/"])
 def test_create_walkin_Order(login):
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Post-Deployment Walkin Order via Pay By Cash",current_date)
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
@@ -225,6 +229,8 @@ from Framework.common_dates_utils import *
 @allure.title("Create_WalkinOrder_completed")
 @pytest.mark.parametrize("url", ["https://www.jaldee.com/business/"])
 def test_create_walkin_Order(login):
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Post-Deployment Walkin Order via Pay By Others",current_date)
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 

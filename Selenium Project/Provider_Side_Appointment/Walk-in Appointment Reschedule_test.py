@@ -1153,15 +1153,17 @@ def  test_reschedule_180day(login):
         print(month_xpath)
         time.sleep(2)
         day_xpath = (
-            f"//span[@class='ng-star-inserted'][normalize-space()='{int(day)}']"
+            f"//span[contains(@class, 'example-custom-date-class') and normalize-space()='{day}']"
         )
         print(day_xpath)
-        WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, day_xpath))
-        ).click()
-        time.sleep(3)
-
-
+        
+        time.sleep(2)
+        day_button = WebDriverWait(login, 20).until(
+            EC.element_to_be_clickable((By.XPATH, day_xpath))
+        )
+        login.execute_script("arguments[0].click();", day_button)
+        
+        time.sleep(2)
         time_slot = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected= 'false']"))
         )
@@ -1175,7 +1177,7 @@ def  test_reschedule_180day(login):
         login.execute_script("arguments[0].scrollIntoView();", reschedule_button)
                                 
         time.sleep(2)
-        login.execute_script("arguments[0].click();", reschedule_button)
+        reschedule_button.click()
 
         try:
 
@@ -1205,7 +1207,7 @@ def  test_reschedule_180day(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer reschedule it next month")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
-def test_nextmonth_reschedule(con_login):
+def test_nextmonth_reschedule(con_login): 
     try:
 
         time.sleep(5)
@@ -1281,7 +1283,7 @@ def test_nextmonth_reschedule(con_login):
 
         wait = WebDriverWait(con_login, 10)
         time_slot = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
+            EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__action mat-mdc-chip-action mdc-evolution-chip__action--primary mdc-evolution-chip__action--presentational'])[1]"))
         )
         time_slot.click()
         print("Time Slot:", time_slot.text)
@@ -1329,91 +1331,8 @@ def test_nextmonth_reschedule(con_login):
             "//div[@class='form-group otp text-center']//button[@type='button']",
         ).click()
 
-        # WebDriverWait(con_login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//div[contains(text(),'NET BANKING')]")
-        #     )
-        # ).click()
 
-        # time.sleep(3)
-        # makepayment = WebDriverWait(con_login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (
-        #             By.XPATH,
-        #             "//div[@class='text-center mgn-up-10']//button[@type='button']",
-        #         )
-        #     )
-        # )
-        # con_login.execute_script("arguments[0].click();", makepayment)
-        # WebDriverWait(con_login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
-        #     )
-        # ).click()
-
-        # time.sleep(1)
-
-        # WebDriverWait(con_login, 10).until(
-        #     EC.visibility_of_element_located((By.XPATH, "//p[contains(text(),'SBI')]"))
-        # ).click()
-
-        # WebDriverWait(con_login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (
-        #             By.XPATH,
-        #             "//div[contains(@class,'ptm-emi-overlay')]//div[contains(@class,'')]//div[@id='checkout-button']//button[contains(@class,'ptm-nav-selectable')][contains(text(),'Pay ₹149')]",
-        #         )
-        #     )
-        # ).click()
-
-        # # Handle the popup window
-        # # Save the current window handle
-        # main_window_handle = con_login.current_window_handle
-
-        # # Wait until the new window is present
-        # WebDriverWait(con_login, 10).until(EC.new_window_is_opened)
-
-        # # Get all window handles
-        # all_window_handles = con_login.window_handles
-
-        # # Find the new window handle (the popup window)
-        # new_window_handle = None
-        # for handle in all_window_handles:
-        #     if handle != main_window_handle:
-        #         new_window_handle = handle
-        #         break
-
-        # # Switch to the new window
-        # con_login.switch_to.window(new_window_handle)
-
-        # # Now interact with elements in the new window
-        # # For example, clicking the success button
-        # time.sleep(3)
-        # WebDriverWait(con_login, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, "//button[@class='btn btnd']"))
-        # ).click()
-
-        # # Optionally, switch back to the main window
-
-        # con_login.switch_to.window(main_window_handle)
-        # # time.sleep(15)
-
-        # try:
-        #     snack_bar = WebDriverWait(con_login, 10).until(
-        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        #     )
-        #     message = snack_bar.text
-        #     print("Snack bar message:", message)
-
-        # except:
-
-        #     snack_bar = WebDriverWait(con_login, 10).until(
-        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        #     )
-        #     message = snack_bar.text
-        #     print("Snack bar message:", message)
-
-        # time.sleep(3)
+        time.sleep(3)
         confirm_button = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[contains(text(),'Confirm')]")
@@ -1431,25 +1350,28 @@ def test_nextmonth_reschedule(con_login):
         con_login.execute_script("arguments[0].click();", ok_button)
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
+        bookings = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[normalize-space()='My Bookings']"))
-        ).click()
+                (By.XPATH, "//div[contains(text(),'My Bookings')]")
+            )
+        )
+        bookings.click()
+        
+        # time.sleep(2)
+        # # Find all booking cards
+        # booking_cards = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'cstmApptCard')))
 
-        # Find all booking cards
-        booking_cards = wait.until(EC.presence_of_all_elements_located((By.CLASS_NAME, 'cstmApptCard')))
-
-        # Loop through the booking cards and find the "New Booking" button
-        for card in booking_cards:
-            try:
-        # Find the "New Booking" button within each card
-                new_booking_button = card.find_element(By.XPATH, ".//button[contains(text(), 'New Booking')]")
-                if new_booking_button:
-            # Click the "New Booking" button
-                    new_booking_button.click()
-                break
-            except:
-                continue
+        # # Loop through the booking cards and find the "New Booking" button
+        # for card in booking_cards:
+        #     try:
+        # # Find the "New Booking" button within each card
+        #         new_booking_button = card.find_element(By.XPATH, ".//button[contains(text(), 'New Booking')]")
+        #         if new_booking_button:
+        #     # Click the "New Booking" button
+        #             new_booking_button.click()
+        #         break
+        #     except:
+        #         continue
 
 
         # con_login.quit()
@@ -1508,9 +1430,11 @@ def  test_reschedule_history(login):
         )
         View_Detail_button.click()
 
-        login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
-        time.sleep(2)
 
+        time.sleep(3)
+        login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
+        
+        time.sleep(2)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[@class='reschedule-date-picker']")

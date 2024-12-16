@@ -1,5 +1,6 @@
 # import datetime
 from datetime import datetime
+from re import sub
 from dateutil.relativedelta import relativedelta
 from Framework.common_utils import *
 
@@ -38,5 +39,13 @@ def add_days(days):
     future_date = current_date + relativedelta(days=days)
     year = future_date.strftime("%Y")
     month = future_date.strftime("%b")
-    day = future_date.strftime("%d")
+    day = int(future_date.strftime("%d"))
+    return [year, month, day]
+
+def sub_days(days):
+    current_date = datetime.now()
+    previous_date = current_date - relativedelta(days=days)
+    year = previous_date.strftime("%Y")
+    month = previous_date.strftime("%b")
+    day = int(previous_date.strftime("%d"))
     return [year, month, day]

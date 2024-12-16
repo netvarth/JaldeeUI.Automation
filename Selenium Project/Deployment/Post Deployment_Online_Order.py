@@ -4,6 +4,8 @@ from Framework.common_dates_utils import *
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_Online_Order")
 def test_create_Online_order(consumer_login):
+    current_date = datetime.now().strftime("%d-%m-%Y")
+    print("Post-Deployment Online Order",current_date)
     try:
         time.sleep(5)
         consumer_data = create_consumer_data()
