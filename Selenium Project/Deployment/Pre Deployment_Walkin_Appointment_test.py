@@ -668,7 +668,7 @@ def test_account_signup():
                 (
                     By.XPATH,
                     "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
-                )
+                )   
             )
         )
     login.execute_script("arguments[0].click();", Today_Date)
@@ -779,7 +779,7 @@ def test_account_signup():
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_walkin_appointment(login):
 
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -883,7 +883,7 @@ def test_walkin_appointment(login):
                 (
                     By.XPATH,
                     "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
-                )
+                )    
             )
         )
         login.execute_script("arguments[0].click();", Today_Date)
@@ -1093,28 +1093,25 @@ def test_walkin_appointment(login):
 
         while True:
             try:
-                # Attempt to locate the "Next" button using the button's class
+                
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
                         (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                     )
                 )
 
-                # Check if the button is enabled (i.e., not disabled)
+                
                 if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
+                   
                     login.execute_script("arguments[0].click();", next_button)
                 else:
-                    # print("Next button is disabled. Reached the last page.")
+                  
                     break
 
             except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
+                
                 break
 
-        # After clicking through all pages, locate and click the last accordion
         time.sleep(1)
         last_element_in_accordian = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
@@ -1564,6 +1561,7 @@ def test_walkin_appointment(login):
             )
         ).click()
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter Case Description']")
@@ -2121,13 +2119,14 @@ def test_walkin_appointment(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        update_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Update']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", update_button)
+        update_button.click()
         
-        
-        
+          
         try:
 
             snack_bar = WebDriverWait(login, 10).until(
@@ -2345,10 +2344,11 @@ def test_walkin_appointment(login):
         
         time.sleep(2)
         
-        WebDriverWait(login, 10).until(
+        add_service = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        ).click()
+        )
+        login.execute_script("arguments[0].click();", add_service)
         
         time.sleep(2)    
         WebDriverWait(login, 10).until(
@@ -2363,11 +2363,11 @@ def test_walkin_appointment(login):
         print("Added Sub Service to the Invoice")
         
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        ).click()
-        
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
+        # ).click()
+        login.execute_script("arguments[0].click();", add_service)
         item_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
@@ -2391,10 +2391,12 @@ def test_walkin_appointment(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        update_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Update']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", update_button)
+        update_button.click()
         
         
         
@@ -2649,7 +2651,7 @@ def test_walkin_appointment(login):
         
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing For add User")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
 def test_walkin_appt_adduser(login):
     try:
 

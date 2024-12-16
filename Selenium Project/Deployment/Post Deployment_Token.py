@@ -88,7 +88,7 @@ def test_create_patient(login):
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//li[@aria-label='Consultation']//div[contains(text(),'Consultation')]"))
+            EC.element_to_be_clickable((By.XPATH, "//li[@id='p-highlighted-option']//div[@class='option-container ng-star-inserted'][normalize-space()='Consultation']"))
         ).click()
 
         print("Select Service :  Consultation ")
@@ -383,7 +383,7 @@ def test_create_patient(login):
 
         print("Send Message Successfully")
 
-        # ******************* Send Attachment ************************
+        # # ******************* Send Attachment ************************
 
         time.sleep(5)
         WebDriverWait(login, 10).until(
@@ -411,7 +411,7 @@ def test_create_patient(login):
 
         print("Attachment Send Successfully")
 
-        # ********************* Create the Prescription and Sharing *************************
+        # # ********************* Create the Prescription and Sharing *************************
 
         time.sleep(5)
         WebDriverWait(login, 10)
@@ -481,7 +481,7 @@ def test_create_patient(login):
         login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
         print("Prescription Shared Successfully")
 
-        # ************************* Case Creation and Sharing *********************
+        # # ************************* Case Creation and Sharing *********************
 
         time.sleep(5)
         WebDriverWait(login, 20).until(
@@ -790,6 +790,7 @@ def test_create_patient(login):
 
         print("Case file Shared successfully")
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-arrow-left back-btn-arrow']"))
         ).click()
@@ -897,10 +898,12 @@ def test_create_patient(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        save_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Save']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", save_button)
+        save_button.click()
         
         
         
@@ -1085,10 +1088,12 @@ def test_create_patient(login):
         print("Added ADHOC item to the Invoice")
         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Update']"))
-        ).click()
+        save_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[normalize-space()='Save']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", save_button)
+        save_button.click()
         
         
         

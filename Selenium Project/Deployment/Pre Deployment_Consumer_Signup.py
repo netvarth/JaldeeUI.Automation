@@ -24,7 +24,7 @@ def login():
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    driver.get("https://scale.jaldee.com/visionhospital/")
+    driver.get("https://test.jaldee.com/visionhospital/")
     driver.maximize_window()
     yield driver
     driver.quit()  # Ensure the browser is closed properly
@@ -1188,6 +1188,7 @@ def test_prepayment_token_booking(login):
     )
     login.execute_script("arguments[0].scrollIntoView(true);", makepayment)
     login.execute_script("arguments[0].click();", makepayment)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
