@@ -39,10 +39,10 @@ def test_create_Online_order(consumer_login):
         global consumer_data
         consumer_data = create_consumer_data()
         Dessert = WebDriverWait(consumer_login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='category-name d-flex justify-content-between'][normalize-space()='Dessert']"))
+            EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dessert')]"))
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", Dessert)
-        time.sleep(5)
+        time.sleep(2)    
         Dessert.click()
         time.sleep(3)
         wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")

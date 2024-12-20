@@ -168,9 +168,14 @@ def test_edit_Item(login):
         time.sleep(2)   
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Edit']")
         time.sleep(2)
-        item_description = f"Item{''.join(random.choices(string.ascii_letters + string.digits, k=8))}"
-        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Enter Item Description']", item_description)
-        time.sleep(2)
+        longdescription = """Ice cream is one of the most commonly loved desserts on this planet. It has a creamy, 
+                            sweet taste that many people love. Ice cream is delicious and famous, and it is made 
+                            from dairy products such as milk and cream, eggs, sugar and sorbet powder.
+                            Ice cream can be made using fruits, vegetables, and milk instead of sugar.
+                            """
+        print(longdescription)
+        # item_description = f"Item{''.join(random.choices(string.ascii_letters + string.digits, k=8))}"
+        wait_and_send_keys(login, By.XPATH, "//div[@aria-label='Rich Text Editor. Editing area: main']//p", longdescription)
         wait_and_locate_click(login, By.XPATH, "//button[@type='submit']")
         toast_detail = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))

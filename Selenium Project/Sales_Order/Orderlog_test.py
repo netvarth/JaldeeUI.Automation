@@ -16,7 +16,7 @@ def test_Orderlog(login):
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 10']")
         time.sleep(2)
         customer_name = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='fw-bold ng-star-inserted']"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='fw-bold ng-star-inserted'][normalize-space()='Joseph Hernandez']"))
         )
         actual_customer_name = customer_name.text
         print(actual_customer_name)
@@ -143,7 +143,7 @@ def test_Order_Editlog(login):
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 10']")
         time.sleep(2)
         customer_name = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='fw-bold ng-star-inserted']"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='fw-bold ng-star-inserted'][normalize-space()='Joseph Hernandez']"))
         )
         actual_customer_name = customer_name.text
         print(actual_customer_name)
