@@ -104,44 +104,100 @@ def test_create_Online_order(consumer_login):
         WebDriverWait(consumer_login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Pay']"))
         ).click()
-        time.sleep(2)
-        WebDriverWait(consumer_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
-        )
-        ).click()
-        time.sleep(2)
-        WebDriverWait(consumer_login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//p[normalize-space()='SBI']"))
-        ).click()
-        WebDriverWait(consumer_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH,"//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//img[contains(@class,'ptm-lock-img')]"))
-        ).click()
-         # Handle the popup window
+
+        time.sleep(10)
+
+
         main_window_handle = consumer_login.current_window_handle
+
+        # Wait for the new window (popup) to appear
         WebDriverWait(consumer_login, 10).until(EC.new_window_is_opened)
+
+        # Get all window handles and find the new window handle
         all_window_handles = consumer_login.window_handles
-        new_window_handle = None
-        for handle in all_window_handles:
-            if handle != main_window_handle:
-                new_window_handle = handle
-                break
-         # Switch to the new window
+        new_window_handle = next(
+            handle for handle in all_window_handles if handle != main_window_handle
+        )
+
+        # Switch to the new window
         consumer_login.switch_to.window(new_window_handle)
-        time.sleep(3)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Successful']"))
-        ).click()
-        time.sleep(5)
-        # Optionally, switch back to the main window
-        consumer_login.switch_to.window(main_window_handle)
+
+        # Interact with elements in the Razorpay popup window
+        try:
+            # Select the bank (e.g., HDFC Bank)
+            select_bank = WebDriverWait(consumer_login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//div[@data-value='HDFC']"))
+            )
+            consumer_login.execute_script("arguments[0].click();", select_bank)
+
+            # Click the Pay button or proceed further based on the flow
+            pay_button = WebDriverWait(consumer_login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, "//button[contains(text(), 'Success')]"))
+            )
+            pay_button.click()
+
+        except Exception as e:
+            print(f"Error occurred: {e}")
+
+        finally:
+            # Optionally, switch back to the main window
+            consumer_login.switch_to.window(main_window_handle)
+
+
+
+
+
+
+        # Switch to the Razorpay iframe
+        # iframe = WebDriverWait(consumer_login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//iframe[contains(@src, 'razorpay')]"))
+        # )
+        # consumer_login.switch_to.frame(iframe)
+
+        # # Interact with elements inside the iframe
+        # time.sleep(2)
+        # WebDriverWait(consumer_login, 10).until(
+        # EC.presence_of_element_located(
+        #     (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
+        # )
+        # ).click()
+        # time.sleep(2)
+        # WebDriverWait(consumer_login, 10).until(
+        # EC.visibility_of_element_located((By.XPATH, "(//label[.//div[@data-value='SBIN']])[1]"))
+        # ).click()
+        # # WebDriverWait(consumer_login, 10).until(
+        # # EC.presence_of_element_located(
+        # #     (By.XPATH,"//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//img[contains(@class,'ptm-lock-img')]"))
+        # # ).click()
+        #  # Handle the popup window
+        # main_window_handle = consumer_login.current_window_handle
+        # WebDriverWait(consumer_login, 10).until(EC.new_window_is_opened)
+        # all_window_handles = consumer_login.window_handles
+        # new_window_handle = None
+        # for handle in all_window_handles:
+        #     if handle != main_window_handle:
+        #         new_window_handle = handle
+        #         break
+        #  # Switch to the new window
+        # consumer_login.switch_to.window(new_window_handle)
+        # time.sleep(3)
+
+        # WebDriverWait(consumer_login, 10).until(
+        # EC.visibility_of_element_located((By.XPATH, "(//label[.//div[@data-value='SBIN']])[1]"))
+        # ).click()
+        # time.sleep(5)
+        # WebDriverWait(consumer_login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Successful']"))
+        # ).click()
+        # time.sleep(5)
+        # # Optionally, switch back to the main window
+        # consumer_login.switch_to.window(main_window_handle)
         time.sleep(5)
         ordernumber = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[@class='order-id']"))
         )
         order_id = ordernumber.text
-        confirmed_order_id= order_id.split("#")[-1].strip()
+        confirmed_order_id = order_id.split("#")[-1].strip()
         print("Confirmed Order ID :", confirmed_order_id)
         confirmation_text = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@class='status-confirmed ng-star-inserted']"))
@@ -180,11 +236,11 @@ def test_create_Online_order(consumer_login):
         wait_and_locate_click(consumer_login, By.XPATH, "//span[normalize-space()='Home']")
         time.sleep(2)
     except Exception as e:
-        allure.attach(  
-            consumer_login.get_screenshot_as_png(),  
-            name="full_page",  
+        allure.attach(
+            consumer_login.get_screenshot_as_png(),
+            name="full_page",
             attachment_type=AttachmentType.PNG,
-        ) 
+        )
         raise e  
     
 

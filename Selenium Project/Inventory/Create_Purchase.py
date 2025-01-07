@@ -21,7 +21,7 @@ def test_create_purchase(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[5]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     time.sleep(5)
@@ -63,7 +63,7 @@ def test_create_purchase(login):
 
     time.sleep(2)
     Inventory_Catalog = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='catalog1']"))
     )
     Inventory_Catalog.click()
     print("Inventory Selected:", Inventory_Catalog.text)
@@ -399,7 +399,7 @@ def test_sales_price_higher_than_mrp(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     time.sleep(5)
@@ -440,6 +440,7 @@ def test_sales_price_higher_than_mrp(login):
 
     login.find_element(By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
 
+    time.sleep(3)
     Inventory_Catalog = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
     )
@@ -628,7 +629,7 @@ def test_discount_in_percentage(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     time.sleep(5)
@@ -870,7 +871,7 @@ def test_discount_in_amount(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     time.sleep(5)

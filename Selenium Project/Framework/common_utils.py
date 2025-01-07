@@ -35,7 +35,7 @@ from selenium.common.exceptions import TimeoutException
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
 localhost_url = "https://localhost:4200/business/"
-test_scale_url = "https://test.jaldee.com/business/"
+test_scale_url = "https://scale.jaldeetest.in/business/"
 test_mail = ".test@jaldee.com"
 consumer_url = "https://scale.jaldee.com/visionhospital/"
 test_consumer_url = "https://test.jaldee.com/53b6eu1/"
@@ -44,35 +44,25 @@ test_consumer_url = "https://test.jaldee.com/53b6eu1/"
 def create_user_data():
     fake = Faker()
     first_name = fake.first_name()
-    print(first_name)
+    # print(first_name)
     last_name = fake.last_name()
-    print(last_name)
+    # print(last_name)
     cons_manual_id = "".join(random.choices(string.ascii_letters + string.digits, k=3))
-    print(cons_manual_id)
+    # print(cons_manual_id)
     random_digits = fake.numerify(text="#######")
     # random_digits = ''.join(random.choices(string.digits, k=7))
     phonenumber = f"{555}{random_digits}"
-    print(phonenumber)
+    # print(phonenumber)
     email = f"{first_name}.{last_name}{test_mail}"
-    print(email)
+    # print(email)
     return [first_name, last_name, cons_manual_id, phonenumber, email]
 
 
 @pytest.fixture()
 def login(url):
-    # chrome_options = webdriver.ChromeOptions()
-    # chrome_options.add_argument("--ignore-ssl-errors=yes")
-    # chrome_options.add_argument("--ignore-certificate-errors")
-    # chrome_options.add_argument("--lang=en-US")
-
-    # driver = webdriver.Chrome(
-    #     service=ChromeService(ChromeDriverManager().install()), options=chrome_options
-    # )
-    
 
     driver = webdriver.Chrome(
         service=ChromeService(
-            # executable_path=r"D:\ChromeDriver\chromedriver-win64\chromedriver.exe"
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
@@ -88,6 +78,18 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("5550005540")#Production
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
+    driver.find_element(By.ID, "loginId").send_keys("001919")    #Scale LOS business head
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+
+    # driver.find_element(By.ID, "loginId").send_keys("001920")    #Scale LOS sales officer
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+
+    # driver.find_element(By.ID, "loginId").send_keys("001921")    Scale LOS Credit head
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+
+    # driver.find_element(By.ID, "loginId").send_keys("001922")    Scale LOS branch manager
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+
     # driver.find_element(By.ID, "loginId").send_keys("5555523479")
     # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     # driver.find_element(By.ID, "loginId").send_keys("5551111557")
@@ -98,10 +100,13 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("422522")
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
+    # driver.find_element(By.ID, "loginId").send_keys("6030")     #test
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+ 
     # driver.find_element(By.ID, "loginId").send_keys("5555550603")#Scal RBAC Admin, Provider
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    driver.find_element(By.ID, "loginId").send_keys("5555556030")#Scale
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    # driver.find_element(By.ID, "loginId").send_keys("5555556030")#Scale
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555557799")#Whole
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
@@ -224,6 +229,19 @@ def generate_random_billing_address():
     country = fake.country()  # e.g., 'United States'
     
     # Combine to form a full billing address
-    billing_address = f"{street_address}, {city}, {state} {zip_code}, {country}"
+    # billing_address = f"{street_address}, {city}, {state} {zip_code}, {country}"
     
-    return billing_address
+    # return billing_address
+    return {street_address}, {city}, {state}, {zip_code}, {country}
+
+
+
+def generate_random_billing_india_address():
+    fake = Faker("en_IN")
+    street_address = fake.street_address()  # e.g., '12 MG Road'
+    city = fake.city()  # e.g., 'Mumbai'
+    state = fake.state()  # e.g., 'Maharashtra'
+    zip_code = fake.postcode()  # e.g., '400001'
+    country = "India"  # Fixed for Indian addresses
+    
+    return street_address, city, state, zip_code, country

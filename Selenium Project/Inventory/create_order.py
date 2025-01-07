@@ -20,7 +20,7 @@ def test_create_order(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[5]/a[1]/div[1]/span[1]/span[1]/img[1]"))
+            (By.XPATH, "(//img)[5]"))
     ).click()
 
     time.sleep(3)

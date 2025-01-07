@@ -27,7 +27,7 @@ def test_store_creation(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+                (By.XPATH, "(//img)[6]"))
         ).click()
 
         time.sleep(5)
@@ -50,7 +50,7 @@ def test_store_creation(login):
         time.sleep(2)
         dropdown_item = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Pharmacy']"))
+                (By.XPATH, "//span[normalize-space()='Medical Lab']"))
         )
 
         dropdown_item.click()
@@ -90,9 +90,10 @@ def test_store_creation(login):
             EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Chavakkad']"))
         ).click()
 
-        WebDriverWait(login, 10).until(
+        create_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Create']"))
-        ).click()
+        )
+        login.execute_script("arguments[0].click();", create_button)
 
         try:
 
@@ -130,7 +131,7 @@ def test_store_filter_location(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+                (By.XPATH, "(//img)[6]"))
         ).click()
 
         time.sleep(5)
@@ -212,7 +213,7 @@ def test_store_filter_storestatus(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+                (By.XPATH, "(//img)[6]"))
         ).click()
 
         time.sleep(5)
@@ -228,7 +229,7 @@ def test_store_filter_storestatus(login):
                 (By.XPATH, "//i[@class='pi pi-filter-fill']"))
         ).click()
 
-  
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Status']"))
@@ -244,7 +245,7 @@ def test_store_filter_storestatus(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Active']"))
-        )
+        ).click()
           
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(

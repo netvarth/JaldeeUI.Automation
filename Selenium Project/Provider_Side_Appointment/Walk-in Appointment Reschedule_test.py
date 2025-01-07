@@ -9,7 +9,7 @@ from datetime import datetime
  
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to a later time in the same day")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_appt_reschedule_sameday(login):
     try:
         time.sleep(5)
@@ -265,7 +265,7 @@ def test_appt_reschedule_sameday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to another day")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def  test_reschedule_anotherday(login):
 
     try:
@@ -540,7 +540,7 @@ def  test_reschedule_anotherday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer take prepayment booking and Provider reschedule it")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/visionhospital/"])
 def test_prepaymentbooking_reschedule(con_login):
     try:
 
@@ -910,8 +910,8 @@ def test_prepaymentbooking_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule for 180day")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def  test_reschedule_180day(login):
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+def test_reschedule_180day(login):
     try:
         time.sleep(5)
         WebDriverWait(login, 20).until(
@@ -1206,7 +1206,7 @@ def  test_reschedule_180day(login):
   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer reschedule it next month")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/visionhospital/"])
 def test_nextmonth_reschedule(con_login): 
     try:
 
@@ -1350,7 +1350,7 @@ def test_nextmonth_reschedule(con_login):
         con_login.execute_script("arguments[0].click();", ok_button)
 
         time.sleep(3)
-        bookings = WebDriverWait(login, 10).until(
+        bookings = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[contains(text(),'My Bookings')]")
             )
@@ -1389,7 +1389,7 @@ def test_nextmonth_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule form History")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def  test_reschedule_history(login):
 
     try:

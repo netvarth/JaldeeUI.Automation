@@ -2180,14 +2180,26 @@ def test_appt_manualinvoice7(login):
 
 #####################################################################################################################################
 
+# @pytest.fixture()
+# def con_login():
+#     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+#     driver.get("https://scale.jaldee.com/visionhospital/")
+#     driver.maximize_window()
+#     yield driver
+
 @pytest.fixture()
-def con_login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.get("https://scale.jaldee.com/visionhospital/")
+def con_login(url):
+
+    driver = webdriver.Chrome(
+        service=ChromeService(
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
+    driver.get(url)
     driver.maximize_window()
     yield driver
 
-
+    
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer take prepayment booking")
 def test_prepaymentbooking(con_login):

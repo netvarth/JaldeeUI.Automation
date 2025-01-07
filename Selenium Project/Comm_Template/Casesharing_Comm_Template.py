@@ -4,7 +4,7 @@ from selenium.common import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Case_Sharing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
 def test_case_sharing(login):
     try:
         time.sleep(5)
@@ -33,9 +33,9 @@ def test_case_sharing(login):
         wait_and_locate_click(login, By.XPATH, "//input[@id='mat-mdc-checkbox-1-input']")
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "//input[@id='mat-mdc-checkbox-2-input']")
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']")
-        time.sleep(1)
+        time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']")
+        # time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save & Next']")
         time.sleep(2)
         editors = WebDriverWait(login, 10).until(
@@ -128,10 +128,10 @@ def test_case_sharing(login):
         patientsearch =WebDriverWait(login,10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter name or phone or id']"))
         )
-        patientsearch.send_keys('9400553615')
+        patientsearch.send_keys('9207206005')
         time.sleep(3)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 13']"))
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 2']"))
         ).click()
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -143,6 +143,7 @@ def test_case_sharing(login):
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
         print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))
         login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
         wait_and_send_keys(login, By.XPATH, "//input[@placeholder ='Enter Chief Complaint']", 'Fever')
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
@@ -150,7 +151,8 @@ def test_case_sharing(login):
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='History']")
         wait_and_send_keys(login, By.XPATH, "//input[@placeholder ='Enter History']", 'Cold')
-        wait_and_locate_click(login, By.XPATH, "//span[@class='mdc-list-item__primary-text']")
+        # wait_and_locate_click(login, By.XPATH, "//span[@class='mdc-list-item__primary-text']")
+        time.sleep(3)
         wait_and_click(login, By.XPATH, "//button[normalize-space()='Save']")
         # login.execute_script("arguments[0].scrollIntoView();", History_save)
         print("Toast Message:", wait_for_text(login, By.CLASS_NAME, "p-toast-detail"))

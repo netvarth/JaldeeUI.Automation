@@ -12,7 +12,7 @@ def test_stock_transfer(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -127,6 +127,21 @@ def test_stock_transfer(login):
             (By.XPATH, "//span[normalize-space()='DISPATCH']"))
     ).click()
 
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+    ).click()
+
+    time.sleep(3)
+    store = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Geetha'])[1]"))
+    )
+    login.execute_script("arguments[0].scrollIntoView();", store)
+
+    store.click()
+
     time.sleep(5)
 
 
@@ -142,12 +157,80 @@ def test_stock_transfer(login):
     # Find the status element within the first row
     status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
     status_text = status_element.text
-    expected_status = "IN REVIEW"
+    expected_status = "DISPATCHED"
 
     print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
 
-    # Assert that the status is "IN REVIEW"
-    assert status_text == "IN REVIEW", f"Expected status to be 'IN REVIEW', but got '{status_text}'"
+    # Assert that the status is "DISPATCHED"
+    assert status_text == "DISPATCHED", f"Expected status to be 'DISPATCHED', but got '{status_text}'"
 
     
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+    ).click()
 
+    time.sleep(3)
+    store1 = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[normalize-space()='Swathy Pharmacy'])[1]"))
+    )
+    login.execute_script("arguments[0].scrollIntoView();", store1)
+
+    store1.click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//button[normalize-space()='Received'])[1]"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//i)[5]"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='RECEIVED']"))
+    ).click()
+
+    try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+    except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+    time.sleep(2)
+     # Wait for the table to be present
+    table_body = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//tbody"))
+    )
+
+    # Locate the first table row
+    first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
+
+    # Find the status element within the first row
+    status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+    status_text = status_element.text
+    expected_status = "RECEIVED"
+
+    print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+    # Assert that the status is "RECEIVED"
+    assert status_text == "RECEIVED", f"Expected status to be 'RECEIVED', but got '{status_text}'"
+
+    

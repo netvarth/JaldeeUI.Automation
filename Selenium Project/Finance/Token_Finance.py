@@ -4,7 +4,7 @@ from Framework.common_utils import*
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Invoice for token Walkin")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_create_invoice_token_walkin(login):
     time.sleep(5)
     try:
@@ -229,7 +229,7 @@ def test_create_invoice_token_walkin(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Pay by cash")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_pay_by_cash(login):
     time.sleep(5)
     try:
@@ -461,7 +461,7 @@ def test_pay_by_cash(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Pay by others")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_pay_by_others(login):
     time.sleep(5)
     try:
@@ -684,7 +684,7 @@ def test_pay_by_others(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Share the PDF Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_share_pdf(login):
     time.sleep(5)
     try:

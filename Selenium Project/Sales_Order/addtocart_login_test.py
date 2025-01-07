@@ -1,7 +1,7 @@
 from Framework.common_utils import *
 from Framework.common_dates_utils import *
 
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_providerlogin_addtocartlogin_disabled(login):
     time.sleep(2)
     WebDriverWait(login, 10).until(
@@ -76,7 +76,7 @@ def test_providerlogin_addtocartlogin_disabled(login):
     time.sleep(2)
     
 
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_providerlogin_addtocartlogin_enabled(login):
     time.sleep(2)
     WebDriverWait(login, 10).until(

@@ -8,10 +8,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_inventory_catalog(login):
-    time.sleep(3)
+    time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     time.sleep(5)
@@ -61,3 +61,56 @@ def test_inventory_catalog(login):
     )
     message = toast_detail.text
     print("toast_Message:", message)
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+    ).click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+    ).click()
+
+    time.sleep(2)
+    store_dropdown = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Geetha']"))
+    )
+    login.execute_script("arguments[0].scrollIntoView();", store_dropdown)
+
+    store_dropdown.click()
+
+    time.sleep(5)
+
+
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+def test_inventory_catalog_filter(login):
+    time.sleep(5)
+    wait = WebDriverWait(login, 20)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//img)[5]"))
+    ).click()
+
+    time.sleep(5)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Catalogs')])[1]"))
+    ).click()
+
+    time.sleep(3)
+
+
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//button[normalize-space()='Actions'])[1]"))
+    ).click()
+
+    time.sleep(2)
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
+    ).click()
+
