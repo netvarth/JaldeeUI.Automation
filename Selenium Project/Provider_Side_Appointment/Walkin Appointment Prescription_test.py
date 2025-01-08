@@ -1,4 +1,4 @@
-from xml.etree.ElementPath import xpath_tokenizer
+# from xml.etree.ElementPath import xpath_tokenizer
 from Framework.common_utils import *
 import allure
 from allure_commons.types import AttachmentType

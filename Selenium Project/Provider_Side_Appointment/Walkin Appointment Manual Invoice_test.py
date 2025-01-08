@@ -2178,33 +2178,15 @@ def test_appt_manualinvoice7(login):
 
     time.sleep(5)
 
-#####################################################################################################################################
-
-# @pytest.fixture()
-# def con_login():
-#     driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-#     driver.get("https://scale.jaldee.com/visionhospital/")
-#     driver.maximize_window()
-#     yield driver
-
-@pytest.fixture()
-def con_login(url):
-
-    driver = webdriver.Chrome(
-        service=ChromeService(
-            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-        )
-    )
-    driver.get(url)
-    driver.maximize_window()
-    yield driver
 
     
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer take prepayment booking")
+@pytest.mark.parametrize('url', ["https://scale.jaldee.com/visionhospital/"])
 def test_prepaymentbooking(con_login):
-    try:
 
+    try:
+ 
         time.sleep(5)
 
         book_now_button = WebDriverWait(con_login, 10).until(
@@ -2312,9 +2294,7 @@ def test_prepaymentbooking(con_login):
             )
         )
 
-        # print("Number of OTP input fields:", len(otp_inputs))
-        # print(otp_inputs)
-
+    
         for i, otp_input in enumerate(otp_inputs):
 
             # print(i)
@@ -2332,103 +2312,85 @@ def test_prepaymentbooking(con_login):
             )
         ).click()
 
-        time.sleep(3)
+        time.sleep(5)
         makepayment = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//div[@class='text-center mgn-up-10']//button[@type='button']",
+                    "//span[@class='mdc-button__label']",
                 )
+            ) 
+        )
+
+        con_login.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
+         
+        con_login.execute_script("arguments[0].click();", makepayment)
+
+        time.sleep(5)
+
+        # Switch to the iframe containing the Razorpay modal
+        razorpay_iframe = WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "razorpay-checkout-frame"))
+        )
+        con_login.switch_to.frame(razorpay_iframe)
+        print("Switched to Razorpay iframe")
+
+        # Select bank option (e.g., State Bank of India)
+        bank_option = WebDriverWait(con_login, 20).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//span[contains(@class, 'font-medium text-on-surface') and text()='State Bank of India']")
             )
         )
-        con_login.execute_script("arguments[0].click();", makepayment)
-        WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
-            )
-        ).click()
+        con_login.execute_script("arguments[0].click();", bank_option)
+        print("Selected bank option")
 
-        time.sleep(1)
 
-        WebDriverWait(con_login, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//p[contains(text(),'SBI')]"))
-        ).click()
-
-        WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class,'ptm-emi-overlay')]//div[contains(@class,'')]//div[@id='checkout-button']//button[contains(@class,'ptm-nav-selectable')][contains(text(),'Pay ₹149')]",
-                )
-            )
-        ).click()
-
-        # Handle the popup window
-        # Save the current window handle
         main_window_handle = con_login.current_window_handle
-
-        # Wait until the new window is present
         WebDriverWait(con_login, 10).until(EC.new_window_is_opened)
-
-        # Get all window handles
         all_window_handles = con_login.window_handles
 
-        # Find the new window handle (the popup window)
         new_window_handle = None
         for handle in all_window_handles:
             if handle != main_window_handle:
                 new_window_handle = handle
                 break
 
-        # Switch to the new window
-        con_login.switch_to.window(new_window_handle)
+        if new_window_handle:
+            con_login.switch_to.window(new_window_handle)
 
-        # Now interact with elements in the new window
-        # For example, clicking the success button
-        time.sleep(3)
-        WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[@class='btn btnd']"))
-        ).click()
+            time.sleep(3)
+            WebDriverWait(con_login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[@data-val='S' and contains(@class, 'success')]"))
+            ).click()
 
-        # Optionally, switch back to the main window
-
-        con_login.switch_to.window(main_window_handle)
-        # time.sleep(15)
+            con_login.switch_to.window(main_window_handle)
+        
+        print("success")
+        time.sleep(5)
 
         try:
-            snack_bar = WebDriverWait(con_login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
+                snack_bar = WebDriverWait(con_login, 10).until(
+                    EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+                )
+                message = snack_bar.text
+                print("Snack bar message:", message)
         except:
+                snack_bar = WebDriverWait(con_login, 10).until(
+                    EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+                )
+                message = snack_bar.text
+                print("Snack bar message:", message)
 
-            snack_bar = WebDriverWait(con_login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
 
         time.sleep(3)
-        # confirm_button = WebDriverWait(con_login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//span[contains(text(),'Confirm')]")
-        #     )
-        # )
-        # con_login.execute_script("arguments[0].click();", confirm_button)
-        # time.sleep(3)
-
         ok_button = WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Ok']")
+                EC.presence_of_element_located(
+                    (By.XPATH, "(//button[normalize-space()='Ok'])[1]")
+                )
             )
-        )
-
         con_login.execute_script("arguments[0].click();", ok_button)
 
-        time.sleep(3)
-        # con_login.quit()
+        time.sleep(5)
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -2541,6 +2503,5 @@ def test_appt_manualinvoice8(login):
 
     time.sleep(5)
 
-######################################################################################################################################
 
 

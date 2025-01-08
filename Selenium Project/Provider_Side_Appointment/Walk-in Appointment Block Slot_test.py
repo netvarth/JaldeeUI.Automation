@@ -11,8 +11,8 @@ from selenium.webdriver.support import expected_conditions as EC
 @allure.title("Test Case: Block the four slot")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_create_patient(login):
-    # Navigate and interact with the website
-    time.sleep(6)
+    
+    time.sleep(5)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))

@@ -78,11 +78,11 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("5550005540")#Production
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
-    driver.find_element(By.ID, "loginId").send_keys("001919")    #Scale LOS business head
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
-    # driver.find_element(By.ID, "loginId").send_keys("001920")    #Scale LOS sales officer
+    # driver.find_element(By.ID, "loginId").send_keys("001919")    #Scale LOS business head
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+
+    driver.find_element(By.ID, "loginId").send_keys("001920")    #Scale LOS sales officer
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
     # driver.find_element(By.ID, "loginId").send_keys("001921")    Scale LOS Credit head
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
