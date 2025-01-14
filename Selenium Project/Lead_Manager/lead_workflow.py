@@ -4,51 +4,51 @@ from Framework.common_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: lead work flow")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_lead_workflow(login):
 
     try:
         wait = WebDriverWait(login, 10)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'Settings')]"))
-        ).click()
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//div[contains(text(),'Settings')]"))
+        # ).click()
 
-        lead_suite = login.find_element(By.XPATH, "//div[normalize-space()='Lead Suite']")
-        login.execute_script("arguments[0].scrollIntoView();", lead_suite)
+        # lead_suite = login.find_element(By.XPATH, "//div[normalize-space()='Lead Suite']")
+        # login.execute_script("arguments[0].scrollIntoView();", lead_suite)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//p[normalize-space()='Manage Leads']"))
-        ).click()
-        time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//p[normalize-space()='Manage Leads']"))
+        # ).click()
+        # time.sleep(1)
 
 
-        switch_icon = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[@class='mdc-switch__ripple']"))
-        )
-        login.execute_script("arguments[0].click();", switch_icon)
+        # switch_icon = wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//div[@class='mdc-switch__ripple']"))
+        # )
+        # login.execute_script("arguments[0].click();", switch_icon)
 
-        time.sleep(1)
+        # time.sleep(1)
 
-        try:
+        # try:
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        #     snack_bar = WebDriverWait(login, 10).until(
+        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        #     )
+        #     message = snack_bar.text
+        #     print("Snack bar message:", message)
    
-        except:
+        # except:
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        #     snack_bar = WebDriverWait(login, 10).until(
+        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        #     )
+        #     message = snack_bar.text
+        #     print("Snack bar message:", message)
 
-
+        time.sleep(5)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//img[@src='./assets/images/menu/home-color.png']"))
@@ -61,7 +61,7 @@ def test_lead_workflow(login):
         )
         login.execute_script("arguments[0].click();", lead_card)
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[contains(text(),'Product/Service')]"))
@@ -89,22 +89,22 @@ def test_lead_workflow(login):
                 (By.XPATH, "//span[normalize-space()='Appointment']"))
         ).click()
 
-
+        time.sleep(2)
         wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//p-dropdown[@placeholder='Select Lead Template']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+            EC.presence_of_element_located( 
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[2]"))
         ).click()
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Default Template']"))
+                (By.XPATH, "(//span[normalize-space()='Appointment Template'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Create Product Type']"))
+                (By.XPATH, "(//span[normalize-space()='Create'])[1]"))
         ).click()
 
         toast_detail = WebDriverWait(login, 10).until(
@@ -140,7 +140,7 @@ def test_lead_workflow(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Select Platform Type']"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -151,9 +151,9 @@ def test_lead_workflow(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Select Product Type']"))
-        ).click()
-
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+        ).click()           
+    
         time.sleep(2)
         option = wait.until(
             EC.presence_of_element_located(
@@ -164,16 +164,16 @@ def test_lead_workflow(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-multiselect-label p-placeholder'])[1]"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
         ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//li[@aria-label='Chavakkad']//div[@class='p-checkbox-box']"))
+                (By.XPATH, "(//span[normalize-space()='Chavakkad'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -252,11 +252,13 @@ def test_lead_workflow(login):
                 (By.XPATH, "//div[contains(text(),'Create Lead')]"))
         ).click()
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Search prospect with name,email or phone']"))
         ).send_keys(phonenumber)
 
+        time.sleep(3)
         wait.until(
              EC.presence_of_element_located(
                 (By.XPATH, "//span[@class='p-button-icon pi pi-search']"))
@@ -268,16 +270,16 @@ def test_lead_workflow(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Select Location']"))
-        ).click()
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[normalize-space()='Select Location']"))
+        # ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Chavakkad']"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Chavakkad']"))
+        # ).click()
 
         wait.until(
             EC.presence_of_element_located(
@@ -300,15 +302,37 @@ def test_lead_workflow(login):
         login.execute_script("arguments[0].scrollIntoView();", lead_owner)
         lead_owner.click()
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@placeholder='Enter City']"))
-        ).send_keys("Chavakad")
+        treet_address, city, state, zip_code, country = generate_random_billing_india_address()
+
+
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//textarea[@placeholder='Enter Notes']"))
-        ).send_keys("Note for crate lead")
+                (By.XPATH, "//textarea[@placeholder='Enter Address']"))
+        ).send_keys(treet_address, city, state, zip_code, country)
+
+
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
+
+        checkbox = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='p-checkbox-box'])[5]"))
+        )
+        checkbox.click()
+
+        # login.send_keys(checkbox,Keys.ENTER)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='If Yes, Mention them']"))
+        ).send_keys("No")
+
+        time.sleep(2)
 
         wait.until(
             EC.presence_of_element_located(

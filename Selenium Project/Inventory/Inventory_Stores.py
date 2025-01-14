@@ -20,7 +20,7 @@ from selenium.common.exceptions import TimeoutException
 
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 @allure.title("Store Creation")
 def test_store_creation(login):
     try:
@@ -74,7 +74,7 @@ def test_store_creation(login):
         ).send_keys(email)
 
 
-        invoice_prefix = "KT_" + str(uuid.uuid4())[:1]
+        invoice_prefix = "KT_" + str(uuid.uuid4())[:6]
         print(invoice_prefix)
         time.sleep(3)
         WebDriverWait(login, 20).until(
@@ -122,7 +122,7 @@ def test_store_creation(login):
         raise e  
     
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 @allure.title("Store Filter Location")
 def test_store_filter_location(login):
 
@@ -204,7 +204,7 @@ def test_store_filter_location(login):
     
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 @allure.title("Store Filter_Status")
 def test_store_filter_storestatus(login):
 

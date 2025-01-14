@@ -25,7 +25,7 @@ def test_account_signup():
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    login.get("https://scale.jaldee.com/business/")
+    login.get("https://scale.jaldeetest.in/business/")
     login.maximize_window()
 
     time.sleep(3)
@@ -877,7 +877,7 @@ def test_account_signup():
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_walkin_appointment(login): 
 
     current_date = datetime.now().strftime("%Y-%m-%d")
@@ -2751,7 +2751,7 @@ def test_walkin_appointment(login):
         
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing For add User")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_walkin_appt_adduser(login):
     try:
 

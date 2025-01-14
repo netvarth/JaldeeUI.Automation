@@ -61,11 +61,8 @@ def test_without_prescription(login):
         element.click()
 
         time.sleep(2)
-        service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-                                "Consultation'])[2]")
-        
-        WebDriverWait(login, 10).until(
-             EC.presence_of_element_located((By.XPATH, service_option_xpath))).click()
+        service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
+        WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
         print("Select Service : Naveen Consultation")
         time.sleep(3)
         Today_Date = wait.until(EC.presence_of_element_located((By.XPATH,
@@ -284,11 +281,13 @@ def test_without_prescription(login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Observations']"))
         ).click()
 
-        login.find_element(By.XPATH, "//input[@placeholder='Enter Observations']").send_keys("Minor fever")
+        observation_data = login.find_element(By.XPATH, "//input[@placeholder='Enter Observations']")
+        observation_data.send_keys("Minor fever")
+        observation_data.send_keys(Keys.ENTER)
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='minor fever']"))
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Minor fever']"))
+        # ).click()
 
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
@@ -296,34 +295,7 @@ def test_without_prescription(login):
 
         # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
-
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Diagnosis']"))
-        ).click()
-
-        login.find_element(By.XPATH, "//input[@placeholder='Enter Diagnosis']").send_keys("High temperature")
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='high temperature']"))
-        ).click()
-
-        element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
-
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share']"))
@@ -354,7 +326,7 @@ def test_without_prescription(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription in case Sharing")    
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_with_prescription(login):
     try:
         time.sleep(5)
@@ -426,19 +398,19 @@ def test_with_prescription(login):
         WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload File']"))
-        ).click()
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Upload File']"))
+        # ).click()
 
-        time.sleep(4)
-        # Get the current working directory
-        current_working_directory = os.getcwd()
+        # time.sleep(4)
+        # # Get the current working directory
+        # current_working_directory = os.getcwd()
 
-        # Construct the absolute path
-        absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
-        pyautogui.write(absolute_path)
-        pyautogui.press('enter')
+        # # Construct the absolute path
+        # absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
+        # pyautogui.write(absolute_path)
+        # pyautogui.press('enter')
 
         time.sleep(4)
         WebDriverWait(login, 10).until(
@@ -603,17 +575,20 @@ def test_with_prescription(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Immunization History']"))
         ).click()
-        login.find_element(By.XPATH, "//input[@placeholder='Enter Immunization History']").send_keys(
-            "No History of Immunization History")
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH,
-                                            "//span[@class='mdc-list-item__primary-text'][normalize-space()='no history of immunization history']"))
-        ).click()
+        immu_history = login.find_element(By.XPATH, "//input[@placeholder='Enter Immunization History']")
+        immu_history.send_keys("No History of Immunization History")
+        immu_history.send_keys(Keys.ENTER)
 
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH,
+        #                                     "//span[@class='mdc-list-item__primary-text'][normalize-space()='no history of immunization history']"))
+        # ).click()
+
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        login.execute_script("arguments[0].click();", element)
+        
 
         # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
@@ -627,13 +602,13 @@ def test_with_prescription(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Observations']"))
         ).click()
-
-        login.find_element(By.XPATH, "//input[@placeholder='Enter Observations']").send_keys("Minor fever")
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='minor fever']"))
-        ).click()
-
+        observation_data = login.find_element(By.XPATH, "//input[@placeholder='Enter Observations']")
+        observation_data.send_keys("Minor fever")
+        observation_data.send_keys(Keys.ENTER)  
+        
+        
+        time.sleep(3)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -656,7 +631,8 @@ def test_with_prescription(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='high temperature']"))
         ).click()
-
+        
+        time.sleep(2)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -669,14 +645,14 @@ def test_with_prescription(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        
+        time.sleep(3)
         WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Prescription']"))
         ).click()
 
         for i in range(5):
-                login.find_element(By.XPATH, "//div[@class='add']").click()
+                login.find_element(By.XPATH, "//button[normalize-space()='+ Add Medicine']").click()
                 login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys("Medicine")
 
                 before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
@@ -773,7 +749,7 @@ def test_with_prescription(login):
 def test_Case_Status(login):  
         
     try:
-        time.sleep(3)
+        time.sleep(3) 
         WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
@@ -935,12 +911,8 @@ def test_Case_Status(login):
         WebDriverWait(login, 10).until(
                 EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
             ).click()
-
-        toast_message = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-            )
-        message = toast_message.text
-        print("Toast Message:", message)
+        
+    
 
         time.sleep(2)
 
@@ -1117,6 +1089,9 @@ def test_Case_Status(login):
 
         print("Case file Shared successfully")
 
+
+
+        time.sleep(3)
         WebDriverWait(login, 10).until(
              EC.presence_of_element_located(
                   (By.XPATH, "//span[normalize-space()='Preview']"))

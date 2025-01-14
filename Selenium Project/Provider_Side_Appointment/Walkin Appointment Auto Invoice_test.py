@@ -11,7 +11,7 @@ from functools import wraps
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice(login):
 
     time.sleep(5)
@@ -216,7 +216,7 @@ def test_appt_autoinvoice(login):
 # Apply the discount in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Apply the discount in the Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice1(login):
     print("Apply discount and share the payment link")
     
@@ -382,7 +382,7 @@ def test_appt_autoinvoice1(login):
 # Add the item in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item in the Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice2(login):
     print("Add item and Share the payment link")
 
@@ -496,7 +496,7 @@ def test_appt_autoinvoice2(login):
 # Add the item and apply the discount in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item and apply the discount")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice3(login):
 
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -754,7 +754,7 @@ def test_appt_autoinvoice3(login):
 # Change the Qty/Price of the Service in the invoice and share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Change the Qty/Price of the Service and share the payment link")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice4(login):
     
     time.sleep(3)
@@ -815,6 +815,11 @@ def test_appt_autoinvoice4(login):
     price.clear()
     price.send_keys("500")
 
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Add'])[1]"))
+    ).click()
+
     time.sleep(5)
 
     WebDriverWait(login, 10).until(
@@ -863,7 +868,7 @@ def test_appt_autoinvoice4(login):
 # Share PDF to the consumer 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Share PDF to the consumer")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice5(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1023,7 +1028,7 @@ def test_appt_autoinvoice5(login):
 # Settle the auto Invoice 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Settle the auto Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice6(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1181,7 +1186,7 @@ def test_appt_autoinvoice6(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by cash in Auto Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice7(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1354,7 +1359,7 @@ def test_appt_autoinvoice7(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by other with UPI")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice8(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1538,7 +1543,7 @@ def test_appt_autoinvoice8(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by other with Credit Card (CC)")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice9(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1712,7 +1717,7 @@ def test_appt_autoinvoice9(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Create invoice template")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice10(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
@@ -1923,7 +1928,7 @@ def test_appt_autoinvoice10(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Apply Invoice template")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice11(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
@@ -2145,7 +2150,7 @@ def test_appt_autoinvoice11(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice without mobile number")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice12(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -2218,7 +2223,7 @@ def test_appt_autoinvoice12(login):
     print("Select Service : Naveen Consultation")
     time.sleep(3)
     Today_Date = wait.until(EC.presence_of_element_located(
-        (By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']"))
+        (By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']"))
     )
     Today_Date.click()
     print("Today Date:", Today_Date.text)
@@ -2355,7 +2360,7 @@ def test_appt_autoinvoice12(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice without mobile number and email Id")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice13(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -2428,7 +2433,7 @@ def test_appt_autoinvoice13(login):
     print("Select Service : Naveen Consultation")
     time.sleep(3)
     Today_Date = wait.until(EC.presence_of_element_located(
-        (By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']"))
+        (By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']"))
     )
     Today_Date.click()
     print("Today Date:", Today_Date.text)
@@ -2533,7 +2538,7 @@ def test_appt_autoinvoice13(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice without mobile number, email Id and Name of the patient")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
 def test_appt_autoinvoice14(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -2606,7 +2611,7 @@ def test_appt_autoinvoice14(login):
     print("Select Service : Naveen Consultation")
     time.sleep(3)
     Today_Date = wait.until(EC.presence_of_element_located(
-        (By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']"))
+        (By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']"))
     )
     Today_Date.click()
     print("Today Date:", Today_Date.text)
