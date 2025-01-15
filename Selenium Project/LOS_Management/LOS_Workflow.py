@@ -1,8 +1,16 @@
-from Framework.common_utils import *
-from Framework.common_dates_utils import *
-from faker import Faker
+
 import pyautogui
 import random
+from pathlib import Path
+from Framework.common_utils import *
+from Framework.common_dates_utils import *
+
+from faker import Faker
+
+
+
+
+
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic LOS work flow")
@@ -348,7 +356,7 @@ def test_los_workflow(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Select Id'])[1]"))
+                (By.XPATH, "//span[normalize-space()='Select Alternate Id']"))
         ).click()
 
         id_option = WebDriverWait(login, 10).until(
@@ -364,7 +372,7 @@ def test_los_workflow(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Id Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Id Card Number'])[1]"))
         ).send_keys("31125478453")
  
         time.sleep(3)
@@ -375,26 +383,27 @@ def test_los_workflow(login):
         ).click()
 
         time.sleep(5)
-        # Get the current working directory
-        current_working_directory = os.getcwd()
+        # # Get the current working directory
+        # current_working_directory = os.getcwd()
+
+        # # Construct the absolute path
+        # absolute_path = os.path.abspath(
+        #     os.path.join(current_working_directory, r"Extras\ test.png")
+        # )
+        # time.sleep(2)
+        # pyautogui.write(absolute_path)
+        # pyautogui.press("enter")
+
 
         # Construct the absolute path
-        absolute_path = os.path.abspath(
-            os.path.join(current_working_directory, r"Extras\ test.png")
-        )
-        time.sleep(2)
-        pyautogui.write(absolute_path)
+        absolute_path = Path("Extras/test.png").resolve()
+
+        # Use pyautogui to write the path and press Enter
+        pyautogui.write(str(absolute_path))
         pyautogui.press("enter")
 
         time.sleep(5)
 
-        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-         
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@placeholder='Enter Relation Name']"))
-        ).send_keys(first_name)
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
@@ -402,13 +411,23 @@ def test_los_workflow(login):
                 (By.XPATH, "//span[normalize-space()='Select Relationship Type']"))
         ).click()
 
-        # print("type option")
         time.sleep(5)
         type_option = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Father'])[1]"))
         )
         type_option.click()
+
+        first_name, last_name, cons_manual_id, phonenumber, email=create_user_data()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Enter Relation Name']"))
+        ).send_keys(first_name)
+
+
+        # print("type option")
+       
 
 
         time.sleep(2)

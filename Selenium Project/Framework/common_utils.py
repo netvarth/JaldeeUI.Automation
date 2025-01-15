@@ -81,8 +81,8 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("001919")    #Scale LOS business head
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
-    # driver.find_element(By.ID, "loginId").send_keys("001920")    #Scale LOS sales officer
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys("001920")    #Scale LOS sales officer
+    driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
     # driver.find_element(By.ID, "loginId").send_keys("001921")    Scale LOS Credit head
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
@@ -105,8 +105,8 @@ def login(url):
  
     # driver.find_element(By.ID, "loginId").send_keys("5555550603")#Scal RBAC Admin, Provider
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    driver.find_element(By.ID, "loginId").send_keys("5555556030")#Scale
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    # driver.find_element(By.ID, "loginId").send_keys("5555556030")#Scale
+    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555557799")#Whole
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
     # driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
