@@ -1114,13 +1114,8 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-<<<<<<< HEAD
-                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']",
-                )                   mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today
-=======
                     "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']",
                 )
->>>>>>> c86e651a67c9c69aa808fa2e87c1a7bb4c4fb541
             )
         )
         time.sleep(2)
