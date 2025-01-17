@@ -4,7 +4,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Active Carts")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_activecarts(login):
     try:
         time.sleep(5)

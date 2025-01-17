@@ -1,6 +1,7 @@
 import time
 import allure
 import pytest
+from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from webdriver_manager.chrome import ChromeDriverManager
@@ -14,7 +15,11 @@ from allure_commons.types import AttachmentType
 
 @pytest.fixture()
 def login():
-    driver = Chrome(service=ChromeService(ChromeDriverManager().install()))
+    driver = webdriver.Chrome(
+        service=ChromeService(
+            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        )
+    )
     driver.get("https://scale.jaldee.com/business/")
     driver.maximize_window()
     yield driver
@@ -56,37 +61,28 @@ def test_valid_userid_password(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("valid userid and invalid password")
 def test_valid_userid_invalid_password(login):
-    try:
-        login.find_element(By.ID, "loginId").send_keys("5555556030")
-        login.find_element(By.ID, "password").send_keys("Jaldee1")
-        login.find_element(By.XPATH, "//div[@class='mt-2']").click()
-        time.sleep(3)
 
-        element_msg = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[@class='mat-mdc-snack-bar-label mdc-snackbar__label']",
-                )
+    login.find_element(By.ID, "loginId").send_keys("5555556030")
+    login.find_element(By.ID, "password").send_keys("Jaldee1")
+    login.find_element(By.XPATH, "//div[@class='mt-2']").click()
+    time.sleep(3)
+
+    element_msg = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located(
+            (
+                By.XPATH,
+                "//div[@class='mat-mdc-snack-bar-label mdc-snackbar__label']",
             )
         )
-        message = element_msg.text
-        print("Snack bar message:", message)
+    )
+    message = element_msg.text
+    print("Snack bar message:", message)
 
-        # Assert that the snack bar message is as expected
-        expected_message = "Invalid password."
-        assert (
-            message == expected_message
-        ), f"Expected message '{expected_message}' but got '{message}'"
-
-    except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
-            attachment_type=AttachmentType.PNG,
-        )
-        raise e
+    # Assert that the snack bar message is as expected
+    expected_message = "Invalid password."
+    assert (
+        message == expected_message
+    ), f"Expected message '{expected_message}' but got '{message}'"
 
 
 ###################################################################################################################################################
@@ -251,3 +247,6 @@ def test_forget_password(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
+
+

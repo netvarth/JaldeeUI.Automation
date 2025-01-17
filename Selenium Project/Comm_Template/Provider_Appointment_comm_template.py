@@ -12,7 +12,7 @@ from Framework.common_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create confirmation template-Provider")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appt_confirmation_pro(login):
 
     WebDriverWait(login, 10).until(
@@ -69,12 +69,13 @@ def test_appt_confirmation_pro(login):
             (By.XPATH, "//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
     ).click()
 
-    time.sleep(1)
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Consumer']"))
     ).click()
     
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Provider']"))
@@ -252,22 +253,22 @@ def test_appt_confirmation_pro(login):
         )
     ).click()
 
-    login.implicitly_wait(3)
-    WebDriverWait(login, 10).until(
+    time.sleep(2)
+    WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
             (By.CSS_SELECTOR, "p-dropdown[optionlabel='place']")
         )
     ).click()
 
-    login.implicitly_wait(5)
+    time.sleep(3)
     login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
     print("location : Chavakkad")
-    login.implicitly_wait(5)
-
+    
+    time.sleep(2)
     login.find_element(
         By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
     ).click()
-    login.implicitly_wait(5)
+    time.sleep(3)
     login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
     print("Department : ENT")
     user_dropdown_xpath = (
@@ -344,7 +345,7 @@ def test_appt_confirmation_pro(login):
 ##############################################################################################################################################################   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Reminder template-Consumer")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appt_reminder_con(login):
     
     WebDriverWait(login, 10).until(
@@ -379,7 +380,7 @@ def test_appt_reminder_con(login):
         EC.presence_of_element_located(
             (By.XPATH, "(//div[@aria-label='dropdown trigger'])[2]"))
     ).click()
-    time.sleep(1)
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Appointment Reminder']"))
@@ -697,7 +698,7 @@ def test_appt_reminder_con(login):
 ##############################################################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Appointment started template-Consumer")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appt_started_con(login):
      
     WebDriverWait(login, 10).until(
@@ -898,7 +899,7 @@ def test_appt_started_con(login):
 ##############################################################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Appointment completed template-Consumer")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appt_completed_con(login):
      
     WebDriverWait(login, 10).until(
@@ -1105,7 +1106,7 @@ def test_appt_completed_con(login):
 ##############################################################################################################################################################    
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Token Reschedule template-Consumer")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appt_Reschedule_con(login):
     
     WebDriverWait(login, 10).until(
@@ -1488,7 +1489,7 @@ def test_appt_Reschedule_con(login):
 ###############################################################################################################################################################   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Cancellation template-Consumer ")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appt_cancellation_con(login):
 
     WebDriverWait(login, 10).until(

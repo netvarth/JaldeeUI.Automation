@@ -9,7 +9,7 @@ from datetime import datetime
  
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to a later time in the same day")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_appt_reschedule_sameday(login):
     try:
         time.sleep(5)
@@ -265,7 +265,7 @@ def test_appt_reschedule_sameday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to another day")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def  test_reschedule_anotherday(login):
 
     try:
@@ -676,112 +676,125 @@ def test_prepaymentbooking_reschedule(con_login):
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                        "//button[@type='button']//span[@class='mat-mdc-button-touch-target']",
+                    "//span[@class='mdc-button__label']",
                 )
+            ) 
+        )
+
+        con_login.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
+         
+        con_login.execute_script("arguments[0].click();", makepayment)
+
+        time.sleep(5)
+
+        # Switch to the iframe containing the Razorpay modal
+        razorpay_iframe = WebDriverWait(con_login, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "razorpay-checkout-frame"))
+        )
+        con_login.switch_to.frame(razorpay_iframe)
+        print("Switched to Razorpay iframe")
+
+        # Select bank option (e.g., State Bank of India)
+        bank_option = WebDriverWait(con_login, 20).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//span[contains(@class, 'font-medium text-on-surface') and text()='State Bank of India']")
             )
         )
-        con_login.execute_script("arguments[0].scrollIntoView(true);", makepayment)
-        con_login.execute_script("arguments[0].click();", makepayment)
-        WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
-            )
-        ).click()
+        con_login.execute_script("arguments[0].click();", bank_option)
+        print("Selected bank option")
 
-        time.sleep(1)
 
-        WebDriverWait(con_login, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//p[contains(text(),'SBI')]"))
-        ).click()
-
-        WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class,'ptm-emi-overlay')]//div[contains(@class,'')]//div[@id='checkout-button']//button[contains(@class,'ptm-nav-selectable')][contains(text(),'Pay ₹175')]",
-                )
-            )
-        ).click()
-
-        # Handle the popup window
-        # Save the current window handle
         main_window_handle = con_login.current_window_handle
-
-        # Wait until the new window is present
         WebDriverWait(con_login, 10).until(EC.new_window_is_opened)
-
-        # Get all window handles
         all_window_handles = con_login.window_handles
 
-        # Find the new window handle (the popup window)
         new_window_handle = None
         for handle in all_window_handles:
             if handle != main_window_handle:
                 new_window_handle = handle
                 break
 
-        # Switch to the new window
-        con_login.switch_to.window(new_window_handle)
+        if new_window_handle:
+            con_login.switch_to.window(new_window_handle)
 
-        # Now interact with elements in the new window
-        # For example, clicking the success button
-        time.sleep(3)
-        WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[@class='btn btnd']"))
-        ).click()
+            time.sleep(3)
+            WebDriverWait(con_login, 10).until(
+                EC.presence_of_element_located((By.XPATH, "//button[@data-val='S' and contains(@class, 'success')]"))
+            ).click()
 
-        # Optionally, switch back to the main window
-
-        con_login.switch_to.window(main_window_handle)
-        # time.sleep(15)
+            con_login.switch_to.window(main_window_handle)
+        
+        print("success")
+        time.sleep(5)
 
         try:
-            snack_bar = WebDriverWait(con_login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
+                snack_bar = WebDriverWait(con_login, 10).until(
+                    EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+                )
+                message = snack_bar.text
+                print("Snack bar message:", message)
         except:
+                snack_bar = WebDriverWait(con_login, 10).until(
+                    EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+                )
+                message = snack_bar.text
+                print("Snack bar message:", message)
 
-            snack_bar = WebDriverWait(con_login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
 
         time.sleep(3)
-        # confirm_button = WebDriverWait(con_login, 10).until(
+        ok_button = WebDriverWait(con_login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "(//button[normalize-space()='Ok'])[1]")
+                )
+            )
+        con_login.execute_script("arguments[0].click();", ok_button)
+
+        # try:
+        #     snack_bar = WebDriverWait(con_login, 10).until(
+        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        #     )
+        #     message = snack_bar.text
+        #     print("Snack bar message:", message)
+
+        # except:
+
+        #     snack_bar = WebDriverWait(con_login, 10).until(
+        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        #     )
+        #     message = snack_bar.text
+        #     print("Snack bar message:", message)
+
+        # time.sleep(3)
+        # # confirm_button = WebDriverWait(con_login, 10).until(
+        # #     EC.presence_of_element_located(
+        # #         (By.XPATH, "//span[contains(text(),'Confirm')]")
+        # #     )
+        # # )
+        # # con_login.execute_script("arguments[0].click();", confirm_button)
+        # # time.sleep(3)
+
+        # ok_button = WebDriverWait(con_login, 10).until(
         #     EC.presence_of_element_located(
-        #         (By.XPATH, "//span[contains(text(),'Confirm')]")
+        #         (By.XPATH, "//button[normalize-space()='Ok']")
         #     )
         # )
-        # con_login.execute_script("arguments[0].click();", confirm_button)
-        # time.sleep(3)
 
-        ok_button = WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Ok']")
-            )
-        )
-
-        con_login.execute_script("arguments[0].click();", ok_button)
+        # con_login.execute_script("arguments[0].click();", ok_button)
         con_login.quit()
-        time.sleep(3)
+        time.sleep(5)
         
-        #Provider Login#
-
-        login_data = {'username': '5555556030', 'password': 'Jaldee01'}
-        pro_driver = webdriver.Chrome(
-            service=ChromeService(executable_path="Drivers/chromedriver-win64/chromedriver.exe")
-        )
-
+         # Provider Login
+        pro_driver = webdriver.Chrome()
         pro_driver.get("https://scale.jaldee.com/business/")
-        pro_driver.maximize_window()
-        pro_driver.find_element(By.ID, "loginId").send_keys(login_data['username'])
-        pro_driver.find_element(By.ID, "password").send_keys(login_data['password'])
-        pro_driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
+        login_id = pro_driver.find_element(By.XPATH, "//input[@id='loginId']")
+        login_id.clear()
+        login_id.send_keys("5555556030")
 
+        password = pro_driver.find_element(By.XPATH, "//input[@id='password']")
+        password.clear()
+        password.send_keys("Jaldee01")
+
+        pro_driver.find_element(By.XPATH, "//button[@type='submit']").click()
         time.sleep(3)
         WebDriverWait(pro_driver, 20).until(
             EC.element_to_be_clickable(
@@ -910,8 +923,8 @@ def test_prepaymentbooking_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule for 180day")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def  test_reschedule_180day(login):
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+def test_reschedule_180day(login):
     try:
         time.sleep(5)
         WebDriverWait(login, 20).until(
@@ -1206,7 +1219,7 @@ def  test_reschedule_180day(login):
   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer reschedule it next month")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/visionhospital/"])
 def test_nextmonth_reschedule(con_login): 
     try:
 
@@ -1350,7 +1363,7 @@ def test_nextmonth_reschedule(con_login):
         con_login.execute_script("arguments[0].click();", ok_button)
 
         time.sleep(3)
-        bookings = WebDriverWait(login, 10).until(
+        bookings = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[contains(text(),'My Bookings')]")
             )
@@ -1389,7 +1402,7 @@ def test_nextmonth_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule form History")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def  test_reschedule_history(login):
 
     try:

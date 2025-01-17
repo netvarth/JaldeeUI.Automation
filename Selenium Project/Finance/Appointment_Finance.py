@@ -158,7 +158,7 @@ def test_appointment_autoinvoice(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice paybycash for Walkin Appointment and Settled Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appointment_paybycash(login):
     try:
         time.sleep(5)
@@ -310,7 +310,7 @@ def test_appointment_paybycash(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice paybyothers for Walkin Appointment and Cancelled Invoice")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appointment_paybyothers(login):
     try:
         time.sleep(5)
@@ -467,7 +467,7 @@ def test_appointment_paybyothers(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice sharepdf for Walkin Appointment")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
 def test_appointment_sharepdf(login):
     try:
         time.sleep(5)

@@ -364,7 +364,14 @@ def test_create_patient(login):
         )
         View_Detail_button.click()
 
-
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
 
    #### ################################################################################################################################
 

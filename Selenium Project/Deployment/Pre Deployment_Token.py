@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_walkin_token(login):
     try:
         time.sleep(5)
@@ -188,27 +188,28 @@ def test_walkin_token(login):
 
         while True:
             try:
+                
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                        )
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                     )
                 )
 
-                next_button.click()
+                
+                if next_button.is_enabled():
+                   
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                  
+                    break
 
-            except:
+            except Exception as e:
+                
                 break
 
+        time.sleep(1)
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-                )
-            )
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
 
@@ -476,7 +477,7 @@ def test_walkin_token(login):
         pyautogui.write(absolute_path)
         pyautogui.press("enter")
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
         ).click()
@@ -1327,7 +1328,7 @@ def test_walkin_token(login):
 
         time.sleep(5)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Update']"))
         ).click()
 
         time.sleep(5)

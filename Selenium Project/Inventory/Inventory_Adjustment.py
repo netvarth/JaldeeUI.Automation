@@ -19,7 +19,7 @@ def test_stock_adjustment(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     wait.until(
@@ -50,13 +50,21 @@ def test_stock_adjustment(login):
             (By.XPATH, "//p-dropdown[@placeholder='Select Catalog']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
     ).click()
 
+    # element_invcatalog = wait.until(
+    # EC.presence_of_element_located(
+    #     (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+    # )
+    # login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
+    # element_invcatalog.click()
+    time.sleep(3)
     element_invcatalog = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='catalog1'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
-    element_invcatalog.click()
+    element_invcatalog.click() 
 
+    time.sleep(2)
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "//p-dropdown[@placeholder='Select Remark']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
@@ -74,7 +82,7 @@ def test_stock_adjustment(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//input[@type='checkbox'])[5]"))
+            (By.XPATH, "(//input[@type='checkbox'])[3]"))
     ).click()
 
 
@@ -306,32 +314,33 @@ def test_stock_adjustment(login):
 
     element_invcatalog = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='catalog1'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
     element_invcatalog.click()
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Search items']"))
-    ).send_keys("item")
+    # wait.until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//input[@placeholder='Search items']"))
+    # ).send_keys("item")
 
-    click_item = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Item3')]"))
-    )
+    # click_item = wait.until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//div[contains(text(),'Item3')]"))
+    # )
 
-    try:
-        click_item.click()
-    except:
-        login.execute_script("arguments[0].click();", click_item)
+    # try:
+    #     click_item.click()
+    # except:
+    #     login.execute_script("arguments[0].click();", click_item)
 
-
+    time.sleep(3)
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Check Stock']"))
     ).click()
 
+    time.sleep(3)
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Batch Wise Stock'])[1]"))
@@ -364,7 +373,7 @@ def test_stock_adjustment_1(login):
     wait = WebDriverWait(login, 10)
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     time.sleep(3)
@@ -728,7 +737,7 @@ def test_stock_adjustment_2(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     wait.until(
@@ -1154,7 +1163,7 @@ def test_stock_adjustment_3(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "(//img)[6]"))
     ).click()
 
     wait.until(

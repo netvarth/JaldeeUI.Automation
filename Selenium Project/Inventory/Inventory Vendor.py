@@ -26,7 +26,7 @@ def test_vendor_creation(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+                (By.XPATH, "(//img)[6]"))
         ).click()
 
         time.sleep(2)
@@ -56,6 +56,44 @@ def test_vendor_creation(login):
         ).send_keys(vendor_id)
 
         print("Vendor_ID : ", vendor_id)
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='ownerName']"))
+        ).send_keys(first_name)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='phone']"))
+        ).send_keys(phonenumber)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='email']"))
+        ).send_keys(email)
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='mdc-button__label'])[1]"))
+        ).click()
+
+        try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
 
     except Exception as e:
         allure.attach(  

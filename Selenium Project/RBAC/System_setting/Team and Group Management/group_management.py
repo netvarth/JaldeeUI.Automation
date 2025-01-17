@@ -117,7 +117,7 @@ def test_create_patient_group_checked(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[4]//a[1]//div[1]//span[1]//span[1]//img[1]")
+            (By.XPATH, "//li[5]//a[1]//div[1]//span[1]//span[1]//img[1]")
         ) 
     ).click() 
 

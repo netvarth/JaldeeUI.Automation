@@ -12,7 +12,7 @@ from Framework.common_utils import *
 
 def test_update_notification_checked(login):
 
-    time.sleep(3)
+    time.sleep(5)
     wait = WebDriverWait(login, 30)
 
     wait.until(

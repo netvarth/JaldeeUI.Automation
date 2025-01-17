@@ -1,4 +1,4 @@
-from xml.etree.ElementPath import xpath_tokenizer
+# from xml.etree.ElementPath import xpath_tokenizer
 from Framework.common_utils import *
 import allure
 from allure_commons.types import AttachmentType
@@ -7,7 +7,7 @@ import os
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription Sharing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_Prescription(login):
     try:
         time.sleep(5)
@@ -36,19 +36,19 @@ def test_Prescription(login):
                 (By.XPATH, "//b[contains(text(),'Create New Patient')]")
             )
         )
-        element_appoint.click()
+        element_appoint.click() 
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-        # File pat
-        file_path = r"C:\Users\Archana\PycharmProjects\JaldeeUI.Automation\Selenium Project\Data\number.txt"
+        # # File pat
+        # file_path = r"F:\UI Automation\JaldeeUI.Automation\Selenium Project\Data"
 
-        # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
-        print("value to be written to file", phonenumber)
-        with open(file_path, "w") as file:
-            # Write the value to the file
-            file.write(phonenumber)
-        print("value written to file", phonenumber)
-        print("value written to file", phonenumber)
+        # # Open the file in 'w' mode (create the file if it doesn't exist, overwrite it if it does)
+        # print("value to be written to file", phonenumber)
+        # with open(file_path, "w") as file:
+        #     # Write the value to the file
+        #     file.write(phonenumber)
+        # print("value written to file", phonenumber)
+        # print("value written to file", phonenumber)
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
             str(first_name)
         )
@@ -98,12 +98,10 @@ def test_Prescription(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        service_option_xpath = (
-            "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-            "Consultation'])[2]"
-        )
+        service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
+
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, service_option_xpath))
+            EC.presence_of_element_located((By.XPATH, service_option_xpath))
         ).click()
         print("Select Service : Naveen Consultation")
         time.sleep(3)
@@ -342,7 +340,7 @@ def test_Prescription(login):
 ####################################################### uplaod prescription #####################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription upload Sharing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_Prescription_1(login):
 
     try:
@@ -364,7 +362,7 @@ def test_Prescription_1(login):
                 )
             )
         )
-        element.click()
+        login.execute_script("arguments[0].click();", element)
         time.sleep(3)
         wait = WebDriverWait(login, 10)
         element_appoint = wait.until(
@@ -433,12 +431,10 @@ def test_Prescription_1(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        service_option_xpath = (
-            "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-            "Consultation'])[2]"
-        )
+        service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
+
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, service_option_xpath))
+            EC.presence_of_element_located((By.XPATH, service_option_xpath))
         ).click()
         print("Select Service : Naveen Consultation")
         time.sleep(3)
@@ -562,12 +558,23 @@ def test_Prescription_1(login):
             )
         ).click()
 
+        time.sleep(3)
+        dropdown_element= WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//mat-select[@aria-haspopup='listbox']"))
+        )
+        dropdown_element.click()
+        
+        time.sleep(3)
+        element3 = login.find_element(By.XPATH, "//span[@class='mdc-list-item__primary-text']//div[contains(text(),'Naveen KP')]")
+        login.execute_script("arguments[0].click();", element3)
+
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Upload Prescription']")
             )
         ).click()
 
+        time.sleep(2)
         login.find_element(By.XPATH, "//a[normalize-space()='Upload']").click()
 
         time.sleep(2)
@@ -583,29 +590,12 @@ def test_Prescription_1(login):
 
         time.sleep(2)
         login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-
-        dropdown_locator_xpath = "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/span[1]/mat-select[1]"
-        dropdown_element = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath))
-        )
-
-        # Click on the dropdown to open options
-        dropdown_element.click()
-
-        # Wait for the option to be clickable
-        option_locator_xpath = "//div[normalize-space()='Naveen KP']"
-        option_element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, option_locator_xpath))
-        )
-
-        # Click on the desired option
-        option_element.click()
-
-        login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
+  
         time.sleep(5)
         print("prescription created successfully")
-
-        login.find_element(By.XPATH, "//img[@alt='share']").click()
+        
+        time.sleep(2)
+        login.find_element(By.XPATH, "(//img[@alt='share'])[1]").click()
 
         time.sleep(2)
         login.find_element(
@@ -630,7 +620,7 @@ def test_Prescription_1(login):
 ############################################## Prescription Using Template #########################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription using Template")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_Prescription_2(login):
 
     try:
@@ -645,10 +635,10 @@ def test_Prescription_2(login):
         ).click()
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
+            EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                    "//span[normalize-space()='Appointment']",
                 )
             )
         )
@@ -721,12 +711,11 @@ def test_Prescription_2(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        service_option_xpath = (
-            "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-            "Consultation'])[2]"
-        )
+        service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
+
+
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, service_option_xpath))
+            EC.presence_of_element_located((By.XPATH, service_option_xpath))
         ).click()
         print("Select Service : Naveen Consultation")
         time.sleep(3)
@@ -852,22 +841,16 @@ def test_Prescription_2(login):
             "//div[@class='temp ng-star-inserted']//div[1]//div[1]//div[2]//div[1]//button[1]",
         ).click()
 
-        dropdown_locator_xpath = "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/div[1]/div[1]/app-provider-appointment-detail[1]/div[1]/div[1]/div[1]/div[1]/app-booking-details[1]/div[2]/app-customer-record[1]/div[1]/div[2]/div[1]/app-prescriptions[1]/div[1]/div[1]/div[2]/div[1]/app-create[1]/div[1]/div[3]/div[1]/span[1]/mat-select[1]"
-        dropdown_element = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, dropdown_locator_xpath))
+        dropdown_element= WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//mat-select[@aria-haspopup='listbox']"))
         )
-
-        # Click on the dropdown to open options
         dropdown_element.click()
+        
+        time.sleep(3)
+        element3 = login.find_element(By.XPATH, "//span[@class='mdc-list-item__primary-text']//div[contains(text(),'Naveen KP')]")
+        login.execute_script("arguments[0].click();", element3)
 
-        # Wait for the option to be clickable
-        option_locator_xpath = "//div[normalize-space()='Naveen KP']"
-        option_element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, option_locator_xpath))
-        )
-
-        # Click on the desired option
-        option_element.click()
+        time.sleep(3)
 
         login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
         time.sleep(5)
@@ -937,7 +920,7 @@ def test_Prescription_2(login):
   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Complete Order")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_Prescription_3(login):
 
     try:
@@ -952,11 +935,8 @@ def test_Prescription_3(login):
         ).click()
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
-                )
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Appointment']",)
             )
         )
         element.click()
@@ -1012,6 +992,7 @@ def test_Prescription_3(login):
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
         ).click()
 
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Naveen KP']"))
@@ -1024,13 +1005,38 @@ def test_Prescription_3(login):
         ).click()
 
         time.sleep(5)
-        scroll = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='p-paginator-current ng-star-inserted']"))
-        )
-        login.execute_script("arguments[0].scrollIntoView();", scroll)
+        # scroll = wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[@class='p-paginator-current ng-star-inserted']"))
+        # )
+        # login.execute_script("arguments[0].scrollIntoView();", scroll)
 
-        
+        while True:
+            try:
+                
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                    )
+                )
+
+                
+                if next_button.is_enabled():
+                   
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                  
+                    break
+
+            except Exception as e:
+                
+                break
+
+        time.sleep(1)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        )
+        last_element_in_accordian.click()
              
         
 
@@ -1041,7 +1047,6 @@ def test_Prescription_3(login):
                 (By.XPATH, "//button[contains(text(), 'View Details')]")
             )
         )
-        View_Detail_button.click()
         login.execute_script("arguments[0].click();", View_Detail_button)
         time.sleep(3)
 
@@ -1096,7 +1101,7 @@ def test_Prescription_3(login):
                 )
 
                 # Find the duration input field inside the current row and send the value
-                duration = row.find_element(By.XPATH, ".//td[2]/input[@type='number']")  # Adjust if necessary
+                duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")  # Adjust if necessary
                 duration.clear()
                 duration.send_keys("5")  # Send the duration value
 
@@ -1115,7 +1120,7 @@ def test_Prescription_3(login):
                 time.sleep(1)  # Pause before interacting with the quantity field
 
                 # Optionally, send remarks (e.g., "After food")
-                row.find_element(By.XPATH, ".//td[5]").click()
+                row.find_element(By.XPATH, ".//td[6]").click()
                 remarks = row.find_element(By.XPATH, ".//textarea")  # Adjust if necessary
                 remarks.clear()
                 remarks.send_keys("After food")
@@ -1158,7 +1163,7 @@ def test_Prescription_3(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[5]/a[1]/div[1]/span[1]/span[1]/img[1]"))
+                (By.XPATH, "(//img)[5]"))
         ).click()
 
         time.sleep(2)
@@ -1343,7 +1348,7 @@ def test_Prescription_3(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Decline Order")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
 def test_Prescription_4(login):
 
     try:
@@ -1361,7 +1366,7 @@ def test_Prescription_4(login):
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                    "//span[normalize-space()='Appointment']",
                 )
             )
         )
@@ -1376,7 +1381,7 @@ def test_Prescription_4(login):
         element_appoint.click()
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-    
+        time.sleep(3)
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
             str(first_name)
         )
@@ -1530,7 +1535,7 @@ def test_Prescription_4(login):
                 )
 
                 # Find the duration input field inside the current row and send the value
-                duration = row.find_element(By.XPATH, ".//td[2]/input[@type='number']")  # Adjust if necessary
+                duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")  # Adjust if necessary
                 duration.clear()
                 duration.send_keys("5")  # Send the duration value
 
@@ -1549,7 +1554,7 @@ def test_Prescription_4(login):
                 time.sleep(1)  # Pause before interacting with the quantity field
 
                 # Optionally, send remarks (e.g., "After food")
-                row.find_element(By.XPATH, ".//td[5]").click()
+                row.find_element(By.XPATH, ".//td[6]").click()
                 remarks = row.find_element(By.XPATH, ".//textarea")  # Adjust if necessary
                 remarks.clear()
                 remarks.send_keys("After food")
@@ -1592,15 +1597,16 @@ def test_Prescription_4(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[5]/a[1]/div[1]/span[1]/span[1]/img[1]"))
+                (By.XPATH, "(//img)[5]"))
         ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-valid']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
         ).click()
 
+        time.sleep(2)
         stores = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Geetha']"))
@@ -1707,7 +1713,7 @@ def test_Prescription_5(login):
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                    "//span[normalize-space()='Appointment']",
                 )
             )
         )
@@ -1722,7 +1728,7 @@ def test_Prescription_5(login):
         element_appoint.click()
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-    
+        time.sleep(3)
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
             str(first_name)
         )
@@ -1876,7 +1882,7 @@ def test_Prescription_5(login):
                 )
 
                 # Find the duration input field inside the current row and send the value
-                duration = row.find_element(By.XPATH, ".//td[2]/input[@type='number']")  # Adjust if necessary
+                duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")  # Adjust if necessary
                 duration.clear()
                 duration.send_keys("5")  # Send the duration value
 
@@ -1895,7 +1901,7 @@ def test_Prescription_5(login):
                 time.sleep(1)  # Pause before interacting with the quantity field
 
                 # Optionally, send remarks (e.g., "After food")
-                row.find_element(By.XPATH, ".//td[5]").click()
+                row.find_element(By.XPATH, ".//td[6]").click()
                 remarks = row.find_element(By.XPATH, ".//textarea")  # Adjust if necessary
                 remarks.clear()
                 remarks.send_keys("After food")
@@ -1938,13 +1944,13 @@ def test_Prescription_5(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[5]/a[1]/div[1]/span[1]/span[1]/img[1]"))
+                (By.XPATH, "//li[4]//a[1]//div[1]//span[1]//span[1]//img[1]"))
         ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-valid']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
         ).click()
 
         stores = wait.until(
