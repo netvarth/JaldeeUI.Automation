@@ -1122,7 +1122,7 @@ def test_walkin_appointment(login):
                 (
                     By.XPATH,
                     "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today']",
-                )
+                )                   mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today
             )
         )
         time.sleep(2)
