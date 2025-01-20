@@ -877,7 +877,7 @@ def test_account_signup():
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment testing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_walkin_appointment(login): 
 
     current_date = datetime.now().strftime("%Y-%m-%d")

@@ -134,7 +134,7 @@ def test_booking(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-        ).send_keys("5550002254")
+        ).send_keys("9207206005")
         # WebDriverWait(login, 10).until(
         #     EC.presence_of_element_located(
         #        (By.XPATH, "//a[normalize-space()='My Bookings']")
@@ -147,8 +147,8 @@ def test_booking(login):
 
         time.sleep(5)
 
-        # otp_digits = "5555"
-        otp_digits = "55555"
+        otp_digits = "5555"
+        # otp_digits = "55555"
         # Wait for the OTP input fields to be present
         otp_inputs = WebDriverWait(login, 10).until(
             EC.presence_of_all_elements_located(

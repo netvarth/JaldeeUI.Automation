@@ -40,6 +40,13 @@ test_mail = ".test@jaldee.com"
 consumer_url = "https://scale.jaldee.com/visionhospital/"
 test_consumer_url = "https://test.jaldee.com/53b6eu1/"
 
+sales_officer = "001920"
+credit_head = "001921"
+branch_manager = "001922"
+password = "Jaldee01"
+main_scale = "5555556030"
+main_prod = "5550005540"
+
 
 def create_user_data():
     fake = Faker()
@@ -59,7 +66,7 @@ def create_user_data():
 
 
 @pytest.fixture()
-def login(url):
+def login(url, username, password):
 
     driver = webdriver.Chrome(
         service=ChromeService(
@@ -81,8 +88,8 @@ def login(url):
     # driver.find_element(By.ID, "loginId").send_keys("001919")    #Scale LOS business head
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
 
-    driver.find_element(By.ID, "loginId").send_keys("001920")    #Scale LOS sales officer
-    driver.find_element(By.ID, "password").send_keys("Jaldee01")
+    driver.find_element(By.ID, "loginId").send_keys(username)    #Scale LOS sales officer
+    driver.find_element(By.ID, "password").send_keys(password)
 
     # driver.find_element(By.ID, "loginId").send_keys("001921")    Scale LOS Credit head
     # driver.find_element(By.ID, "password").send_keys("Jaldee01")
