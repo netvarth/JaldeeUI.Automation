@@ -21,7 +21,8 @@ def login():
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )   
     )
-    driver.get("https://scale.jaldee.com/visionhospital/")
+    # driver.get("https://scale.jaldee.com/visionhospital/")
+    driver.get("https://scale.jaldeetest.in/visionhospital/")
     driver.maximize_window()
     yield driver
     driver.quit()  # Ensure the browser is closed properly

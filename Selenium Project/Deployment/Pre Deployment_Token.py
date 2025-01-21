@@ -5,8 +5,9 @@ from Framework.common_utils import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Token Pre deployment testing")
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_walkin_token(login):
     try:
         time.sleep(5)

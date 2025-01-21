@@ -720,6 +720,7 @@ def test_los_workflow(login):
         message = toast_message.text
         print("Toast Message:", message)
 
+        time.sleep(3)
         scroll1 = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[contains(text(),'Select Alternate Id')])[2]"))
@@ -734,7 +735,7 @@ def test_los_workflow(login):
                 (By.XPATH, "//span[normalize-space()='Select Alternate Id']"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
 
         wait.until(
           EC.presence_of_element_located(
@@ -793,6 +794,8 @@ def test_los_workflow(login):
                 (By.XPATH, "(//input[@formcontrolname='coApplicantPermanentCity'])[1]"))
         ).send_keys(city)
 
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Select Permanent State'])[1]"))
@@ -849,16 +852,6 @@ def test_los_workflow(login):
 def test_kyc_verification(login):
     
     try:
-        # print("Login with Credit Manager")
-        # login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
-        # login_id.clear()
-        # login_id.send_keys("001921")
-
-        # password = login.find_element(By.XPATH, "//input[@id='password']")
-        # password.clear()
-        # password.send_keys("Jaldee01")
-
-        # login.find_element(By.XPATH, "//button[@type='submit']").click()
 
         time.sleep(3)
         wait = WebDriverWait(login, 20)
@@ -887,7 +880,7 @@ def test_kyc_verification(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Proceed'])[1]"))
+                (By.XPATH, "(//button[normalize-space()='Verify'])[1]"))
         ).click()
 
         toast_message = WebDriverWait(login, 10).until(
@@ -992,6 +985,7 @@ def test_kyc_verification(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
+        time.sleep(2)
         pyautogui.press("enter")
         print("Successfully upload the file")
 
@@ -1010,6 +1004,7 @@ def test_kyc_verification(login):
             os.path.join(current_working_directory, r"Extras\ test10mbvideo.mp4")
         )
         pyautogui.write(absolute_path)
+        time.sleep(2)
         pyautogui.press("enter")
         print("Successfully upload the file")
 
@@ -1032,67 +1027,523 @@ def test_kyc_verification(login):
         print("Toast Message:", message)
 
         time.sleep(3)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//i[@class='pi pi-sign-in'])[1]"))
-        # ).click()
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-sign-in'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+        ).click()
+         
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+############################   Processing File Loan Application  #######################
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Update'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@data-bs-target='#flush-collapseFinancials'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ prescription.pdf")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[2]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ prescription.pdf")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[3]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[4]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ prescription.pdf")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[5]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[6]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ prescription.pdf")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[7]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save Financial Documents'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        time.sleep(3)  
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@data-bs-target='#flush-collapseLegal'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[8]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[9]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[10]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[11]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[12]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[13]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter") 
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[14]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[15]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[16]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[17]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[18]"))
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\ test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save Legal Documents'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        time.sleep(5)
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Sales officer report")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_officer, password)])
+def test_sales_officer_report(login):
+
+    try:
+        
+        time.sleep(3)
+        wait = WebDriverWait(login, 20)
+        print("Sales Officer report")
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[normalize-space()='Processing Files'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@aria-controls='flush-collapseParent'])[1]"))        
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@aria-controls='flush-collapseOne'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
+        ).click()
+
+        
+
+
+
+
+
+
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+
+
+        # # Get the current working directory
+        # current_working_directory = os.getcwd()
+
+        # # Construct the absolute path
+        # absolute_path = os.path.abspath(
+        #     os.path.join(current_working_directory, r"Extras\ test.png")
+        # )
+        # pyautogui.write(absolute_path)
+        # time.sleep(2)
+        # pyautogui.press("enter")
+        # print("Successfully upload the file")
+
 
         # time.sleep(2)
         # wait.until(
         #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
-        # ).click()
-         
+        #         (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[2]"))
+        # ).click()  
 
-        # toast_message = WebDriverWait(login, 10).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # time.sleep(3)
+        # # Get the current working directory
+        # current_working_directory = os.getcwd()
+
+        # # Construct the absolute path
+        # absolute_path = os.path.abspath(
+        #     os.path.join(current_working_directory, r"Extras\ test.png")
         # )
-        # message = toast_message.text
-        # print("Toast Message:", message)
-
-
-        # # time.sleep(2)
-        # # wait.until(
-        # #     EC.presence_of_element_located(
-        # #         (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
-        # # ).click()
-
-        # # time.sleep(2)   
-        # # wait.until(
-        # #     EC.presence_of_element_located(
-        # #         (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[1]"))
-        # # ).click()
-
-        # # time.sleep(5)
-        # # # Get the current working directory
-        # # current_working_directory = os.getcwd()
-
-        # # # Construct the absolute path
-        # # absolute_path = os.path.abspath(
-        # #     os.path.join(current_working_directory, r"Extras\ test.png")
-        # # )
-        # # pyautogui.write(absolute_path)
-        # # pyautogui.press("enter")
-        # # print("Successfully upload the file")
-
-
-        # # time.sleep(2)
-        # # wait.until(
-        # #     EC.presence_of_element_located(
-        # #         (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[2]"))
-        # # ).click()  
-
-        # # time.sleep(3)
-        # # # Get the current working directory
-        # # current_working_directory = os.getcwd()
-
-        # # # Construct the absolute path
-        # # absolute_path = os.path.abspath(
-        # #     os.path.join(current_working_directory, r"Extras\ test.png")
-        # # )
-        # # pyautogui.write(absolute_path)
-        # # pyautogui.press("enter")
-        # # print("Successfully upload the file")  
+        # pyautogui.write(absolute_path)
+        # pyautogui.press("enter")
+        # print("Successfully upload the file")  
 
         # # time.sleep(2)
         # # wait.until(
