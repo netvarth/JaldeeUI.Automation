@@ -1488,9 +1488,350 @@ def test_sales_officer_report(login):
 
         time.sleep(2)
 
+        ####################Income####################
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Income')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Business Income'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("120000")
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Income')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Rental Income'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("12000")
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Income')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Salary Income'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("45000")
+
+        time.sleep(2)
+
+        ##################Expenses####################
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Expense')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Electricity Expense'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("2000")
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Expense')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Salary Expense'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("3000")
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Expense')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Family Expense'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("18000")
+
+        time.sleep(2)
+
+
+        ##################COMMITMENTS####################
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Commitment')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='EMI'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("8000")
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Commitment')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Chitty'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("3000")
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Commitment')]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Insurance'])[1]"))
+        ).click()
+
+        Enter_value = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+        )
+        Enter_value.clear()
+        Enter_value.send_keys("24000")
+
+        time.sleep(2)
+
+        unaccount_income = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Unaccounted Income'])[1]"))
+        )
+        unaccount_income.clear()
+        unaccount_income.send_keys("2500")
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter FOIR Percentage'])[1]"))
         ).click()
 
         

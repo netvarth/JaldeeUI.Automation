@@ -9,11 +9,11 @@ from datetime import datetime
  
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to a later time in the same day")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_appt_reschedule_sameday(login):
     try:
         time.sleep(5)
-        WebDriverWait(login, 20).until(
+        WebDriverWait(login, 20).until( 
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
@@ -265,7 +265,7 @@ def test_appt_reschedule_sameday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to another day")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def  test_reschedule_anotherday(login):
 
     try:
@@ -540,7 +540,7 @@ def  test_reschedule_anotherday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer take prepayment booking and Provider reschedule it")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/visionhospital/"])
 def test_prepaymentbooking_reschedule(con_login):
     try:
 
@@ -923,7 +923,7 @@ def test_prepaymentbooking_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule for 180day")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_reschedule_180day(login):
     try:
         time.sleep(5)
@@ -1151,7 +1151,7 @@ def test_reschedule_180day(login):
         print(month)
         print(day)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'p-datepicker-year') and contains(@class, 'p-link') and normalize-space()='2024']"))
+            EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'p-datepicker-year') and contains(@class, 'p-link') and normalize-space()='2025']"))
         ).click()
         year_xpath = f"//span[normalize-space()='{year}']"
         WebDriverWait(login, 10).until(
@@ -1165,9 +1165,7 @@ def test_reschedule_180day(login):
         ).click()
         print(month_xpath)
         time.sleep(2)
-        day_xpath = (
-            f"//span[contains(@class, 'example-custom-date-class') and normalize-space()='{day}']"
-        )
+        day_xpath = f"//span[contains(@class, 'example-custom-date-class') and normalize-space()='{day}']"
         print(day_xpath)
         
         time.sleep(2)
@@ -1402,7 +1400,7 @@ def test_nextmonth_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule form History")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def  test_reschedule_history(login):
 
     try:

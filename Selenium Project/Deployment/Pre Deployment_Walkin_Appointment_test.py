@@ -25,7 +25,7 @@ def test_account_signup():
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    login.get("https://scale.jaldeetest.in/business/")
+    login.get("https://scale.jaldee.com/business/")
     login.maximize_window()
 
     time.sleep(3)
@@ -36,6 +36,7 @@ def test_account_signup():
     time.sleep(3)
     first_name, last_name, cons_manual_id, phonenumber1, email = create_user_data()
     login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber1)
+    print(phonenumber1)
     login.find_element(By.XPATH, "//input[@id='Firstname']").send_keys(str(first_name))
     login.find_element(By.XPATH, "//input[@id='Lastname']").send_keys(str(last_name))
 
