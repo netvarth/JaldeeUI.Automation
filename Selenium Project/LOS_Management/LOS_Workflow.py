@@ -1,4 +1,5 @@
 
+from ast import arguments
 import pyautogui
 import random
 from pathlib import Path
@@ -8,7 +9,7 @@ from Framework.common_dates_utils import *
 from faker import Faker
 
 
-
+fake_india = Faker('en_IN')
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic LOS work flow")
@@ -24,6 +25,8 @@ def test_los_workflow(login):
                 (By.XPATH, "(//img)[3]"))
         )
         login.execute_script("arguments[0].click();", los_menu)
+
+#####################################  Create Lead  ############################################
 
         time.sleep(2)
         wait.until(
@@ -148,7 +151,7 @@ def test_los_workflow(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//input[@placeholder='Enter Proposed Amount']"))
+                (By.XPATH, "//input[@formcontrolname='proposedAmount']"))
         ).send_keys(random_amount)
 
         time.sleep(3)
@@ -171,7 +174,7 @@ def test_los_workflow(login):
 
 
 
-        ####################################################
+        ########################################  Lead  ############################################
         time.sleep(2)
 
         WebDriverWait(login, 10).until(
@@ -438,7 +441,7 @@ def test_los_workflow(login):
 
         time.sleep(2)
 
-        fake_india = Faker('en_IN')
+        # fake_india = Faker('en_IN')
 
         fake_india_address = fake_india.address()
 
@@ -1385,43 +1388,7 @@ def test_kyc_verification(login):
 
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[17]"))
-        ).click()
-
-        time.sleep(3)
-        # Get the current working directory
-        current_working_directory = os.getcwd()
-
-        # Construct the absolute path
-        absolute_path = os.path.abspath(
-            os.path.join(current_working_directory, r"Extras\ test.png")
-        )
-        pyautogui.write(absolute_path)
-        time.sleep(2)
-        pyautogui.press("enter")
-
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[18]"))
-        ).click()
-
-        time.sleep(3)
-        # Get the current working directory
-        current_working_directory = os.getcwd()
-
-        # Construct the absolute path
-        absolute_path = os.path.abspath(
-            os.path.join(current_working_directory, r"Extras\ test.png")
-        )
-        pyautogui.write(absolute_path)
-        time.sleep(2)
-        pyautogui.press("enter")
-
-        time.sleep(3)
+                
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Save Legal Documents'])[1]"))
@@ -1484,11 +1451,19 @@ def test_sales_officer_report(login):
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@aria-controls='flush-collapseOne'])[1]"))
-        ).click()
+        ).click()   
 
         time.sleep(2)
 
         ####################Income####################
+        income = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[normalize-space()='I. INCOME'])[1]"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", income)
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Income')]"))
@@ -1552,14 +1527,15 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='Rental Income'])[1]"))
         ).click()
 
-        Enter_value = wait.until(
+        Enter_value_1 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[2]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("12000")
-
+        Enter_value_1.clear()
         time.sleep(2)
+        Enter_value_1.send_keys("12000")
+
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1588,17 +1564,24 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='Salary Income'])[1]"))
         ).click()
 
-        Enter_value = wait.until(
+        Enter_value_2 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[3]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("45000")
+        Enter_value_2.clear()
+        Enter_value_2.send_keys("45000")
 
         time.sleep(2)
 
         ##################Expenses####################
+        expense = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[normalize-space()='II. EXPENSE'])[1]"))
+        )
 
+        login.execute_script("arguments[0].scrollIntoView();", expense)
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Expense')]"))
@@ -1626,12 +1609,12 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='Electricity Expense'])[1]"))
         ).click()
 
-        Enter_value = wait.until(
+        Enter_value_3 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[4]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("2000")
+        Enter_value_3.clear()
+        Enter_value_3.send_keys("2000")
 
         time.sleep(2)
 
@@ -1662,12 +1645,12 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='Salary Expense'])[1]"))
         ).click()
 
-        Enter_value = wait.until(
+        Enter_value_4 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[5]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("3000")
+        Enter_value_4.clear()
+        Enter_value_4.send_keys("3000")
 
         time.sleep(2)
 
@@ -1698,19 +1681,25 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='Family Expense'])[1]"))
         ).click()
 
-        Enter_value = wait.until(
+        Enter_value_5 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[6]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("18000")
+        Enter_value_5.clear()
+        Enter_value_5.send_keys("18000")
 
         time.sleep(2)
 
 
         ##################COMMITMENTS####################
+        commitments = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[normalize-space()='III. COMMITMENTS (IF ANY - MONTHLY BASIS)'])[1]"))
+        )
 
+        login.execute_script("arguments[0].scrollIntoView();", commitments)
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Commitment')]"))
@@ -1738,12 +1727,12 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='EMI'])[1]"))
         ).click()
 
-        Enter_value = wait.until(
+        Enter_value_6 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[7]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("8000")
+        Enter_value_6.clear()
+        Enter_value_6.send_keys("8000")
 
         time.sleep(2)
 
@@ -1774,12 +1763,12 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='Chitty'])[1]"))
         ).click()
 
-        Enter_value = wait.until(
+        Enter_value_7 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[8]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("3000")
+        Enter_value_7.clear()
+        Enter_value_7.send_keys("3000")
 
         time.sleep(2)
 
@@ -1805,37 +1794,421 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
         ).click()
 
-        wait.until(
+        time.sleep(2)
+        insurance_option = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Insurance'])[1]"))
-        ).click()
-
-        Enter_value = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
         )
-        Enter_value.clear()
-        Enter_value.send_keys("24000")
+        login.execute_script("arguments[0].scrollIntoView();", insurance_option)
+        insurance_option.click()
+
+        Enter_value_8 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Value'])[9]"))
+        )
+        Enter_value_8.clear()
+        Enter_value_8.send_keys("24000")
 
         time.sleep(2)
 
-        unaccount_income = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Unaccounted Income'])[1]"))
-        )
-        unaccount_income.clear()
-        unaccount_income.send_keys("2500")
+        # unaccount_income = wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//input[@placeholder='Enter Unaccounted Income'])[1]"))
+        # )
+        # unaccount_income.clear()
+        # unaccount_income.send_keys("2500")
 
 
         time.sleep(2)
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter FOIR Percentage'])[1]"))
+                (By.XPATH, "(//i[@class='pi pi-plus'])[4]"))
         ).click()
 
-        
+        add_foir = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Applicant/CoApplicant'])[1]"))
+        )
+        add_foir.click()
 
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
+        ).click()
+
+
+        time.sleep(2)
+
+        per_foir = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter FOIR Percentage'])[1]"))
+        )
+        per_foir.clear()
+        per_foir.send_keys("30")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//textarea[@placeholder='Enter Remarks'])[1]"))
+        ).send_keys("There are two types of clauses: independent and non-independent/interdependent. An independent clause realises a speech act such as a statement, a question, a command or an offer. A non-independent clause does not realise any act. A non-independent clause (simplex or complex) is usually logically related to other non-independent clauses. Together, they usually constitute a single independent clause (complex). For that reason, non-independent clauses are also called interdependent. For instance, the non-")
+                           
+        time.sleep(4)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save Financials'])[1]"))
+        ).click()
+
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        time.sleep(3)
+
+
+        cash_flow_report = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Generate Cash Flow'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", cash_flow_report)
+        cash_flow_report.click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='fs-5 pi pi-times'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        legal_validation = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Legal Validation and Property Valuation'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", legal_validation)
+        
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@aria-controls='flush-collapseTwo'])[1]"))
+        ).click()
+        
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+
+        fake_india_address = fake_india.address()
+        print(fake_india_address)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter First Name'])[1]"))
+        ).send_keys(first_name)
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Last Name'])[1]"))
+        ).send_keys(last_name)
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Owner Address'])[1]"))
+        ).send_keys(fake_india_address)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Relation Type'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Father'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Nature of Property'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Agriculture Land'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='In Cent']"))
+        ).send_keys("32")
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Nature of deed'])[1]"))
+        ).send_keys("None")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Four Wheeler'])[1]"))
+        ).click()
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Road Width'])[1]"))
+        ).send_keys("4")
+
+#Land Details
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='District'])[1]"))
+        ).send_keys("Thrissur")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Sub Reg.Office'])[1]"))
+        ).send_keys("Kottapadi")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Taluk'])[1]"))
+        ).send_keys("chavakad")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Corporation/Municipality/Panchayath'])[1]"))
+        ).send_keys("Guruvayur")
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Village'])[1]"))
+        ).send_keys("Kottapadi")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Desham'])[1]"))
+        ).send_keys("Pokode")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Block No'])[1]"))
+        ).send_keys("3")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Survey No'])[1]"))
+        ).send_keys("302")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Area'])[1]"))
+        ).send_keys("kottapadi")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Classification'])[1]"))
+        ).send_keys("Agriculture")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Property Type'])[1]"))
+        ).click()
+
+        login.find_element(By.XPATH, "(//span[normalize-space()='Plot'])[1]").click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select property Usage'])[1]"))
+        ).click()
+
+        login.find_element(By.XPATH, "(//span[normalize-space()='Residential'])[1]").click()
+
+        login.find_element(By.XPATH, "(//input[@placeholder='Usage Restriction'])[1]").send_keys("None")   
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Neighborhood Type'])[1]"))
+        ).click()
+
+        login.find_element(By.XPATH, "(//span[normalize-space()='Not Specified'])[1]").click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Occupancy status'])[1]"))
+        ).click()
+        login.find_element(By.XPATH, "(//span[normalize-space()='Owner Occupied'])[1]").click()
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@type='radio'])[9]"))
+        ).click()
+
+#Description of the property 
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Property Level and Shape'])[1]"))
+        ).send_keys("square")
+
+        wait.until(
+           EC.presence_of_element_located(
+               (By.XPATH, "(//input[@placeholder='How the property was identified'])[1]")) 
+        ).send_keys("Agricultural Plot")
+
+#Doc No , Registration Date
+
+        doc_no = "doc_" + str(uuid.uuid4())[:4]
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Doc No'])[1]"))
+        ).send_keys(doc_no)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+        ).click()
+
+        login.find_element(By.XPATH, "//button[normalize-space()='2025']").click()
+
+        # Wait until the backward arrow is clickable before clicking it
+        backward_arrow = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[contains(@class, 'p-ripple') and contains(@class, 'p-element') and contains(@class, 'p-datepicker-prev') and contains(@class, 'p-link') and contains(@class, 'ng-star-inserted')]")
+            )
+        )
+
+       
+        for _ in range(2):
+            backward_arrow.click()
+
+        
+        [year, month, day] = Generate_dob()
+        print(f"Year: {year}, Month: {month}, Day: {day}")
+
+        # Select Year
+        year_xpath = f"//span[normalize-space()='{year}']"
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, year_xpath))
+        ).click()
+
+        # Select Month
+        month_xpath = f"//span[normalize-space()='{month}']"
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, month_xpath))
+        ).click()
+
+        # Select Day
+        day = str(int(day))  # Ensuring day is in integer form
+        day_xpath = f"//span[normalize-space()='{day}']"
+        select_day = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, day_xpath))
+        )
+        select_day.click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Load Bearing Structure'])[1]"))
+        ).send_keys("Bricks and stones")
+
+
+        wait.until(
+            EC.presence_of_element_located (
+                (By.XPATH, "(//input[@placeholder='Framed structure'])[1]"))
+        ).send_keys("Beam")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@type='radio'])[11]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@type='radio'])[13]"))
+        ).click()
+
+#Documents Produced For Verification
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'][normalize-space()='Select Title Deed Type'])[1]"))
+        ).click()
+
+        login.find_element(By.XPATH, "(//span[normalize-space()='Photo Copy'])[1]").click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'][normalize-space()='Select Title Deed Type'])[2]"))
+        ).click()
+        login.find_element(By.XPATH, "(//span[normalize-space()='Photo Copy'])[1]").click()
+
+        login.find_element(By.XPATH, "(//input[@type='radio'])[15]").click()
+        login.find_element(By.XPATH, "(//label[contains(text(),'Yes')])[11]").click()
+        login.find_element(By.XPATH, "(//input[@type='radio'])[23]").click()
+        login.find_element(By.XPATH, "(//input[@type='radio'])[25]").click()
+        login.find_element(By.XPATH, "(//input[@type='radio'])[15]").click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_0f_element_located(
+                (By.XPATH, "(//textarea[@placeholder='Enter Brief description about the derivation of the title of the Property / Remarks'])[1]"))
+        ).send_keys("Load-bearing structures are built with walls that support the weight of the building, while framed structures are built with a separate framework of beams, columns, and slabs")
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//textarea[@placeholder='Enter Any Other Observations'])[1]"))
+        ).send_keys("A sentence is typically associated with a clause. A clause can either be a clause simplex or a clause complex. A clause simplex represents a single process going on through time.")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//textarea[@placeholder='Enter Final Opinion'])[1]"))
+        ).send_keys("Approved")
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save Details'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Generate Legal Validation'])[1]"))
+        ).click()
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Generate Property Valuation'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        sales_info = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Business Profile Info'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", sales_info)
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@aria-controls='flush-collapseThree'])[1]"))
+        ).click()
 
 
 

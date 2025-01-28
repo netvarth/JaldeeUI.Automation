@@ -5,7 +5,7 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("After creatng appointment provider create invoice manually")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_appt_manualinvoice(login):
     time.sleep(5)
 

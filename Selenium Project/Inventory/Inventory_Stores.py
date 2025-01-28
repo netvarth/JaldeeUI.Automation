@@ -20,7 +20,7 @@ from selenium.common.exceptions import TimeoutException
 
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 @allure.title("Store Creation")
 def test_store_creation(login):
     try:
@@ -122,7 +122,7 @@ def test_store_creation(login):
         raise e  
     
 
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 @allure.title("Store Filter Location")
 def test_store_filter_location(login):
 
@@ -203,8 +203,7 @@ def test_store_filter_location(login):
         raise e 
     
 
-
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 @allure.title("Store Filter_Status")
 def test_store_filter_storestatus(login):
 

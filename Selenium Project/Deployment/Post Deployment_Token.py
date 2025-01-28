@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Post deployment Provider Token")
-@pytest.mark.parametrize('url', ["https://www.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [( prod_url, main_prod, password)])
 def test_create_patient(login):
 
     current_date = datetime.now().strftime("%d-%m-%Y")

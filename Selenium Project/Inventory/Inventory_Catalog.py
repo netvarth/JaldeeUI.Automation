@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_inventory_catalog(login):
     time.sleep(5)
     WebDriverWait(login, 10).until(
@@ -86,7 +86,7 @@ def test_inventory_catalog(login):
     time.sleep(5)
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_inventory_catalog_filter(login):
     time.sleep(5)
     wait = WebDriverWait(login, 20)
@@ -114,3 +114,4 @@ def test_inventory_catalog_filter(login):
             (By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
     ).click()
 
+ 

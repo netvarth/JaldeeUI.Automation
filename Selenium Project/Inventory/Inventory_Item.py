@@ -12,7 +12,7 @@ from selenium.common.exceptions import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Creating the item")
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_item_creation(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -146,7 +146,7 @@ def test_item_creation(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test for item filter item id ")
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_item_filter(login):
 
     time.sleep(3)
