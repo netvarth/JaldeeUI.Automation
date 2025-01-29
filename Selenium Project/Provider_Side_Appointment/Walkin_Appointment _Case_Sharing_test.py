@@ -6,7 +6,7 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Case Sharing")
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_without_prescription(login):
     try:
         time.sleep(5)
@@ -326,7 +326,7 @@ def test_without_prescription(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription in case Sharing")    
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_with_prescription(login):
     try:
         time.sleep(5)
@@ -745,7 +745,7 @@ def test_with_prescription(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Preview, Print, Download")   
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_Case_Status(login):  
         
     try:
@@ -1129,7 +1129,7 @@ def test_Case_Status(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Treatment plan in case Sharing")    
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_treatment_plan(login):
     try:
         time.sleep(5)

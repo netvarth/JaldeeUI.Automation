@@ -337,7 +337,7 @@ def test_Prescription(login):
         )
         raise e
 
-####################################################### uplaod prescription #####################################################
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription upload Sharing")
 @pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
@@ -617,7 +617,7 @@ def test_Prescription_1(login):
         )
         raise e
 
-############################################## Prescription Using Template #########################################
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription using Template")
 @pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
@@ -916,8 +916,7 @@ def test_Prescription_2(login):
         )
         raise e
 
-##############################################################################################################################################
-  
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Complete Order")
 @pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
@@ -1343,8 +1342,6 @@ def test_Prescription_3(login):
         )
         raise e
     
-####################################################################################################################################################################
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Decline Order")
@@ -1691,7 +1688,6 @@ def test_Prescription_4(login):
         )
         raise e
     
-#############################################################################################################################################################
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Draft Order")

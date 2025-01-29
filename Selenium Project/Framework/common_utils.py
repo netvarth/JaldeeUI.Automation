@@ -38,7 +38,7 @@ localhost_url = "https://localhost:4200/business/"
 test_scale_url = "https://scale.jaldeetest.in/business/"
 test_mail = ".test@jaldee.com"
 consumer_url = "https://scale.jaldee.com/visionhospital/"
-test_consumer_url = "https://test.jaldee.com/53b6eu1/"
+test_consumer_url = "https://scale.jaldeetest.in/visionhospital/"
 
 sales_officer = "001920"
 credit_head = "001921"

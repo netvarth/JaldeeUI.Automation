@@ -1,20 +1,20 @@
 from Framework.common_utils import *
 
-@pytest.fixture()
-def login():
+# @pytest.fixture()
+# def login():
 
     
-    driver = webdriver.Chrome(
-        service=ChromeService(
-            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-        )
-    )
-    driver.get("  ")
-    driver.maximize_window()
-    yield driver
-    driver.quit()  # Ensure the browser is closed properly
+#     driver = webdriver.Chrome(
+#         service=ChromeService(
+#             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+#         )
+#     )
+#     driver.get("  ")
+#     driver.maximize_window()
+#     yield driver
+#     driver.quit()  # Ensure the browser is closed properly
 
-
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_online_lead_workflow(login):
     try:
 
