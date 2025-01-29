@@ -9,7 +9,8 @@ from Framework.common_dates_utils import *
 from faker import Faker
 
 
-fake_india = Faker('en_IN')
+fake_india= Faker('en_IN')
+fake_india_address= fake_india.address()
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic LOS work flow")
@@ -27,7 +28,17 @@ def test_los_workflow(login):
         login.execute_script("arguments[0].click();", los_menu)
 
 #####################################  Create Lead  ############################################
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
 
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Round North'])[1]"))
+        ).click()
+        
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -440,10 +451,11 @@ def test_los_workflow(login):
 
 
         time.sleep(2)
-
+  
         # fake_india = Faker('en_IN')
 
-        fake_india_address = fake_india.address()
+        # fake_india_address = fake_india.address()
+        global fake_india_address  # Explicitly declare the global variable
 
         print(fake_india_address)
 
@@ -769,7 +781,7 @@ def test_los_workflow(login):
 
         time.sleep(2)
 
-        fake_india = Faker('en_IN')
+        
 
         fake_india_address = fake_india.address()
 
@@ -1062,7 +1074,7 @@ def test_kyc_verification(login):
                 (By.XPATH, "(//button[@data-bs-target='#flush-collapseFinancials'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(5)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1082,7 +1094,7 @@ def test_kyc_verification(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(5)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1102,7 +1114,7 @@ def test_kyc_verification(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(5)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1122,7 +1134,7 @@ def test_kyc_verification(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(5)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1142,7 +1154,7 @@ def test_kyc_verification(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(5)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1162,7 +1174,7 @@ def test_kyc_verification(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(5)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1182,7 +1194,7 @@ def test_kyc_verification(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(5)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1847,7 +1859,7 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//input[@placeholder='Enter FOIR Percentage'])[1]"))
         )
         per_foir.clear()
-        per_foir.send_keys("30")
+        per_foir.send_keys("80")
 
         wait.until(
             EC.presence_of_element_located(
@@ -1898,18 +1910,18 @@ def test_sales_officer_report(login):
         
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
-        fake_india_address = fake_india.address()
+        #    
         print(fake_india_address)
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter First Name'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Owner First Name'])[1]"))
         ).send_keys(first_name)
 
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Last Name'])[1]"))
+                (By.XPATH, "(//input[@placeholder='Owner Last Name'])[1]"))
         ).send_keys(last_name)
 
 

@@ -241,7 +241,7 @@ def test_appt_manualinvoice(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Apply the discount in the Invoice and Share the payment link")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_appt_manualinvoice1(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -332,10 +332,7 @@ def test_appt_manualinvoice1(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
+    service_option_xpath = "//li[@aria-label='Naveen Consultation']//div[1]"
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, service_option_xpath))
     ).click()
@@ -428,21 +425,21 @@ def test_appt_manualinvoice1(login):
     time.sleep(3)
     WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Apply Discount']")
+            (By.XPATH, "(//span[@class='mdc-list-item__primary-text'][normalize-space()='Apply Discount'])[1]")
         )
     ).click()
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//option[normalize-space()='Select Discount']")
+            (By.XPATH, "(//select[./option[text()='Select Discount']])[3]")
         )
     ).click()
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//option[normalize-space()='On Demand Discount']")
+            (By.XPATH, "(//option[normalize-space()='On Demand Discount'])[3]")
         )
     ).click()
 
@@ -456,7 +453,7 @@ def test_appt_manualinvoice1(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Apply']")
+            (By.XPATH, "(//button[normalize-space()='Apply'])[3]")
         )
     ).click()
 
@@ -537,7 +534,7 @@ def test_appt_manualinvoice1(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item in the Invoice and Share the payment link")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_appt_manualinvoice2(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -626,10 +623,7 @@ def test_appt_manualinvoice2(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
-    )
+    service_option_xpath = "//li[@aria-label='Naveen Consultation']//div[1]"
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, service_option_xpath))
     ).click()

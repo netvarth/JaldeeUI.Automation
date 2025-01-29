@@ -1,6 +1,9 @@
 from Framework.common_utils import *
 
 
+
+@allure.severity(allure.severity_level.CRITICAL)
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -13,6 +16,7 @@ def test_create_patient(login):
     )
     element.click()
     time.sleep(3)
+
     wait = WebDriverWait(login, 10)
     element_appoint = wait.until(EC.presence_of_element_located(
         (By.XPATH, "//b[contains(text(),'Create New Patient')]")))
@@ -52,9 +56,12 @@ def test_create_patient(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-                            "Consultation'])[2]")
-    WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
+    service_option_xpath = "//li[@aria-label='Naveen Consultation']//div[1]"
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, service_option_xpath))
+    ).click()
+
     print("Select Service : Naveen Consultation")
     time.sleep(3)
     Today_Date = wait.until(EC.presence_of_element_located((By.XPATH,
@@ -117,16 +124,17 @@ def test_create_patient(login):
     )
     view_details_button.click()
 
-    time.sleep(3)
+    # time.sleep(3)
 
-    view_details_button = WebDriverWait(login, 30).until(
-        EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
-    )
-    view_details_button.click()
-    login.execute_script("arguments[0].click();", view_details_button)
-    login.refresh()
+    # view_details_button = WebDriverWait(login, 30).until(
+    #     EC.visibility_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
+    # )
+    # view_details_button.click()
+    # login.execute_script("arguments[0].click();", view_details_button)
+    
+    time.sleep(3)
     more_actions_button = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='More Actions']"))
+        EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='More Actions'])[1]"))
     )
     more_actions_button.click()
 

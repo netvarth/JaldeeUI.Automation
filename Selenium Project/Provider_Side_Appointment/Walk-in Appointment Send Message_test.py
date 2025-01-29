@@ -1,7 +1,7 @@
 from Framework.common_utils import *
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -69,9 +69,8 @@ def test_create_patient(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-                            "Consultation'])[2]")
-    WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
+    service_option_xpath = "//li[@aria-label='Naveen Consultation']//div[1]"
+    WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, service_option_xpath))).click()
     print("Select Service : Naveen Consultation")
     time.sleep(3)
     Today_Date = wait.until(EC.presence_of_element_located((By.XPATH,
@@ -189,7 +188,7 @@ def test_create_patient(login):
         print("Snack bar message:", message)
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_create_patient_1(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -256,8 +255,7 @@ def test_create_patient_1(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-                            "Consultation'])[2]")
+    service_option_xpath = "//li[@aria-label='Naveen Consultation']//div[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
     print("Select Service : Naveen Consultation")
     time.sleep(3)
@@ -361,7 +359,7 @@ def test_create_patient_1(login):
 
 # Patient with no mobile and no email updated
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_create_patient_2(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -427,8 +425,7 @@ def test_create_patient_2(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-                            "Consultation'])[2]")
+    service_option_xpath = "//li[@aria-label='Naveen Consultation']//div[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
     print("Select Service : Naveen Consultation")
     time.sleep(3)
@@ -515,7 +512,7 @@ def test_create_patient_2(login):
 
 
 # Send attachment without sending message
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
 def test_create_patient_3(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -584,8 +581,7 @@ def test_create_patient_3(login):
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
 
-    service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-                            "Consultation'])[2]")
+    service_option_xpath = "//li[@aria-label='Naveen Consultation']//div[1]"
     WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
     print("Select Service : Naveen Consultation")
     time.sleep(3)
