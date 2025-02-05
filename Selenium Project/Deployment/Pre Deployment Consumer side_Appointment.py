@@ -22,7 +22,7 @@ def login():
         )   
     )
     # driver.get("https://scale.jaldee.com/visionhospital/")
-    driver.get("https://scale.jaldeetest.in/visionhospital/")
+    driver.get("https://scale.jaldee.com/visionhospital/")
     driver.maximize_window()
     yield driver
     driver.quit()  # Ensure the browser is closed properly
@@ -135,7 +135,7 @@ def test_booking(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-        ).send_keys("9207206005")
+        ).send_keys("8281276241")
         # WebDriverWait(login, 10).until(
         #     EC.presence_of_element_located(
         #        (By.XPATH, "//a[normalize-space()='My Bookings']")

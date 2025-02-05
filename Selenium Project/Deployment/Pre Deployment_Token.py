@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Token Pre deployment testing")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [( scale_url, main_scale, password)])
 def test_walkin_token(login):
     try:
         time.sleep(5)
