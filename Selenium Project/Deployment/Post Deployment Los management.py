@@ -1,4 +1,3 @@
-
 from ast import arguments
 import pyautogui
 import random
@@ -20,7 +19,7 @@ def generate_number_with_zeros():
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic LOS work flow")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_officer, password)])
+@pytest.mark.parametrize("url, username, password", [(prod_url, prod_sales_officer, password)])
 def test_los_workflow(login):
 
     try:
@@ -181,8 +180,14 @@ def test_los_workflow(login):
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='SCHEME - B']"))
+                (By.XPATH, "(//span[normalize-space()='Maben Vikas'])[1]"))
         ).click()
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Interest Rate (%)'])[1]"))
+        ).send_keys("18")
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
@@ -861,7 +866,7 @@ def test_los_workflow(login):
         print("Login with Sales officer")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
-        login_id.send_keys("001921")
+        login_id.send_keys("001922")
 
         password = login.find_element(By.XPATH, "//input[@id='password']")
         password.clear()
@@ -923,7 +928,7 @@ def test_los_workflow(login):
         print("Login with Sales officer")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
-        login_id.send_keys("001920")
+        login_id.send_keys("001921")
 
         password = login.find_element(By.XPATH, "//input[@id='password']")
         password.clear()
@@ -1430,7 +1435,7 @@ def test_los_workflow(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Sales officer report")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_officer, password)])
+@pytest.mark.parametrize("url, username, password", [(prod_url, prod_sales_officer, password)])
 def test_sales_officer_report(login):
 
     try:
@@ -2300,11 +2305,14 @@ def test_sales_officer_report(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+    
+
+
 
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Credit Head Document Verification")
-@pytest.mark.parametrize("url, username, password", [(scale_url, credit_head, password)])
+@pytest.mark.parametrize("url, username, password", [(prod_url, prod_credit_head, password)])
 def test_credit_head_report(login):
 
     try:
@@ -2525,7 +2533,7 @@ def test_credit_head_report(login):
         print("Login with Branch Manager")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
-        login_id.send_keys("001922")
+        login_id.send_keys("001923")
 
         password = login.find_element(By.XPATH, "//input[@id='password']")
         password.clear()
@@ -2636,3 +2644,8 @@ def test_credit_head_report(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+    
+
+
+
+

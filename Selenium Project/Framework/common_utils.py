@@ -46,6 +46,10 @@ branch_manager = "001922"
 password = "Jaldee01"
 main_scale = "5555556030"
 main_prod = "5550005540"
+prod_sales_officer = "001921"
+prod_credit_head = "001922"
+prod_branch_manager = "001923"
+
 
 
 def create_user_data():
