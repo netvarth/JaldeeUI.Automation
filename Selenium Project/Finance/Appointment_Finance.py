@@ -11,7 +11,7 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
 def test_appointment_autoinvoice(login):
     try:
-        time.sleep(5)
+        time.sleep(4)
         wait_and_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]") 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]") 
