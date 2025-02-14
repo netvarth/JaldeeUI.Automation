@@ -1237,7 +1237,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//button[@data-bs-target='#flush-collapseLegal'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1288,7 +1288,7 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
         wait.until(
@@ -1307,7 +1307,7 @@ def test_los_workflow(login):
         time.sleep(2)
         pyautogui.press("enter")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[12]"))
@@ -1324,7 +1324,7 @@ def test_los_workflow(login):
         time.sleep(2)
         pyautogui.press("enter")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[13]"))
@@ -1342,7 +1342,7 @@ def test_los_workflow(login):
         pyautogui.press("enter") 
 
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[14]"))
@@ -1378,7 +1378,7 @@ def test_los_workflow(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[16]"))

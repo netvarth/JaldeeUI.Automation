@@ -9,7 +9,7 @@ from datetime import datetime
  
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to a later time in the same day")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_reschedule_sameday(login):
     try:
         time.sleep(5)
@@ -265,7 +265,7 @@ def test_appt_reschedule_sameday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to another day")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def  test_reschedule_anotherday(login):
 
     try:
@@ -923,7 +923,7 @@ def test_prepaymentbooking_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule for 180day")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_reschedule_180day(login):
     try:
         time.sleep(5)
@@ -1400,7 +1400,7 @@ def test_nextmonth_reschedule(con_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule form History")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def  test_reschedule_history(login):
 
     try:

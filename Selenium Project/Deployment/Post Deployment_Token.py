@@ -670,6 +670,7 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Save']"))
         ).click()
+        time.sleep(3)
         login.find_element(By.XPATH, "//span[normalize-space()='Add the sections you need for this medical record']").click()
         # login.execute_script("arguments[0].scrollIntoView();", element2)
         

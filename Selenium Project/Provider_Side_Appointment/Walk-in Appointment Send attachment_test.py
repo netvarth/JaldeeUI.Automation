@@ -3,7 +3,7 @@ from Framework.common_utils import *
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(

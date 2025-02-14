@@ -833,7 +833,7 @@ def test_create_patient(login):
         login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
         login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
         
-        time.sleep(5)
+        time.sleep(8)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Confirm']"))

@@ -5,7 +5,7 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("After creatng appointment provider create invoice manually")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_manualinvoice(login):
     time.sleep(5)
 
@@ -144,26 +144,18 @@ def test_appt_manualinvoice(login):
 
     while True:
         try:
-            
+            print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                )
+                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
             )
 
-            
-            if next_button.is_enabled():
-            
-                login.execute_script("arguments[0].click();", next_button)
-            else:
-            
-                break
+            next_button.click()
 
-        except Exception as e:
-            
+        except:
+            print("EC caught:")
             break
 
-    time.sleep(1)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -241,7 +233,7 @@ def test_appt_manualinvoice(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Apply the discount in the Invoice and Share the payment link")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_manualinvoice1(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -387,11 +379,7 @@ def test_appt_manualinvoice1(login):
             print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
-                )
+                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
             )
 
             next_button.click()
@@ -401,12 +389,7 @@ def test_appt_manualinvoice1(login):
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 
@@ -534,7 +517,7 @@ def test_appt_manualinvoice1(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item in the Invoice and Share the payment link")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_manualinvoice2(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -677,11 +660,7 @@ def test_appt_manualinvoice2(login):
             print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
-                )
+                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
             )
 
             next_button.click()
@@ -691,12 +670,7 @@ def test_appt_manualinvoice2(login):
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 
@@ -794,7 +768,7 @@ def test_appt_manualinvoice2(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item and apply the discount in the Invoice and Share the payment link")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_manualinvoice3(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -943,11 +917,7 @@ def test_appt_manualinvoice3(login):
             print("before in loop")
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (
-                        By.XPATH,
-                        "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
-                    )
-                )
+                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
             )
 
             next_button.click()
@@ -957,12 +927,7 @@ def test_appt_manualinvoice3(login):
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 

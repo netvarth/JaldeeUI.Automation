@@ -11,7 +11,7 @@ from functools import wraps
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice(login):
 
     time.sleep(5)
@@ -382,7 +382,7 @@ def test_appt_autoinvoice1(login):
 # Add the item in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item in the Invoice")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice2(login):
     print("Add item and Share the payment link")
 
@@ -496,7 +496,7 @@ def test_appt_autoinvoice2(login):
 # Add the item and apply the discount in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item and apply the discount")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice3(login):
 
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -754,7 +754,7 @@ def test_appt_autoinvoice3(login):
 # Change the Qty/Price of the Service in the invoice and share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Change the Qty/Price of the Service and share the payment link")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice4(login):
     
     time.sleep(3)
@@ -868,7 +868,7 @@ def test_appt_autoinvoice4(login):
 # Share PDF to the consumer 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Share PDF to the consumer")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice5(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1028,7 +1028,7 @@ def test_appt_autoinvoice5(login):
 # Settle the auto Invoice 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Settle the auto Invoice")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice6(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1186,7 +1186,7 @@ def test_appt_autoinvoice6(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by cash in Auto Invoice")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice7(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1359,7 +1359,7 @@ def test_appt_autoinvoice7(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by other with UPI")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice8(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1543,7 +1543,7 @@ def test_appt_autoinvoice8(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Pay by other with Credit Card (CC)")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice9(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -1717,7 +1717,7 @@ def test_appt_autoinvoice9(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Create invoice template")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice10(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
@@ -1928,7 +1928,7 @@ def test_appt_autoinvoice10(login):
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Apply Invoice template")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice11(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
@@ -2150,7 +2150,7 @@ def test_appt_autoinvoice11(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice without mobile number")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice12(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -2360,7 +2360,7 @@ def test_appt_autoinvoice12(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice without mobile number and email Id")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice13(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
@@ -2538,7 +2538,7 @@ def test_appt_autoinvoice13(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto Invoice without mobile number, email Id and Name of the patient")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice14(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)

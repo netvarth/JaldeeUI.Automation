@@ -7,7 +7,7 @@ import os
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription Sharing")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_Prescription(login):
     try:
         time.sleep(5)
@@ -340,7 +340,7 @@ def test_Prescription(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription upload Sharing")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_Prescription_1(login):
 
     try:
@@ -620,7 +620,7 @@ def test_Prescription_1(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription using Template")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_Prescription_2(login):
 
     try:
@@ -919,7 +919,7 @@ def test_Prescription_2(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Complete Order")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_Prescription_3(login):
 
     try:
@@ -1345,7 +1345,7 @@ def test_Prescription_3(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Decline Order")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_Prescription_4(login):
 
     try:
@@ -1691,7 +1691,7 @@ def test_Prescription_4(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Draft Order")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_Prescription_5(login):
 
     try:

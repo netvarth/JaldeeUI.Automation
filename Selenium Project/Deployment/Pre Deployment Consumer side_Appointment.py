@@ -22,7 +22,7 @@ def login():
         )   
     )
     # driver.get("https://scale.jaldee.com/visionhospital/")
-    driver.get("https://scale.jaldeetest.in/visionhospital/")
+    driver.get("https://scale.jaldee.com/visionhospital/")
     driver.maximize_window()
     yield driver
     driver.quit()  # Ensure the browser is closed properly
