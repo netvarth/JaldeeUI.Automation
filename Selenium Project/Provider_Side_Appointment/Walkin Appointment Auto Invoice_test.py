@@ -213,10 +213,130 @@ def test_appt_autoinvoice(login):
 
     time.sleep(5)
 
-# Apply the discount in the Invoice and Share the payment link
+
+
+
+# Add the item in the Invoice and Share the payment link
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Add the item in the Invoice")
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+def test_appt_autoinvoice2(login):
+    print("Add item and Share the payment link")
+
+    WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
+    ).click()
+
+    time.sleep(3)
+    while True:
+            try:
+                # Attempt to locate the "Next" button using the button's class
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                    )
+                )
+
+                # Check if the button is enabled (i.e., not disabled)
+                if next_button.is_enabled():
+                    # print("Next button found and clickable.")
+                    # Click using JavaScript to avoid interception issues
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                    # print("Next button is disabled. Reached the last page.")
+                    break
+
+            except Exception as e:
+                # # If no next button is found or any other exception occurs, exit the loop
+                # print("End of pages or error encountered:", e)
+                break
+
+        # After clicking through all pages, locate and click the last accordion
+    time.sleep(1)
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    )
+    last_element_in_accordian.click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Invoice']"))
+    ).click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Edit']"))
+    ).click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
+    ).send_keys("item")
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(text(),'item3')])[1]"))
+    ).click()
+
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[@class='cs-btn bt1 ml-0'][normalize-space()='Add']"))
+    ).click()
+
+    time.sleep(5)
+
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
+    ).click()
+
+    snack_bar = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    )
+    message = snack_bar.text
+    print("Snack bar message:", message)
+
+    time.sleep(5)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
+    ).click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share Payment Link']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
+    ).click()
+
+    try:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+
+    except:
+
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+    time.sleep(5)
+
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Apply the discount in the Invoice")
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_appt_autoinvoice1(login):
     print("Apply discount and share the payment link")
     
@@ -377,120 +497,6 @@ def test_appt_autoinvoice1(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    time.sleep(5)
-
-# Add the item in the Invoice and Share the payment link
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Add the item in the Invoice")
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_appt_autoinvoice2(login):
-    print("Add item and Share the payment link")
-
-    WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
-    ).click()
-
-    while True:
-            try:
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (
-                            By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']",
-                        )
-                    )
-                )
-
-                next_button.click()
-
-            except:
-
-                break
-
-    time.sleep(3)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
-            )
-        )
-    )
-    last_element_in_accordian.click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Invoice']"))
-    ).click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Edit']"))
-    ).click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
-    ).send_keys("item")
-
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//div[contains(text(),'item3')])[1]"))
-    ).click()
-
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[@class='cs-btn bt1 ml-0'][normalize-space()='Add']"))
-    ).click()
-
-    time.sleep(5)
-
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
-    ).click()
-
-    snack_bar = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-    )
-    message = snack_bar.text
-    print("Snack bar message:", message)
-
-    time.sleep(5)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
-    ).click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share Payment Link']"))
-    ).click()
-
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
-    ).click()
-
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
     time.sleep(5)
 
 # Add the item and apply the discount in the Invoice and Share the payment link

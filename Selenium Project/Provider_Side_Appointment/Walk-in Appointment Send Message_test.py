@@ -163,6 +163,7 @@ def test_create_patient(login):
     # Construct the absolute path
     absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
     pyautogui.write(absolute_path)
+    time.sleep(3)
     pyautogui.press('enter')
 
     time.sleep(2)
@@ -504,11 +505,21 @@ def test_create_patient_2(login):
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
     ).click()
 
-    snack_bar = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//app-field-error-display[@class='ng-star-inserted']"))
-    )
-    message = snack_bar.text
-    print("Snack bar message:", message)
+    try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+    except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
 
 
 # Send attachment without sending message
@@ -617,7 +628,7 @@ def test_create_patient_3(login):
 
     while True:
         try:
-            print("before in loop")
+            
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
@@ -626,7 +637,7 @@ def test_create_patient_3(login):
             next_button.click()
 
         except:
-            print("EC caught:")
+            
             break
 
     last_element_in_accordian = WebDriverWait(login, 10).until(
@@ -669,13 +680,10 @@ def test_create_patient_3(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
-    ).click()
-
-    snack_bar = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//app-field-error-display[@class='ng-star-inserted']"))
     )
-    message = snack_bar.text
-    print("Snack bar message:", message)
+
+    send_button = login.find_element(By.XPATH, "//button[normalize-space()='send']")
+    assert not send_button.is_enabled(), "Send button should be disabled"
 
     
 

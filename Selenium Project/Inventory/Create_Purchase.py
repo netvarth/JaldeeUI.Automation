@@ -16,7 +16,7 @@ def title_to_item(title_case_string):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create purchase and push to Expense")
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_purchase(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -90,21 +90,40 @@ def test_create_purchase(login):
     element1 = login.find_element(By.XPATH, "//span[normalize-space()='Add Items']")
     login.execute_script("arguments[0].scrollIntoView();", element1)
 
-    item_list = ["Items,Item3"]
+    # item_list = ["Items,Item3"]
+    # random_batch_number = str(random.randint(100, 1000))
+    time.sleep(3)
+    # for i in range(len(item_list)):
+    #     print(item_list[i])
+    #     item_xpath = item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{title_to_item(item_list[i])}']"
+
+    #     time.sleep(2)                                    
+    #     WebDriverWait(login, 30).until(
+    #         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
+    #     ).send_keys("it")
+ 
+    #     time.sleep(3)
+    #     WebDriverWait(login, 10).until(
+    #         EC.presence_of_element_located((By.XPATH, item_xpath))
+    #     ).click()
+
+    item_list = ["items,item3"]
     random_batch_number = str(random.randint(100, 1000))
     time.sleep(3)
     for i in range(len(item_list)):
         print(item_list[i])
-        item_xpath = item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{title_to_item(item_list[i])}']"
+        item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{title_to_item(item_list[i])}']"
         time.sleep(2)                                    
         WebDriverWait(login, 30).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
         ).send_keys("it")
+        print("Searched for item")
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
+        WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, item_xpath))
         ).click()
+        print("Clicked on item")
 
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(

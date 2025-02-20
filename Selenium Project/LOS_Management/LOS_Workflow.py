@@ -796,21 +796,18 @@ def test_los_workflow(login):
         street_address, city, state, zip_code, country = generate_random_billing_india_address()
         print("street_address: ", street_address, " city:", city, " state:",  state, "zip_code: ", zip_code, "country: ", country)
 
-        print("test wwwwwwwwww")
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@formcontrolname='coApplicantPermanentCity'])[1]"))
         ).send_keys(city)
 
-        print("test eeeeeeeee")
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Select Permanent State'])[1]"))
         ).click()
 
-        print("test rrrrrr")
         time.sleep(3)
         dropdown = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//ul[@role='listbox']"))

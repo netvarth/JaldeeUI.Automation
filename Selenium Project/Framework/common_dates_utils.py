@@ -36,7 +36,7 @@ def add_month(month):
 
 def add_days(days):
     current_date = datetime.now()
-    future_date = current_date + relativedelta(days=days)
+    future_date = current_date + timedelta(days=days)
     year = future_date.strftime("%Y")
     month = future_date.strftime("%b")
     day = int(future_date.strftime("%d"))

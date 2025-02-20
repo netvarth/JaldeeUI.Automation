@@ -25,7 +25,7 @@ def test_account_signup():
             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
         )
     )
-    login.get("https://scale.jaldeetest.in/business/")
+    login.get("https://scale.jaldee.com/business/")
     login.maximize_window()
 
     time.sleep(3)

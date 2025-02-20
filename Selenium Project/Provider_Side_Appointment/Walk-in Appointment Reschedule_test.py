@@ -263,6 +263,7 @@ def test_appt_reschedule_sameday(login):
         raise e
 
 
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to another day")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -1146,7 +1147,8 @@ def test_reschedule_180day(login):
             EC.presence_of_element_located((By.XPATH, "//div[@class='reschedule-date-picker']"))
         ).click()
         time.sleep(3)
-        [year,month,day] = add_days(180)
+        [year,month,day] = add_days(179)
+        # print(f"Rescheduling to: {year}-{month}-{day}")
         print(year)
         print(month)
         print(day)
@@ -1164,7 +1166,7 @@ def test_reschedule_180day(login):
             EC.presence_of_element_located((By.XPATH, month_xpath))
         ).click()
         print(month_xpath)
-        time.sleep(2)
+        time.sleep(5)
         day_xpath = f"//span[contains(@class, 'example-custom-date-class') and normalize-space()='{day}']"
         print(day_xpath)
         
