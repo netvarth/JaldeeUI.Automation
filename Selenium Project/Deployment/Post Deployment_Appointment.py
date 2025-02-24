@@ -18,6 +18,7 @@ def test_signup():
             )
         )
         login.get("https://www.jaldee.com/business/")
+        # login.get("https://jaldee.com/business/")
         login.maximize_window()
 
         time.sleep(3)
@@ -780,7 +781,7 @@ def test_signup():
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Post deployment Provider Appointment")
-@pytest.mark.parametrize("url, username, password", [( prod_url, main_prod, password)])
+@pytest.mark.parametrize("url, username, password", [(prod_url, main_prod, password)])
 def test_create_patient(login):
 
     current_date = datetime.now().strftime("%d-%m-%Y")
@@ -2319,19 +2320,19 @@ def test_create_patient(login):
         tomorrow_date = today_date + timedelta(days=1)
         print(tomorrow_date.day)
 #======================================================
-        current_month = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
-        )
+        # current_month = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
+        # )
 
-        current_year = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
-        )
+        # current_year = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
+        # )
 
-        if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
+        # if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
 
-            login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
+        #     login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
 # ====================================================================
         tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
             tomorrow_date.day

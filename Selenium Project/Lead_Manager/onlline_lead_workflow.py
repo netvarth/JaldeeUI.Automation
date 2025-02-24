@@ -14,7 +14,7 @@ from Framework.common_utils import *
 #     yield driver
 #     driver.quit()  # Ensure the browser is closed properly
 
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_online_lead_workflow(login):
     try:
 

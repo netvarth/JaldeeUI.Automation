@@ -39,7 +39,7 @@ test_scale_url = "https://scale.jaldeetest.in/business/"
 test_mail = ".test@jaldee.com"
 consumer_url = "https://scale.jaldee.com/visionhospital/"
 test_consumer_url = "https://scale.jaldeetest.in/visionhospital/"
-
+test_prod_url = "https://beta.jaldeetest.in/business/"
 sales_officer = "001920"
 credit_head = "001921"
 branch_manager = "001922"
@@ -248,6 +248,16 @@ def generate_random_billing_address():
 
 
 def generate_random_billing_india_address():
+    fake = Faker("en_IN")
+    street_address = fake.street_address()  # e.g., '12 MG Road'
+    city = fake.city()  # e.g., 'Mumbai'
+    state = fake.state()  # e.g., 'Maharashtra'
+    zip_code = fake.postcode()  # e.g., '400001'
+    country = "India"  # Fixed for Indian addresses
+    
+    return street_address, city, state, zip_code, country
+
+def generate_random_billing_india_address_1():
     fake = Faker("en_IN")
     street_address = fake.street_address()  # e.g., '12 MG Road'
     city = fake.city()  # e.g., 'Mumbai'

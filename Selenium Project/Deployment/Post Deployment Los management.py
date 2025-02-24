@@ -2145,6 +2145,7 @@ def test_sales_officer_report(login):
             EC.presence_of_element_located((By.XPATH, month_xpath))
         ).click()
 
+        time.sleep(1)
         # Select Day
         day = str(int(day))  # Ensuring day is in integer form
         day_xpath = f"//span[normalize-space()='{day}']"

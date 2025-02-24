@@ -1,7 +1,7 @@
 from Framework.common_utils import *
 
 
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -189,7 +189,7 @@ def test_create_patient(login):
         print("Snack bar message:", message)
 
 
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_patient_1(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -270,8 +270,10 @@ def test_create_patient_1(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
+    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
+
 
     time.sleep(4)
     login.find_element(By.XPATH,
@@ -320,8 +322,9 @@ def test_create_patient_1(login):
     view_details_button.click()
     login.execute_script("arguments[0].click();", view_details_button)
 
+    time.sleep(3)
     more_actions_button = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='More Actions']"))
+        EC.visibility_of_element_located((By.XPATH, "(//button[normalize-space()='More Actions'])[1]"))
     )
     more_actions_button.click()
 
@@ -360,7 +363,7 @@ def test_create_patient_1(login):
 
 # Patient with no mobile and no email updated
 
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_patient_2(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -485,7 +488,8 @@ def test_create_patient_2(login):
     )
     view_details_button.click()
     login.execute_script("arguments[0].click();", view_details_button)
-
+    
+    time.sleep(3)
     more_actions_button = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//button[normalize-space()='More Actions']"))
     )
@@ -523,7 +527,7 @@ def test_create_patient_2(login):
 
 
 # Send attachment without sending message
-@pytest.mark.parametrize("url, username, password", [(test_scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_patient_3(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(

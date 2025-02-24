@@ -792,15 +792,16 @@ def test_los_workflow(login):
                 (By.XPATH, "(//input[@placeholder='Enter Permanent Address 2'])[2]"))            
         ).send_keys(fake_india_address1)
 
-        time.sleep(3)
+        
         street_address, city, state, zip_code, country = generate_random_billing_india_address()
         print("street_address: ", street_address, " city:", city, " state:",  state, "zip_code: ", zip_code, "country: ", country)
 
         time.sleep(2)
-        wait.until(
+        WebDriverWait(login, 30).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@formcontrolname='coApplicantPermanentCity'])[1]"))
+                (By.XPATH, "//input[@formcontrolname='coApplicantPermanentCity' and @type='text' and @placeholder='Enter Permanent City']"))
         ).send_keys(city)
+
 
         time.sleep(2)
         wait.until(
@@ -1887,6 +1888,8 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//i[@class='fs-5 pi pi-times'])[1]"))
         ).click()
 
+        print("Generated Cash Flow for Sales Officer")
+
         time.sleep(3)
         legal_validation = wait.until(
             EC.presence_of_element_located(
@@ -2231,6 +2234,8 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//div[@class='pointer-cursor'])[1]"))
         ).click()
 
+        print("Generate Legal Validation Report")
+
         time.sleep(3)
 
         wait.until(
@@ -2243,6 +2248,8 @@ def test_sales_officer_report(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[@class='pointer-cursor'])[1]"))
         ).click()
+
+        print("Generate Property Valuation Report")
 
         time.sleep(3)
 
@@ -2625,8 +2632,10 @@ def test_credit_head_report(login):
         print("Toast Message:", message)
 
 
+        time.sleep(5)
+
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
+        allure.attach(# use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
             # login.screenshot()
             name="full_page",  # param2

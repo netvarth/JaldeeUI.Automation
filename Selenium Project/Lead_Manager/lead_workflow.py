@@ -4,7 +4,8 @@ from Framework.common_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: lead work flow")
-@pytest.mark.parametrize('url', ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+
 def test_lead_workflow(login):
 
     try:
@@ -67,6 +68,7 @@ def test_lead_workflow(login):
                 (By.XPATH, "//div[contains(text(),'Product/Service')]"))
         ).click()
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
