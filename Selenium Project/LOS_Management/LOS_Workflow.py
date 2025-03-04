@@ -37,16 +37,16 @@ def test_los_workflow(login):
         # Create the Lead
 
 
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        # ).click()
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
 
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[normalize-space()='Round North'])[1]"))
-        # ).click()
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Round North'])[1]"))
+        ).click()
         
         time.sleep(2)
         wait.until(
@@ -214,6 +214,7 @@ def test_los_workflow(login):
                 (By.XPATH, "//div[normalize-space()='Leads']"))
         ).click()
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[contains(text(),'View')])[1]"))
@@ -775,32 +776,40 @@ def test_los_workflow(login):
         pyautogui.write(str(absolute_path))
         time.sleep(2)
         pyautogui.press("enter")
-
-        fake_india1= Faker('en_IN')
-        fake_india_address1 = fake_india.address()
-        print(fake_india_address1)
+        
+        fake_india= Faker('en_IN')
+        fake_india_address= fake_india.address()
+        print(fake_india_address)
 
         time.sleep(2)
-        wait.until(
+        co_address = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Permanent Address 1'])[2]"))            
-        ).send_keys(fake_india_address1)
+        )
+        co_address.click()
+        co_address.send_keys(fake_india_address)
 
         time.sleep(3)
-        wait.until(
+        co_address1 = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Permanent Address 2'])[2]"))            
-        ).send_keys(fake_india_address1)
+        )
+        co_address1.click()
+        time.sleep(1)
+        co_address1.send_keys(fake_india_address)
 
         
         street_address, city, state, zip_code, country = generate_random_billing_india_address()
         print("street_address: ", street_address, " city:", city, " state:",  state, "zip_code: ", zip_code, "country: ", country)
 
         time.sleep(2)
-        WebDriverWait(login, 30).until(
+        permanentcity = WebDriverWait(login, 30).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@formcontrolname='coApplicantPermanentCity' and @type='text' and @placeholder='Enter Permanent City']"))
-        ).send_keys(city)
+        )
+        login.execute_script("arguments[0].click();", permanentcity )
+        time.sleep(1)
+        permanentcity.send_keys(city)
 
 
         time.sleep(2)
@@ -879,11 +888,56 @@ def test_los_workflow(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[contains(text(),'View')])[1]"))
         ).click()
+
         time.sleep(3)
 
-        wait.until(
+        View_CRIF = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
+                (By.XPATH, "(//i[@class='pi pi-file'])[1]"))
+        )                   
+        login.execute_script("arguments[0].scrollIntoView();", View_CRIF)
+
+        View_CRIF.click()
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        ).click()
+
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        score_element = login.find_element(By.CLASS_NAME, "center-text")
+
+        # Get the displayed text
+        score_text = score_element.text.strip()
+
+        # Expected text
+        expected_text = "777/900"
+
+        # Assert the value is displayed correctly
+        assert score_text == expected_text, f"Expected '{expected_text}', but got '{score_text}'"
+
+        print("Assertion passed: Correct score is displayed.")
+
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Update'])[1]"))
         ).click()
 
         time.sleep(3)
@@ -1411,8 +1465,6 @@ def test_los_workflow(login):
         print("Toast Message:", message)
 
         time.sleep(5)
-
-
 
 
     except Exception as e:
@@ -2114,7 +2166,7 @@ def test_sales_officer_report(login):
         login.find_element(By.XPATH, "//button[normalize-space()='2025']").click()
 
         # Wait until the backward arrow is clickable before clicking it
-        backward_arrow = WebDriverWait(login, 10).until(
+        backward_arrow = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//button[contains(@class, 'p-ripple') and contains(@class, 'p-element') and contains(@class, 'p-datepicker-prev') and contains(@class, 'p-link') and contains(@class, 'ng-star-inserted')]")
             )
@@ -2130,7 +2182,7 @@ def test_sales_officer_report(login):
 
         # Select Year
         year_xpath = f"//span[normalize-space()='{year}']"
-        WebDriverWait(login, 10).until(
+        WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, year_xpath))
         ).click()
 
@@ -2632,8 +2684,20 @@ def test_credit_head_report(login):
         print("Toast Message:", message)
 
 
-        time.sleep(5)
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@class='add-btn btn btn-verified started ng-star-inserted'][normalize-space()='View'])[2]"))
+        ).click()
 
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Approved Report'])[1]"))
+        ).click()
+
+        time.sleep(3)
+         
     except Exception as e:
         allure.attach(# use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1

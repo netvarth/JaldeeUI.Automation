@@ -3,7 +3,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_Catalog")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/business/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
 def test_create_Catalog(login):
     try:
         time.sleep(5)
