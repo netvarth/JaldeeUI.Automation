@@ -37,17 +37,11 @@ def test_sales_order_catalog(login):
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
     )
     dropdown.click()
-
-    time.sleep(2)
-    options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
-
-    # Select a random option
-    if options:
-        random_option = random.choice(options)
-        random_option.click()
-    else:
-        print("No options found in the dropdown.")
-
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]"))
+    ).click()
+   
     WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
@@ -64,7 +58,7 @@ def test_sales_order_catalog(login):
     ).click()
 
     time.sleep(3)
-
+ 
     start_index = 2   # First checkbox to select
     end_index = 4     # Last checkbox to select
 
@@ -88,16 +82,16 @@ def test_sales_order_catalog(login):
     
     # Wait for the dialog to appear
     dialog = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//mat-dialog-container"))
+        EC.visibility_of_element_located((By.XPATH, "(//p[contains(text(),'Warning: Once added to the catalog, item’s attribu')])[1]"))
     )
 
     # Extract the warning message
-    warning_text = dialog.find_element(By.XPATH, "//div[@class='mat-mdc-dialog-content mdc-dialog__content']").text
-
+    warning_text = dialog.text
+    print("message :", warning_text)
     # Expected message
-    expected_message = "Warning: Selected items contain virtual item. Do you want to proceed?"
+    expected_message = "Warning: Once added to the catalog, item’s attributes cannot be edited. Do you want to proceed?"
 
-    # Assert the warning message
+    # Assert the warning message  
     assert warning_text.strip() == expected_message, f"Expected '{expected_message}', but got '{warning_text}'"
 
     # Click the "Yes" button
@@ -105,3 +99,4 @@ def test_sales_order_catalog(login):
     yes_button.click()
 
     time.sleep(5)
+

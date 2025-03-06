@@ -6,12 +6,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale , password)])
 def test_inventory_catalog(login):
     time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//img)[6]"))
+            (By.XPATH, "(//img)[3]"))
     ).click()
 
     time.sleep(5)
@@ -24,7 +24,7 @@ def test_inventory_catalog(login):
         EC.presence_of_element_located((By.XPATH, "//button[@class='p-ripple p-element p-button p-component']"))
     ).click()
 
-    catalog_name = "Inventory_Catalog_" + str(uuid.uuid4())[:8]
+    catalog_name = "Inventory_Catalog_" + str(uuid.uuid4())[:6]
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Catalog Name']"))
@@ -33,7 +33,7 @@ def test_inventory_catalog(login):
     login.find_element(By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Geetha']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -54,6 +54,24 @@ def test_inventory_catalog(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
     ).click()
+
+     # Wait for the dialog to appear
+    dialog = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.XPATH, "(//p[contains(text(),'Warning: Once added to the catalog, item’s attribu')])[1]"))
+    )
+
+    # Extract the warning message
+    warning_text = dialog.text
+    print("message :", warning_text)
+    # Expected message
+    expected_message = "Warning: Once added to the catalog, item’s attributes cannot be edited. Do you want to proceed?"
+
+    # Assert the warning message  
+    assert warning_text.strip() == expected_message, f"Expected '{expected_message}', but got '{warning_text}'"
+
+    # Click the "Yes" button
+    yes_button = login.find_element(By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+    yes_button.click()
 
     time.sleep(3)
     toast_detail = WebDriverWait(login, 10).until(
@@ -77,7 +95,7 @@ def test_inventory_catalog(login):
     time.sleep(2)
     store_dropdown = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Geetha']"))
+            (By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", store_dropdown)
 

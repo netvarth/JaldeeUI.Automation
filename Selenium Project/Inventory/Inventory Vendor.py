@@ -1,23 +1,15 @@
 import random
 import time
 import uuid
-
 import allure
 import pytest
 
 from Framework.common_utils import *
-from Framework.common_dates_utils import *
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from allure_commons.types import AttachmentType
-from selenium.common.exceptions import ElementClickInterceptedException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import TimeoutException
 
 
 
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Vendors Creation")
 def test_vendor_creation(login):
 
@@ -26,7 +18,7 @@ def test_vendor_creation(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[6]"))
+                (By.XPATH, "(//img)[3]"))
         ).click()
 
         time.sleep(2)
@@ -56,6 +48,7 @@ def test_vendor_creation(login):
         ).send_keys(vendor_id)
 
         print("Vendor_ID : ", vendor_id)
+
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         time.sleep(2)
         WebDriverWait(login, 10).until(

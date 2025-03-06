@@ -12,11 +12,11 @@ from selenium.common.exceptions import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Creating the item")
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_creation(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "(//img)[6]"))
+        EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
     ).click()
 
     time.sleep(3)
@@ -37,16 +37,6 @@ def test_item_creation(login):
     ).send_keys(item_name)
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Select Item Source']"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='General']"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter Item Description']"))
     ).send_keys("A Item name is required and recommended to be unique.")
 
@@ -55,7 +45,7 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Antibacterials']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Stationary'])[1]"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -63,7 +53,7 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Medicine']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Stationary_Item'])[1]"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -71,7 +61,7 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Tablet']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Office_Item'])[1]"))
     ).click()
 
     login.implicitly_wait(5)
@@ -80,17 +70,24 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='ALPHA DRUGS']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='SC.PVT.Limited'])[1]"))
     ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Unit')]"))
-    ).click()
+    dropdown = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(text(),'Select Unit')]"))
+    )
+    dropdown.click()
 
     time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Box of 10'] "))
-    ).click()
+    options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
+
+    # Select a random option
+    if options:
+        random_option = random.choice(options)
+        random_option.click()
+    else:
+        print("No options found in the dropdown.")
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -107,25 +104,66 @@ def test_item_creation(login):
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='33215478']"))
+        EC.presence_of_element_located((By.XPATH, "(//li[@aria-label='7542'])[1]"))
     ).click()
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Item Compositions')]"))
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[7]"))
     ).click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'starch, hydroxypropyl methylcellulose, propylene g')]"))
+            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]"))
     ).click()
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Item Tax')]"))
     ).click()
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='GST 12%']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='GST 5%']"))
+    ).click()
+
+    time.sleep(2)
+
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//button[@class='p-element fw-bold create-button p-button p-component'])[1]"))
+    ).click()
+    
+    time.sleep(2)
+    option_name = WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@placeholder='Enter Option Name']"))
+    )  
+    login.execute_script("arguments[0].click();", option_name)
+    time.sleep(3)
+    option_name.send_keys("Colour")
+
+    time.sleep(2)
+    enter_name = WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//input[@placeholder='Enter Value'])[1]"))
+    )
+    enter_name.send_keys("Bule")
+    enter_name.send_keys(Keys.RETURN)
+
+    time.sleep(2)
+    enter_name.send_keys("Black")
+    enter_name.send_keys(Keys.RETURN)
+
+    time.sleep(2)
+    enter_name.send_keys("Green")
+    enter_name.send_keys(Keys.RETURN)
+
+    time.sleep(2)
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//button[normalize-space()='Done'])[1]"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -146,13 +184,13 @@ def test_item_creation(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test for item filter item id ")
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_filter(login):
 
     time.sleep(3)
     wait = WebDriverWait(login, 20)
     wait.until(
-        EC.presence_of_element_located((By.XPATH, "(//img)[6]"))
+        EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
     ).click()
 
     time.sleep(3)
@@ -177,7 +215,7 @@ def test_item_filter(login):
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//input[@id='spCode'])[1]"))
-    ).send_keys("sprx-73b91u7-b")
+    ).send_keys("alrx-33b5uu2-2wl")
 
     time.sleep(3)
     wait.until(
@@ -202,11 +240,11 @@ def test_item_filter(login):
     # Assert that the ID is present on the page
     element = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, f"//*[contains(text(), 'sprx-73b91u7-b')]")
+            (By.XPATH, f"//*[contains(text(), 'alrx-33b5uu2-2wl')]")
         )
     )
-    assert element is not None, "The ID 'sprx-73b91u7-b' was not found on the page"
-    print("Assertion passed: The ID 'sprx-73b91u7-b' is present on the page")
+    assert element is not None, "The ID 'alrx-33b5uu2-2wl' was not found on the page"
+    print("Assertion passed: The ID 'alrx-33b5uu2-2wl' is present on the page")
     
       
     scroll_down = wait.until(

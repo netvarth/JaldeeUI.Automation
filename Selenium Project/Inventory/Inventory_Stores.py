@@ -20,7 +20,7 @@ from selenium.common.exceptions import TimeoutException
 
 
 
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Store Creation")
 def test_store_creation(login):
     try:
