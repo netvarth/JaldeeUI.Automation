@@ -1464,7 +1464,7 @@ def test_create_purchase_1(login):
     ).click()
 
     time.sleep(2)
-     expenses_card = WebDriverWait(login, 10).until(
+    expenses_card = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[normalize-space()='Expenses'])[1]"))
     )
