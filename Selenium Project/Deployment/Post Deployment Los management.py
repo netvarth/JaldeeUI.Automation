@@ -886,14 +886,59 @@ def test_los_workflow(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[contains(text(),'View')])[1]"))
         ).click()
-        time.sleep(3)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
-        ).click()
 
         time.sleep(3)
+
+        # View_CRIF = WebDriverWait(login, 20).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//i[@class='pi pi-file'])[1]"))
+        # )                   
+        # login.execute_script("arguments[0].scrollIntoView();", View_CRIF)
+
+        # View_CRIF.click()
+
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        # ).click()
+
+
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        # ).click()
+
+        # time.sleep(3)
+
+        # score_element = login.find_element(By.CLASS_NAME, "center-text")
+
+        # # Get the displayed text
+        # score_text = score_element.text.strip()
+
+        # # Expected text
+        # expected_text = "777/900"
+
+        # # Assert the value is displayed correctly
+        # assert score_text == expected_text, f"Expected '{expected_text}', but got '{score_text}'"
+
+        # print("Assertion passed: Correct score is displayed.")
+
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        # ).click()
+
+        # time.sleep(2)
+
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[normalize-space()='Update'])[1]"))
+        # ).click()
+
+        # time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//textarea[@placeholder='Enter Remarks']"))
@@ -903,6 +948,7 @@ def test_los_workflow(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Verify'])[1]"))
         ).click()
+
 
         toast_message = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))

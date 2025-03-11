@@ -10,7 +10,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock Ajustment")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_stock_adjustment(login):
     time.sleep(3)
     wait = WebDriverWait(login, 20)
@@ -19,7 +19,7 @@ def test_stock_adjustment(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//img)[6]"))
+            (By.XPATH, "(//img)[3]"))
     ).click()
 
     wait.until(
@@ -37,13 +37,13 @@ def test_stock_adjustment(login):
             (By.XPATH, "//p-dropdown[@placeholder='Select Store']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
     ).click()
 
-    element_geetha = wait.until(
+    element_store = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Geetha']"))
+        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     )
-    login.execute_script("arguments[0].scrollIntoView();", element_geetha)
+    login.execute_script("arguments[0].scrollIntoView();", element_store)
 
-    element_geetha.click()
+    element_store.click()
 
     wait.until(
         EC.presence_of_element_located(
@@ -59,7 +59,7 @@ def test_stock_adjustment(login):
     time.sleep(3)
     element_invcatalog = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='catalog1'])[1]"))
+        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Catalog_Inventory'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
     element_invcatalog.click() 
@@ -392,13 +392,13 @@ def test_stock_adjustment_1(login):
             (By.XPATH, "//p-dropdown[@placeholder='Select Store']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
     ).click()
 
-    element_geetha = wait.until(
+    element_store = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Geetha']"))
+        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     )
-    login.execute_script("arguments[0].scrollIntoView();", element_geetha)
+    login.execute_script("arguments[0].scrollIntoView();", element_store)
 
-    element_geetha.click()
+    element_store.click()
 
     wait.until(
         EC.presence_of_element_located(
@@ -407,7 +407,7 @@ def test_stock_adjustment_1(login):
 
     element_invcatalog = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Catalog_Inventory'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
     element_invcatalog.click()

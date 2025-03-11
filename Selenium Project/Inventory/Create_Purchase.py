@@ -391,12 +391,12 @@ def test_create_purchase(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Sales Price Higher than MRP with Toast Message Validation")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_sales_price_higher_than_mrp(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//img)[6]"))
+            (By.XPATH, "(//img)[3]"))
     ).click()
 
     time.sleep(5)
@@ -419,7 +419,7 @@ def test_sales_price_higher_than_mrp(login):
 
     time.sleep(3)
     store = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Geetha']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     )
     store.click()
 
@@ -430,7 +430,7 @@ def test_sales_price_higher_than_mrp(login):
     ).click()
 
     Select_supplier = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='MedCC']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='SBT PVT Limited'])[1]"))
     )
     Select_supplier.click()
     print("Select Supplier:", Select_supplier.text)
@@ -439,7 +439,7 @@ def test_sales_price_higher_than_mrp(login):
 
     time.sleep(3)
     Inventory_Catalog = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Catalog_Inventory'])[1]"))
     )
     Inventory_Catalog.click()
     print("Inventory Selected:", Inventory_Catalog.text)
@@ -461,47 +461,49 @@ def test_sales_price_higher_than_mrp(login):
     Today_Date.click()
     print("Date:", Today_Date.text)
 
-    login.find_element(By.XPATH, "//textarea[@placeholder='Notes to Vendor']").send_keys("Medcc Supplied item")
+    login.find_element(By.XPATH, "//textarea[@placeholder='Notes to Vendor']").send_keys("Supplied item")
 
-    element1 = login.find_element(By.XPATH, "//span[normalize-space()='Add Items']")
-    login.execute_script("arguments[0].scrollIntoView();", element1)
+    time.sleep(3)
 
-    item_list = ["Item3"]
-    random_batch_number = str(random.randint(5, 99))
-
-    for i in range(len(item_list)):
-        print(item_list[i])
-        item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{item_list[i]}']"
-                                            
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
-        ).send_keys("item")
-
+    item_list = ["Item_1"]
+    random_batch_number = str(random.randint(100, 1000))
+    
+    for item in item_list:
+       
+        print(item)
+        item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{item}']"
         time.sleep(2)
-        WebDriverWait(login, 10).until(
+
+        WebDriverWait(login, 30).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
+        ).send_keys("it")
+        print("Searched for item")
+
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, item_xpath))
         ).click()
+        print("Clicked on item")
 
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
-                (By.XPATH,
-                 "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]"))
+                (By.XPATH, "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]")
+            )
         )
         batch_number.click()
 
+        random_number = str(random.randint(5, 99))
         batch_number.send_keys(random_batch_number)
         print("Batch_Number:", random_batch_number)
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH,
-                                            "//p-dropdown[@placeholder='Item Units']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@placeholder='Item Units']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
         ).click()
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Box of 10']"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Box of 10']"))
         ).click()
 
         time.sleep(2)
@@ -518,7 +520,7 @@ def test_sales_price_higher_than_mrp(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, current_year_xpath))
         ).click()
-    
+
         [year, month, day] = add_date(2)
         print(year)
         year_xpath = f"//span[normalize-space()='{year}']"
@@ -527,12 +529,14 @@ def test_sales_price_higher_than_mrp(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, year_xpath))
         ).click()
+
         time.sleep(1)
         month_xpath = f"//span[normalize-space()='{month}']"
         print(month_xpath)
         WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, month_xpath))
-         ).click()
+            EC.presence_of_element_located((By.XPATH, month_xpath))
+        ).click()
+
         time.sleep(2)
         day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
         print(day_xpath)
@@ -541,14 +545,6 @@ def test_sales_price_higher_than_mrp(login):
             EC.presence_of_element_located((By.XPATH, day_xpath))
         ).click()
 
-
-        # pr_date = WebDriverWait(login, 15).until(
-        # EC.presence_of_element_located(
-        # (By.XPATH, "//button[normalize-space()='Send Message']"))
-        # )        
-        # login.execute_script("arguments[0].click();", pr_date)
-
-        # time.sleep(3)
         
         qty = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -557,7 +553,7 @@ def test_sales_price_higher_than_mrp(login):
         qty.click()
         qty.clear()
 
-        qty_random_number = str(random.randint(10, 50))
+        qty_random_number = str(random.randint(15, 50))
         qty.send_keys(qty_random_number)
         print("Qty Of Item:", qty_random_number)
 
@@ -621,12 +617,12 @@ def test_sales_price_higher_than_mrp(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Discount in percentage")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_discount_in_percentage(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//img)[6]"))
+            (By.XPATH, "(//img)[3]"))
     ).click()
 
     time.sleep(5)
@@ -648,7 +644,7 @@ def test_discount_in_percentage(login):
 
     time.sleep(3)
     store = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Geetha']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     )
     store.click()
 
@@ -659,7 +655,7 @@ def test_discount_in_percentage(login):
     ).click()
 
     Select_supplier = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='MedCC']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='SBT PVT Limited'])[1]"))
     )
     Select_supplier.click()
     print("Select Supplier:", Select_supplier.text)
@@ -667,10 +663,10 @@ def test_discount_in_percentage(login):
     login.find_element(By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
     time.sleep(2)
     Inventory_Catalog = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Catalog_Inventory'])[1]"))
     )
     Inventory_Catalog.click()
-    print("Inventory Selected:", Inventory_Catalog.text)
+    print("Inventory Selected:",  Inventory_Catalog.text)
 
     Bill_no = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Purchase Bill#']"))
@@ -689,50 +685,49 @@ def test_discount_in_percentage(login):
     Today_Date.click()
     print("Date:", Today_Date.text)
 
-    login.find_element(By.XPATH, "//textarea[@placeholder='Notes to Vendor']").send_keys("Medcc  Supplied item ")
+    login.find_element(By.XPATH, "//textarea[@placeholder='Notes to Vendor']").send_keys("Supplied item ")
 
-    element1 = login.find_element(By.XPATH, "//span[normalize-space()='Add Items']")
-    login.execute_script("arguments[0].scrollIntoView();", element1)
+    time.sleep(3)
 
-    item_list = ["Item_1,Item_2"]
-    random_batch_number = str(random.randint(5, 99))
-
+    item_list = ["Item_1"]
+    random_batch_number = str(random.randint(100, 1000))
+    
     for item in item_list:
        
         print(item)
         item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{item}']"
         time.sleep(2)
-                                            
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
-        ).send_keys("item")
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
+        WebDriverWait(login, 30).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
+        ).send_keys("it")
+        print("Searched for item")
+
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, item_xpath))
         ).click()
+        print("Clicked on item")
 
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
-                (By.XPATH,
-                 "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]"))
+                (By.XPATH, "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]")
+            )
         )
         batch_number.click()
 
-        # random_number = str(random.randint(5, 99))
+        random_number = str(random.randint(5, 99))
         batch_number.send_keys(random_batch_number)
         print("Batch_Number:", random_batch_number)
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH,
-                                            "//p-dropdown[@placeholder='Item Units']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@placeholder='Item Units']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
         ).click()
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Box of 10']"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Box of 10']"))
         ).click()
 
         time.sleep(2)
@@ -749,7 +744,7 @@ def test_discount_in_percentage(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, current_year_xpath))
         ).click()
-    
+
         [year, month, day] = add_date(2)
         print(year)
         year_xpath = f"//span[normalize-space()='{year}']"
@@ -758,12 +753,14 @@ def test_discount_in_percentage(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, year_xpath))
         ).click()
+
         time.sleep(1)
         month_xpath = f"//span[normalize-space()='{month}']"
         print(month_xpath)
         WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, month_xpath))
-         ).click()
+            EC.presence_of_element_located((By.XPATH, month_xpath))
+        ).click()
+
         time.sleep(2)
         day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
         print(day_xpath)
@@ -771,6 +768,7 @@ def test_discount_in_percentage(login):
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, day_xpath))
         ).click()
+
         
         qty = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -779,7 +777,7 @@ def test_discount_in_percentage(login):
         qty.click()
         qty.clear()
 
-        qty_random_number = str(random.randint(10, 50))
+        qty_random_number = str(random.randint(15, 50))
         qty.send_keys(qty_random_number)
         print("Qty Of Item:", qty_random_number)
 
@@ -863,14 +861,15 @@ def test_discount_in_percentage(login):
     # Assertion to verify discount applied correctly
     assert round(amount_after_discount, 2) == round(expected_bill_amount, 2), "Discount amount is incorrect!"
 
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Discount in amount")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_discount_in_amount(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//img)[6]"))
+            (By.XPATH, "(//img)[3]"))
     ).click()
 
     time.sleep(5)
@@ -892,7 +891,7 @@ def test_discount_in_amount(login):
 
     time.sleep(3)
     store = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Geetha']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     )
     store.click()
 
@@ -903,7 +902,7 @@ def test_discount_in_amount(login):
     ).click()
 
     Select_supplier = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='MedCC']"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='SBT PVT Limited'])[1]"))
     )
     Select_supplier.click()
     print("Select Supplier:", Select_supplier.text)
@@ -911,7 +910,7 @@ def test_discount_in_amount(login):
     login.find_element(By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
     time.sleep(2)
     Inventory_Catalog = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+        EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Catalog_Inventory'])[1]"))
     )
     Inventory_Catalog.click()
     print("Inventory Selected:", Inventory_Catalog.text)
@@ -933,50 +932,49 @@ def test_discount_in_amount(login):
     Today_Date.click()
     print("Date:", Today_Date.text)
 
-    login.find_element(By.XPATH, "//textarea[@placeholder='Notes to Vendor']").send_keys("Medcc  Supplied item ")
+    login.find_element(By.XPATH, "//textarea[@placeholder='Notes to Vendor']").send_keys("Supplied item ")
 
-    element1 = login.find_element(By.XPATH, "//span[normalize-space()='Add Items']")
-    login.execute_script("arguments[0].scrollIntoView();", element1)
+    time.sleep(3)
 
-    item_list = ["Item_1,Item_2"]
-    random_batch_number = str(random.randint(5, 99))
-
+    item_list = ["Item_1"]
+    random_batch_number = str(random.randint(100, 1000))
+    
     for item in item_list:
        
         print(item)
         item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{item}']"
         time.sleep(2)
-                                            
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
-        ).send_keys("item")
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
+        WebDriverWait(login, 30).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
+        ).send_keys("it")
+        print("Searched for item")
+
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, item_xpath))
         ).click()
+        print("Clicked on item")
 
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
-                (By.XPATH,
-                 "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]"))
+                (By.XPATH, "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]")
+            )
         )
         batch_number.click()
 
-        # random_number = str(random.randint(5, 99))
+        random_number = str(random.randint(5, 99))
         batch_number.send_keys(random_batch_number)
         print("Batch_Number:", random_batch_number)
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH,
-                                            "//p-dropdown[@placeholder='Item Units']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@placeholder='Item Units']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
         ).click()
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Box of 10']"))
+            EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Box of 10']"))
         ).click()
 
         time.sleep(2)
@@ -993,7 +991,7 @@ def test_discount_in_amount(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, current_year_xpath))
         ).click()
-    
+
         [year, month, day] = add_date(2)
         print(year)
         year_xpath = f"//span[normalize-space()='{year}']"
@@ -1002,12 +1000,14 @@ def test_discount_in_amount(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, year_xpath))
         ).click()
+
         time.sleep(1)
         month_xpath = f"//span[normalize-space()='{month}']"
         print(month_xpath)
         WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, month_xpath))
-         ).click()
+            EC.presence_of_element_located((By.XPATH, month_xpath))
+        ).click()
+
         time.sleep(2)
         day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
         print(day_xpath)
@@ -1015,6 +1015,7 @@ def test_discount_in_amount(login):
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, day_xpath))
         ).click()
+
         
         qty = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -1023,7 +1024,7 @@ def test_discount_in_amount(login):
         qty.click()
         qty.clear()
 
-        qty_random_number = str(random.randint(10, 50))
+        qty_random_number = str(random.randint(15, 50))
         qty.send_keys(qty_random_number)
         print("Qty Of Item:", qty_random_number)
 
@@ -1103,7 +1104,6 @@ def test_discount_in_amount(login):
     print("Actual amount after discount:", amount_after_discount)
     # Assertion to verify discount applied correctly
     assert round(amount_after_discount, 2) == round(expected_bill_amount, 2), "Discount amount is incorrect!"
-
 
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -1460,7 +1460,7 @@ def test_create_purchase_1(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='ng-star-inserted'])[7]"))
+            (By.XPATH, "(//img)[4]"))
     ).click()
 
     time.sleep(2)

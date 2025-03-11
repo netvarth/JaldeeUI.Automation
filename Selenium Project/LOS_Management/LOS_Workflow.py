@@ -24,9 +24,9 @@ def generate_number_with_zeros():
 def test_los_workflow(login):
 
     try:
-        wait = WebDriverWait(login, 10)
+        wait = WebDriverWait(login, 20)
 
-        time.sleep(5)
+        login.implicitly_wait(10)
         los_menu = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//img)[2]"))
@@ -35,26 +35,24 @@ def test_los_workflow(login):
 
 
         # Create the Lead
-
-
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(2)
+        login.implicitly_wait(10)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Round North'])[1]"))
         ).click()
         
-        time.sleep(2)
+        login.implicitly_wait(10)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[contains(text(),'Create Lead')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         wait.until(
@@ -77,7 +75,7 @@ def test_los_workflow(login):
                 (By.XPATH, "//input[@placeholder='Enter Email']"))
         ).send_keys(email)
         
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
@@ -126,20 +124,20 @@ def test_los_workflow(login):
         select_day.click()
 
 
-        time.sleep(2)
+        login.implicitly_wait(10)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Select Gender']"))
         ).click()
 
-        time.sleep(2)
+        login.implicitly_wait(10)
         gender = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Male'])[1]"))
         )
         login.execute_script("arguments[0].click();", gender)
 
-        time.sleep(3)
+        login.implicitly_wait(10)
         dropdown = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Select Sourcing Channel']"))
@@ -147,7 +145,7 @@ def test_los_workflow(login):
         dropdown.click()
 
         print("test case")
-        time.sleep(2)
+        login.implicitly_wait(10)
         options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
 
         # Select a random option
@@ -157,7 +155,7 @@ def test_los_workflow(login):
         else:
             print("No options found in the dropdown.")
         
-        time.sleep(2)
+        login.implicitly_wait(10) 
 
    
 
@@ -172,19 +170,19 @@ def test_los_workflow(login):
                 (By.XPATH, "//input[@formcontrolname='proposedAmount']"))
         ).send_keys(random_amount)
 
-        time.sleep(3)
+        login.implicitly_wait(10)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Select Preferred Scheme']"))
         ).click()
 
-        time.sleep(2)
+        login.implicitly_wait(10)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='SCHEME - B']"))
         ).click()
 
-        time.sleep(2)
+        login.implicitly_wait(10)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Tenure (in months)'])[1]"))
@@ -194,7 +192,7 @@ def test_los_workflow(login):
 
         # Lead 
 
-        time.sleep(2)
+        login.implicitly_wait(10)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -225,7 +223,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//textarea[@placeholder='Enter Remarks']"))
@@ -248,7 +246,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//textarea[@placeholder='Enter Remarks']"))
@@ -273,7 +271,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -314,14 +312,14 @@ def test_los_workflow(login):
                 (By.XPATH, "//input[@placeholder='Enter Aadhaar Number']"))
         ).send_keys("555555555555")
 
-        time.sleep(2)
+        time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[1]"))
         ).click()           
 
-        time.sleep(2)
+        time.sleep(3)
         # Construct the absolute path
         absolute_path = Path("Extras/test.png").resolve()
 
@@ -351,7 +349,7 @@ def test_los_workflow(login):
         pan_card.click()
         pan_card.send_keys("5555555555")
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[2]"))
@@ -360,6 +358,7 @@ def test_los_workflow(login):
         time.sleep(3)
         absolute_path = Path("Extras/test.png").resolve()
         pyautogui.write(str(absolute_path))
+        time.sleep(2)
         pyautogui.press("enter")
 
         time.sleep(3)
@@ -375,7 +374,7 @@ def test_los_workflow(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(5)
+        time.sleep(3)
 
         scroll = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -384,13 +383,13 @@ def test_los_workflow(login):
 
         login.execute_script("arguments[0].scrollIntoView();", scroll)
 
-        time.sleep(1)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Select Alternate Id']"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         id_option = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Driving License'])[1]"))
@@ -414,7 +413,7 @@ def test_los_workflow(login):
             )
         ).click()
 
-        time.sleep(5)
+        time.sleep(3)
         
         # Construct the absolute path
         absolute_path = Path("Extras/test.png").resolve()
@@ -423,16 +422,16 @@ def test_los_workflow(login):
         pyautogui.write(str(absolute_path))
         pyautogui.press("enter")
 
-        time.sleep(5)
+        time.sleep(3)
 
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Select Relationship Type']"))
         ).click()
 
-        time.sleep(5)
+        time.sleep(3)
         type_option = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Father'])[1]"))
@@ -447,7 +446,7 @@ def test_los_workflow(login):
         ).send_keys(first_name)
 
 
-        time.sleep(2)
+        time.sleep(3)
   
         fake_india= Faker('en_IN')
         fake_india_address= fake_india.address()
@@ -474,11 +473,10 @@ def test_los_workflow(login):
                 (By.XPATH, "(//input[@placeholder='Enter Permanent Address 2'])[1]"))            
         ).send_keys(fake_india_address)
 
-        time.sleep(3)
         street_address, city, state, zip_code, country = generate_random_billing_india_address()
         print("street_address: ", street_address, "city:", city, "state:",  state, "zip_code:", zip_code, "country:", country)
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Permanent City'])[1]"))
@@ -510,7 +508,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//div[@class='p-checkbox-box'])[1]"))
         ).click()
 
-        time.sleep(3)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@class='btn btn-add-coapplicant ng-star-inserted'])[1]"))
@@ -581,7 +579,7 @@ def test_los_workflow(login):
                 (By.XPATH, "//span[normalize-space()='Select Gender']"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         gender = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Male'])[1]"))
@@ -594,13 +592,13 @@ def test_los_workflow(login):
         ).send_keys(phonenumber)
 
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[contains(text(),'Verify')])[2]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         snack_bar = WebDriverWait(login, 10).until(
                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -629,7 +627,7 @@ def test_los_workflow(login):
         print("Snack bar message:", message)
 
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@formcontrolname='coApplicantEmail'])[1]"))
@@ -644,7 +642,7 @@ def test_los_workflow(login):
         login.execute_script("arguments[0].click();", select_type)
 
         # print("type option")
-        time.sleep(3) 
+        time.sleep(2)
         type_option = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Mother'])[1]"))
@@ -667,7 +665,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//input[@placeholder='Enter Aadhaar Number'])[2]"))
         ).send_keys("555555555551")
 
-        time.sleep(2)
+        time.sleep(1)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -690,7 +688,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//span[contains(text(),'Verify')])[3]"))
         ).click()
 
-        time.sleep(3)
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Refresh']"))
@@ -742,7 +740,7 @@ def test_los_workflow(login):
 
         login.execute_script("arguments[0].scrollIntoView();", scroll1 )
     
-        time.sleep(3)
+        time.sleep(2)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -763,7 +761,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//input[@placeholder='Enter Id Card Number'])[2]"))
         ).send_keys("3112546464753")
 
-        time.sleep(3)  
+        time.sleep(2)  
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[3]")
@@ -781,7 +779,7 @@ def test_los_workflow(login):
         fake_india_address= fake_india.address()
         print(fake_india_address)
 
-        time.sleep(2)
+        time.sleep(3)
         co_address = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Permanent Address 1'])[2]"))            
@@ -789,30 +787,29 @@ def test_los_workflow(login):
         co_address.click()
         co_address.send_keys(fake_india_address)
 
-        time.sleep(3)
+        time.sleep(4)
         co_address1 = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Permanent Address 2'])[2]"))            
         )
         co_address1.click()
-        time.sleep(1)
         co_address1.send_keys(fake_india_address)
 
         
         street_address, city, state, zip_code, country = generate_random_billing_india_address()
         print("street_address: ", street_address, " city:", city, " state:",  state, "zip_code: ", zip_code, "country: ", country)
 
-        time.sleep(2)
+        time.sleep(3)
         permanentcity = WebDriverWait(login, 30).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@formcontrolname='coApplicantPermanentCity' and @type='text' and @placeholder='Enter Permanent City']"))
         )
         login.execute_script("arguments[0].click();", permanentcity )
-        time.sleep(1)
+        time.sleep(3)
         permanentcity.send_keys(city)
 
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Select Permanent State'])[1]"))
@@ -848,7 +845,7 @@ def test_los_workflow(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(5)
+        time.sleep(3)
 
         home_button = WebDriverWait(login, 30).until(
         EC.presence_of_element_located(
@@ -899,20 +896,20 @@ def test_los_workflow(login):
 
         View_CRIF.click()
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
-        ).click()
-
-
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
-        ).click()
-
         time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        ).click()
+
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        ).click()
+
+        time.sleep(2)
 
         score_element = login.find_element(By.CLASS_NAME, "center-text")
 
@@ -927,20 +924,20 @@ def test_los_workflow(login):
 
         print("Assertion passed: Correct score is displayed.")
 
-        time.sleep(3)
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Update'])[1]"))
         ).click()
 
-        time.sleep(3)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//textarea[@placeholder='Enter Remarks']"))
@@ -957,7 +954,7 @@ def test_los_workflow(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(5)
+        time.sleep(3)
         home_button = WebDriverWait(login, 30).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[@id='kt_quick_user_toggle']//span[contains(@class, 'bname')]")
@@ -965,7 +962,7 @@ def test_los_workflow(login):
         )
         login.execute_script("arguments[0].click();", home_button)
 
-        time.sleep(2)
+        time.sleep(3)
         signout_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//a[normalize-space()='Sign Out']"))
         )
@@ -983,7 +980,7 @@ def test_los_workflow(login):
 
         login.find_element(By.XPATH, "//button[@type='submit']").click()
 
-        time.sleep(5)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//div[normalize-space()='Leads']"))
@@ -1002,13 +999,13 @@ def test_los_workflow(login):
                 (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(3)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter Location']"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         try:
             # Locate the input field using XPath
@@ -1053,11 +1050,11 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
         print("Successfully upload the file")
 
-        time.sleep(3)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[2]"))
@@ -1072,17 +1069,17 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test10mbvideo.mp4")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
         print("Successfully upload the file")
 
-        time.sleep(5)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//textarea[@placeholder='Enter Remarks']"))
         ).send_keys("Remarks from sale team")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Proceed'])[1]"))
@@ -1100,7 +1097,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//i[@class='pi pi-sign-in'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
@@ -1122,13 +1119,13 @@ def test_los_workflow(login):
                 (By.XPATH, "(//button[normalize-space()='Update'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@data-bs-target='#flush-collapseFinancials'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1144,11 +1141,11 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ prescription.pdf")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1168,7 +1165,7 @@ def test_los_workflow(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1188,7 +1185,7 @@ def test_los_workflow(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1204,11 +1201,11 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ prescription.pdf")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1224,11 +1221,11 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1244,11 +1241,11 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ prescription.pdf")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1264,7 +1261,7 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
         time.sleep(3)
@@ -1273,7 +1270,7 @@ def test_los_workflow(login):
                 (By.XPATH, "(//button[normalize-space()='Save Financial Documents'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", save_button)
-        time.sleep(1)
+        time.sleep(3)
         save_button.click()
         toast_message = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
@@ -1281,7 +1278,7 @@ def test_los_workflow(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(3)  
+        time.sleep(3) 
 
 
         wait.until(
@@ -1305,7 +1302,7 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
 
@@ -1323,7 +1320,7 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
-        time.sleep(2)
+        time.sleep(3)
         pyautogui.press("enter")
 
 
@@ -1340,7 +1337,7 @@ def test_los_workflow(login):
             os.path.join(current_working_directory, r"Extras\ test.png")
         )
         pyautogui.write(absolute_path)
-        time.sleep(3)
+        time.sleep(2)
         pyautogui.press("enter")
 
         wait.until(
@@ -1412,7 +1409,7 @@ def test_los_workflow(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//label[@for='input-file'][normalize-space()='Upload File'])[15]"))
@@ -1448,14 +1445,14 @@ def test_los_workflow(login):
         pyautogui.press("enter")
 
 
-        time.sleep(2)
+        time.sleep(3)
                 
         save_button1 = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Save Legal Documents'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", save_button1)
-        time.sleep(1)
+        time.sleep(2)
         save_button1.click()
 
         toast_message = WebDriverWait(login, 10).until(
@@ -1464,7 +1461,7 @@ def test_los_workflow(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(5)
+        time.sleep(3)
 
 
     except Exception as e:
@@ -1487,7 +1484,8 @@ def test_sales_officer_report(login):
         
         time.sleep(3)
         wait = WebDriverWait(login, 20)
-        print("Sales Officer report")
+        print("Login with Sales Officer")
+        print("Sales Officer Report")
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[normalize-space()='Processing Files'])[1]"))
@@ -1499,7 +1497,7 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[contains(text(),'View')])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
@@ -1517,7 +1515,7 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//button[@aria-controls='flush-collapseOne'])[1]"))
         ).click()   
 
-        time.sleep(2)
+        time.sleep(3)
 
         ####################Income####################
         income = wait.until(
@@ -1527,19 +1525,19 @@ def test_sales_officer_report(login):
 
         login.execute_script("arguments[0].scrollIntoView();", income)
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Income')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1562,20 +1560,20 @@ def test_sales_officer_report(login):
         Enter_value.clear()
         Enter_value.send_keys("120000")
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Income')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1606,13 +1604,13 @@ def test_sales_officer_report(login):
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Income')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1635,7 +1633,7 @@ def test_sales_officer_report(login):
         Enter_value_2.clear()
         Enter_value_2.send_keys("45000")
 
-        time.sleep(2)
+        time.sleep(3)
 
     #Expenses
 
@@ -1646,19 +1644,19 @@ def test_sales_officer_report(login):
 
         login.execute_script("arguments[0].scrollIntoView();", expense)
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Expense')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1681,20 +1679,20 @@ def test_sales_officer_report(login):
         Enter_value_3.clear()
         Enter_value_3.send_keys("2000")
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Expense')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1717,20 +1715,20 @@ def test_sales_officer_report(login):
         Enter_value_4.clear()
         Enter_value_4.send_keys("3000")
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Expense')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1753,7 +1751,7 @@ def test_sales_officer_report(login):
         Enter_value_5.clear()
         Enter_value_5.send_keys("18000")
 
-        time.sleep(2)
+        time.sleep(3)
 
 
         #COMMITMENTS
@@ -1765,19 +1763,19 @@ def test_sales_officer_report(login):
 
         login.execute_script("arguments[0].scrollIntoView();", commitments)
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Commitment')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1800,20 +1798,20 @@ def test_sales_officer_report(login):
         Enter_value_6.clear()
         Enter_value_6.send_keys("8000")
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Commitment')]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
@@ -1836,47 +1834,7 @@ def test_sales_officer_report(login):
         Enter_value_7.clear()
         Enter_value_7.send_keys("13000")
 
-        # time.sleep(2)
-
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[contains(@class, 'btn back-btn') and contains(@class, 'p-button') and contains(., 'Add Commitment')]"))
-        # ).click()
-
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//p-dropdown[@placeholder='Select Applicant/CoApplicant']//div[@class='text-left p-dropdown p-component']//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
-        # ).click()
-
-        # time.sleep(1)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//ul[@role='listbox']//li[@role='option'][1]"))
-        # ).click()
-
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-        # insurance_option = wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[normalize-space()='Insurance'])[1]"))
-        # )
-        # login.execute_script("arguments[0].scrollIntoView();", insurance_option)
-        # insurance_option.click()
-
-        # Enter_value_8 = wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//input[@placeholder='Enter Value'])[9]"))
-        # )
-        # Enter_value_8.clear()
-        # Enter_value_8.send_keys("24000")
-
-
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1889,7 +1847,7 @@ def test_sales_officer_report(login):
         )
         add_foir.click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -1897,7 +1855,7 @@ def test_sales_officer_report(login):
         ).click()
 
 
-        time.sleep(2)
+        time.sleep(3)
 
         per_foir = wait.until(
             EC.presence_of_element_located(
@@ -1911,7 +1869,7 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//textarea[@placeholder='Enter Remarks'])[1]"))
         ).send_keys("There are two types of clauses: independent and non-independent/interdependent. An independent clause realises a speech act such as a statement, a question, a command or an offer. A non-independent clause does not realise any act. A non-independent clause (simplex or complex) is usually logically related to other non-independent clauses. Together, they usually constitute a single independent clause (complex). For that reason, non-independent clauses are also called interdependent. For instance, the non-")
                            
-        time.sleep(4)
+        login.implicitly_wait(4)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Save Financials'])[1]"))
@@ -1934,7 +1892,7 @@ def test_sales_officer_report(login):
         login.execute_script("arguments[0].scrollIntoView();", cash_flow_report)
         cash_flow_report.click()
 
-        time.sleep(6 )
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//i[@class='fs-5 pi pi-times'])[1]"))
@@ -1964,7 +1922,7 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//input[@placeholder='Owner First Name'])[1]"))
         ).send_keys(first_name)
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Owner Last Name'])[1]"))
@@ -1983,13 +1941,13 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//input[@placeholder='Owner Address'])[1]"))
         ).send_keys("Thrissur, guruvayoor")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[19]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Father'])[1]"))
@@ -2000,36 +1958,36 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[20]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Agriculture Land'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='In Cent']"))
         ).send_keys("35")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Nature of deed'])[1]"))
         ).send_keys("None")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[21]"))
         ).click()
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Four Wheeler'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Road Width'])[1]"))
@@ -2043,59 +2001,59 @@ def test_sales_officer_report(login):
         )
 
         login.execute_script("arguments[0].scrollIntoView();", land)
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='District'])[1]"))
         ).send_keys("Thrissur")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Sub Reg.Office'])[1]"))
         ).send_keys("Kottapadi")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Taluk'])[1]"))
         ).send_keys("chavakad")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Corporation/Municipality/Panchayath'])[1]"))
         ).send_keys("Guruvayur")
 
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Village'])[1]"))
         ).send_keys("Kottapadi")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Desham'])[1]"))
         ).send_keys("Pokode")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Block No'])[1]"))
         ).send_keys("3")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Survey No'])[1]"))
         ).send_keys("302")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Area'])[1]"))
         ).send_keys("kottapadi")
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Classification'])[1]"))
         ).send_keys("Agriculture")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[22]"))
@@ -2103,26 +2061,26 @@ def test_sales_officer_report(login):
 
         login.find_element(By.XPATH, "(//span[normalize-space()='Plot'])[1]").click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[23]"))
         ).click()
-        time.sleep(1)
+        time.sleep(3)
         login.find_element(By.XPATH, "(//span[normalize-space()='Residential'])[1]").click()
-        time.sleep(1)
+        time.sleep(3)
         login.find_element(By.XPATH, "(//input[@placeholder='Usage Restriction'])[1]").send_keys("None")   
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[24]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         login.find_element(By.XPATH, "(//span[normalize-space()='Not Specified'])[1]").click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[25]"))
@@ -2242,7 +2200,7 @@ def test_sales_officer_report(login):
         login.find_element(By.XPATH, "(//input[@type='radio'])[25]").click()
         login.find_element(By.XPATH, "(//input[@type='radio'])[15]").click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//textarea[@placeholder='Enter Brief description about the derivation of the title of the Property / Remarks'])[1]"))
@@ -2280,7 +2238,7 @@ def test_sales_officer_report(login):
         login.execute_script("arguments[0].scrollIntoView();", legal_report)
         legal_report.click()
 
-        time.sleep(5)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[@class='pointer-cursor'])[1]"))
@@ -2295,7 +2253,7 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//button[normalize-space()='Generate Property Valuation'])[1]"))
         ).click()
 
-        time.sleep(5)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[@class='pointer-cursor'])[1]"))
@@ -2332,12 +2290,12 @@ def test_sales_officer_report(login):
                 (By.XPATH, "(//textarea[@type='text'])[1]"))
         ).send_keys("Document Collection Remarks")
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Proceed'])[1]"))
-        ).click()
+         ).click()
 
         toast_message = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
@@ -2346,7 +2304,7 @@ def test_sales_officer_report(login):
         print("Toast Message:", message)
 
 
-        time.sleep(5)
+        time.sleep(3)
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -2379,7 +2337,7 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//span[contains(text(),'View')])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@class='add-btn btn started ng-star-inserted'])[1]"))
@@ -2391,7 +2349,7 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//textarea[@placeholder='Enter Remarks'])[4]"))
         ).send_keys("Document Verification Remarks")
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component ng-star-inserted'])[1]"))
@@ -2401,10 +2359,10 @@ def test_credit_head_report(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-times'])[1]"))
+                (By.XPATH, "(//i[@class='pi pi-times'])[2]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -2416,7 +2374,7 @@ def test_credit_head_report(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
-        time.sleep(5)
+        time.sleep(3)
 
 # Credit Verification
 
@@ -2448,13 +2406,13 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//button[@aria-controls='flush-collapseParent'])[2]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@aria-controls='flush-collapseOne'])[2]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located(
@@ -2467,13 +2425,13 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//i[@class='fs-5 pi pi-times'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@aria-controls='flush-collapseTwo'])[2]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Generate Legal Validation'])[2]"))
@@ -2503,7 +2461,7 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//button[@aria-controls='flush-collapseFour'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Generate'])[1]"))
@@ -2528,7 +2486,7 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//i[@class='fs-5 pi pi-times'])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Save Cam Details'])[1]"))
@@ -2563,7 +2521,7 @@ def test_credit_head_report(login):
         message = toast_message.text
         print("Toast Message:", message)
         
-        time.sleep(5)
+        time.sleep(3)
         home_button = WebDriverWait(login, 30).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[@id='kt_quick_user_toggle']//span[contains(@class, 'bname')]")
@@ -2571,17 +2529,17 @@ def test_credit_head_report(login):
         )
         login.execute_script("arguments[0].click();", home_button)
 
-        time.sleep(2)
+        time.sleep(3)
         signout_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//a[normalize-space()='Sign Out']"))
         )
         login.execute_script("arguments[0].click();", signout_button)
 
-        time.sleep(2)
+        time.sleep(3)
         print("Login with Branch Manager")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
-        login_id.send_keys("001922")
+        login_id.send_keys("001923 ")
 
         password = login.find_element(By.XPATH, "//input[@id='password']")
         password.clear()
@@ -2621,26 +2579,26 @@ def test_credit_head_report(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(2)
+        time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@aria-controls ='flush-collapseParent'])[3]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@aria-controls='flush-collapseFour'])[2]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Generate CAM'])[2]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//i[@class='fs-5 pi pi-times'])[1]"))
@@ -2671,7 +2629,7 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//button[@class='p-element btn-primary me-2 p-button p-component ng-star-inserted'])[3]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
@@ -2690,7 +2648,7 @@ def test_credit_head_report(login):
                 (By.XPATH, "(//button[@class='add-btn btn btn-verified started ng-star-inserted'][normalize-space()='View'])[2]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Approved Report'])[1]"))

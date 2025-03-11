@@ -50,6 +50,7 @@ prod_sales_officer = "001921"
 prod_credit_head = "001922"
 prod_branch_manager = "001923"
 sales_order_scale = "556131"
+membership_scale = "556232"
 
 
 

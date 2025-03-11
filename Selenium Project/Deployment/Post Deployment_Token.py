@@ -88,7 +88,7 @@ def test_create_patient(login):
 
         time.sleep(5)
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//li[@id='p-highlighted-option']//div[@class='option-container ng-star-inserted'][normalize-space()='Consultation']"))
+            EC.element_to_be_clickable((By.XPATH, "(//div[@class='option-container ng-star-inserted'][normalize-space()='Consultation'])[2]"))
         ).click()
         
 

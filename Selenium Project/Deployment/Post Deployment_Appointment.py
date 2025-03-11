@@ -931,7 +931,7 @@ def test_create_patient(login):
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
-                    "//li[@aria-label='Consultation']//div[contains(text(),'Consultation')]",
+                    "(//div[@class='option-container ng-star-inserted'][normalize-space()='Consultation'])[2]",
                 )
             )
         ).click()
@@ -1703,7 +1703,7 @@ def test_create_patient(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Prescription']")
+                (By.XPATH, "(//button[normalize-space()='Prescription'])[1]")
             )
         ).click()
 
