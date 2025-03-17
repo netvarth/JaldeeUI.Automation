@@ -4,7 +4,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_WalkinOrder_completed")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url", [(scale_url)])
 def test_create_walkin_Order(login):
     try:
         time.sleep(5)
@@ -20,7 +20,7 @@ def test_create_walkin_Order(login):
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//div[@class='d-flex item-btn align-items-center']")
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='mdc-checkbox'])[2]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@class='mdc-checkbox'])[2]") 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']")
         time.sleep(2)
