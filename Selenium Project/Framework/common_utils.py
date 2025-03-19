@@ -46,6 +46,7 @@ branch_manager = "001922"
 password = "Jaldee01"
 main_scale = "5555556030"
 main_prod = "5550005540"
+scale_consumer = "9207206005"
 prod_sales_officer = "001921"
 prod_credit_head = "001922"
 prod_branch_manager = "001923"
@@ -82,56 +83,9 @@ def login(url, username, password):
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
-
-    # 5550005540  Netvarth123  5555556030 Jaldee01 5555998877 Jaldee01
-    # driver.find_element(By.ID, "loginId").send_keys("5550005540")
-    # driver.find_element(By.ID, "password").send_keys("Netvarth123")
-    # 5550005540  Netvarth123  5555556030  Jaldee01 
-
-    # driver.find_element(By.ID, "loginId").send_keys("5550005540")#Production
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
-    # driver.find_element(By.ID, "loginId").send_keys("001919")    #Scale LOS business head
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
-    driver.find_element(By.ID, "loginId").send_keys(username)    #Scale LOS sales officer
+    driver.find_element(By.ID, "loginId").send_keys(username)   
     driver.find_element(By.ID, "password").send_keys(password)
-
-    # driver.find_element(By.ID, "loginId").send_keys("001921")    Scale LOS Credit head
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
-    # driver.find_element(By.ID, "loginId").send_keys("001922")    Scale LOS branch manager
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
-    # driver.find_element(By.ID, "loginId").send_keys("5555523479")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    # driver.find_element(By.ID, "loginId").send_keys("5551111557")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    #   
-    # driver.find_element(By.ID, "loginId").send_keys("praven@0291")#Scal RBAC Basic User
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("422522")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-
-    # driver.find_element(By.ID, "loginId").send_keys("6030")     #test
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
- 
-    # driver.find_element(By.ID, "loginId").send_keys("5555550603")#Scal RBAC Admin, Provider
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("5555556030")#Scale
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("5555557799")#Whole
-    # driver.find_element(By.ID, "password").send_keys("Jaldee01")
-    # driver.find_element(By.ID, "loginId").send_keys("5555998844")#salesorder
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-    # driver.find_element(By.ID, "loginId").send_keys("login12347")#Production sales order
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
-  
-    # driver.find_element(By.ID, "loginId").send_keys("5555523479")
-    # driver.find_element(By.ID, "password").send_keys("Jaldee123")
     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
-    
-    # time.sleep(10)
     driver.implicitly_wait(5)
     yield driver
     driver.close() 
@@ -150,6 +104,7 @@ def con_login(url):
     )
     driver.get(url)
     driver.maximize_window()
+    time.sleep(5)
     yield driver
 
 

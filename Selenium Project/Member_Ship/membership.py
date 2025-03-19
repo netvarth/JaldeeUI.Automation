@@ -610,9 +610,6 @@ def test_los_workflow(login):
         print(f"Test Failed: {e}")  # Ensure failure reason is visible in logs
         raise e
     
-
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Convert Lead to Member and assign service")
 @pytest.mark.parametrize("url, username, password", [(scale_url, membership_scale, password)])
@@ -828,6 +825,69 @@ def test_Lead_to_Member(login):
 
         time.sleep(3)
 
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="error_screenshot",
+            attachment_type=AttachmentType.PNG,
+        )
+        print(f"Test Failed: {e}")  
+        raise e
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case:Add subscription plan")
+@pytest.mark.parametrize("url, username, password", [(scale_url, membership_scale, password)])
+def test_Add_subscription_plan(login):
+
+    try:
+        wait= WebDriverWait(login, 20)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Members'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                
+                (By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@type='button'])[7]"))
+        ).click()
+
+        # Define the target name
+        target_name = "Yearly"
+
+        while True:
+            try:
+                # Locate the row containing the target name
+                row_xpath = f"//tr[td/span[text()='{target_name}']]"
+                row_element = wait.until(EC.presence_of_element_located((By.XPATH, row_xpath)))
+
+                # Find the radio button inside that row and click it
+                radio_button = row_element.find_element(By.XPATH, ".//input[@type='radio']")
+                radio_button.click()
+                print(f"Radio button for '{target_name}' selected.")
+                break  # Exit the loop once found and clicked
+
+            except:
+                # If name is not found, try clicking the next page button
+                try:
+                    next_button = login.find_element(By.XPATH, "//svg[contains(@class, 'p-paginator-icon')]")  # Adjust selector if needed
+                    if not next_button.is_displayed():
+                        print(f"'{target_name}' not found in any page.")
+                        break
+                    next_button.click()
+                    wait.until(EC.staleness_of(row_element))  # Wait for page to update
+                except:
+                    print("Pagination button not found or end of pages reached.")
+                    break
 
     except Exception as e:
         allure.attach(
