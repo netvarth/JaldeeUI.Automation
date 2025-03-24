@@ -156,12 +156,21 @@ def test_signup_appointment_booking(login):
         )
     ).click()
     time.sleep(2)
-    salutation = generate_random_salutation()
-    salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-    salutation_option_element = WebDriverWait(login, 15).until(
-        EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
-    )
-    login.execute_script("arguments[0].click();", salutation_option_element)
+    # salutation = generate_random_salutation()
+    # salutation_option_xpath = f"//li[@aria-label='{salutation}']"
+    # salutation_option_element = WebDriverWait(login, 15).until(
+    #     EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
+    # )
+    # login.execute_script("arguments[0].click();", salutation_option_element)
+
+    options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
+        )
+    random.choice(options).click()
+
+
+
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
@@ -323,12 +332,11 @@ def test_signup_token_booking(login):
         )
     ).click()
     time.sleep(2)
-    salutation = generate_random_salutation()
-    salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-    salutation_option_element = WebDriverWait(login, 15).until(
-        EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
-    )
-    salutation_option_element.click()
+    options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
+        )
+    random.choice(options).click()
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
@@ -487,12 +495,11 @@ def test_signup_familymember_appointment_booking(login):
         )
     ).click()
     time.sleep(2)
-    salutation = generate_random_salutation()
-    salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-    salutation_option_element = WebDriverWait(login, 15).until(
-        EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
-    )
-    salutation_option_element.click()
+    options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
+        )
+    random.choice(options).click()
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
@@ -524,12 +531,11 @@ def test_signup_familymember_appointment_booking(login):
         )
     ).click()
     time.sleep(3)
-    salutation = generate_random_salutation()
-    salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-    salutation_option_element = WebDriverWait(login, 15).until(
-        EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
-    )
-    login.execute_script("arguments[0].click();", salutation_option_element)
+    options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
+        )
+    random.choice(options).click()
     time.sleep(3)
     consumer_data = create_consumer_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(consumer_data['first_name'])
@@ -732,12 +738,11 @@ def test_signup_token_familymember_booking(login):
         )
     ).click()
     time.sleep(3)
-    salutation = generate_random_salutation()
-    salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-    salutation_option_element = WebDriverWait(login, 15).until(
-        EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
-    )
-    salutation_option_element.click()
+    options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
+        )
+    random.choice(options).click()
     time.sleep(3)
     consumer_data = create_consumer_data()
     login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(consumer_data['first_name'])
@@ -905,12 +910,11 @@ def test_prepayment_appointment_booking(login):
         )
     ).click()
     time.sleep(2)
-    salutation = generate_random_salutation()
-    salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-    salutation_option_element = WebDriverWait(login, 15).until(
-        EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
-    )
-    salutation_option_element.click()
+    options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
+        )
+    random.choice(options).click()
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
@@ -1143,12 +1147,11 @@ def test_prepayment_token_booking(login):
         )
     ).click()
     time.sleep(2)
-    salutation = generate_random_salutation()
-    salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-    salutation_option_element = WebDriverWait(login, 15).until(
-        EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
-    )
-    salutation_option_element.click()
+    options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
+        )
+    random.choice(options).click()
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))

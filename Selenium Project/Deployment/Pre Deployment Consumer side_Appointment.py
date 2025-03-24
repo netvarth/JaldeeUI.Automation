@@ -26,7 +26,7 @@ def login():
     driver.maximize_window()
     yield driver
     driver.quit()  # Ensure the browser is closed properly
-
+ 
 
 def scroll_until_visible(login, element):
     #####Scroll the page until the given element is visible.#####

@@ -17,10 +17,11 @@ from selenium.common import TimeoutException
 import allure
 from allure_commons.types import AttachmentType
 from selenium.webdriver.support import expected_conditions as EC
-
-
+consumer_login_url = "https://scale.jaldee.com/RangSweets"
+username = ""
+password = ""
 @pytest.fixture()
-def consumer_login():
+def consumer_login(url):
 
     driver = webdriver.Chrome(
         service=ChromeService(

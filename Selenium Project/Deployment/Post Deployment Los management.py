@@ -20,7 +20,7 @@ def generate_number_with_zeros():
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic LOS work flow")
 @pytest.mark.parametrize("url, username, password", [(prod_url, prod_sales_officer, password)])
-def test_los_workflow(login):
+def test_los_workflow(login): 
 
     try:
         wait = WebDriverWait(login, 10)
@@ -28,7 +28,7 @@ def test_los_workflow(login):
         time.sleep(5)
         los_menu = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[3]"))
         )
         login.execute_script("arguments[0].click();", los_menu)
 
@@ -888,57 +888,57 @@ def test_los_workflow(login):
         ).click()
 
         time.sleep(3)
+# ########################
+        View_CRIF = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-file'])[1]"))
+        )                   
+        login.execute_script("arguments[0].scrollIntoView();", View_CRIF)
 
-        # View_CRIF = WebDriverWait(login, 20).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//i[@class='pi pi-file'])[1]"))
-        # )                   
-        # login.execute_script("arguments[0].scrollIntoView();", View_CRIF)
+        View_CRIF.click()
 
-        # View_CRIF.click()
-
-        # time.sleep(2)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
-        # ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        ).click()
 
 
-        # time.sleep(2)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
-        # ).click()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[contains(text(),'Generate')])[1]"))
+        ).click()
 
-        # time.sleep(3)
+        time.sleep(3)
 
-        # score_element = login.find_element(By.CLASS_NAME, "center-text")
+        score_element = login.find_element(By.CLASS_NAME, "center-text")
 
-        # # Get the displayed text
-        # score_text = score_element.text.strip()
+        # Get the displayed text
+        score_text = score_element.text.strip()
 
-        # # Expected text
-        # expected_text = "777/900"
+        # Expected text
+        expected_text = "777/900"
 
-        # # Assert the value is displayed correctly
-        # assert score_text == expected_text, f"Expected '{expected_text}', but got '{score_text}'"
+        # Assert the value is displayed correctly
+        assert score_text == expected_text, f"Expected '{expected_text}', but got '{score_text}'"
 
-        # print("Assertion passed: Correct score is displayed.")
+        print("Assertion passed: Correct score is displayed.")
 
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        # ).click()
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
 
-        # time.sleep(2)
+        time.sleep(2)
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//button[normalize-space()='Update'])[1]"))
-        # ).click()
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Update'])[1]"))
+        ).click()
 
-        # time.sleep(3)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//textarea[@placeholder='Enter Remarks']"))
@@ -2400,7 +2400,7 @@ def test_credit_head_report(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-times'])[1]"))
+                (By.XPATH, "(//i[@class='pi pi-times'])[2]"))
         ).click()
 
         time.sleep(2)
@@ -2682,6 +2682,20 @@ def test_credit_head_report(login):
         message = toast_message.text
         print("Toast Message:", message)
 
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@class='add-btn btn btn-verified started ng-star-inserted'][normalize-space()='View'])[2]"))
+        ).click()
+
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Approved Report'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -2694,5 +2708,30 @@ def test_credit_head_report(login):
     
 
 
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Sales officer report")
+@pytest.mark.parametrize("url, username, password", [(prod_url, prod_sales_officer, password)])
+def test_sales_officer_report(login):
+
+    try:
+
+        wait = WebDriverWait(login, 20)
+
+        
 
 
+
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+    
+    
+    

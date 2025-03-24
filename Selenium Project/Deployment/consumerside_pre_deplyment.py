@@ -146,20 +146,42 @@ def test_consumer_booking(con_login):
                 (By.XPATH, "//div[contains(text(),'My Bookings')]"))
         ).click()
         time.sleep(3)
-        show_more_buttons = con_login.find_elements(By.XPATH, "(//a[normalize-space()='Show more'])[1]")
+       # Click on Show More until all cards are loaded
+        while True:
+            show_more_buttons = con_login.find_elements(By.XPATH, "(//a[normalize-space()='Show more'])[1]")
+            if not show_more_buttons:
+                print("No more 'Show More' buttons available.")
+                break
 
-        if show_more_buttons:
             con_login.execute_script("arguments[0].scrollIntoView(true);", show_more_buttons[0])
-            time.sleep(1)  # Give time for any scroll effects to complete
+            time.sleep(1)
             show_more_buttons[0].click()
-            print("Show more button clicked.")
-        else:
-            print("Show more button not found. Skipping.")
+            print("Clicked on 'Show More' button.")
+            time.sleep(3)
 
-          
-           
+        # Find all booking cards
+        booking_cards = con_login.find_elements(By.XPATH, "//app-appt-card")
+
+        # Loop through the booking cards to find the matching Booking ID
+        for card in booking_cards:
+            try:
+                # Locate and extract the Booking ID text
+                booking_text_element = card.find_element(By.XPATH, ".//div[contains(@class,'cstmTxtInfo')]")
+                if booking_text_element.text.strip() == booking_id:
+                    print(f"Matching Booking ID found: {booking_id}")
+                    
+                    # Locate and click the more_horiz button
+                    more_horiz_button = card.find_element(By.XPATH, ".//button[.//mat-icon[text()='more_horiz']]")
+                    con_login.execute_script("arguments[0].scrollIntoView(true);", more_horiz_button)
+                    wait.until(EC.element_to_be_clickable((By.XPATH, ".//button[.//mat-icon[text()='more_horiz']]"))).click()
+                    
+                    print("More options button clicked successfully.")
+                    break
+            except Exception as e:
+                print(f"Error while verifying booking card or clicking more_horiz: {e}")
 
         time.sleep(5)
+
     except Exception as e:
         allure.attach(
             con_login.get_screenshot_as_png(),

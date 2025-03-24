@@ -3,6 +3,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_Online_Order")
+@pytest.mark.parametrize("url", [consumer_login_url])
 def test_create_Online_order(consumer_login):
     try:
         time.sleep(5)
@@ -35,12 +36,14 @@ def test_create_Online_order(consumer_login):
         EC.presence_of_element_located((By.XPATH, "//span[@aria-label='Select']"))
         ).click()
         time.sleep(2)
-        salutation = generate_random_salutation()
-        salutation_option_xpath = f"//li[@aria-label='{salutation}']"
-        salutation_option_element = WebDriverWait(consumer_login, 15).until(
-            EC.element_to_be_clickable((By.XPATH, salutation_option_xpath))
+
+        options = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@aria-label='Option List']//li[contains(@class, 'p-dropdown-item')]"))
         )
-        salutation_option_element.click()
+        random.choice(options).click()
+
+
         time.sleep(2)
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[1]"))
@@ -118,20 +121,40 @@ def test_create_Online_order(consumer_login):
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Pay']"))
         ).click()
         time.sleep(2)
-        WebDriverWait(consumer_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p[contains(@class,'ptm-paymode-name ptm-lightbold')]")
+
+        # WebDriverWait(consumer_login, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@src,'razorpay.com')]")))
+
+        consumer_login.switch_to.window(consumer_login.window_handles[-1])
+        time.sleep(2)
+        mobile_input = consumer_login.find_element(By.XPATH, "//div[text()='Mobile number']")
+        mobile_input.send_keys("9876543210")
+        time.sleep(2)
+        continue_button = consumer_login.find_element(By.XPATH, "//button[contains(text(), 'Continue')]")
+        continue_button.click()
+
+        time.sleep(3)
+        WebDriverWait(consumer_login, 10).until(EC.frame_to_be_available_and_switch_to_it((By.XPATH, "//iframe[contains(@src,'razorpay.com')]")))
+        time.sleep(5)
+        netbank_button =  WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[contains(text(), 'Netbanking')]"))
         )
-        ).click()
+        consumer_login.execute_script("arguments[0].click();", netbank_button)
+
+
+
         time.sleep(2)
         WebDriverWait(consumer_login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//p[normalize-space()='SBI']"))
+        EC.visibility_of_element_located((By.XPATH, "//span[contains(text(), 'State Bank of India')]"))
         ).click()
-        WebDriverWait(consumer_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH,"//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//img[contains(@class,'ptm-lock-img')]"))
-        ).click()
-         # Handle the popup window
+        
+        
+        time.sleep(2)
+        # WebDriverWait(consumer_login, 10).until(
+        # EC.presence_of_element_located(
+        #     (By.XPATH,"//div[contains(@class,'ptm-overlay-wrapper btn-enabled')]//img[contains(@class,'ptm-lock-img')]"))
+        # ).click()
+        # Handle the popup window
         main_window_handle = consumer_login.current_window_handle
         WebDriverWait(consumer_login, 10).until(EC.new_window_is_opened)
         all_window_handles = consumer_login.window_handles
@@ -144,7 +167,7 @@ def test_create_Online_order(consumer_login):
         consumer_login.switch_to.window(new_window_handle)
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Successful']"))
+            EC.presence_of_element_located((By.XPATH, "//button[@data-val='S' and contains(@class, 'success')]"))
         ).click()
         time.sleep(5)
         # Optionally, switch back to the main window

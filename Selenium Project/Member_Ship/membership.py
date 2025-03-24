@@ -239,27 +239,22 @@ def test_los_workflow(login):
         table_xpath = "(//tbody)[1]"
 
         # Extract Name (First row)
-        name_xpath = f"{table_xpath}//tr[1]//td//span[@class='fw-bold text-capitalize']"
-        subscription_xpath = f"{table_xpath}//tr[1]/td[2]/span" 
-        status_xpath = f"{table_xpath}//tr[1]/td[4]//button[contains(@class, 'dropdown-toggle')]"
+        name_xpath = f"{table_xpath}//tr[1]//td//span[@class='fw-bold text-capitalize']/span[@class='ng-star-inserted']"
+        status_xpath = f"{table_xpath}//tr[1]/td[3]//button[contains(@class, 'dropdown-toggle') and contains(@class, 'btn-outline-success')]"
 
         # Extract values
         saved_name = wait.until(EC.presence_of_element_located((By.XPATH, name_xpath))).text.strip()
-        saved_subscription = wait.until(EC.presence_of_element_located((By.XPATH, subscription_xpath))).text.strip()
         saved_status = wait.until(EC.presence_of_element_located((By.XPATH, status_xpath))).text.strip()
 
         # Expected values
         expected_name = saved_name
-        expected_subscription = saved_subscription
         expected_status = saved_status
 
         # Debugging print
         print(f"Extracted Name: '{saved_name}'")
-        print(f"Extracted Subscription: '{saved_subscription}'")
         print(f"Extracted Status: '{saved_status}'")
 
         assert saved_name == expected_name, f"❌ Name Mismatch: Extracted '{saved_name}', Expected '{expected_name}'"
-        assert saved_subscription == expected_subscription, f"❌ Subscription Mismatch: Extracted '{saved_subscription}', Expected '{expected_subscription}'"
         assert saved_status == expected_status, f"❌ Status Mismatch: Extracted '{saved_status}', Expected '{expected_status}'"
 
         print("\n✅ Test Passed! Extracted data matches expected values.")

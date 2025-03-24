@@ -21,7 +21,7 @@ def generate_number_with_zeros():
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic LOS work flow")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_officer, password)])
-def test_los_workflow(login):
+def    test_los_workflow(login):
 
     try:
         wait = WebDriverWait(login, 20)
@@ -29,7 +29,7 @@ def test_los_workflow(login):
         login.implicitly_wait(10)
         los_menu = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[3]"))
         )
         login.execute_script("arguments[0].click();", los_menu)
 
@@ -115,6 +115,7 @@ def test_los_workflow(login):
             EC.presence_of_element_located((By.XPATH, month_xpath))
         ).click()
 
+        time.sleep(1)
         # Select Day
         day = str(int(day))  # Ensuring day is in integer form
         day_xpath = f"//span[normalize-space()='{day}']"
@@ -2664,3 +2665,236 @@ def test_credit_head_report(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+    
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Credit Head Document Verification")
+@pytest.mark.parametrize("url, username, password", [(scale_url, credit_head, password)])
+def test_marketing_activity(login):
+
+    try:
+
+        wait = WebDriverWait(login, 20)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Marketing Activity')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Create Task'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(text(),'Telecalling')]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//textarea[@placeholder='Enter activity description']"))
+        ).send_keys("Call the customer for loan promotion")
+
+        time.sleep(2)
+        element = login.find_element(By.XPATH, "//input[@formcontrolname='areaName']")
+        element.send_keys("Round North")
+
+        time.sleep(2) 
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='fa fa-user'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Search by employee details'])[1]"))
+        ).send_keys("sures")
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[normalize-space()='Suresh'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Assign'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='mat-mdc-button-touch-target'])[1]"))
+        ).click()
+
+        [year,month,day] = add_days(15)
+        # print(f"Rescheduling to: {year}-{month}-{day}")
+        print(year)
+        print(month)
+        print(day)
+        month = month.upper()
+        time.sleep(2)
+        ploygon_point = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='mat-mdc-button-touch-target'])[2]"))
+        )
+        login.execute_script("arguments[0].click();", ploygon_point)
+
+        year_xpath = f"//span[normalize-space()='{year}']"
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, year_xpath))
+        ).click()
+        time.sleep(2)
+        month_xpath = f"//span[normalize-space()='{month}']"
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, month_xpath))
+        ).click()
+        time.sleep(5)
+        day_xpath = f"//span[normalize-space()='{day}']"
+       
+        time.sleep(1)
+        day_button = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, day_xpath))
+        )
+        login.execute_script("arguments[0].click();", day_button)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Save'])[1]"))
+        ).click()
+
+        snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+        time.sleep(3)
+
+        home_button = WebDriverWait(login, 30).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[@id='kt_quick_user_toggle']//span[contains(@class, 'bname')]")
+        )
+        )
+        login.execute_script("arguments[0].click();", home_button)
+
+        time.sleep(2)
+        signout_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//a[normalize-space()='Sign Out']"))
+        )
+        login.execute_script("arguments[0].click();", signout_button)
+
+        print("login with assigned user")
+        login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
+        login_id.clear()
+        login_id.send_keys("001920")
+
+        password = login.find_element(By.XPATH, "//input[@id='password']")
+        password.clear()
+        password.send_keys("Jaldee01")
+
+        login.find_element(By.XPATH, "//button[@type='submit']").click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Marketing Activity')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//tr)[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='text-dark btn-text'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Choose Files'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\Financial Sample.xlsx")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Upload'])[1]"))
+        ).click()
+
+        snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+        time.sleep(3)
+
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//i[@class='fa fa-eye'])[1]"))
+        # ).click()
+        # time.sleep(3)
+
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//i[@class='fa fa-times'])[1]"))
+        # ).click()
+ 
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//textarea[@placeholder='Enter remarks description'])[1]"))
+        ).send_keys("Task Compeleted")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter activity number'])[1]"))
+        ).send_keys("105")
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='No of data collected'])[1]"))
+        ).send_keys("68")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Complete'])[1]"))
+        ).click()
+
+        snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(# use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+        
+        
