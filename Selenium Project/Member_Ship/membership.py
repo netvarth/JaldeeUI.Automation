@@ -892,3 +892,118 @@ def test_Add_subscription_plan(login):
         )
         print(f"Test Failed: {e}")  
         raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case:Create the subscription type")
+@pytest.mark.parametrize("url, username, password", [(scale_url, membership_scale, password)])
+def test_create_subscription_type_days_payment(login):  
+
+    test_data = [
+        {"subscription_name_prefix": "Days", "reg_fee": "150", "renewal_fee": "50", "renewal_period": "1", "period_unit": "Days", "grace_period": "0"},
+        {"subscription_name_prefix": "Months", "reg_fee": "700", "renewal_fee": "75", "renewal_period": "5", "period_unit": "Months", "grace_period": "1"},
+        {"subscription_name_prefix": "Years", "reg_fee": "1300", "renewal_fee": "100", "renewal_period": "10", "period_unit": "Years", "grace_period": "2"},
+        {"subscription_name_prefix": "CalendarYear", "reg_fee": "1000", "renewal_fee": "100", "renewal_period": "10", "period_unit": "Calendar Year", "grace_period": "2"},
+        {"subscription_name_prefix": "CalendarMonth", "reg_fee": "500", "renewal_fee": "100", "renewal_period": "10", "period_unit": "Calendar Month", "grace_period": "2"},
+        {"subscription_name_prefix": "CalendarWeek", "reg_fee": "200", "renewal_fee": "100", "renewal_period": "5", "period_unit": "Calendar Week", "grace_period": "1"}
+    ]
+    try:
+        wait = WebDriverWait(login, 20)
+
+        for data in test_data:
+            # Click on Subscription Types
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Subscription Types')])[1]"))).click()
+            time.sleep(2)
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Create'])[1]"))).click()
+
+            # Generate unique subscription name
+            Subscription_Name = f"{data['subscription_name_prefix']}{str(uuid.uuid4())[:4]}"
+            time.sleep(2)
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Name'])[1]"))).send_keys(Subscription_Name)
+
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[1]"))).click()
+
+            reg_fee = wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Registration Fee'])[1]")))
+            reg_fee.clear()
+            reg_fee.send_keys(data['reg_fee'])
+
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//label[normalize-space()='Renewal'])[1]"))).click()
+            time.sleep(1)
+
+            select_number = wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Select Number'])[1]")))
+            select_number.clear()
+            select_number.send_keys(data['renewal_period'])
+
+            # Select Period Unit
+            time.sleep(1)
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+            option_xpath = f"//span[normalize-space()='{data['period_unit']}']"
+            wait.until(EC.presence_of_element_located((By.XPATH, option_xpath))).click()
+
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[2]"))).click()
+
+            renewal_fee = wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Renewal Fee'])[1]")))
+            renewal_fee.clear()
+            renewal_fee.send_keys(data['renewal_fee'])
+
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Grace Period'])[1]"))).send_keys(data['grace_period'])
+
+            wait.until(EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Save'])[1]"))).click()
+
+            # Check for success message
+            snack_bar = WebDriverWait(login, 10).until(EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal")))
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+            time.sleep(3)
+
+            # Validate the newly added subscription in the table
+            table_xpath = "(//tbody)[1]"
+            subscription_xpath = f"{table_xpath}//td/span[normalize-space()='{Subscription_Name}']"
+            status_xpath = f"{table_xpath}//td[span[normalize-space()='{Subscription_Name}']]/following-sibling::td[4]//button"
+
+            # Check if subscription name exists in the table
+            saved_name_element = wait.until(EC.presence_of_element_located((By.XPATH, subscription_xpath)))
+            saved_name = saved_name_element.text
+            assert saved_name == Subscription_Name, f"Expected: {Subscription_Name}, but got {saved_name}"
+
+            # Check if status is "Active"
+            status_element = wait.until(EC.presence_of_element_located((By.XPATH, status_xpath)))
+            status = status_element.text
+            assert status == "Active", f"Expected: 'Active', but got {status}"
+
+            print(f"Subscription '{Subscription_Name}' successfully created and verified!")
+
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="error_screenshot",
+            attachment_type=AttachmentType.PNG,
+        )
+        print(f"Test Failed: {e}")  
+        raise e
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case:")
+@pytest.mark.parametrize("url, username, password", [(scale_url, membership_scale, password)])
+def test_(login):
+
+    try:
+
+        wait = WebDriverWait(login, 20)
+
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="error_screenshot",
+            attachment_type=AttachmentType.PNG,
+        )
+        print(f"Test Failed: {e}")  
+        raise e
+
+
+    

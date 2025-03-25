@@ -31,7 +31,7 @@ from selenium.common.exceptions import TimeoutException
 
 
 
-
+test_url = "https://test.jaldee.com/business/"
 scale_url = "https://scale.jaldee.com/business/"
 prod_url = "https://www.jaldee.com/business/"
 localhost_url = "https://localhost:4200/business/"
@@ -52,7 +52,8 @@ prod_credit_head = "001922"
 prod_branch_manager = "001923"
 sales_order_scale = "556131"
 membership_scale = "556232"
-
+test_user = "Krishnadas"
+password_1 = "Netvarth1"
 
 
 def create_user_data():
