@@ -21,7 +21,7 @@ def generate_number_with_zeros():
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic LOS work flow")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_officer, password)])
-def    test_los_workflow(login):
+def test_los_workflow(login):
 
     try:
         wait = WebDriverWait(login, 20)

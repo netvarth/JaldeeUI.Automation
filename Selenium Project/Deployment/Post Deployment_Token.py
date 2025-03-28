@@ -81,15 +81,15 @@ def test_create_patient(login):
             EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#87')]"))
         ).click()
 
-        service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        element = login.find_element(By.XPATH, service_dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+        # element = login.find_element(By.XPATH, service_dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
 
-        time.sleep(5)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//div[@class='option-container ng-star-inserted'][normalize-space()='Consultation'])[2]"))
-        ).click()
+        # time.sleep(5)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "(//div[@class='option-container ng-star-inserted'][normalize-space()='Consultation'])[2]"))
+        # ).click()
         
 
         print("Select Service :  Consultation ")

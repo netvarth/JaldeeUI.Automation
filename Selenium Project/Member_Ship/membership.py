@@ -926,6 +926,7 @@ def test_create_subscription_type_days_payment(login):
             reg_fee = wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Registration Fee'])[1]")))
             reg_fee.clear()
             reg_fee.send_keys(data['reg_fee'])
+            
 
             wait.until(EC.presence_of_element_located((By.XPATH, "(//label[normalize-space()='Renewal'])[1]"))).click()
             time.sleep(1)

@@ -93,8 +93,6 @@ def login(url, username, password):
 
 
 
-
-
 @pytest.fixture()
 def con_login(url):
 
