@@ -1,6 +1,6 @@
 import uuid
 
-from Framework.common_utils import *
+from test_framework.testframework import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 

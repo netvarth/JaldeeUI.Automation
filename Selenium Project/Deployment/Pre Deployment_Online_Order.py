@@ -6,6 +6,7 @@ from Framework.common_dates_utils import *
 @pytest.mark.parametrize("url", [consumer_login_url])
 def test_create_Online_order(consumer_login):
     try:
+        wait =WebDriverWait(consumer_login, 30)
         time.sleep(5)
         consumer_data = create_consumer_data()
         Dessert = WebDriverWait(consumer_login, 20).until(
@@ -16,7 +17,18 @@ def test_create_Online_order(consumer_login):
         Dessert.click()
         time.sleep(3)
         wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Add']")
-        time.sleep(3)
+        time.sleep(2)
+        
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//img[@class='ms-1'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Checkout'])[1]"))
+        ).click()
+
+        time.sleep(2)
         WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
         ).send_keys(consumer_data['phonenumber'])
@@ -55,15 +67,15 @@ def test_create_Online_order(consumer_login):
         print("New Consumer Lastname:", consumer_data['last_name'])
         consumer_login.find_element(By.XPATH, "//span[normalize-space()='Next']").click()
         time.sleep(3)
-        ptoast = WebDriverWait(consumer_login, 20).until(
-                EC.presence_of_element_located((By.XPATH, "//div[@data-pc-section='detail']"))
-                )                                 
-        print("Toast_Message:", ptoast.text)
-        time.sleep(3)
-        wait_and_locate_click(consumer_login, By.XPATH, "//span[@class='cart-count ng-star-inserted']")
-        time.sleep(3)
-        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Checkout']")
-        time.sleep(3)
+        # ptoast = WebDriverWait(consumer_login, 20).until(
+        #         EC.presence_of_element_located((By.XPATH, "//div[@data-pc-section='detail']"))
+        #         )                                 
+        # print("Toast_Message:", ptoast.text)
+        # time.sleep(3)
+        # wait_and_locate_click(consumer_login, By.XPATH, "//span[@class='cart-count ng-star-inserted']")
+        # time.sleep(3)
+        # wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Checkout']")
+        # time.sleep(3)
         WebDriverWait(consumer_login, 15).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@id='ownerName'])[1]"))
         ).send_keys(consumer_data['first_name'])

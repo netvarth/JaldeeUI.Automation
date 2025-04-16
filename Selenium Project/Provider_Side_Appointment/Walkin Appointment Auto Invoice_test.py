@@ -17,12 +17,16 @@ def test_appt_autoinvoice(login):
     time.sleep(5)
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
-    ).click()
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+                )
+            )
+        ).click()
     time.sleep(3)
     element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+        EC.element_to_be_clickable((By.XPATH, "(//span[normalize-space(.)='Appointment'])[1]"))
     )
     element.click()
     time.sleep(3)

@@ -134,7 +134,7 @@ def test_booking(login):
         ).click()
         time.sleep(3)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
         ).send_keys("9207206005")
         # WebDriverWait(login, 10).until(
         #     EC.presence_of_element_located(

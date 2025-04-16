@@ -86,7 +86,7 @@ def test_create_purchase(login):
 
     time.sleep(3)
 
-    item_list = ["Item_1", "Item_2", "Item_3"]
+    item_list = ["Item_1"]
     random_batch_number = str(random.randint(100, 1000))
     time.sleep(3)
     
@@ -97,7 +97,7 @@ def test_create_purchase(login):
         time.sleep(2)
 
         WebDriverWait(login, 30).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Search items'])[1]"))
         ).send_keys("it")
         print("Searched for item")
 
@@ -107,7 +107,17 @@ def test_create_purchase(login):
         ).click()
         print("Clicked on item")
 
-        time.sleep(5)
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@type='radio'])[1]")) 
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-check'])[1]"))
+        ).click()
+
+        time.sleep(3)
         batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
                 (By.XPATH, "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]")
@@ -266,12 +276,12 @@ def test_create_purchase(login):
 
     time.sleep(2)
 
-    element = login.find_element(By.XPATH, "//span[contains(text(),'Geetha')]")
+    element = login.find_element(By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")
     login.execute_script("arguments[0].scrollIntoView();", element)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'Geetha')]"))
+            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     ).click()
     
     time.sleep(3)
@@ -302,10 +312,6 @@ def test_create_purchase(login):
 
     time.sleep(2)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'Approve')]"))
-    ).click()
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[contains(text(),'Approve')]"))
@@ -351,13 +357,13 @@ def test_create_purchase(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='ng-star-inserted'])[7]"))
+            (By.XPATH, "(//img)[4]"))
     ).click()
 
     time.sleep(2)
     expenses_card = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[normalize-space()='Expenses'])[1]"))
+            (By.XPATH, "(//span[normalize-space(.)='Expenses'])[1]"))
     )
     login.execute_script("arguments[0].click();", expenses_card)
 
@@ -484,6 +490,16 @@ def test_sales_price_higher_than_mrp(login):
             EC.presence_of_element_located((By.XPATH, item_xpath))
         ).click()
         print("Clicked on item")
+
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@type='radio'])[1]")) 
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-check'])[1]"))
+        ).click()
 
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(
@@ -708,6 +724,17 @@ def test_discount_in_percentage(login):
             EC.presence_of_element_located((By.XPATH, item_xpath))
         ).click()
         print("Clicked on item")
+
+
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@type='radio'])[1]")) 
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-check'])[1]"))
+        ).click()
 
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(

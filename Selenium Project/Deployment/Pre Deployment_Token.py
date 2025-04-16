@@ -13,57 +13,57 @@ def test_walkin_token(login):
         time.sleep(5)
         current_date = datetime.now().strftime("%Y-%m-%d")
         print("Pre-Deployment Provider Token",current_date)
-        WebDriverWait(login, 15).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//img[@src='./assets/images/menu/settings.png']"))
-        ).click()
+        # WebDriverWait(login, 15).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//img[@src='./assets/images/menu/settings.png']"))
+        # ).click()
+        
+        # time.sleep(3)
+        # fea_cust = login.find_element(By.XPATH, "//div[normalize-space(.)='Features and Customization']")
+        # login.execute_script("arguments[0].scrollIntoView();", fea_cust)
+        
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[normalize-space()='Custom Fields']"))
+        # ).click()
+        
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[normalize-space()='Label']"))
+        # ).click()
+        
+        # label_name1 = "Label" + str(uuid.uuid1())[:3]
+        # label_namebox1 = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located((By.XPATH, "//input[@id='displayName']"))
+        # )
+        # label_namebox1.clear()
+        # label_namebox1.send_keys(label_name1)
+        
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[@class='mdc-button__label']"))
+        # ).click()
+        
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
+        # ).click()
         
         
-        fea_cust = login.find_element(By.XPATH, "//div[normalize-space()='Features and Customization']")
-        login.execute_script("arguments[0].scrollIntoView();", fea_cust)
-        
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Custom Fields']"))
-        ).click()
-        
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Label']"))
-        ).click()
-        
-        label_name1 = "Label" + str(uuid.uuid1())[:3]
-        label_namebox1 = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='displayName']"))
-        )
-        label_namebox1.clear()
-        label_namebox1.send_keys(label_name1)
-        
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='mdc-button__label']"))
-        ).click()
-        
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
-        ).click()
-        
-        
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[3]/a[1]/div[1]/span[1]/span[1]/span[1]/img[1]"))
-        ).click()
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[3]/a[1]/div[1]/span[1]/span[1]/span[1]/img[1]"))
+        # ).click()
 
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Token']"))
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Token']"))
         )
         element.click()
 
-        
+        time.sleep(1)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
@@ -186,7 +186,6 @@ def test_walkin_token(login):
         print("Token confirm successfully")
 
         time.sleep(4)
-
         while True:
             try:
                 

@@ -4,7 +4,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_Store")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_sales(login):
     try:
         time.sleep(5)
@@ -71,7 +71,7 @@ def test_sales(login):
         EC.presence_of_element_located((By.XPATH, "//i[contains(@class, 'fa fa-arrow-left')]"))
         ) 
         back_arrow.click()
-        time.sleep(3)
+        time.sleep(3) 
         wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Catalogs')]") 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[@class='p-ripple p-element p-button p-component']")

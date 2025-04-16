@@ -54,6 +54,8 @@ sales_order_scale = "556131"
 membership_scale = "556232"
 test_user = "Krishnadas"
 password_1 = "Netvarth1"
+Lab_order_user = "556333"
+
 
 
 def create_user_data():

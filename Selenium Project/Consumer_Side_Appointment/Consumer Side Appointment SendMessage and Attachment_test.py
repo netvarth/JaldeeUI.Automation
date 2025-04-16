@@ -37,21 +37,25 @@ def login():
 
 def test_booking(login):
     # login.find_element(By.XPATH, "//span[contains(text(),'Book Now')]").click()
-
+    time.sleep(5)
     book_now_button = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[text()='Book Now']")))
-    book_now_button.click()
-
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space(.)='Book Now'])[1]")))
+    login.execute_script("arguments[0].click();", book_now_button)
+    
+    time.sleep(2)
     location_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]"))
     )
     location_button.click()
 
+    time.sleep(2)
     depart_button = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[@class='deptName ng-star-inserted'][normalize-space()='ENT']"))
     )
     depart_button.click()
+
+    time.sleep(2)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]"))
