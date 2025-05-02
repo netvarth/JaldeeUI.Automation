@@ -2290,7 +2290,7 @@ def test_prepaymentbooking(con_login):
         time.sleep(2)
         clickable_next_button = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(),'Next')]")
+                (By.XPATH, "(//button[normalize-space(.)='Next'])[1]")
             )
         )
 
@@ -2298,7 +2298,7 @@ def test_prepaymentbooking(con_login):
 
         time.sleep(2)
         WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
         ).send_keys("9207206005")
 
         con_login.find_element(

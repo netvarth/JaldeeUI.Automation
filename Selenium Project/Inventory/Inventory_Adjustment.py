@@ -72,7 +72,7 @@ def test_stock_adjustment(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Adjustment']"))
+            (By.XPATH, "(//span[normalize-space(.)='stock adjustment'])[1]"))
     ).click()
 
     wait.until(
@@ -94,17 +94,16 @@ def test_stock_adjustment(login):
     
 
     time.sleep(3)
-
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='fw-bold shadow p-1 pointer-cursor ng-star-inserted'])[1]"))
+            (By.XPATH, "(//span[normalize-space(.)='View'])[1]"))
     ).click()
-
+    time.sleep(1)
 
     # Capture the initial stock before adding the quantity
     initial_stock_element = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Item3')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+            (By.XPATH, "//div[contains(text(),'Item_6 Green')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
         )
     )
 
@@ -248,7 +247,7 @@ def test_stock_adjustment(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='fw-bold card shadow p-1 pointer-cursor'])[1]"))
+            (By.XPATH, "(//span[normalize-space(.)='View'])[1]"))
     ).click()
 
 
@@ -261,7 +260,7 @@ def test_stock_adjustment(login):
     # Capture the updated stock after clicking "View"
     updated_stock_element = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Item3')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+            (By.XPATH, "//div[contains(text(),'Item3Item_6 Green')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
         )
     )
     updated_stock = int(updated_stock_element.text.strip())
@@ -301,7 +300,7 @@ def test_stock_adjustment(login):
 
     element_geetha = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Geetha']"))
+        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", element_geetha)
 
@@ -314,25 +313,25 @@ def test_stock_adjustment(login):
 
     element_invcatalog = wait.until(
     EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='catalog1'])[1]"))
+        (By.XPATH, "(//span[normalize-space()='Catalog_Inventory'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
     element_invcatalog.click()
 
-    # wait.until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//input[@placeholder='Search items']"))
-    # ).send_keys("item")
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@placeholder='Search items']"))
+    ).send_keys("Item_6 Green")
 
-    # click_item = wait.until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//div[contains(text(),'Item3')]"))
-    # )
-
-    # try:
-    #     click_item.click()
-    # except:
-    #     login.execute_script("arguments[0].click();", click_item)
+    click_item = wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[contains(text(),'Item_6 Green')]"))
+    )
+    
+    try:
+        click_item.click()
+    except:
+        login.execute_script("arguments[0].click();", click_item)
 
     time.sleep(3)
     wait.until(

@@ -353,50 +353,49 @@ def test_lab_order_1(login):
 
         fake_india = Faker('en_IN')
 
-        # Generating individual components of the address
+        # Generate individual components
         street_address = fake_india.street_address()
         city = fake_india.city()
         state = fake_india.state()
         country = fake_india.country()
 
-        # Combine these components into a full address
+        # Combine into full address
         full_address = f"{street_address}, {city}, {state}, {country}"
         print(full_address)
 
 
-        time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@id='phone'])[1]"))
         ).send_keys(phonenumber)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[contains(text(),'Verify')])[1]"))
-        ).click()
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[contains(text(),'Verify')])[1]"))
+        # ).click()
 
-        otp_digits = "55555"
-        # Wait for the OTP input fields to be present
-        otp_inputs = WebDriverWait(login, 10).until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, "//input[contains(@id, 'otp_')]")
-            )
-        )
+        # otp_digits = "55555"
+        # # Wait for the OTP input fields to be present
+        # otp_inputs = WebDriverWait(login, 10).until(
+        #     EC.presence_of_all_elements_located(
+        #         (By.XPATH, "//input[contains(@id, 'otp_')]")
+        #     )
+        # )
 
-        # print("Number of OTP input fields:", len(otp_inputs))
-        # print(otp_inputs)
+        # # print("Number of OTP input fields:", len(otp_inputs))
+        # # print(otp_inputs)
 
-        for i, otp_input in enumerate(otp_inputs):
+        # for i, otp_input in enumerate(otp_inputs):
 
-            # print(i)
-            # print(otp_input)
-            otp_input.send_keys(otp_digits[i])
+        #     # print(i)
+        #     # print(otp_input)
+        #     otp_input.send_keys(otp_digits[i])
 
-        snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+        # snack_bar = WebDriverWait(login, 10).until(
+        #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        # )
+        # message = snack_bar.text
+        # print("Snack bar message:", message)
 
         time.sleep(1)
         wait.until(
@@ -456,17 +455,19 @@ def test_lab_order_1(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
+        Address_1 = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Address 1'])[1]"))
-        ).send_keys(full_address)
+        )
+        Address_1.send_keys(full_address)
 
-        time.sleep(1)
-        wait.until(
+        time.sleep(3)
+        Address_2 = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Enter Address 2'])[1]"))
-        ).send_keys(full_address)
-
+        )
+        Address_2.send_keys(full_address)
+ 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -523,7 +524,7 @@ def test_lab_order_1(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Send for Approval'])[1]"))
+                (By.XPATH, "(//button[normalize-space()='Create Clinic'])[1]"))
         ).click()
 
         toast_detail = WebDriverWait(login, 10).until(
@@ -533,13 +534,8 @@ def test_lab_order_1(login):
         print("toast_Message:", message)
 
         time.sleep(3)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element btn fw-bold p-button-light p-button p-component ng-star-inserted'][normalize-space()='View'])[1]"))
-        ).click() 
-
-        time.sleep(2)
+        
+    
         Assigned_status_element = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space(.)='Approval Pending'])[1]"))
@@ -548,11 +544,29 @@ def test_lab_order_1(login):
         print(f"Status: {Assigned_status_text}")
         assert Assigned_status_text == "Approval Pending", f"Expected 'Approval Pending' status, but got {Assigned_status_text}"
 
-        time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[normalize-space(.)='Approve'])[1]"))
-        ).click()  
+                (By.XPATH, "(//button[contains(text(),'Update')])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Send for Approval'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@class='p-element btn fw-bold p-button-light p-button p-component ng-star-inserted'][normalize-space()='View'])[1]"))
+        ).click() 
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[normalize-space(.)='Approve']"))
+        ).click()
 
         # time.sleep(2)
         # wait.until(
@@ -777,22 +791,14 @@ def test_lab_order_3(login):
                 (By.XPATH, "(//button[normalize-space()='Create'])[1]"))
         ).click()
 
-        try:
+    
+        snack_bar = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        )
+        message = snack_bar.text
+        print("Snack bar message:", message)
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
+       
         time.sleep(5)
 
 

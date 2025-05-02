@@ -49,12 +49,14 @@ main_prod = "5550005540"
 scale_consumer = "9207206005"
 prod_sales_officer = "001921"
 prod_credit_head = "001922"
-prod_branch_manager = "001923"
-sales_order_scale = "556131"
+prod_branch_manager = "001923" 
+# sales_order_scale = "556131"
+sales_order_scale = "55789"
 membership_scale = "556232"
 test_user = "Krishnadas"
 password_1 = "Netvarth1"
 Lab_order_user = "556333"
+
 
 
 
@@ -76,22 +78,73 @@ def create_user_data():
 
 
 @pytest.fixture()
-def login(url, username, password):
+# def login(url, username, password):
 
+#     driver = webdriver.Chrome(
+#         service=ChromeService(
+#             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+#         )
+#     )
+#     driver.get(url)
+#     driver.maximize_window()
+#     time.sleep(5)
+#     driver.find_element(By.ID, "loginId").send_keys(username)   
+#     driver.find_element(By.ID, "password").send_keys(password)
+#     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
+#     driver.implicitly_wait(5)
+#     yield driver
+#     driver.close()
+def login(url, username, password):
+    chrome_options = webdriver.ChromeOptions()
+    
+    # Disable password saving, password breach warnings, safety check popups
+    prefs = {
+        "credentials_enable_service": False,
+        "profile.password_manager_enabled": False,
+    }
+    chrome_options.add_experimental_option("prefs", prefs)
+    chrome_options.add_argument("--disable-features=PasswordManagerEnforcement,PasswordChange,SafeBrowsingProtection")
+    chrome_options.add_argument("--safebrowsing-disable-download-protection")
+    chrome_options.add_argument("--safebrowsing-disable-extension-blacklist")
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation", "load-extension"])
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+
+    # Initialize Chrome driver with options
     driver = webdriver.Chrome(
-        service=ChromeService(
-            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-        )
+        service=ChromeService(executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"),
+        options=chrome_options
     )
-    driver.get(url)
-    driver.maximize_window()
-    time.sleep(5)
-    driver.find_element(By.ID, "loginId").send_keys(username)   
-    driver.find_element(By.ID, "password").send_keys(password)
-    driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
-    driver.implicitly_wait(5)
-    yield driver
-    driver.close() 
+
+    wait = WebDriverWait(driver, 10)  # Explicit wait up to 10 seconds
+
+    def retry_find(by, locator, retries=3):
+        """Helper to find an element with retries"""
+        for attempt in range(retries):
+            try:
+                element = wait.until(EC.visibility_of_element_located((by, locator)))
+                return element
+            except (TimeoutException, NoSuchElementException):
+                if attempt == retries - 1:
+                    raise
+                time.sleep(1)  # Short wait before retry
+
+    try:
+        driver.get(url)
+        driver.maximize_window()
+
+        retry_find(By.ID, "loginId").send_keys(username)
+        retry_find(By.ID, "password").send_keys(password)
+        retry_find(By.XPATH, "//div[@class='mt-2']").click()
+
+        driver.implicitly_wait(5)
+
+        yield driver
+
+    finally:
+        driver.quit()
+
 
 
 
@@ -189,20 +242,29 @@ def scroll_to_element(login, element):
 
 
 # Generate a random billing address
+# def generate_random_billing_address():
+#     fake = Faker()
+#     street_address = fake.street_address()  # e.g., '1234 Elm St.'
+#     city = fake.city()  # e.g., 'Springfield'
+#     state = fake.state()  # e.g., 'Illinois'
+#     zip_code = fake.zipcode()  # e.g., '62704'
+#     country = fake.country()  # e.g., 'United States'
+    
+#     # Combine to form a full billing address
+#     # billing_address = f"{street_address}, {city}, {state} {zip_code}, {country}"
+    
+#     # return billing_address
+#     return {street_address}, {city}, {state}, {zip_code}, {country}
 def generate_random_billing_address():
     fake = Faker()
-    street_address = fake.street_address()  # e.g., '1234 Elm St.'
-    city = fake.city()  # e.g., 'Springfield'
-    state = fake.state()  # e.g., 'Illinois'
-    zip_code = fake.zipcode()  # e.g., '62704'
-    country = fake.country()  # e.g., 'United States'
-    
-    # Combine to form a full billing address
-    # billing_address = f"{street_address}, {city}, {state} {zip_code}, {country}"
-    
-    # return billing_address
-    return {street_address}, {city}, {state}, {zip_code}, {country}
+    street_address = fake.street_address()
+    city = fake.city()
+    state = fake.state()
+    zip_code = fake.zipcode()
+    country = fake.country()
 
+    billing_address = f"{street_address}, {city}, {state} {zip_code}, {country}"
+    return billing_address
 
 
 def generate_random_billing_india_address():

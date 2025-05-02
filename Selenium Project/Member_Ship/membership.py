@@ -125,7 +125,7 @@ def test_los_workflow(login):
         login.implicitly_wait(10)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Create Members')])[1]"))
+                (By.XPATH, "(//div[contains(text(),'Create Member')])[1]"))
         ).click()
 
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -169,7 +169,7 @@ def test_los_workflow(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
         ).click()
 
         time.sleep(1)
@@ -240,10 +240,11 @@ def test_los_workflow(login):
 
         # Extract Name (First row)
         name_xpath = f"{table_xpath}//tr[1]//td//span[@class='fw-bold text-capitalize']/span[@class='ng-star-inserted']"
-        status_xpath = f"{table_xpath}//tr[1]/td[3]//button[contains(@class, 'dropdown-toggle') and contains(@class, 'btn-outline-success')]"
+        status_xpath = f"{table_xpath}//tr[1]/td[4]//button[contains(@class, 'dropdown-toggle') and contains(@class, 'btn-outline-success')]"
 
         # Extract values
         saved_name = wait.until(EC.presence_of_element_located((By.XPATH, name_xpath))).text.strip()
+
         saved_status = wait.until(EC.presence_of_element_located((By.XPATH, status_xpath))).text.strip()
 
         # Expected values
@@ -336,32 +337,104 @@ def test_los_workflow(login):
         ).send_keys("A women s policy generally refers to a set of strategies and actions aimed at promoting the rights, well-being, and empowerment of women, addressing gender inequalities, and ensuring their full and equal participation in all aspects of life.")
 
         time.sleep(2)
+        # today = datetime.today()
+        # next_month = today + timedelta(days=30)
+
+        # current_day = today.day
+        # next_month_year = next_month.year
+        # next_month_name = next_month.strftime("%B")  # Full month name (e.g., "April")
+
+        # # Open Date Picker for Start Date
+        # start_date_picker = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, "(//input[@placeholder='Select Date'])[1]"))
+        # )
+        # start_date_picker.click()
+
+        # # # Select Current Day
+        # # current_day_element = wait.until(
+        # #     EC.element_to_be_clickable((By.XPATH, f"//td[normalize-space()='{current_day}']"))
+        # # )
+        # # current_day_element.click()
+
+        # # Select the correct day based on 30 days from today
+        # next_day = next_month.day
+
+        # # Handle cases where the 30-days-later date doesn't exist in the calendar
+        # next_month_day_element = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, f"//td[normalize-space()='{next_day}']"))
+        # )
+        # next_month_day_element.click()
+
+        # # Open Date Picker for End Date (After One Month)
+        # end_date_picker = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, "(//input[@placeholder='Select Date'])[2]"))
+        # )
+        # end_date_picker.click()
+        # time.sleep(5)
+        # # Navigate to the next month if necessary
+        # while True:
+        #     displayed_month = wait.until(
+        #         EC.presence_of_element_located((By.CLASS_NAME, "p-datepicker-month"))
+        #     ).text
+        #     displayed_year = wait.until(
+        #         EC.presence_of_element_located((By.CLASS_NAME, "p-datepicker-year"))
+        #     ).text
+
+        #     if displayed_month == next_month_name and str(displayed_year) == str(next_month_year):
+        #         break
+
+        #     # Click "Next" button to move to next month
+        #     next_button = wait.until(
+        #         EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-next"))
+        #     )
+        #     next_button.click()
+
+        # # Select the same day in the next month
+        # next_month_day_element = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, f"//td[normalize-space()='{current_day}']"))
+        # )
+        # next_month_day_element.click()
+
+        
+
+        # Get today's date and target date 30 days later
         today = datetime.today()
-        next_month = today + timedelta(days=30)
+        start_day = today.day
+        start_month = today.strftime("%B")
+        start_year = str(today.year)
 
-        current_day = today.day
-        next_month_year = next_month.year
-        next_month_name = next_month.strftime("%B")  # Full month name (e.g., "April")
+        end_date = today + timedelta(days=30)
+        end_day = end_date.day
+        end_month = end_date.strftime("%B")
+        end_year = str(end_date.year)
 
-        # Open Date Picker for Start Date
+       
+
+        
+        # --- START DATE SELECTION ---
+
+        # Open the first date picker (start date)
         start_date_picker = wait.until(
             EC.element_to_be_clickable((By.XPATH, "(//input[@placeholder='Select Date'])[1]"))
         )
         start_date_picker.click()
 
-        # Select Current Day
-        current_day_element = wait.until(
-            EC.element_to_be_clickable((By.XPATH, f"//td[normalize-space()='{current_day}']"))
+        # No need to navigate since it's today — just select today's date
+        start_day_element = wait.until(
+            EC.element_to_be_clickable((By.XPATH, f"//td[normalize-space()='{start_day}']"))
         )
-        current_day_element.click()
+        start_day_element.click()
 
-        # Open Date Picker for End Date (After One Month)
+        # --- END DATE SELECTION ---
+
+        # Open the second date picker (end date)
         end_date_picker = wait.until(
             EC.element_to_be_clickable((By.XPATH, "(//input[@placeholder='Select Date'])[2]"))
         )
         end_date_picker.click()
-        time.sleep(5)
-        # Navigate to the next month if necessary
+
+        time.sleep(2)
+        # Navigate to the correct month/year for the end date
         while True:
             displayed_month = wait.until(
                 EC.presence_of_element_located((By.CLASS_NAME, "p-datepicker-month"))
@@ -370,22 +443,31 @@ def test_los_workflow(login):
                 EC.presence_of_element_located((By.CLASS_NAME, "p-datepicker-year"))
             ).text
 
-            if displayed_month == next_month_name and str(displayed_year) == str(next_month_year):
+            if displayed_month == end_month and displayed_year == end_year:
                 break
 
-            # Click "Next" button to move to next month
             next_button = wait.until(
                 EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-next"))
             )
             next_button.click()
+            time.sleep(1)
 
-        # Select the same day in the next month
-        next_month_day_element = wait.until(
-            EC.element_to_be_clickable((By.XPATH, f"//td[normalize-space()='{current_day}']"))
+        valid_days = wait.until(
+            EC.presence_of_all_elements_located((
+                By.XPATH,
+                f"//td[not(contains(@class, 'p-datepicker-other-month'))]//span[normalize-space()='{end_day}' and not(contains(@class, 'p-disabled'))]"
+            ))
         )
-        next_month_day_element.click()
 
-        print(f"✅ Validity set from {today.strftime('%Y-%m-%d')} to {next_month.strftime('%Y-%m-%d')}")
+        # Click the first visible, valid day
+        for day in valid_days:
+            if day.is_displayed():
+                day.click()
+                print(f"✅ Clicked end date: {end_day}")
+                break
+
+        time.sleep(3)
+
 
         wait.until(
             EC.presence_of_element_located(
@@ -409,7 +491,8 @@ def test_los_workflow(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[@class='p-checkbox-box'])[1]"))
         ).click()
-        
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Create'])[1]"))
@@ -701,6 +784,12 @@ def test_Lead_to_Member(login):
                 (By.XPATH, "(//span[normalize-space()='Convert to Member'])[1]"))
         ).click()
 
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Member ID'])[1]"))
+        ).send_keys(cons_manual_id)
+
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -709,8 +798,9 @@ def test_Lead_to_Member(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+        ).click() 
+
 
         Sub_type1 = wait.until(
             EC.presence_of_element_located(
@@ -857,31 +947,42 @@ def test_Add_subscription_plan(login):
         ).click()
 
         # Define the target name
+        # target_name_xpath = "//td[@class='ng-star-inserted']//span[@class='ng-star-inserted'][normalize-space()='Yearly']"
+        # element = login.find_element(By.XPATH, target_name_xpath)
         target_name = "Yearly"
+        
 
         while True:
             try:
-                # Locate the row containing the target name
-                row_xpath = f"//tr[td/span[text()='{target_name}']]"
-                row_element = wait.until(EC.presence_of_element_located((By.XPATH, row_xpath)))
-
-                # Find the radio button inside that row and click it
+                row_xpath = f"//td[@class='ng-star-inserted']//span[@class='ng-star-inserted'][normalize-space()='{target_name}']"
+                row_element = wait.until(
+                    EC.presence_of_element_located((By.XPATH, row_xpath))
+                )
                 radio_button = row_element.find_element(By.XPATH, ".//input[@type='radio']")
                 radio_button.click()
                 print(f"Radio button for '{target_name}' selected.")
-                break  # Exit the loop once found and clicked
+                break
 
-            except:
-                # If name is not found, try clicking the next page button
+            except Exception as e:
+                # Debug print plans on current page
+                plan_names = login.find_elements(By.XPATH, "//tr/td/span")
+                print("Plans on this page:")
+                for p in plan_names:
+                    print("-", p.text.strip())
+
+                # Try to go to next page
                 try:
-                    next_button = login.find_element(By.XPATH, "//svg[contains(@class, 'p-paginator-icon')]")  # Adjust selector if needed
-                    if not next_button.is_displayed():
-                        print(f"'{target_name}' not found in any page.")
-                        break
+                    next_button = wait.until(
+                        EC.element_to_be_clickable((
+                            By.XPATH,
+                            "(//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted'])[3]"
+                        ))
+                    )
+                    login.execute_script("arguments[0].scrollIntoView(true);", next_button)
                     next_button.click()
-                    wait.until(EC.staleness_of(row_element))  # Wait for page to update
+                    wait.until(EC.presence_of_element_located((By.XPATH, "//tr")))
                 except:
-                    print("Pagination button not found or end of pages reached.")
+                    print("Pagination ended or next button not clickable.")
                     break
 
     except Exception as e:

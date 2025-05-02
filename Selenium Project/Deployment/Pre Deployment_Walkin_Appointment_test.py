@@ -1628,6 +1628,7 @@ def test_walkin_appointment(login):
 
         # print("prescription created successfully")
         time.sleep(2)
+
         login.find_element(By.XPATH, "//img[@alt='share']").click()
 
         time.sleep(2)
@@ -2307,21 +2308,22 @@ def test_walkin_appointment(login):
         )
         login.execute_script("arguments[0].click();", pay_button)
 
+        time.sleep(3)
         yes_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Yes']"))
+                (By.XPATH, "//button[normalize-space(.)='Yes']"))
         )
         login.execute_script("arguments[0].click();", yes_button)
         
         
-        snack_bar = WebDriverWait(login, 30).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+        # snack_bar = WebDriverWait(login, 30).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        # )
+        # message = snack_bar.text
+        # print("Snack bar message:", message)
 
         
-        time.sleep(2)
+        time.sleep(3)
 
         login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
 

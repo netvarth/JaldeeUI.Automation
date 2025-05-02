@@ -638,7 +638,7 @@ def test_Prescription_2(login):
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//span[normalize-space()='Appointment']",
+                    "//span[normalize-space(.)='Appointment']",
                 )
             )
         )
@@ -1054,7 +1054,7 @@ def test_Prescription_3(login):
                 (By.XPATH, "//span[normalize-space()='Prescriptions']"))
         ).click()
 
-
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))

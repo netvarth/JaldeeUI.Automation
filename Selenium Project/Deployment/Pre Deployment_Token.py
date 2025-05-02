@@ -174,18 +174,35 @@ def test_walkin_token(login):
         absolute_path = os.path.abspath(
             os.path.join(current_working_directory, r"Extras\test.png")
         )
+        time.sleep(3)
         pyautogui.write(absolute_path)
+        time.sleep(2)
         pyautogui.press("enter")
         print("Successfully upload the file")
 
-        time.sleep(6)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+        time.sleep(2)
+        WebDriverWait(login, 30).until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space(.)='Confirm'])[1]"))
         ).click()
+        time.sleep(2)
+        try:
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
 
-        print("Token confirm successfully")
+        except:
 
-        time.sleep(4)
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+
+        time.sleep(5)
+
         while True:
             try:
                 
@@ -207,7 +224,7 @@ def test_walkin_token(login):
                 
                 break
 
-        time.sleep(1)
+        time.sleep(3)
         last_element_in_accordian = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )

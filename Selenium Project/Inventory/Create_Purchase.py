@@ -983,6 +983,16 @@ def test_discount_in_amount(login):
         ).click()
         print("Clicked on item")
 
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@type='radio'])[1]")) 
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-check'])[1]"))
+        ).click()
+
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable(
@@ -1237,6 +1247,7 @@ def test_create_purchase_1(login):
                 (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
         ).click()
 
+        
 
         time.sleep(5)
         batch_number = WebDriverWait(login, 20).until(

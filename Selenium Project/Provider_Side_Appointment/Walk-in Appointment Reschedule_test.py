@@ -272,7 +272,7 @@ def  test_reschedule_anotherday(login):
     try:
         time.sleep(5)
         WebDriverWait(login, 20).until(
-            EC.element_to_be_clickable(
+            EC.presence_of_element_located(
                 (
                     By.XPATH,
                     "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
@@ -281,7 +281,7 @@ def  test_reschedule_anotherday(login):
         ).click()
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
+            EC.presence_of_element_located(
                 (
                     By.XPATH,
                     "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
@@ -541,7 +541,7 @@ def  test_reschedule_anotherday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer take prepayment booking and Provider reschedule it")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/visionhospital/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
 def test_prepaymentbooking_reschedule(con_login):
     try:
 
@@ -634,7 +634,7 @@ def test_prepaymentbooking_reschedule(con_login):
 
         time.sleep(2)
         WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
         ).send_keys("9207206005")
 
         con_login.find_element(
@@ -1219,7 +1219,7 @@ def test_reschedule_180day(login):
   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer reschedule it next month")
-@pytest.mark.parametrize("url", ["https://scale.jaldeetest.in/visionhospital/"])
+@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
 def test_nextmonth_reschedule(con_login): 
     try:
 
@@ -1312,7 +1312,7 @@ def test_nextmonth_reschedule(con_login):
 
         time.sleep(2)
         WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
         ).send_keys("9207206005")
 
         con_login.find_element(

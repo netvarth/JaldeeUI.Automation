@@ -529,50 +529,91 @@ def test_los_workflow(login):
         ).send_keys(last_name)
 
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
+        # time.sleep(2)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
+        # ).click()
         
-        time.sleep(3)
+        # time.sleep(3)
 
-        login.find_element(By.XPATH, "//button[normalize-space()='2025']").click()
+        # login.find_element(By.XPATH, "//button[normalize-space()='2025']").click()
 
-        backward_arrow = WebDriverWait(login, 10).until(
+        # backward_arrow = WebDriverWait(login, 10).until(
+        #     EC.element_to_be_clickable(
+        #         (By.XPATH, "//button[contains(@class, 'p-ripple') and contains(@class, 'p-element') and contains(@class, 'p-datepicker-prev') and contains(@class, 'p-link') and contains(@class, 'ng-star-inserted')]")
+        #     )
+        # )
+
+        # # Clicking backward arrows 4 times to navigate to the correct year
+        # for _ in range(4):
+        #     backward_arrow.click()
+
+        # # Generate Date of Birth (DOB)
+        # [year, month, day] = Generate_dob()
+        # print(f"Year: {year}, Month: {month}, Day: {day}")
+
+        # # Select Year
+        # year_xpath = f"//span[normalize-space()='{year}']"
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, year_xpath))
+        # ).click()
+
+        # # Select Month
+        # month_xpath = f"//span[normalize-space()='{month}']"
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, month_xpath))
+        # ).click()
+
+        # # Select Day
+        # day = str(int(day))  # Ensuring day is in integer form
+        # day_xpath = f"//span[normalize-space()='{day}']"
+        # select_day = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, day_xpath))
+        # )
+        # login.execute_script("arguments[0].click();",select_day)
+         # Open date picker
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+            )
+        ).click()
+
+        # Open year picker
+        wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//button[contains(@class, 'p-ripple') and contains(@class, 'p-element') and contains(@class, 'p-datepicker-prev') and contains(@class, 'p-link') and contains(@class, 'ng-star-inserted')]")
+                (By.XPATH, "//button[normalize-space()='2025']")
+            )
+        ).click()
+
+        # Generate DOB
+        year, month, day = Generate_dob()
+        print(f"Year: {year}, Month: {month}, Day: {day}")
+
+        # Click backward arrow if necessary (assuming you always want to go back 4 times)
+        backward_arrow = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[contains(@class, 'p-datepicker-prev')]")
             )
         )
-
-        # Clicking backward arrows 4 times to navigate to the correct year
         for _ in range(4):
             backward_arrow.click()
 
-        # Generate Date of Birth (DOB)
-        [year, month, day] = Generate_dob()
-        print(f"Year: {year}, Month: {month}, Day: {day}")
-
-        # Select Year
+        # Select year
         year_xpath = f"//span[normalize-space()='{year}']"
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, year_xpath))
-        ).click()
+        wait.until(EC.element_to_be_clickable((By.XPATH, year_xpath))).click()
 
-        # Select Month
+        # Select month
         month_xpath = f"//span[normalize-space()='{month}']"
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, month_xpath))
-        ).click()
+        wait.until(EC.element_to_be_clickable((By.XPATH, month_xpath))).click()
 
-        # Select Day
-        day = str(int(day))  # Ensuring day is in integer form
+        # Select day
+        day = str(int(day))  # remove leading zeros if any
         day_xpath = f"//span[normalize-space()='{day}']"
-        select_day = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, day_xpath))
-        )
-        login.execute_script("arguments[0].click();",select_day)
-        
+        select_day = wait.until(EC.presence_of_element_located((By.XPATH, day_xpath)))
+
+        # Using execute_script for safe clicking
+        login.execute_script("arguments[0].click();", select_day)
        
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -1336,7 +1377,7 @@ def test_los_workflow(login):
         # Construct the absolute path
         absolute_path = os.path.abspath(
             os.path.join(current_working_directory, r"Extras\ test.png")
-        )
+        ) 
         pyautogui.write(absolute_path)
         time.sleep(2)
         pyautogui.press("enter")

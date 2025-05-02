@@ -380,6 +380,7 @@ def test_create_patient(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reconfirmation")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+  
 def test_patient_Reconfirmation(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(

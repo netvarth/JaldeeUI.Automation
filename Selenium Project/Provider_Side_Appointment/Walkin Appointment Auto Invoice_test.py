@@ -511,15 +511,15 @@ def test_appt_autoinvoice3(login):
     # Add the item and apply the discount in the Invoice and Share the payment link
     print("Add item, Apply the discount and Share the payment link")
     WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
+        EC.presence_of_element_located(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
     ).click()
 
     element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
     )
     element.click()
-    time.sleep(3)
+    time.sleep(3) 
     wait = WebDriverWait(login, 10)
     element_appoint = wait.until(EC.presence_of_element_located(
         (By.XPATH, "//b[contains(text(),'Create New Patient')]")))
@@ -1730,13 +1730,13 @@ def test_appt_autoinvoice10(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
     WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
+        EC.presence_of_element_located(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
     ).click()
 
     time.sleep(3)
     element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
     )
     element.click()
     time.sleep(3)
@@ -1941,13 +1941,13 @@ def test_appt_autoinvoice11(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(2)
     WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
+        EC.presence_of_element_located(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
     ).click()
 
     time.sleep(3)
     element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
     )
     element.click()
     time.sleep(3)
@@ -2163,12 +2163,12 @@ def test_appt_autoinvoice12(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
+        EC.presence_of_element_located(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
     ).click()
     time.sleep(3)
     element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
     )
     element.click()
     time.sleep(3)
@@ -2373,12 +2373,12 @@ def test_appt_autoinvoice13(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
+        EC.presence_of_element_located(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
     ).click()
     time.sleep(3)
     element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
     )
     element.click()
     time.sleep(3)
@@ -2551,12 +2551,12 @@ def test_appt_autoinvoice14(login):
     first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
     time.sleep(5)
     WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
+        EC.presence_of_element_located(
             (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
     ).click()
     time.sleep(3)
     element = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
     )
     element.click()
     time.sleep(3)

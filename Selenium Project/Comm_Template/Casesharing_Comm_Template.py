@@ -4,7 +4,7 @@ from selenium.common import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Case_Sharing")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [( scale_url, main_scale, password)])
 def test_case_sharing(login):
     try:
         time.sleep(5)

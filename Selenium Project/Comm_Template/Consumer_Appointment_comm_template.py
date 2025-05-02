@@ -11,11 +11,11 @@ from Framework.common_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create confirmation template-Consumer")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [( scale_url, main_scale, password)])
 def test_appt_confirmation_con(login):
     
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Settings')]"))
+        EC.presence_of_element_located((By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -254,8 +254,7 @@ def test_appt_confirmation_con(login):
     element.click()
 
     service_option_xpath = (
-        "(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-        "Consultation'])[2]"
+        "//li[@aria-label='Naveen Consultation']//div[1]"
     )
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.XPATH, service_option_xpath))
@@ -309,11 +308,11 @@ def test_appt_confirmation_con(login):
 ##############################################################################################################################################################   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Reminder template-Consumer")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [( scale_url, main_scale, password)])
 def test_appt_reminder_con(login):
     
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Settings')]"))
+        EC.presence_of_element_located((By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]"))
     ).click()
 
     WebDriverWait(login, 10).until(

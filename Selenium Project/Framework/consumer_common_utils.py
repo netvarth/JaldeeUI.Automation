@@ -17,9 +17,12 @@ from selenium.common import TimeoutException
 import allure
 from allure_commons.types import AttachmentType
 from selenium.webdriver.support import expected_conditions as EC
+
+sales_order_consumer_scale_url = "https://scale.jaldee.com/33b4wj0/"
 consumer_login_url = "https://scale.jaldee.com/RangSweets"
-username = ""
-password = ""
+
+# username = ""
+# password = ""
 @pytest.fixture()
 def consumer_login(url):
 

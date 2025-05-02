@@ -169,7 +169,7 @@ def test_item_creation(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test for item filter item id ")
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_filter(login):
 
     time.sleep(3)

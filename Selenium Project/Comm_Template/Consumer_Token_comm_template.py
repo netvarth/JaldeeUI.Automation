@@ -11,11 +11,12 @@ from Framework.common_utils import *
  
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create confirmation template")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [( scale_url, main_scale, password)])
 def test_token_confirmation(login):
     
+    time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Settings')]"))
+        EC.presence_of_element_located((By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]"))
     ).click()
 
     WebDriverWait(login, 10).until(
