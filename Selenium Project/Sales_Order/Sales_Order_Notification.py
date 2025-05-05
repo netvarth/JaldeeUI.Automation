@@ -16,22 +16,22 @@ def test_sales_order_1(consumer_login):
         wait= WebDriverWait(consumer_login, 30)
 
         Scroll = wait.until(
-            EC.presence_of_element_located(
+            EC.visibility_of_element_located(
                 (By.XPATH, "(//h2[normalize-space(.)='Cakes'])[1]"))
         )
 
-        consumer_login.execute_script("arguments[0].scrollIntoView();", Scroll)
+        # consumer_login.execute_script("arguments[0].scrollIntoView();", Scroll)
 
-        time.sleep(2)
+        time.sleep(4)
 
         wait.until(
-            EC.presence_of_element_located(
+            EC.element_to_be_clickable(
                 (By.XPATH, "(//div[normalize-space(.)='Chocolate Cake'])[1]"))
         ).click()
 
         time.sleep(3)
         wait.until(
-            EC.presence_of_element_located(
+            EC.element_to_be_clickable(
                 (By.XPATH, "(//button[normalize-space()='Buy it now'])[1]"))
         ).click()
 
@@ -151,7 +151,7 @@ def test_sales_order_1(consumer_login):
     
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("After consumer confirmed the order and payment done, send the invoice to the consumer")
+@allure.title("After consumer confirmed the order and payment made, provider send the invoice to the consumer")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_sales_order_2(login):
 
@@ -455,7 +455,7 @@ def test_sales_order_4(consumer_login):
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("After consumer confirmed the order and payment done, send the invoice to the consumer")
+@allure.title("Provider cancel the order after consumer confirmed the order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_sales_order_5(login):
     try:
@@ -494,6 +494,382 @@ def test_sales_order_5(login):
 
         time.sleep(5)
         
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            consumer_login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Provider take the walkin order and cancel the order from provider side")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_sales_order_6(login):
+    try:
+
+        wait = WebDriverWait(login, 30)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Search customers'])[1]"))
+        ).send_keys("9207206005")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Id : 1'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(.)='Next'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
+        ).send_keys("Cake")
+
+        time.sleep(2)
+        option_1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Chocolate cake')])[1]"))
+        )
+        login.execute_script("arguments[0].click();", option_1)    
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space(.)='2 kg'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(text())='Select Item'])[2]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(.)='Confirm Order'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(.)='Cancel Order'])[1]"))
+            ).click()
+        
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space(.)='Yes'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        # Wait for the status element to be visible
+        cancel_status_element = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "(//span[@class='status-Canceled ng-star-inserted'])[1]")
+            )
+        )
+
+        # Get the text from the element
+        status_text = cancel_status_element.text.strip()
+
+        # Assert it is "Canceled"
+        assert status_text == "Canceled", f"Expected status to be 'Canceled' but got '{status_text}'"
+
+        print("✅ Status is correctly shown as 'Canceled'")     
+
+        time.sleep(5)   
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            consumer_login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Provider take the walkin order, create Invoice and cancel the order from provider side")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_sales_order_7(login): 
+    try:
+
+        wait = WebDriverWait(login, 30)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Search customers'])[1]"))
+        ).send_keys("9207206005")
+      
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Id : 1'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(.)='Next'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
+        ).send_keys("Cake")
+
+        time.sleep(2)
+        option_1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Chocolate cake')])[1]"))
+        )
+        login.execute_script("arguments[0].click();", option_1)    
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space(.)='2 kg'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(text())='Select Item'])[2]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(.)='Confirm Order'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]"))
+            ).click()
+        
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Cancel Order'])[1]"))
+            ).click()
+        
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space(.)='Yes'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        # Wait for the status element to be visible
+        cancel_status_element = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "(//span[@class='status-Canceled ng-star-inserted'])[1]")
+            )
+        )
+
+        # Get the text from the element
+        status_text = cancel_status_element.text.strip()
+
+        # Assert it is "Canceled"
+        assert status_text == "Canceled", f"Expected status to be 'Canceled' but got '{status_text}'"
+
+        print("✅ Status is correctly shown as 'Canceled'")
+
+        time.sleep(5)
+        
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            consumer_login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Provider take the walkin order and cancel the order from provider side")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_sales_order_8(login):
+    try:
+
+        wait = WebDriverWait(login, 30)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Search customers'])[1]"))
+        ).send_keys("9207206005")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Id : 1'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(.)='Next'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
+        ).send_keys("Cake")
+
+        time.sleep(2)
+        option_1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Chocolate cake')])[1]"))
+        )
+        login.execute_script("arguments[0].click();", option_1)    
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space(.)='2 kg'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(text())='Select Item'])[2]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space(.)='Confirm Order'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]"))
+            ).click()
+        
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='View Invoice'])[1]"))
+            ).click()
+        
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Cancel Invoice'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+        ).click()
+
+        try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Cancel Order'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))    
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )   
+        message = toast_message.text
+        print("Toast message:", message)  
+
+        # Wait for the status element to be visible
+        cancel_status_element = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "(//span[@class='status-Canceled ng-star-inserted'])[1]")
+            )
+        )
+
+        # Get the text from the element
+        status_text = cancel_status_element.text.strip()
+
+        # Assert it is "Canceled"
+        assert status_text == "Canceled", f"Expected status to be 'Canceled' but got '{status_text}'"
+
+        print("✅ Status is correctly shown as 'Canceled'")
+
+
+        time.sleep(5)
+
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             consumer_login.get_screenshot_as_png(),  # param1
