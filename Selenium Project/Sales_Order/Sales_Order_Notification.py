@@ -790,26 +790,28 @@ def test_sales_order_8(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]"))
+                (By.XPATH, "(//span[normalize-space(.)='Create Invoice'])[1]"))
             ).click()
         
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='View Invoice'])[1]"))
+                (By.XPATH, "(//span[normalize-space(.)='View Invoice'])[1]"))
             ).click()
         
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Cancel Invoice'])[1]"))
+                (By.XPATH, "(//button[normalize-space(.)='Cancel Invoice'])[1]"))
         ).click()
 
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+                (By.XPATH, "(//button[normalize-space(.)='Yes'])[1]"))
         ).click()
+
+        
 
         try:
 
@@ -827,6 +829,9 @@ def test_sales_order_8(login):
             message = snack_bar.text
             print("Snack bar message:", message)
 
+
+        time.sleep(3)
+
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
@@ -836,14 +841,14 @@ def test_sales_order_8(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Cancel Order'])[1]"))
+                (By.XPATH, "(//span[normalize-space(.)='Cancel Order'])[1]"))
         ).click()
 
         time.sleep(1)
         wait.until(
             
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))    
+                (By.XPATH, "(//button[normalize-space(.)='Yes'])[1]"))    
         ).click()
 
         toast_message = WebDriverWait(login, 10).until(
