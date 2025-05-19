@@ -21,6 +21,7 @@ from selenium.webdriver.support import expected_conditions as EC
 sales_order_consumer_scale_url = "https://scale.jaldee.com/33b4wj0/"
 consumer_login_url = "https://scale.jaldee.com/RangSweets"
 consumer_login_url_1 = "https://scale.jaldee.com/visionhospital/"
+consumer_login_url_2 = "https://jaldee.com/royalclinic/"
 
 # username = ""
 # password = ""

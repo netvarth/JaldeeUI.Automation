@@ -31,12 +31,12 @@ def test_create_sales_order(login):
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
 
-    time.sleep(3)
+    # time.sleep(3)
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
-    ).click()
+    # wait.until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+    # ).click()
 
     time.sleep(2)
     wait.until(

@@ -227,7 +227,7 @@ def test_create_walkin_Order_paybycash(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_WalkinOrder_completed_Paybycash")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_create_walkin_Order_paybycash(login):
+def test_create_walkin_Order_paybycash_1(login):
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
@@ -345,7 +345,7 @@ def test_create_walkin_Order_paybycash(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_WalkinOrder_completed_Paybycash")
 @pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
-def test_create_walkin_Order_paybycash(login):
+def test_create_walkin_Order_paybycash_2(login):
     try:
         time.sleep(5)
         wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
