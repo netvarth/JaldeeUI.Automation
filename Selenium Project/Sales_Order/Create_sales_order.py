@@ -31,18 +31,39 @@ def test_create_sales_order(login):
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
 
-    # time.sleep(3)
+    time.sleep(3)
 
-    # wait.until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
-    # ).click()
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+    ).click()
 
     time.sleep(2)
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     ).click()
+
+    time.sleep(2)
+
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+    ).click()
+    time.sleep(2)
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[@class='p-checkbox-box'])[3]"))
+    ).click()
+    time.sleep(2)
+
+    wait.until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+    ).click()
+
+    time.sleep(2)
+
 
     wait.until(
         EC.presence_of_element_located(
@@ -54,7 +75,7 @@ def test_create_sales_order(login):
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
-    ).send_keys("sales")
+    ).send_keys("Sales")
     time.sleep(3)
 
     wait.until(

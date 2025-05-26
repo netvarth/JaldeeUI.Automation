@@ -1488,6 +1488,7 @@ def test_sales_officer_report_1(login):
         
     wait = WebDriverWait(login, 20)
     print("Sales Officer report")
+    time.sleep(5)
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//div[normalize-space()='Processing Files'])[1]"))
@@ -2654,10 +2655,11 @@ def test_credit_head_report(login):
 
         time.sleep(3)
 
-        WebDriverWait(login, 10).until(
+        convert_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[@class='p-element btn-primary me-2 p-button p-component ng-star-inserted'])[3]"))
-        ).click()
+        )
+        login.execute_script("arguments[0].click();", convert_button)
 
         time.sleep(1)
         WebDriverWait(login, 10).until(

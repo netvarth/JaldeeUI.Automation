@@ -82,7 +82,7 @@ def test_stock_adjustment(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//input[@type='checkbox'])[3]"))
+            (By.XPATH, "(//input[@type='checkbox'])[6]"))
     ).click()
 
 
@@ -365,7 +365,8 @@ def test_stock_adjustment(login):
    
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock adjustment with Batch disable Item")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+# @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_stock_adjustment_1(login):
 
     time.sleep(5)
