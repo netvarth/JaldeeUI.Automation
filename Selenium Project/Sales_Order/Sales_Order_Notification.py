@@ -152,7 +152,7 @@ def test_sales_order_1(consumer_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("After consumer confirmed the order and payment made, provider send the invoice to the consumer")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale_1, password)])
 def test_sales_order_2(login):
 
     try:
@@ -260,7 +260,7 @@ def test_sales_order_2(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Provider takes the walkin order and send the invoice to the consumer")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale_1, password)])
 def test_sales_order_3(login): 
 
     try:
@@ -456,7 +456,7 @@ def test_sales_order_4(consumer_login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Provider cancel the order after consumer confirmed the order")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale_1, password)])
 def test_sales_order_5(login):
     try:
 
@@ -507,7 +507,7 @@ def test_sales_order_5(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Provider take the walkin order and cancel the order from provider side")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale_1, password)])
 def test_sales_order_6(login):
     try:
 
@@ -614,7 +614,7 @@ def test_sales_order_6(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Provider take the walkin order, create Invoice and cancel the order from provider side")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale_1, password)])
 def test_sales_order_7(login): 
     try:
 
@@ -728,7 +728,7 @@ def test_sales_order_7(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Provider take the walkin order and cancel the order from provider side")
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale_1, password)])
 def test_sales_order_8(login):
     try:
 

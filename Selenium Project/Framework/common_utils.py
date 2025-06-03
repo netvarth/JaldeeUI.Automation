@@ -51,11 +51,12 @@ prod_sales_officer = "001921"
 prod_credit_head = "001922"
 prod_branch_manager = "001923" 
 sales_order_scale = "556131"
-# sales_order_scale = "55789"
+sales_order_scale_1 = "55789"
 membership_scale = "556232"
 test_user = "Krishnadas"
 password_1 = "Netvarth1"
 Lab_order_user = "556333"
+IP_Management = "5555556633"
 
 
 
@@ -96,20 +97,11 @@ def create_user_data():
 #     driver.close()
 def login(url, username, password):
     chrome_options = webdriver.ChromeOptions()
-    
-    # Disable password saving, password breach warnings, safety check popups
-    prefs = {
+    chrome_options.add_experimental_option("prefs", {
         "credentials_enable_service": False,
-        "profile.password_manager_enabled": False,
-    }
-    chrome_options.add_experimental_option("prefs", prefs)
-    chrome_options.add_argument("--disable-features=PasswordManagerEnforcement,PasswordChange,SafeBrowsingProtection")
-    chrome_options.add_argument("--safebrowsing-disable-download-protection")
-    chrome_options.add_argument("--safebrowsing-disable-extension-blacklist")
-    chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+        "profile.password_manager_enabled": False
+    })
     chrome_options.add_argument("--disable-notifications")
-    chrome_options.add_experimental_option("excludeSwitches", ["enable-automation", "load-extension"])
-    chrome_options.add_experimental_option("useAutomationExtension", False)
 
     # Initialize Chrome driver with options
     driver = webdriver.Chrome(
@@ -276,3 +268,18 @@ def generate_random_billing_india_address():
     country = "India"  # Fixed for Indian addresses
     
     return street_address, city, state, zip_code, country
+
+
+def get_next_room_name(file_path='room_counter.txt', prefix='B', start=305):
+    try:
+        with open(file_path, 'r') as f:
+            last_number = int(f.read().strip())
+    except FileNotFoundError:
+        last_number = start - 1  # If file doesn't exist, start from 305
+
+    next_number = last_number + 1
+
+    with open(file_path, 'w') as f:
+        f.write(str(next_number))
+
+    return f"{next_number}{prefix}"

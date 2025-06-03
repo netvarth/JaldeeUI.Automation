@@ -137,7 +137,7 @@ def test_signup_appointment_booking(login):
     login.execute_script("arguments[0].scrollIntoView(true);", next_button)
     next_button.click()
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
     ).send_keys(consumer_data['phonenumber'])
     print("New Consumer Phone Number:", consumer_data['phonenumber'])
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
@@ -313,7 +313,7 @@ def test_signup_token_booking(login):
     next_button.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
     ).send_keys(consumer_data['phonenumber'])
     print("New Consumer Phone Number:", consumer_data['phonenumber'])
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
@@ -476,7 +476,7 @@ def test_signup_familymember_appointment_booking(login):
     next_button.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
     ).send_keys(consumer_data['phonenumber'])
     print("New Consumer Phone Number:", consumer_data['phonenumber'])
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
@@ -694,7 +694,7 @@ def test_signup_token_familymember_booking(login):
     next_button.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
     ).send_keys(consumer_data['phonenumber'])
     print("New Consumer Phone Number:", consumer_data['phonenumber'])
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
@@ -891,7 +891,7 @@ def test_prepayment_appointment_booking(login):
     next_button.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
     ).send_keys(consumer_data['phonenumber'])
     print("New Consumer Phone Number:", consumer_data['phonenumber'])
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
@@ -1128,7 +1128,7 @@ def test_prepayment_token_booking(login):
     next_button.click()
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
     ).send_keys(consumer_data['phonenumber'])
     print("New Consumer Phone Number:", consumer_data['phonenumber'])
     login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()

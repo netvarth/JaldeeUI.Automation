@@ -180,7 +180,7 @@ def test_walkin_token(login):
         pyautogui.press("enter")
         print("Successfully upload the file")
 
-        time.sleep(2)
+        time.sleep(5)
         WebDriverWait(login, 30).until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space(.)='Confirm'])[1]"))
         ).click()

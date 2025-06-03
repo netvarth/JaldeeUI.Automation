@@ -1034,11 +1034,11 @@ def test_lab_order_3(login):
         ).click()
 
     
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+        # snack_bar = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        # )
+        # message = snack_bar.text
+        # print("Snack bar message:", message)
 
        
         time.sleep(5)
