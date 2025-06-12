@@ -283,3 +283,22 @@ def get_next_room_name(file_path='room_counter.txt', prefix='B', start=305):
         f.write(str(next_number))
 
     return f"{next_number}{prefix}"
+
+
+
+
+
+# ---------- Random Generators ----------
+def generate_temperature_f():
+    return round(random.uniform(96.0, 104.0), 2)
+
+def generate_pulse_rate():
+    return random.randint(60, 200)
+
+def generate_respiration_rate():
+    return random.randint(12, 40)
+
+def generate_blood_pressure():
+    systolic = random.randint(90, 140)
+    diastolic = random.randint(60, 90)
+    return systolic, diastolic
