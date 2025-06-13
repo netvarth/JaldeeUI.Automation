@@ -9,7 +9,7 @@ from faker import Faker
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Room creation")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation(login):
+def test_IP_room_creation_1(login):
 
     try:
 
@@ -156,34 +156,35 @@ def test_IP_room_creation(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Bed creation for room")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_1(login):
+def test_IP_room_creation_2(login):
     
-
+ 
     try:
+        time.sleep(5)
         wait = WebDriverWait(login, 30) 
 
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))
+            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))    
         ).click()
 
         time.sleep(3)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Building'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='my-1 font-small fw-bold text-capitalize ng-star-inserted'][normalize-space()='Rooms'])[1]"))
         ).click()
 
         time.sleep(1)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Block B'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'Room Details')])[1]"))
         ).click()
 
         time.sleep(1)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
         ).click()
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor B'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1] "))
         ).click()
 
         
