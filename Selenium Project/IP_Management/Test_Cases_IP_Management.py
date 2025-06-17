@@ -820,7 +820,6 @@ def test_IP_room_creation_5(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
 def test_IP_room_creation_6(login):
 
-
     try:
 
         wait = WebDriverWait(login, 30)
@@ -845,23 +844,229 @@ def test_IP_room_creation_6(login):
         ).click()
 
         time.sleep(2)
+        # Wait for the toggle to be present
+        wait = WebDriverWait(login, 10)
+        toggle_button = wait.until(EC.presence_of_element_located((By.ID, "mat-mdc-slide-toggle-1-button")))
+
+        # Check the value of aria-checked to determine toggle state
+        is_checked = toggle_button.get_attribute("aria-checked")
+
+        if is_checked == "false":
+            print("RX Push is disabled. Enabling it now.")
+            toggle_button.click()
+        else:
+            print("RX Push is already enabled. No action needed.")
+
+        
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='mdc-switch__ripple'])[1]"))
+                (By.XPATH, "(//img)[2]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[13]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[13]"))
+        ).click()
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Medical Records'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='Prescription'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        
+        # List of medicines to enter
+        medicines = ["Item01", "Item02", "Item03"]
+        frequencies = ["TID (1-1-1)", "0-1-0", "QID (1-1-1-1)"] 
+        qty = ["15", "5", "20"]
+        for i, med in enumerate(medicines):
+            # Step 1: Click "+ Add Medicine"
+            add_btn = login.find_element(By.XPATH, "//button[contains(text(), '+ Add Medicine')]")
+            add_btn.click()
+            time.sleep(1)  # Wait for row to appear
+
+            # Step 2: Get the last row (newly added)
+            rows = login.find_elements(By.XPATH, "//tbody[@class='p-element p-datatable-tbody']/tr")
+            row = rows[-1]
+
+            # Step 3: Fill medicine name (autocomplete)
+            med_input = row.find_element(By.XPATH, ".//td[2]//input[@type='text']")
+            med_input.clear()
+            med_input.send_keys(med)
+            time.sleep(2)
+            med_input.send_keys(Keys.ARROW_DOWN)
+            med_input.send_keys(Keys.ENTER)
+
+            # Step 4: Duration
+            duration_input = row.find_element(By.XPATH, ".//td[3]//input[@type='number']")
+            duration_input.clear()
+            duration_input.send_keys("5")
+
+            # Step 5: Frequency dropdown
+            freq_dropdown = row.find_element(By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown')]")
+            freq_dropdown.click()
+            time.sleep(1)
+
+            freq_value = frequencies[i] if i < len(frequencies) else frequencies[0]
+
+            # Wait for options to render
+            time.sleep(1)
+            freq_options = login.find_elements(By.XPATH, "//ul[@role='listbox']//li[@role='option']")
+
+            selected = False
+            for option in freq_options:
+                option_text = option.get_attribute("aria-label")
+                if option_text.strip() == freq_value:
+                    option.click()
+                    selected = True
+                    print(f"✅ Selected frequency: {freq_value}")
+                    break
+
+            if not selected:
+                print(f"❌ Frequency '{freq_value}' not found in dropdown.")
+
+
+            time.sleep(2)
+            # Step: Assert Auto-Generated Quantity
+            qty_input = row.find_element(By.XPATH, ".//td[5]//input[@type='number']")
+            actual_qty = qty_input.get_attribute("value")
+
+            expected_qty = qty[i]  # from your list: ["15", "5", "20"]
+            print(f"🔎 Auto-generated quantity for {med}: Expected {expected_qty}, Got {actual_qty}")
+
+            assert actual_qty == expected_qty, f"❌ Quantity mismatch for {med}: Expected {expected_qty}, Got {actual_qty}"
+            print(f"✅ Quantity matched for {med}")
+
+            editable_td = row.find_element(By.XPATH, ".//td[6]")
+            editable_td.click()
+            time.sleep(1)
+
+            # 8. Now textarea appears
+            textarea = editable_td.find_element(By.XPATH, ".//textarea")
+            food_text = random.choice(["after food", "before food"])
+            textarea.send_keys(food_text)
+                
+
+        
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@aria-label='Rich Text Editor. Editing area: main'])[1]"))
+        ).send_keys("200-word limit restricts essays to a concise length, typically resulting in 3-4 paragraphs. Despite the brevity, the essay should still maintain a clear structure with an introduction, body, and conclusion. This format helps organize thoughts and convey ideas effectively within the word count constraint")
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Create Prescription'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Push RX'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img[@src='assets/images/rx-order/dashboard-actions/storeIcon.svg'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Push'])[1]"))
+        ).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-times'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(3)
+
+        RX_request = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Rx Requests'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", RX_request) 
+        
+        time.sleep(2)
+        RX_request.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        ).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
+        ).click()
+
+
+
+        toast_detail = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_detail.text
+        print("toast_Message:", message) 
+
+        time.sleep(3)
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='View Invoice'])[1]"))
         ).click()
 
         
 
+         
 
 
-
-
-        time.sleep(2)
+        time.sleep(5)
       
 
 
 
-    
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
