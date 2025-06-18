@@ -813,7 +813,7 @@ def test_IP_room_creation_5(login):
         )
         raise e
 
-
+# <<<  << << << <<  RX Push  >> >> >> >>> >>>
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create the RX Push and Complete Order")
@@ -1056,14 +1056,399 @@ def test_IP_room_creation_6(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='View Invoice'])[1]"))
         ).click()
-
-        
-
-         
-
-
+     
         time.sleep(5)
       
+
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Retained Bed when transsfer")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_room_creation_7(login):
+
+    try:
+
+        wait = WebDriverWait(login, 30)
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[2]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[13]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[18]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Building'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block A'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor A'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[4]"))
+        ).click()
+
+        # Wait for the "No Rooms for this floor." message
+        try:
+            no_rooms_msg = wait.until(EC.presence_of_element_located(
+                (By.XPATH, "(//p[normalize-space()='No Rooms for this floor.'])[1]")
+            ))
+            assert no_rooms_msg.is_displayed(), "Expected 'No Rooms for this floor.' message is not displayed"
+            print("✅ 'No Rooms for this floor.' message is displayed.")
+        except TimeoutException:
+            print("ℹ️ Rooms might be available, message not found.")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[5]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Room'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='116A'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Bed Type'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Fowler Beds'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Select Bed'])[1]"))
+        ).click()
+
+        # ✅ Assert that it changed to 'Unselect Bed'
+        unselect_bed_button = wait.until(EC.presence_of_element_located(
+            (By.XPATH, "(//button[normalize-space()='Unselect Bed'])[1]")
+        ))
+        assert unselect_bed_button.is_displayed(), "'Unselect Bed' button did not appear as expected"
+        print("✅ 'Select Bed' successfully changed to 'Unselect Bed'.")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
+        today_date.click()
+        print("Clicked today's date:", today_date.text)
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//textarea[@placeholder='Enter Notes'])[1]"))
+        ).send_keys("Note for the Transfering Bed")
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save & Transfer'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        message = toast_message.text
+        print("Toast Message:", message)    
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Select Bed'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
+        today_date.click()
+        print("Clicked today's date:", today_date.text)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//label[normalize-space()='No'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//textarea[@placeholder='Enter Notes'])[1]"))
+        ).send_keys("Note for the Retransfering Bed")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save & Transfer'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Bed Transactions')])[1]"))
+        ).click()
+
+        time.sleep(5)
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case:  Not Retained Bed when transsfer")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_room_creation_8(login):
+
+    try:
+
+        wait = WebDriverWait(login, 30)
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[2]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[13]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[18]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Building'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block A'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor A'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[4]"))
+        ).click()
+
+        # Wait for the "No Rooms for this floor." message
+        try:
+            no_rooms_msg = wait.until(EC.presence_of_element_located(
+                (By.XPATH, "(//p[normalize-space()='No Rooms for this floor.'])[1]")
+            ))
+            assert no_rooms_msg.is_displayed(), "Expected 'No Rooms for this floor.' message is not displayed"
+            print("✅ 'No Rooms for this floor.' message is displayed.")
+        except TimeoutException:
+            print("ℹ️ Rooms might be available, message not found.")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[5]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Room'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='116A'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Bed Type'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Fowler Beds'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Select Bed'])[1]"))
+        ).click()
+
+        # ✅ Assert that it changed to 'Unselect Bed'
+        unselect_bed_button = wait.until(EC.presence_of_element_located(
+            (By.XPATH, "(//button[normalize-space()='Unselect Bed'])[1]")
+        ))
+        assert unselect_bed_button.is_displayed(), "'Unselect Bed' button did not appear as expected"
+        print("✅ 'Select Bed' successfully changed to 'Unselect Bed'.")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
+        today_date.click()
+        print("Clicked today's date:", today_date.text)
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//label[normalize-space()='No'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//textarea[@placeholder='Enter Notes'])[1]"))
+        ).send_keys("Note for the Transfering Bed")
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Save & Transfer'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        message = toast_message.text
+        print("Toast Message:", message)    
+
+
+
+         
+        time.sleep(5)
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case:   ")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_room_creation_9(login):
+
+    try:
+
+        wait = WebDriverWait(login, 30)
+        time.sleep(3)   
+
 
 
 

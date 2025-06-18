@@ -1107,7 +1107,7 @@ def test_Prescription_3(login):
                 time.sleep(1)  # Pause before interacting with the frequency dropdown
 
                 # Find and select a random frequency from the dropdown in the current row
-                frequency_dropdown_label = row.find_element(By.CSS_SELECTOR, ".p-dropdown-label")
+                frequency_dropdown_label = row.find_element(By.CSS_SELECTOR, " ")
                 frequency_dropdown_label.click()  # Click to open the dropdown
 
                 # Get the frequency options within the dropdown for this row
