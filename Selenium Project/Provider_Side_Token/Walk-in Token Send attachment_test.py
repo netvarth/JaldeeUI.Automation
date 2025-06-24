@@ -4,7 +4,7 @@ from selenium.common import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Send Attachment")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [( scale_url, main_scale, password)])
 def test_sendattachment(login):
     try:
         time.sleep(5)

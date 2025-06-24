@@ -3036,7 +3036,7 @@ def test_walkin_appointment(login):
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'send')]")
+                (By.XPATH, "(//span[contains(text(),'send')])[1]")
             )
         ).click()
 
@@ -3824,6 +3824,8 @@ def test_walkin_appointment(login):
             EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
+
+        
 
         # ********************** Manual Invoice and Sharing ***********************
 

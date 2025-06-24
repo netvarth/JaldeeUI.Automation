@@ -182,7 +182,7 @@ def test_consumer_side_token(consumer_login):
         # Step 1: Click "Show more" once (if present)
         try:
             show_more = WebDriverWait(consumer_login, 5).until(
-                EC.element_to_be_clickable((By.XPATH, "//a[normalize-space()='Show more']"))
+                EC.element_to_be_clickable((By.XPATH, "//a[normalize-space()='Show more']"))  
             )
             consumer_login.execute_script("arguments[0].scrollIntoView(true);", show_more)
             time.sleep(1)

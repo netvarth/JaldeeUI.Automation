@@ -10,14 +10,22 @@ from Framework.common_utils import *
 def test_create_sales_order(login):
 
     time.sleep(5)
-    wait = WebDriverWait(login, 20)
+    wait = WebDriverWait(login, 30)
+    
+    
+    wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+
+    option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
+    option1.click()
+   
+    time.sleep(2)
 
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
     ).click()
     
-    first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+    first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
     
     wait.until(
         EC.presence_of_element_located(
@@ -35,36 +43,20 @@ def test_create_sales_order(login):
 
     wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+            (By.XPATH, "(//div[@class='p-multiselect-label p-placeholder'])[1]"))
     ).click()
-
-    time.sleep(2)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
-    ).click()
-
-    time.sleep(2)
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-    ).click()
+ 
     time.sleep(2)
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//div[@class='p-checkbox-box'])[2]"))
     ).click()
-    time.sleep(2)
 
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-    ).click()
+    time.sleep(1)
+    wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+
 
     time.sleep(2)
-
-
     wait.until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[normalize-space()='Next'])[1]"))

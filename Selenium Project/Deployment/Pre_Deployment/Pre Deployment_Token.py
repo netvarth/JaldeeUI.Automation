@@ -180,7 +180,7 @@ def test_walkin_token(login):
         pyautogui.press("enter")
         print("Successfully upload the file")
 
-        time.sleep(5)
+        time.sleep(3)
         WebDriverWait(login, 30).until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space(.)='Confirm'])[1]"))
         ).click()
@@ -1689,7 +1689,7 @@ def test_walkin_token(login):
                 (By.XPATH, "//span[contains(text(),'No Show Up')]")
             )
         ).click()
-
+ 
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Ok']"))

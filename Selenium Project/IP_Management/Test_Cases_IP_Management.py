@@ -18,7 +18,7 @@ def test_IP_room_creation_1(login):
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[4]"))
         ).click()
 
         time.sleep(3)
@@ -164,7 +164,7 @@ def test_IP_room_creation_2(login):
         wait = WebDriverWait(login, 30) 
 
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))    
+            EC.presence_of_element_located((By.XPATH, "(//img)[4]"))    
         ).click()
 
         time.sleep(3)
@@ -278,7 +278,7 @@ def test_IP_room_creation_3(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[4]"))
         ).click()
 
         time.sleep(3)
@@ -400,7 +400,7 @@ def test_IP_room_creation_4(login):
         wait = WebDriverWait(login, 30)
         time.sleep(5)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))    
+            EC.presence_of_element_located((By.XPATH, "(//img)[4]"))    
         ).click()
 
         time.sleep(3)
@@ -545,7 +545,7 @@ def test_IP_room_creation_5(login):
         wait = WebDriverWait(login, 30)
         time.sleep(5)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))    
+            EC.presence_of_element_located((By.XPATH, "(//img)[4]"))    
         ).click()
 
         time.sleep(2)
@@ -1085,7 +1085,7 @@ def test_IP_room_creation_7(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[4]"))
         ).click()
 
         time.sleep(2)
@@ -1281,7 +1281,7 @@ def test_IP_room_creation_7(login):
         )
         raise e
     
-
+  
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:  Not Retained Bed when transsfer")
@@ -1295,14 +1295,14 @@ def test_IP_room_creation_8(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[4]"))
         ).click()
 
         time.sleep(2)
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[13]"))
+                (By.XPATH, "(//img)[15]"))
         ).click()
 
         time.sleep(2)
@@ -1314,7 +1314,7 @@ def test_IP_room_creation_8(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[18]"))
+                (By.XPATH, "(//img)[20]"))
         ).click()
 
         time.sleep(2)
@@ -1440,14 +1440,18 @@ def test_IP_room_creation_8(login):
     
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case:   ")
+@allure.title("Test Case: Taken appointment convert to IP cancel the appointment then discharge and checkout")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
 def test_IP_room_creation_9(login):
 
     try:
-
         wait = WebDriverWait(login, 30)
-        time.sleep(3)   
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
+            ).click()
+        
+
 
 
 
