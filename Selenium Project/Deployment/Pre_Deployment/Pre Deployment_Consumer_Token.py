@@ -178,7 +178,7 @@ def test_consumer_side_token(consumer_login):
             )
         )
         bookings.click()
-        time.sleep(3)
+        time.sleep(5)
         # Step 1: Click "Show more" once (if present)
         try:
             show_more = WebDriverWait(consumer_login, 5).until(
@@ -188,7 +188,7 @@ def test_consumer_side_token(consumer_login):
             time.sleep(1)
             show_more.click()
             print("Clicked 'Show more'")
-            time.sleep(2)  # Wait for new content to begin loading
+            time.sleep(5)  # Wait for new content to begin loading
 
             # Scroll to bottom to ensure all lazy-loaded cards are loaded
             last_height = consumer_login.execute_script("return document.body.scrollHeight")

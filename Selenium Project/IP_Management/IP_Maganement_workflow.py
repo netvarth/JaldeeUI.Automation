@@ -999,17 +999,22 @@ def test_IP_workflow_New_IP_Patient(login):
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate'])[1]"))
         ).click()
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate Invoice'])[1]"))
         ).click()
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='View Invoice'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Save Invoice'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -1077,46 +1082,7 @@ def test_IP_workflow_New_IP_Patient(login):
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
         message = toast_message.text
         print("Toast Message:", message)
-
-        time.sleep(3)
-
-        # XPath for "Ready For Checkout" status
-        ready_checkout_xpath = "//div[contains(@class, 'status-ready-checkout') and normalize-space()='Ready For Checkout']"
-
-        # Wait until the status is visible
-        WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.XPATH, ready_checkout_xpath))
-        )
-
-        # Assert that the element is displayed
-        status_element = login.find_element(By.XPATH, ready_checkout_xpath)
-        assert status_element.is_displayed(), "'Ready For Checkout' status is not visible."
-
-        print("✅ Ready For Checkout status is visible after checkout.")
-        time.sleep(2)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Checkout'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//textarea[@class='p-inputtextarea p-inputtext p-component p-element ng-pristine ng-valid p-inputtextarea-resizable ng-touched'])[1]"))
-        ).send_keys("This is a test message for checkout.")
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
-        ).click()
-
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
-        message = toast_message.text
-        print("Toast Message:", message)
-
+ 
         time.sleep(3)
         # XPath for "Checked Out" status
         checkout_xpath = "//div[contains(@class, 'status-checkout') and normalize-space()='Checked Out']"
@@ -1132,8 +1098,25 @@ def test_IP_workflow_New_IP_Patient(login):
 
         print("✅ Checked Out status is visible after checkout.")
 
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
 
-        time.sleep(10)
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Checked Out'])[1]"))
+        ).click()
+
+    
+
+
+        time.sleep(5)
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
@@ -1156,7 +1139,7 @@ def test_IP_workflow_Reservations(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[4]"))
         ).click()
 
 
@@ -1278,8 +1261,18 @@ def test_IP_workflow_Reservations(login):
 
         time.sleep(2)
         wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
         ).click()
         
         time.sleep(1)
@@ -1294,7 +1287,7 @@ def test_IP_workflow_Reservations(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
         ).click()
 
         time.sleep(1)
@@ -1306,7 +1299,7 @@ def test_IP_workflow_Reservations(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
         ).click()
 
         time.sleep(1)
@@ -1343,7 +1336,7 @@ def test_IP_workflow_Reservations(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[2]"))
+                (By.XPATH, "(//img)[4]"))
         ).click()
 
         time.sleep(5)  

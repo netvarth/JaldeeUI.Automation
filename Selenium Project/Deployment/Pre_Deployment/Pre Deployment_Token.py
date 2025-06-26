@@ -1683,6 +1683,14 @@ def test_walkin_token(login):
             EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Cancel')]")) 
         ).click()
 
+
+
+
+
+
+
+        
+
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
