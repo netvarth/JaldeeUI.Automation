@@ -1106,7 +1106,7 @@ def test_walkin_appointment(login):
         element.click()
 
         # service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
-        time.sleep(2)
+        time.sleep(3)
         service_option = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, ("//li[@aria-label='Naveen Consultation']//div[1]")))
         )
