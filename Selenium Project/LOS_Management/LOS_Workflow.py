@@ -904,7 +904,7 @@ def test_los_workflow(login):
 
         # Re-login to verify options
 
-        print("Login with Sales officer")
+        print("Login with Credit Head")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
         login_id.send_keys("001921")
@@ -1559,7 +1559,7 @@ def test_sales_officer_report(login):
 
         time.sleep(3)
 
-        ####################Income####################
+    #     ####################Income####################
         income = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[normalize-space()='I. INCOME'])[1]"))
@@ -1706,7 +1706,8 @@ def test_sales_officer_report(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+          
+      (By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
         ).click()
 
         wait.until(
