@@ -13,6 +13,8 @@ def test_walkin_token(login):
         time.sleep(5)
         current_date = datetime.now().strftime("%Y-%m-%d")
         print("Pre-Deployment Provider Token",current_date)
+
+        wait = WebDriverWait(login, 30)
         # WebDriverWait(login, 15).until(
         #     EC.presence_of_element_located(
         #         (By.XPATH, "//img[@src='./assets/images/menu/settings.png']"))
@@ -59,11 +61,18 @@ def test_walkin_token(login):
 
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Token']"))
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space(.)='Tokens']"))
         )
         element.click()
 
-        time.sleep(1)
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Token'])[1]")
+            )   
+        ).click()
+
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
@@ -223,6 +232,7 @@ def test_walkin_token(login):
             except Exception as e:
                 
                 break
+
 
         time.sleep(3)
         last_element_in_accordian = WebDriverWait(login, 10).until(

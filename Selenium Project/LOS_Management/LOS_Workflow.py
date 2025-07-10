@@ -2669,7 +2669,7 @@ def test_credit_head_report(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element btn-primary me-2 p-button p-component ng-star-inserted'])[3]"))
+                (By.XPATH, "(//i[@class='pi pi-sign-in'])[1]"))
         ).click()
 
         time.sleep(3)

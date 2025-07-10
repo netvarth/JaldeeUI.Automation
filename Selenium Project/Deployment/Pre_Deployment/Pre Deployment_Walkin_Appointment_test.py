@@ -2209,7 +2209,7 @@ def test_walkin_appointment(login):
         )
         item_button.click()
         item_button.send_keys("item1234")
-        
+          
         time.sleep(3)
         price = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -3797,33 +3797,38 @@ def test_walkin_appointment(login):
 
         while True:
             try:
-                # Attempt to locate the "Next" button using the button's class
+                
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
                         (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                     )
                 )
 
-                # Check if the button is enabled (i.e., not disabled)
+                
                 if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
+                   
                     login.execute_script("arguments[0].click();", next_button)
                 else:
-                    # print("Next button is disabled. Reached the last page.")
+                  
                     break
 
             except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
+                
                 break
 
-        # After clicking through all pages, locate and click the last accordion
         time.sleep(1)
         last_element_in_accordian = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
+
+        time.sleep(3)
+        View_Detail_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(text(), 'View Details')]")
+            )
+        )
+        View_Detail_button.click()
 
         
 
