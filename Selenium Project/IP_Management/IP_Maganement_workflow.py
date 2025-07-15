@@ -401,36 +401,19 @@ def test_IP_workflow_New_IP_Patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor B'])[1]"))
         ).click()
+ 
 
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"))
         ).click()
 
         time.sleep(2)
-        room_xpath = f"//span[normalize-space()='{room_name}']"
+        room_xpath = f"//div[contains(text(),'Room : {room_name}')]"
         wait.until(
             EC.presence_of_element_located((By.XPATH, room_xpath))
              
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[6]"))
-        ).click()
-
-        time.sleep(2)   
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Normal'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        room_xpath1 = f"//div[contains(text(),'Room : {room_name}')]"
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, room_xpath1))
         ).click()
 
         time.sleep(2)
@@ -838,12 +821,12 @@ def test_IP_workflow_New_IP_Patient(login):
         print("Toast Message:", message)    
 
         time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        ).click()
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        # ).click()
 
-        time.sleep(2)
+        # time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]"))
@@ -882,11 +865,7 @@ def test_IP_workflow_New_IP_Patient(login):
             EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
         message = toast_message.text
         print("Toast Message:", message)
-
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
-        ).click()
+       
 
         time.sleep(3)
         wait.until(
@@ -950,18 +929,23 @@ def test_IP_workflow_New_IP_Patient(login):
 
         print("✅ Discharge status is visible after discharge.")
 
-        time.sleep(2)
+        time.sleep(3)
 
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Create Invoice'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
         ).click()
 
         time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
+        ).click()
+
+        time.sleep(2)  
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate'])[1]"))
         ).click()
@@ -969,11 +953,6 @@ def test_IP_workflow_New_IP_Patient(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate Invoice'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Save Invoice'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -1017,12 +996,6 @@ def test_IP_workflow_New_IP_Patient(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
         ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        ).click()
-
     
         wait.until(
             EC.presence_of_element_located(
@@ -1513,34 +1486,16 @@ def test_IP_workflow_Reservations(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"))
         ).click()
 
         time.sleep(2)
-        room_xpath = f"//span[normalize-space()='{room_name}']"
+        room_xpath = f"//div[contains(text(),'Room : {room_name}')]"
         wait.until(
             EC.presence_of_element_located((By.XPATH, room_xpath))
+             
         ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[6]"))
-        ).click()
-
-        time.sleep(2)   
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Normal'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        room_xpath1 = f"//div[contains(text(),'Room : {room_name}')]"
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, room_xpath1))
-        ).click()
-
-
+        
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -1970,11 +1925,11 @@ def test_IP_workflow_Reservations(login):
         message = toast_message.text
         print("Toast Message:", message)    
 
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        ).click()
+        # time.sleep(3)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait.until(
@@ -2017,10 +1972,10 @@ def test_IP_workflow_Reservations(login):
         print("Toast Message:", message)
 
 
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
-        ).click()
+        # time.sleep(3)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait.until(
@@ -2082,15 +2037,78 @@ def test_IP_workflow_Reservations(login):
         time.sleep(2)
 
         wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Checkout'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
         ).click()
 
         time.sleep(2)
         wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
+        ).click()
+
+        time.sleep(2)  
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate Invoice'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Pay by Others'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Pay'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+        ).click()
+
+        try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
+
+
+        time.sleep(3)
+        wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//textarea[@class='p-inputtextarea p-inputtext p-component p-element ng-pristine ng-valid p-inputtextarea-resizable ng-touched'])[1]"))
-        ).send_keys("This is a test message for checkout.")
+                (By.XPATH, "(//button[normalize-space()='Checkout'])[1]"))
+        ).click()
+
 
         time.sleep(1)
         wait.until(
@@ -2619,33 +2637,15 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"))
         ).click()
 
         time.sleep(2)
-        room_xpath = f"//span[normalize-space()='{room_name}']"
+        room_xpath = f"//div[contains(text(),'Room : {room_name}')]"
         wait.until(
             EC.presence_of_element_located((By.XPATH, room_xpath))
              
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[6]"))
-        ).click()
-
-        time.sleep(2)   
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Normal'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        room_xpath1 = f"//div[contains(text(),'Room : {room_name}')]"
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, room_xpath1))
-        ).click()                                                                                                                                         
+        ).click()                                                                                                                                       
     
         time.sleep(2)
         wait.until(
@@ -3005,10 +3005,10 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Normal ICU'])[1]"))
@@ -3052,11 +3052,11 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         message = toast_message.text
         print("Toast Message:", message)    
 
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        ).click()
+        # time.sleep(3)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait.until(
@@ -3098,10 +3098,10 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
-        ).click()
+        # time.sleep(3)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        # ).click()
 
         time.sleep(3)
         wait.until(
@@ -3171,9 +3171,14 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
             EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
         ).click()
 
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
+        ).click()
+
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Create Invoice'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -3184,11 +3189,6 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate Invoice'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Save Invoice'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -3229,11 +3229,6 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        ).click()
-
-        time.sleep(1)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
         ).click()
@@ -3820,35 +3815,17 @@ def  test_OP_Converted_to_IP_Patient(login):
                 (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor B'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"))
         ).click()
 
         time.sleep(2)
-        room_xpath = f"//span[normalize-space()='{room_name}']"
+        room_xpath = f"//div[contains(text(),'Room : {room_name}')]"
         wait.until(
             EC.presence_of_element_located((By.XPATH, room_xpath))
              
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[6]"))
-        ).click()
-
-        time.sleep(2)   
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Normal'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        room_xpath1 = f"//div[contains(text(),'Room : {room_name}')]"
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, room_xpath1))
         ).click()
 
         time.sleep(2)
@@ -4264,11 +4241,11 @@ def  test_OP_Converted_to_IP_Patient(login):
         message = toast_message.text
         print("Toast Message:", message)    
 
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        ).click()
+        # time.sleep(3)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait.until(
@@ -4310,10 +4287,10 @@ def  test_OP_Converted_to_IP_Patient(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
-        ).click()
+        # time.sleep(3)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        # ).click()
 
         time.sleep(3)
         wait.until(
@@ -4321,7 +4298,7 @@ def  test_OP_Converted_to_IP_Patient(login):
                 (By.XPATH, "(//div[@class='my-1 font-small fw-bold text-capitalize ng-star-inserted'][normalize-space(.)='Discharge'])[1]"))
         ).click()
 
-        time.sleep(3)
+        time.sleep(3) 
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Use Template'])[1]"))
@@ -4383,9 +4360,14 @@ def  test_OP_Converted_to_IP_Patient(login):
             EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
         ).click()
 
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
+        ).click()
+
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Create Invoice'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -4398,10 +4380,10 @@ def  test_OP_Converted_to_IP_Patient(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate Invoice'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Save Invoice'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Save Invoice'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait.until(
@@ -4444,12 +4426,6 @@ def  test_OP_Converted_to_IP_Patient(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
         ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        ).click()
-
     
         wait.until(
             EC.presence_of_element_located(

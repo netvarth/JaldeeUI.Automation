@@ -44,7 +44,7 @@ def test_lab_order_1(login):
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Dental'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Store'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
@@ -1111,7 +1111,7 @@ def test_lab_order_5(login):
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Dental'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Store'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
@@ -1661,7 +1661,7 @@ def test_lab_order_6(login):
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Dental'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Store'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
@@ -2180,7 +2180,7 @@ def test_lab_order_7(login):
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Dental'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Store'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
@@ -2762,7 +2762,7 @@ def test_lab_order_8(login):
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Dental'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Store'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()

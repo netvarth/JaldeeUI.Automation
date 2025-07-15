@@ -630,7 +630,7 @@ def test_create_patient(login):
         #     EC.presence_of_element_located(
         #         (By.XPATH, "//div[@aria-expanded='false']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
         # ).click()
-        
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='In Progress']"))

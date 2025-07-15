@@ -365,7 +365,17 @@ def test_signup():
         login.find_element(
             By.XPATH, "//button[@type='button']//span[@class='mdc-button__label']"
         ).click()
+
         time.sleep(2)
+        # Wait and locate the Pincode input field
+        pincode_input = wait.until(EC.presence_of_element_located(
+            (By.XPATH, "//input[@formcontrolname='locpincode']")
+        ))
+
+        # Clear and enter a pincode
+        pincode_input.clear()
+        pincode_input.send_keys("682001")
+
         login.find_element(By.XPATH, "//span[@class='mdc-button__label']").click()
         # login.find_element(
         #     By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"

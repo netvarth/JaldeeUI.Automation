@@ -2181,6 +2181,7 @@ def test_sales_officer_report(login):
         [year, month, day] = Generate_dob()
         print(f"Year: {year}, Month: {month}, Day: {day}")
 
+        time.sleep(2)
         # Select Year
         year_xpath = f"//span[normalize-space()='{year}']"
         WebDriverWait(login, 20).until(

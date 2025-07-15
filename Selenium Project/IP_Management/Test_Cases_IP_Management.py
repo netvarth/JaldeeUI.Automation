@@ -1141,7 +1141,7 @@ def test_IP_room_creation_6(login):
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: Retained Bed when transsfer")
+@allure.title("Test Case: Retained Bed when transfer")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
 def  test_IP_room_creation_7(login):
 
@@ -1308,8 +1308,8 @@ def  test_IP_room_creation_7(login):
     
   
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case:  Not Retained Bed when transsfer")
+@allure.severity(allure.severity_level.CRITICAL) 
+@allure.title("Test Case:  Not Retained Bed when transfer")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
 def test_IP_room_creation_8(login):
 
@@ -4261,6 +4261,38 @@ def test_IP_Management_12(login):
         message = toast_message.text
         print("Toast Message:", message)    
         time.sleep(5)
+    
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_13(login):
+
+    try:
+
+        time.sleep(3)  
+
+        wait = WebDriverWait(login, 30)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[4]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, ""))
+        )
+
     
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params

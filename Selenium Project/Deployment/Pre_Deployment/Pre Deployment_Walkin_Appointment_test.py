@@ -331,13 +331,13 @@ def test_account_signup():
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Location']")
+            (By.XPATH, "(//span[normalize-space()='Location'])[1]")
         )
     ).click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Choose your location in the MAP']")
+            (By.XPATH, "(//button[normalize-space()='Choose your location in the MAP'])[1]")
         )
     ).click()
 
@@ -345,7 +345,7 @@ def test_account_signup():
 
     try:
         # Locate the input field using XPath
-        input_field = login.find_element(By.XPATH, "//input[@id='pac-input']")
+        input_field = login.find_element(By.XPATH, "(//input[@id='pac-input'])[1]")
 
         # Input "Thrissur" into the text field
         input_field.send_keys("Thrissur")
@@ -373,7 +373,22 @@ def test_account_signup():
         By.XPATH, "//button[@type='button']//span[@class='mdc-button__label']"
     ).click()
     time.sleep(2)
-    login.find_element(By.XPATH, "//span[@class='mdc-button__label']").click()
+
+    # Wait and locate the Pincode input field
+    pincode_input = wait.until(EC.presence_of_element_located(
+        (By.XPATH, "//input[@formcontrolname='locpincode']")
+    ))
+
+    # Clear and enter a pincode
+    pincode_input.clear()
+    pincode_input.send_keys("682001")
+
+
+
+    time.sleep(2)
+    WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-button__label'])[1]"))
+    ).click()
     # login.find_element(
     #     By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"
     # ).click()
