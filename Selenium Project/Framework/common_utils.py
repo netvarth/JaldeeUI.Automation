@@ -18,6 +18,7 @@ from datetime import datetime, timedelta
 from selenium.webdriver.common.keys import Keys
 import allure
 from allure_commons.types import AttachmentType
+
 import os
 from selenium.webdriver.firefox.service import Service
 from webdriver_manager.firefox import GeckoDriverManager

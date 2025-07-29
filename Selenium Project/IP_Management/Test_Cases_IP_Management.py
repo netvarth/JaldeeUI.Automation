@@ -1,7 +1,6 @@
 from Framework.common_utils import *
 from Framework.common_dates_utils import *
 import random
-
 from faker import Faker
 
 # <<< << <<  << Room and Bed Test cases >>  >>  >>  >>  
@@ -2412,7 +2411,138 @@ def test_IP_Management_10(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
         ).click()
 
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
 
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='my-1 font-small fw-bold text-capitalize ng-star-inserted'][normalize-space()='Discharge'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Use Template'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Use template'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        time.sleep(3)
+        discharge_button = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space(.)='Discharge'])[1]"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", discharge_button)
+
+        time.sleep(2)
+        discharge_button.click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        time.sleep(3)
+        # Wait for the discharge status to appear
+        discharge_status_xpath = "//div[contains(@class, 'status-discharged') and normalize-space()='Discharged']"
+        WebDriverWait(login, 10).until(EC.visibility_of_element_located((By.XPATH, discharge_status_xpath)))
+
+        # Assert that the "Discharged" status is displayed
+        discharge_status_element = login.find_element(By.XPATH, discharge_status_xpath)
+        assert discharge_status_element.is_displayed(), "Discharge status is not visible after discharge."
+
+        print("✅ Discharge status is visible after discharge.")
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Checkout'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@type='button'][normalize-space()='Checkout'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        message = toast_message.text
+        print("Toast Message:", message)
+ 
+        time.sleep(3)
+        # XPath for "Checked Out" status
+        checkout_xpath = "//div[contains(@class, 'status-checkout') and normalize-space()='Checked Out']"
+
+        # Wait for the element to be visible
+        WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.XPATH, checkout_xpath))
+        )
+
+        # Assert the element is displayed
+        checkout_status = login.find_element(By.XPATH, checkout_xpath)
+        assert checkout_status.is_displayed(), "'Checked Out' status is not visible."
+
+        print("✅ Checked Out status is visible after checkout.")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Checked Out'])[1]"))
+        ).click()
+
+        time.sleep(5)
 
 
     except Exception as e:
@@ -3390,6 +3520,125 @@ def  test_IP_Management_11(login):
         print("✅ Discharge status is visible after discharge.")
 
         time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
+        ).click()
+
+        time.sleep(2)  
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate Invoice'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='+ Link Invoice'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-checkbox']//input[@type='checkbox'])[1]"))
+        ).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
+        ).click()
+
+        # # time.sleep(2)
+
+        # # wait.until(
+        # #     EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        # # ).click()
+
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        # ).click()
+
+        time.sleep(2)
+        yes_button = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//app-confirm-box//button[normalize-space(text())='Yes']"))
+        )
+        login.execute_script("arguments[0].click();", yes_button)
+        
+
+        toast_message = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        message = toast_message.text
+        print("Toast Message:", message)
+
+        
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Pay by Others'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Pay'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Yes'])[1]"))
+        ).click()
+
+        try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()
+
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Checkout'])[1]"))
@@ -4274,31 +4523,151 @@ def test_IP_Management_12(login):
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("")
+@allure.title("Create a Service")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
 def test_IP_Management_13(login):
-
     try:
 
-        time.sleep(3)  
-
+        time.sleep(5)
         wait = WebDriverWait(login, 30)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//img)[4]"))
-        ).click()
+
+        # Navigate to Services section
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//img)[4]"))).click()
+
+        time.sleep(2)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Services')])[1]"))).click()
+
+        # Click Create Service
+        wait.until(EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'create-item-button') and contains(text(), 'Create Service')]"))).click()
+
+        # Click on the first group option (if needed)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='font-weight-bold grouping-heading float-left'])[1]"))).click()
+
+        # Fill in Service Name
+        service_name = "Service" + str(uuid.uuid4())[:4]
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@id='service_name'])[1]"))).send_keys(service_name)
+
+        # Toggle first switch
+        toggle_button1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-switch__ripple'])[1]")))
+        login.execute_script("arguments[0].click();", toggle_button1)
+
+        # Select Service Location
+        wait.until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'mat-mdc-select-trigger') and .//span[text()='Service Location *']]"))).click()
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))).click()
+
+        # Toggle second switch
+        toggle_button2 = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-switch__ripple'])[2]")))
+        login.execute_script("arguments[0].click();", toggle_button2)
+
+        # Select Service Building
+        wait.until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'mat-mdc-select-trigger') and .//span[text()='Service Building *']]"))).click()
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Block B'])[1]"))).click()
+
+        # Enter Pricing
+        pricing = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[normalize-space(.)='Pricing'])[1]")))
+        login.execute_script("arguments[0].scrollIntoView();", pricing)
+        pricing.click()
+        pricing_text = wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@id='price'])[1]")))
+        pricing_text.clear()
+        pricing_text.send_keys("400")
+
+        # Click Save
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-button__label'])[1]"))).click()
+
+        # ✅ Assertion: Verify the created service is listed
+        row_xpath = f"//tr[td[1]//span[normalize-space()='{service_name}'] and td[2][normalize-space()='Chembukkav'] and td[3][normalize-space()='Block B']]"
+        service_row = wait.until(EC.presence_of_element_located((By.XPATH, row_xpath)))
+        assert service_row.is_displayed(), f"Service '{service_name}' with location 'Chembukkav' and building 'Block B' not found in the table."
 
         time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, ""))
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
         )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create a Service without pricing and addon applicable")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_14(login):
+    try:
+
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+
+        # Navigate to Services section
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//img)[4]"))).click()
+
+        time.sleep(2)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Services')])[1]"))).click()
+
+        # Click Create Service
+        wait.until(EC.presence_of_element_located((By.XPATH, "//button[contains(@class, 'create-item-button') and contains(text(), 'Create Service')]"))).click()
+
+        # Click on the first group option (if needed)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='font-weight-bold grouping-heading float-left'])[1]"))).click()
+
+        # Fill in Service Name
+        service_name = "Service" + str(uuid.uuid4())[:4]
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//input[@id='service_name'])[1]"))).send_keys(service_name)
+
+        # Toggle first switch
+        toggle_button1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-switch__ripple'])[1]")))
+        login.execute_script("arguments[0].click();", toggle_button1)
+
+        # Select Service Location
+        wait.until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'mat-mdc-select-trigger') and .//span[text()='Service Location *']]"))).click()
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))).click()
+
+        # Toggle second switch
+        toggle_button2 = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-switch__ripple'])[2]")))
+        login.execute_script("arguments[0].click();", toggle_button2)
+
+        # Select Service Building
+        wait.until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'mat-mdc-select-trigger') and .//span[text()='Service Building *']]"))).click()
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Block B'])[1]"))).click()
+
+
+        toggle_button3 = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-switch__ripple'])[3]")))
+        login.execute_script("arguments[0].click();", toggle_button3)
+
+        time.sleep(2)
+
+        # Click Save
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-button__label'])[1]"))).click()
+
+        # ✅ Assertion: Verify the created service is listed
+        row_xpath = f"//tr[td[1]//span[normalize-space()='{service_name}'] and td[2][normalize-space()='Chembukkav'] and td[3][normalize-space()='Block B']]"
+        service_row = wait.until(EC.presence_of_element_located((By.XPATH, row_xpath)))
+        assert service_row.is_displayed(), f"Service '{service_name}' with location 'Chembukkav' and building 'Block B' not found in the table."
+
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_15(login):
+    try:
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
 
     
     except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page",
             attachment_type=AttachmentType.PNG,
         )
         raise e

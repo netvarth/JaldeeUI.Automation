@@ -60,16 +60,19 @@ def test_los_workflow(login):
                 (By.XPATH, "//input[@placeholder='Enter First Name']"))
         ).send_keys(first_name)
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter Last Name']"))
         ).send_keys(last_name)
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@id='phone']"))
         ).send_keys(phonenumber)
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter Email']"))
@@ -103,12 +106,14 @@ def test_los_workflow(login):
         [year, month, day] = Generate_dob()
         print(f"Year: {year}, Month: {month}, Day: {day}")
 
+        time.sleep(2)
         # Select Year
         year_xpath = f"//span[normalize-space()='{year}']"
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, year_xpath))
         ).click()
 
+        time.sleep(2)
         # Select Month
         month_xpath = f"//span[normalize-space()='{month}']"
         WebDriverWait(login, 10).until(
@@ -523,6 +528,7 @@ def test_los_workflow(login):
                 (By.XPATH, "//input[@placeholder='Enter First Name']"))
         ).send_keys(first_name)
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter Last Name']"))
@@ -598,15 +604,17 @@ def test_los_workflow(login):
         )
         for _ in range(4):
             backward_arrow.click()
-
+        time.sleep(2)
         # Select year
         year_xpath = f"//span[normalize-space()='{year}']"
         wait.until(EC.element_to_be_clickable((By.XPATH, year_xpath))).click()
 
+        time.sleep(2)
         # Select month
         month_xpath = f"//span[normalize-space()='{month}']"
         wait.until(EC.element_to_be_clickable((By.XPATH, month_xpath))).click()
 
+        time.sleep(2)
         # Select day
         day = str(int(day))  # remove leading zeros if any
         day_xpath = f"//span[normalize-space()='{day}']"
@@ -628,6 +636,7 @@ def test_los_workflow(login):
         )
         login.execute_script("arguments[0].click();", gender)
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@id='phone'])[1]"))
@@ -1995,6 +2004,16 @@ def test_sales_officer_report(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Father'])[1]"))
         ).click()
+
+
+        # option_other = wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[normalize-space()='Other'])[1]"))
+        # )
+        # login.execute_script("arguments[0].scrollIntoView();", option_other)
+        # time.sleep(3)
+        # option_other.click()
+
 
         wait.until(
             EC.presence_of_element_located(

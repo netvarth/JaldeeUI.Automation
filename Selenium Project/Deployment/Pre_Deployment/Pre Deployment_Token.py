@@ -1638,7 +1638,7 @@ def test_walkin_token(login):
         print("Reschedule Successfully")
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
+        WebDriverWait(login, 10).until( 
             EC.presence_of_element_located(
                 (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
             )
@@ -1692,12 +1692,6 @@ def test_walkin_token(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Cancel')]")) 
         ).click()
-
-
-
-
-
-
 
         
 

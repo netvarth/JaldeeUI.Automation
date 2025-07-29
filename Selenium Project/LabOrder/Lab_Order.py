@@ -140,29 +140,32 @@ def test_lab_order_1(login):
                 (By.XPATH, "(//span[normalize-space()='Male'])[1]"))
         ).click()
 
-        prosthesis_types = [
-        "Complete Denture",
-        "Partial Denture",
-        "Fixed Bridge",
-        "Crown",
-        "Implant",
-        "Implant-Supported Denture",
-        "Veneer",
-        "Inlay",
-        "Onlay",
-        "Orthodontic Appliance"
-        ]
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Add'])[1]"))
+        ).click()
 
-        random_type = random.choice(prosthesis_types)
-        print("Random Prosthesis Type:", random_type)
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Prosthesis Type'])[1]"))
-        ).send_keys(random_type)
+                (By.XPATH, "(//span[normalize-space()='Select Prosthesis Type'])[1]"))
+        ).click()
 
         time.sleep(2)
+
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
+
+        # Select a random option from the list
+        random_option = random.choice(options)
+        random_option_text = random_option.text
+        random_option.click()
+
+        print(f"Selected option: {random_option_text}")
 
         # Locate all the circle elements inside the quadrant-container
         circles = login.find_elements(By.CSS_SELECTOR, ".quadrant-container .circle")
@@ -178,47 +181,60 @@ def test_lab_order_1(login):
             circle.click()
 
 
-        time.sleep(2)
-        Pontic_types = [
-        "Saddle Pontic",
-        "Modified Ridge Lap Pontic",
-        "Conical Pontic",
-        "Ovate Pontic",
-        "Prefabricated Pontics"
-         ]
 
-        random_pontic_type = random.choice(prosthesis_types)
-        print("Random Pontic types:", random_pontic_type)
+        # Wait until all shade elements are present
+        shades = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//div[contains(@class,'shade') and contains(@class,'pointer-cursor')]")
+            )
+        )
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Type Of Ponti'])[1]"))
-        ).send_keys(random_pontic_type)
+        # Randomly select 2 or 3 shades
+        selected_shades = random.sample(shades, k=random.choice([2, 3]))
 
+        # Click each selected shade
+        for shade in selected_shades:
+            shade_text = shade.text.strip()
+            login.execute_script("arguments[0].scrollIntoView(true);", shade)
+            shade.click()
+            print(f"Selected Shade: {shade_text}")
 
-        time.sleep(2)
-        Shade_types = [
-        "Reddish-Brownish",
-        "Reddish-Yellowish",
-        "Greyish",
-        "Reddish-Grey"
-       	]
-
-        random_Shade_types = random.choice(Shade_types)
-        print("Random Pontic types:", random_Shade_types)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Shade'])[1]"))
-        ).send_keys(random_Shade_types)
 
         time.sleep(2)
+
         wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[11]"))
         ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Type Of Pontic'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        # Wait for options to be visible
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
+
+        # Select a random option
+        random_option = random.choice(options)
+        option_text = random_option.text.strip()
+        random_option.click()
+
+        print(f"Selected option: {option_text}")
+
+        time.sleep(3)
+        
+        drop_down1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[6]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down1)
 
         time.sleep(2)
         wait.until(
@@ -250,10 +266,11 @@ def test_lab_order_1(login):
 
 
         time.sleep(2)
-        wait.until(
+        drop_down2 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
-        ).click()
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[7]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down2)   
 
         time.sleep(2)
         wait.until(
@@ -1033,7 +1050,7 @@ def test_lab_order_4(login):
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@placeholder='Invoice prefix'])[1]"))
-        ).send_keys("INV" + str(uuid.uuid1())[:2])
+        ).send_keys("INV" + str(uuid.uuid1())[:4])
 
         time.sleep(1)
         wait.until(
@@ -1202,29 +1219,33 @@ def test_lab_order_5(login):
                 (By.XPATH, "(//span[normalize-space()='Male'])[1]"))
         ).click()
 
-        prosthesis_types = [
-        "Complete Denture",
-        "Partial Denture",
-        "Fixed Bridge",
-        "Crown",
-        "Implant",
-        "Implant-Supported Denture",
-        "Veneer",
-        "Inlay",
-        "Onlay",
-        "Orthodontic Appliance"
-        ]
+       
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Add'])[1]"))
+        ).click()
 
-        random_type = random.choice(prosthesis_types)
-        print("Random Prosthesis Type:", random_type)
 
-        time.sleep(1)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Prosthesis Type'])[1]"))
-        ).send_keys(random_type)
+                (By.XPATH, "(//span[normalize-space()='Select Prosthesis Type'])[1]"))
+        ).click()
 
         time.sleep(2)
+
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
+
+        # Select a random option from the list
+        random_option = random.choice(options)
+        random_option_text = random_option.text
+        random_option.click()
+
+        print(f"Selected option: {random_option_text}")
 
         # Locate all the circle elements inside the quadrant-container
         circles = login.find_elements(By.CSS_SELECTOR, ".quadrant-container .circle")
@@ -1240,47 +1261,60 @@ def test_lab_order_5(login):
             circle.click()
 
 
-        time.sleep(2)
-        Pontic_types = [
-        "Saddle Pontic",
-        "Modified Ridge Lap Pontic",
-        "Conical Pontic",
-        "Ovate Pontic",
-        "Prefabricated Pontics"
-         ]
 
-        random_pontic_type = random.choice(prosthesis_types)
-        print("Random Pontic types:", random_pontic_type)
+        # Wait until all shade elements are present
+        shades = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//div[contains(@class,'shade') and contains(@class,'pointer-cursor')]")
+            )
+        )
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Type Of Ponti'])[1]"))
-        ).send_keys(random_pontic_type)
+        # Randomly select 2 or 3 shades
+        selected_shades = random.sample(shades, k=random.choice([2, 3]))
 
+        # Click each selected shade
+        for shade in selected_shades:
+            shade_text = shade.text.strip()
+            login.execute_script("arguments[0].scrollIntoView(true);", shade)
+            shade.click()
+            print(f"Selected Shade: {shade_text}")
 
-        time.sleep(2)
-        Shade_types = [
-        "Reddish-Brownish",
-        "Reddish-Yellowish",
-        "Greyish",
-        "Reddish-Grey"
-       	]
-
-        random_Shade_types = random.choice(Shade_types)
-        print("Random Pontic types:", random_Shade_types)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Shade'])[1]"))
-        ).send_keys(random_Shade_types)
 
         time.sleep(2)
+
         wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[11]"))
         ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Type Of Pontic'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        # Wait for options to be visible
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
+
+        # Select a random option
+        random_option = random.choice(options)
+        option_text = random_option.text.strip()
+        random_option.click()
+
+        print(f"Selected option: {option_text}")
+
+        time.sleep(3)
+        
+        drop_down1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[6]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down1)
 
         time.sleep(2)
         wait.until(
@@ -1312,10 +1346,11 @@ def test_lab_order_5(login):
 
 
         time.sleep(2)
-        wait.until(
+        drop_down2 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
-        ).click()
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[7]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down2) 
 
         time.sleep(2)
         wait.until(
@@ -3298,6 +3333,27 @@ def test_lab_order_8(login):
 
         time.sleep(5)
 
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Agent accept the order and Delivery Failed ")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_9(login):
+    try:
+        
+        time.sleep(3)
+        wait = WebDriverWait(login, 30)
+        
+    
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1

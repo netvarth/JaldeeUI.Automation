@@ -508,7 +508,7 @@ def test_sales_order_5(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Provider take the walkin order and cancel the order from provider side")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale_1, password)])
-def test_sales_order_6(login):
+def  test_sales_order_6(login):
     try:
 
         wait = WebDriverWait(login, 30)
