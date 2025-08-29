@@ -24,21 +24,27 @@ def test_consumer_side_token(consumer_login):
     try:
         time.sleep(5)
         # Scroll to the element
-        book_now_button = WebDriverWait(consumer_login, 10).until(
+        consultation = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Book Now']")
+                (By.XPATH, "(//h3[normalize-space()='GET YOUR CONSULTATION TODAY'])[1]")
             )
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView();", book_now_button)
+        consumer_login.execute_script("arguments[0].scrollIntoView(true);", consultation)
+        
+        time.sleep(3)
+        wait = WebDriverWait(consumer_login, 30)
 
-        # Wait for the element to be clickable
-        clickable_book_now_button = WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
+        book_now_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "(//button[@id='btnBookNow'])[3]")
+            )
         )
-        try:
-            clickable_book_now_button.click()
-        except:
-            consumer_login.execute_script("arguments[0].click();", clickable_book_now_button)
+        book_now_button.click()
+
+        time.sleep(3)
+
+
+
             # wait = WebDriverWait(consumer_login, 10)
         location_button = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(

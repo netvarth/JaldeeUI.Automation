@@ -13,7 +13,7 @@ from selenium.common.exceptions import TimeoutException
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Order")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_order(login):
 
  
@@ -54,7 +54,7 @@ def test_create_order(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
     ).click()              
 
     time.sleep(1)

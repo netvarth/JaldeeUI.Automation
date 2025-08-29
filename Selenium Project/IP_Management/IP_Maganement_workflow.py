@@ -24,17 +24,20 @@ def test_IP_workflow_New_IP_Patient(login):
                 (By.XPATH, "(//div[@class='dashboard-card-image'])[6]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1] "))  
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//img)[19]"))  
+        # ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         time.sleep(2)
         wait.until(
@@ -54,11 +57,11 @@ def test_IP_workflow_New_IP_Patient(login):
                 (By.XPATH, "(//span[normalize-space()='Second Floor B'])[1]"))
         ).click()
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Second Floor B'])[1]"))
-        ).click()
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[normalize-space()='Second Floor B'])[1]"))
+        # ).click()
 
         time.sleep(1)
         wait.until(
@@ -132,7 +135,7 @@ def test_IP_workflow_New_IP_Patient(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -329,19 +332,22 @@ def test_IP_workflow_New_IP_Patient(login):
         future_month = future_date.strftime("%B")
         future_year = str(future_date.year)
 
+        print("future day: ", future_day)
         # Get the "next month" arrow
         next_month_arrow = wait.until(
             EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
         )
 
         # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
+        max_tries = 10  # Prevent infinite loop
         for _ in range(max_tries):
             month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                EC.presence_of_element_located(
+                    (By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
             )
             year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                EC.presence_of_element_located(
+                    (By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
             )
 
             current_month = month_elem.text.strip()
@@ -355,13 +361,15 @@ def test_IP_workflow_New_IP_Patient(login):
         else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
-        target_date = wait.until(
-            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        # ✅ Click the future day but only inside the correct month/year panel
+        date_xpath = (
+        f"//td[not(contains(@class,'p-disabled')) "
+        f"and not(contains(@class,'p-datepicker-other-month'))]"
+        f"//span[normalize-space()='{future_day}']"
         )
-        target_date.click()
 
+        target_date = wait.until(EC.element_to_be_clickable((By.XPATH, date_xpath)))
+        login.execute_script("arguments[0].click();", target_date)
         print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
 
         time.sleep(2)
@@ -482,8 +490,11 @@ def test_IP_workflow_New_IP_Patient(login):
         time.sleep(5)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "(//button[normalize-space()='Services'])[1]"))
         ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-plus'])[1]")
 
         time.sleep(2)
         wait.until(
@@ -496,23 +507,11 @@ def test_IP_workflow_New_IP_Patient(login):
             EC.presence_of_element_located((By.XPATH, "(//li[@role='option'])[1]"))
         ).click()
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
-        ).click()
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
+        # ).click()
 
         time.sleep(1)
         wait.until(
@@ -1088,7 +1087,7 @@ def test_IP_workflow_Reservations(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1] "))
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1] "))
         ).click()
 
         time.sleep(2)
@@ -1193,7 +1192,7 @@ def test_IP_workflow_Reservations(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -1577,9 +1576,15 @@ def test_IP_workflow_Reservations(login):
         print("Toast Message:", message)    
         
         time.sleep(5)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Services'])[1]"))
+        ).click()
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
         ).click()
 
         time.sleep(2)

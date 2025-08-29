@@ -17,7 +17,7 @@ from selenium.common.exceptions import TimeoutException
 #################   Enable the Inventory Setting   #############################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Enable inventory settings")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_enable_inventory_setting(login):
     
     time.sleep(5)

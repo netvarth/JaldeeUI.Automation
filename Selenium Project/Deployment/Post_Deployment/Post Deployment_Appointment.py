@@ -18,13 +18,13 @@ def test_signup():
             )
         )
         # login.get("https://www.jaldee.com/business/")
-        login.get("https://jaldee.com/business")
+        login.get("https://scale.jaldee.com/business/signup")
         login.maximize_window()
 
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//a[normalize-space()='Sign Up']"))
-        ).click()
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//a[normalize-space()='Sign Up']"))
+        # ).click()
 
         time.sleep(3)
         first_name, last_name, cons_manual_id, phonenumber1, email = create_user_data()

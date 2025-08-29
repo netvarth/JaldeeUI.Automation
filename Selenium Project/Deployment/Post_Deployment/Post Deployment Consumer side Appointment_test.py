@@ -20,37 +20,27 @@ from allure_commons.types import AttachmentType
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Post-Deployment Consumer Appointment")
 @pytest.mark.parametrize("url", [consumer_login_url_2])
-def test_consumer_side(consumer_login):
+def  test_consumer_side(consumer_login):
 # def test_booking(consumer_login):
 
     current_date = datetime.now().strftime("%d-%m-%Y")
     print("Post-Deployment Existing Consumer Appointment",current_date)
 
-    wait = WebDriverWait(consumer_login, 10)
+    wait = WebDriverWait(consumer_login, 30)
     try:    
         time.sleep(5)
-        # Scroll to the element
-        book_now_button = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Book Now']")
+        
+        wait = WebDriverWait(consumer_login, 30)
+
+        book_now_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "(//button[normalize-space()='Book Now'])[1]")
             )
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView();", book_now_button)
+        book_now_button.click()
 
-        # Wait for the element to be clickable
-        clickable_book_now_button = WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
-        )
+        time.sleep(3)
 
-        # Attempt to click the element
-        try:
-            clickable_book_now_button.click()
-        except:
-            # If click is intercepted, click using JavaScript
-            consumer_login.execute_script("arguments[0].click();", clickable_book_now_button)
-
-
-        
 
         # location_button = wait.until(
         #     EC.presence_of_element_located(

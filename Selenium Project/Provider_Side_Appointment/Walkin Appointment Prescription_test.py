@@ -1070,7 +1070,8 @@ def test_Prescription_3(login):
         select_doc.click()
 
         # Loop through rows and interact with each row
-        for index in range(2):  # Assuming you're iterating through 3 rows
+        # Loop through rows and interact with each row
+        for index in range(4):  # Assuming you're iterating through 2 rows
             # Click the "+ Add Medicine" button
             wait.until(
                 EC.presence_of_element_located(
@@ -1082,7 +1083,7 @@ def test_Prescription_3(login):
             search_box = login.find_element(By.CSS_SELECTOR, "input[role='searchbox']")
             search_box.clear()
 
-            # Type 'item' into the search box (you might want to replace 'item' with actual item names if needed)
+            # Type 'item' into the search box (you can replace with dynamic name)
             search_box.send_keys('item')
             time.sleep(1)  # Wait for suggestions to load
 
@@ -1091,40 +1092,49 @@ def test_Prescription_3(login):
 
             # Select a suggestion based on the index or randomly
             if suggestions:
-                suggestions[index].click()  # Click the current suggestion
-                time.sleep(1)  # Wait briefly before interacting with other fields
+                suggestions[index].click()
+                time.sleep(1)
 
-                # Locate the current row (each row is a tr element in tbody)
+                # Locate the current row
                 row = wait.until(
-                    EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))  # Adjust this if needed
+                    EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))
                 )
 
-                # Find the duration input field inside the current row and send the value
-                duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")  # Adjust if necessary
+                # Enter Duration
+                duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")
                 duration.clear()
-                duration.send_keys("5")  # Send the duration value
+                duration.send_keys("5")
 
-                time.sleep(1)  # Pause before interacting with the frequency dropdown
+                # ✅ Updated Frequency Dropdown Selection
+                dropdown_trigger = row.find_element(
+                    By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown-trigger')]"
+                )
+                dropdown_trigger.click()
 
-                # Find and select a random frequency from the dropdown in the current row
-                frequency_dropdown_label = row.find_element(By.CSS_SELECTOR, " ")
-                frequency_dropdown_label.click()  # Click to open the dropdown
+                dropdown_options = WebDriverWait(login, 10).until(
+                    EC.presence_of_all_elements_located(
+                        (By.XPATH, "//div[contains(@class,'p-dropdown-items-wrapper')]//li")
+                    )
+                )
 
-                # Get the frequency options within the dropdown for this row
-                frequency_options = login.find_elements(By.CSS_SELECTOR, ".p-dropdown-item")  # Adjust if necessary
-                if frequency_options:
-                    random_frequency = random.choice(frequency_options)
-                    random_frequency.click()  # Select the random frequency
+                if dropdown_options:
+                    option_to_click = random.choice(dropdown_options)
+                    login.execute_script("arguments[0].scrollIntoView(true);", option_to_click)
+                    time.sleep(0.5)
+                    login.execute_script("arguments[0].click();", option_to_click)
+                # Qty
+                qty_input = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")
+                qty_input.clear()
+                qty_input.send_keys("1")
 
-                time.sleep(1)  # Pause before interacting with the quantity field
-
-                # Optionally, send remarks (e.g., "After food")
+                # Remarks (Notes / Instructions)
                 row.find_element(By.XPATH, ".//td[6]").click()
-                remarks = row.find_element(By.XPATH, ".//textarea")  # Adjust if necessary
+                remarks = row.find_element(By.XPATH, "//input[@role='searchbox']")
                 remarks.clear()
                 remarks.send_keys("After food")
 
-            time.sleep(1)  # Pause before moving to the next row
+                time.sleep(1)  # Pause before moving to the next row
+
 
         # Finally, submit the prescription by clicking the "Create Prescription" button
         wait.until(

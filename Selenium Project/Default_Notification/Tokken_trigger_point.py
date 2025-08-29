@@ -1,15 +1,14 @@
 import time
 
 from Framework.common_utils import *
+from Framework.consumer_common_utils import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title(
-    "Confirmation, Send_message, Send_Attachment, Prescription_Sharing, Case_Sharing, Auto and Manual Invoice, Reschedule, Cancellation"
-)
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@allure.title("Confirmation, Send_message, Send_Attachment, Prescription_Sharing, Case_Sharing, Auto and Manual Invoice, Reschedule, Cancellation")
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_walkin_token(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -31,7 +30,7 @@ def test_walkin_token(login):
     time.sleep(2)
     login.implicitly_wait(5)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 1']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Id : 2']"))
     ).click()
 
     time.sleep(3)
@@ -725,7 +724,7 @@ def test_walkin_token(login):
 ####################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reconfirmation")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_patient_Reconfirmation(login):
 
     time.sleep(5)
@@ -875,7 +874,7 @@ def test_patient_Reconfirmation(login):
 ###################################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Started")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_patient_started(login):
 
     time.sleep(5)
@@ -988,7 +987,7 @@ def test_patient_started(login):
 ####################################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reminder Message")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_reminder(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -1095,7 +1094,7 @@ def test_reminder(login):
 ####################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Completed Messages")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_completed_message(login):
 
     time.sleep(5)
@@ -1197,7 +1196,7 @@ def test_completed_message(login):
 #########################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Confirmation,Reschedule,Send Message, Send attachment")
-@pytest.mark.parametrize("url", ["https://test.jaldee.com/53b6eu1/"])
+@pytest.mark.parametrize("url", [consumer_login_url_1])
 def test_confirmation(con_login):
     time.sleep(3)
     book_now_button = WebDriverWait(con_login, 10).until(

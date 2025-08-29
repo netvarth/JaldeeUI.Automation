@@ -455,7 +455,7 @@ def test_los_workflow(login):
         time.sleep(3)
   
         fake_india= Faker('en_IN')
-        fake_india_address= fake_india.address()
+        fake_india_address= fake_india.address().replace("\n", " ").strip()
         print(fake_india_address)
 
         
@@ -827,7 +827,7 @@ def test_los_workflow(login):
         pyautogui.press("enter")
         
         fake_india= Faker('en_IN')
-        fake_india_address= fake_india.address()
+        fake_india_address= fake_india.address().replace("\n", " ").strip()
         print(fake_india_address)
 
         time.sleep(3)
@@ -2207,12 +2207,14 @@ def test_sales_officer_report(login):
             EC.presence_of_element_located((By.XPATH, year_xpath))
         ).click()
 
+        time.sleep(2)
         # Select Month
         month_xpath = f"//span[normalize-space()='{month}']"
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, month_xpath))
         ).click()
 
+        time.sleep(2)
         # Select Day
         day = str(int(day))  # Ensuring day is in integer form
         day_xpath = f"//span[normalize-space()='{day}']"

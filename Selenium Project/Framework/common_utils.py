@@ -40,11 +40,13 @@ test_mail = ".test@jaldee.com"
 consumer_url = "https://scale.jaldee.com/visionhospital/"
 test_consumer_url = "https://scale.jaldeetest.in/visionhospital/"
 test_prod_url = "https://beta.jaldee.com/business/"
+
 sales_officer = "001920"
 credit_head = "001921"
 branch_manager = "001922"
 password = "Jaldee01"
-main_scale = "5555556030"
+main_scale = "5555556030" 
+main_scale_1 = "5554646777"
 main_prod = "5550005540"
 scale_consumer = "9207206005"
 prod_sales_officer = "001921"
@@ -154,6 +156,9 @@ def con_login(url):
     yield driver
 
 
+
+
+
 def generate_random_salutation():
     salutations = ["Mr.", "Ms.", "Mrs.", "Master", "Miss", "B/o", "Dr.", "Adv.", "Fr."]
     return random.choice(salutations)
@@ -182,31 +187,37 @@ def create_business_detail():
  
 
 
-def wait_and_click(login, by, value, timeout=10):
+def wait_and_click(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.element_to_be_clickable((by, value)))
     element.click()
     return element
 
-def wait_and_locate_click(login, by, value, timeout=10):
+def wait_and_locate_click(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     element.click()
     return element
 
-def wait_and_visible_click(login, by, value, timeout=10):
+def wait_and_locate_all_click(login, by, value, timeout=30):
+    elements = WebDriverWait(login, timeout).until(EC.presence_of_all_elements_located((by, value)))
+    for element in elements:
+        element.click()
+    return elements
+
+def wait_and_visible_click(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.visibility_of_element_located((by, value)))
     element.click()
     return element
 
-def wait_and_send_keys(login, by, value, keys, timeout=10):
+def wait_and_send_keys(login, by, value, keys, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     element.send_keys(keys)
     return element
 
-def wait_for_text(login, by, value, timeout=10):
+def wait_for_text(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     return element.text
 
-def get_snack_bar_message(login, timeout=10):
+def get_snack_bar_message(login, timeout=30):
     try:
         # Try to get the normal snack bar message
         snack_bar = WebDriverWait(login, timeout).until(
@@ -225,12 +236,32 @@ def get_snack_bar_message(login, timeout=10):
             return message
         except Exception as e:
             return None
-        
+
+
+def get_toast_message(login, timeout=10):
+    """
+    Wait for a PrimeNG toast message and return its text.
+
+    :param driver: Selenium WebDriver instance
+    :param timeout: Maximum wait time in seconds
+    :return: Toast message text or None if not found
+    """
+    try:
+        toast_message = WebDriverWait(login, timeout).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        return toast_message.text.strip()
+    except:
+        return None
+    
 def scroll_to_window(login):
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 def scroll_to_element(login, element):
     login.execute_script("arguments[0].scrollIntoView(true);", element)
+
+def click_to_element(login, element):
+    login.execute_script("arguments[0].click();", element)
 
 
 # Generate a random billing address

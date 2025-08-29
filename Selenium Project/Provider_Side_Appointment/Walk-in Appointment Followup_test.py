@@ -4,7 +4,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup for Sameday")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_followup_sameday(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(
@@ -234,7 +234,7 @@ def test_followup_sameday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup for nextday")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_followup_nextday(login):
 
     time.sleep(5)
@@ -471,7 +471,7 @@ def test_followup_nextday(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup for 180day")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_followup_180day(login):
 
     time.sleep(5)
@@ -695,8 +695,7 @@ def test_followup_180day(login):
 
         time.sleep(5)
 
-@allure.title("Followup form History")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_followup_history(login):
 
     time.sleep(5)
@@ -806,7 +805,7 @@ def test_followup_history(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup to nextmonth")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_followup_nextmonth(login):
 
     time.sleep(5)

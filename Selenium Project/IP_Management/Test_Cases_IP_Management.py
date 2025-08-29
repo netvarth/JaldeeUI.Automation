@@ -8,7 +8,7 @@ from faker import Faker
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Room creation")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_1(login):
+def test_IP_Management_1(login):
 
     try:
 
@@ -155,9 +155,8 @@ def test_IP_room_creation_1(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Bed creation for room")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_2(login):
-    
- 
+def test_IP_Management_2(login):
+
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30) 
@@ -268,7 +267,7 @@ def test_IP_room_creation_2(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: IP room creation with existing room name")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_3(login):
+def test_IP_Management_3(login):
 
     try:
 
@@ -392,7 +391,7 @@ def test_IP_room_creation_3(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: IP room creation with existing bed name")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_4(login):
+def test_IP_Management_4(login):
 
     try:
 
@@ -537,7 +536,7 @@ def test_IP_room_creation_4(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create the prescription From Medical Record")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_5(login):
+def test_IP_Management_5(login):
 
     try:
 
@@ -602,105 +601,107 @@ def test_IP_room_creation_5(login):
         print("Toast Message:", message)    
         
         time.sleep(5)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
-        ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Search Service'])[1]"))
-        ).send_keys("Doc")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//li[@role='option'])[1]"))
-        ).click()
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+        # ).click()
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//input[@placeholder='Search Service'])[1]"))
+        # ).send_keys("Doc")
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//li[@role='option'])[1]"))
+        # ).click()
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
-        ).click()
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        # ).click()
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        ).click()
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]"))
+        # ).click()
 
-        time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
+        # ).click()
 
-        # Click it 10 times
-        for _ in range(10):
-            minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+        # ).click()
 
-        print("✅ Increased minutes by 10 clicks.")
-        time.sleep(2)
+        # time.sleep(2)
+        # # Locate the minute up arrow
+        # minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
 
-        today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
+        # # Click it 10 times
+        # for _ in range(10):
+        #     minute_up_button.click()
+        #     time.sleep(0.2)  # slight delay to ensure the click registers
 
-        # Click on today's date
-        today_element.click()
+        # print("✅ Increased minutes by 10 clicks.")
+        # time.sleep(2)
 
-        print("Clicked today's date:", today_element.text)
+        # today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
+
+        # # Click on today's date
+        # today_element.click()
+
+        # print("Clicked today's date:", today_element.text)
         
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
+        # ).click()
 
-        time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
+        # time.sleep(2)
+        # # Locate the minute up arrow
+        # minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
 
-        # Click it 10 times
-        for _ in range(20):
-            minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
+        # # Click it 10 times
+        # for _ in range(20):
+        #     minute_up_button.click()
+        #     time.sleep(0.2)  # slight delay to ensure the click registers
 
-        print("✅ Increased minutes by 20 clicks.")
+        # print("✅ Increased minutes by 20 clicks.")
 
-        time.sleep(2)
+        # time.sleep(2)
 
-        today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
+        # today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
 
-        # Click on today's date
-        today_element.click()
+        # # Click on today's date
+        # today_element.click()
 
-        print("Clicked today's date:", today_element.text)
+        # print("Clicked today's date:", today_element.text)
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Add Service'])[1]"))
-        ).click()
+        # time.sleep(1)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[normalize-space()='Add Service'])[1]"))
+        # ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Medical Records'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[normalize-space()='Medical Records'])[1]"))
+        # ).click()
 
 
-        time.sleep(2)
+        # time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[normalize-space()='Prescription'])[1]"))
@@ -819,7 +820,7 @@ def test_IP_room_creation_5(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create the RX Push and Complete Order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_6(login):
+def test_IP_Management_6(login):
 
     try:
 
@@ -901,17 +902,19 @@ def test_IP_room_creation_6(login):
         medicines = ["Item01", "Item02", "Item03"]
         frequencies = ["TID (1-1-1)", "0-1-0", "QID (1-1-1-1)"] 
         qty = ["15", "5", "20"]
+        dosages = ["1 tablet", "5 ml", "2 capsules"]
+
         for i, med in enumerate(medicines):
             # Step 1: Click "+ Add Medicine"
             add_btn = login.find_element(By.XPATH, "//button[contains(text(), '+ Add Medicine')]")
             add_btn.click()
-            time.sleep(1)  # Wait for row to appear
+            time.sleep(1)
 
-            # Step 2: Get the last row (newly added)
+            # Step 2: Get the last row
             rows = login.find_elements(By.XPATH, "//tbody[@class='p-element p-datatable-tbody']/tr")
             row = rows[-1]
 
-            # Step 3: Fill medicine name (autocomplete)
+            # Step 3: Fill medicine name
             med_input = row.find_element(By.XPATH, ".//td[2]//input[@type='text']")
             med_input.clear()
             med_input.send_keys(med)
@@ -924,15 +927,12 @@ def test_IP_room_creation_6(login):
             duration_input.clear()
             duration_input.send_keys("5")
 
-            # Step 5: Frequency dropdown
+            # Step 5: Frequency
             freq_dropdown = row.find_element(By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown')]")
             freq_dropdown.click()
             time.sleep(1)
 
             freq_value = frequencies[i] if i < len(frequencies) else frequencies[0]
-
-            # Wait for options to render
-            time.sleep(1)
             freq_options = login.find_elements(By.XPATH, "//ul[@role='listbox']//li[@role='option']")
 
             selected = False
@@ -947,36 +947,38 @@ def test_IP_room_creation_6(login):
             if not selected:
                 print(f"❌ Frequency '{freq_value}' not found in dropdown.")
 
+            # Step 6: Dosage (td[5])
+            dosage_input = row.find_element(By.XPATH, ".//td[5]//input[@type='text']")
+            dosage_value = dosages[i] if i < len(dosages) else "1 tablet"
+            dosage_input.clear()
+            dosage_input.send_keys(dosage_value)
 
             time.sleep(2)
-            # Step: Assert Auto-Generated Quantity
-            qty_input = row.find_element(By.XPATH, ".//td[5]//input[@type='number']")
+
+            # Step 7: Assert Auto-Generated Quantity (td[6])
+            qty_input = row.find_element(By.XPATH, ".//td[6]//input[@type='number']")
             actual_qty = qty_input.get_attribute("value")
-
-            expected_qty = qty[i]  # from your list: ["15", "5", "20"]
+            expected_qty = qty[i]
             print(f"🔎 Auto-generated quantity for {med}: Expected {expected_qty}, Got {actual_qty}")
-
             assert actual_qty == expected_qty, f"❌ Quantity mismatch for {med}: Expected {expected_qty}, Got {actual_qty}"
             print(f"✅ Quantity matched for {med}")
 
-            editable_td = row.find_element(By.XPATH, ".//td[6]")
+            # Step 8: Notes / Instructions (td[7])
+            editable_td = row.find_element(By.XPATH, ".//td[7]")
             editable_td.click()
             time.sleep(2)
-
-            # 8. Now textarea appears
             textarea = editable_td.find_element(By.XPATH, "//input[@role='searchbox']")
             food_text = random.choice(["after food", "before food"])
             textarea.send_keys(food_text)
-                
 
-        
+        # Add general notes
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[@aria-label='Rich Text Editor. Editing area: main'])[1]"))
         ).send_keys("200-word limit restricts essays to a concise length, typically resulting in 3-4 paragraphs. Despite the brevity, the essay should still maintain a clear structure with an introduction, body, and conclusion. This format helps organize thoughts and convey ideas effectively within the word count constraint")
 
-
+        # Submit
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -1058,11 +1060,11 @@ def test_IP_room_creation_6(login):
         ).click()
 
 
+
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
         ).click()
-
 
 
         toast_detail = WebDriverWait(login, 10).until(
@@ -1142,7 +1144,7 @@ def test_IP_room_creation_6(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Retained Bed when transfer")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def  test_IP_room_creation_7(login):
+def  test_IP_Management_7(login):
 
     try:
 
@@ -1248,12 +1250,12 @@ def  test_IP_room_creation_7(login):
         print("Toast Message:", message)    
 
         time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        ).click()
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        # ).click()
 
-        time.sleep(2)
+        # time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]"))
@@ -1310,7 +1312,7 @@ def  test_IP_room_creation_7(login):
 @allure.severity(allure.severity_level.CRITICAL) 
 @allure.title("Test Case:  Not Retained Bed when transfer")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_room_creation_8(login):
+def test_IP_Management_8(login):
 
     try:
 
@@ -1338,7 +1340,7 @@ def test_IP_room_creation_8(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[20]"))
+                (By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]"))
         ).click()
 
         time.sleep(2)
@@ -1347,65 +1349,27 @@ def test_IP_room_creation_8(login):
                 (By.XPATH, "(//span[normalize-space()='Select Building'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block A'])[1]"))
         ).click()
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor A'])[1]"))
-        ).click()
-
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[4]"))
-        ).click()
-
-        # Wait for the "No Rooms for this floor." message
-        try:
-            no_rooms_msg = wait.until(EC.presence_of_element_located(
-                (By.XPATH, "(//p[normalize-space()='No Rooms for this floor.'])[1]")
-            ))
-            assert no_rooms_msg.is_displayed(), "Expected 'No Rooms for this floor.' message is not displayed"
-            print("✅ 'No Rooms for this floor.' message is displayed.")
-        except TimeoutException:
-            print("ℹ️ Rooms might be available, message not found.")
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[5]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Room'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='116A'])[1]"))
-        ).click()
-
-        time.sleep(1)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Bed Type'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Fowler Beds'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Select Bed'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[contains(text(),'Select Bed')])[1]"))
         ).click()
+
+        time.sleep(2)
 
         # ✅ Assert that it changed to 'Unselect Bed'
         unselect_bed_button = wait.until(EC.presence_of_element_located(
@@ -1462,39 +1426,13 @@ def test_IP_room_creation_8(login):
         )
         raise e
     
-
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: Taken appointment convert to IP cancel the appointment then discharge and checkout")
-@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_9(login):
-
-    try:
-        wait = WebDriverWait(login, 30)
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
-            ).click()
-        
-
-
-
-
-
-    except Exception as e:
-        allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
-            name="full_page",  # param2
-            attachment_type=AttachmentType.PNG,
-        )
-        raise e
     
 
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create 2 unpaid invoices, then create a master invoice and pay it. After that, discharge and check out.")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_10(login):
+def test_IP_Management_9(login):
 
     try:
 
@@ -1626,10 +1564,10 @@ def test_IP_Management_10(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Type'])[1]"))
         ).click()
         
-        time.sleep(1)
+        time.sleep(2)
         bed_type = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Normal'])[1]"))
@@ -1641,10 +1579,10 @@ def test_IP_Management_10(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Category'])[1]"))
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Observation Beds'])[1]"))
@@ -1653,7 +1591,7 @@ def test_IP_Management_10(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Pricing'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -1984,11 +1922,24 @@ def test_IP_Management_10(login):
         message = toast_message.text
         print("Toast Message:", message)    
         
-        time.sleep(5)
+        time.sleep(3)
+
+
         wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+            EC.presence_of_element_located(((By.XPATH, "//button[normalize-space()='Services']")))
+            ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
         ).click()
+
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+        # ).click()
 
         time.sleep(2)
         wait.until(
@@ -2030,11 +1981,11 @@ def test_IP_Management_10(login):
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
 
         # Click it 10 times
-        for _ in range(10):
+        for _ in range(5):
             minute_up_button.click()
             time.sleep(0.2)  # slight delay to ensure the click registers
 
-        print("✅ Increased minutes by 10 clicks.")
+        print("✅ Increased minutes by 5 clicks.")
         time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
@@ -2055,11 +2006,11 @@ def test_IP_Management_10(login):
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
 
         # Click it 10 times
-        for _ in range(20):
+        for _ in range(10):
             minute_up_button.click()
             time.sleep(0.2)  # slight delay to ensure the click registers
 
-        print("✅ Increased minutes by 20 clicks.")
+        print("✅ Increased minutes by 10 clicks.")
 
         time.sleep(2)
 
@@ -2558,7 +2509,7 @@ def test_IP_Management_10(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:Create two invoices, one paid and one unpaid, then group them into a master invoice. Make a payment for the unpaid invoice, then proceed to discharge and check out.")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def  test_IP_Management_11(login):
+def  test_IP_Management_10(login):
     
     try:
 
@@ -2684,7 +2635,7 @@ def  test_IP_Management_11(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Type'])[1]"))
         ).click()
         
         time.sleep(2)
@@ -2699,7 +2650,7 @@ def  test_IP_Management_11(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Category'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -2711,7 +2662,7 @@ def  test_IP_Management_11(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Pricing'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -3025,9 +2976,15 @@ def  test_IP_Management_11(login):
         print("Toast Message:", message)    
         
         time.sleep(5)
+
+        wait.until(
+            EC.presence_of_element_located(((By.XPATH, "(//button[normalize-space()='Services'])[1]")))
+        ).click()
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -3120,6 +3077,7 @@ def  test_IP_Management_11(login):
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Medical Records'])[1]"))
+
         ).click()
 
         time.sleep(2)
@@ -3710,7 +3668,7 @@ def  test_IP_Management_11(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:After Discharge Create 2 Invoice with unpaid and paid and make it master invoice, make payment to the unpaid invoice and check out")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_12(login):
+def test_IP_Management_11(login):
 
     try:
 
@@ -3836,7 +3794,7 @@ def test_IP_Management_12(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Type'])[1]"))
         ).click()
         
         time.sleep(2)
@@ -3851,7 +3809,7 @@ def test_IP_Management_12(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Category'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -3863,7 +3821,7 @@ def test_IP_Management_12(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+                (By.XPATH, "(//span[normalize-space()='Select Bed Pricing'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -4177,9 +4135,15 @@ def test_IP_Management_12(login):
         print("Toast Message:", message)    
         
         time.sleep(5)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Services'])[1]"))
+        ).click()
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -4246,10 +4210,11 @@ def test_IP_Management_12(login):
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
 
+        time.sleep(3)
         # Click it 10 times
         for _ in range(20):
             minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
+            time.sleep(1)  # slight delay to ensure the click registers
 
         print("✅ Increased minutes by 20 clicks.")
 
@@ -4525,7 +4490,7 @@ def test_IP_Management_12(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create a Service")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_13(login):
+def test_IP_Management_12(login):
     try:
 
         time.sleep(5)
@@ -4593,7 +4558,7 @@ def test_IP_Management_13(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create a Service without pricing and addon applicable")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_14(login):
+def test_IP_Management_13(login):
     try:
 
         time.sleep(5)
@@ -4656,14 +4621,89 @@ def test_IP_Management_14(login):
     
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("")
+@allure.title("Treatment Room Creation and Patient Admission")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_15(login):
+def test_IP_Management_14(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
+        wait.until(
+        EC.presence_of_element_located((By.XPATH, "(//img)[4]"))
+        ).click()
+        
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='dashboard-card-image'])[6]"))
+        ).click()
 
-    
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        room_name = f'TreatmentRoom{random.randint(1000, 9999)}'
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Building'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Block B'])[1]"))
+        ).click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='First Floor B'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Type'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Treatment Room'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Room Name'])[1]"))
+        ).send_keys(room_name)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Room Nature'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Room'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Create'])[1]"))
+        ).click()
+
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),

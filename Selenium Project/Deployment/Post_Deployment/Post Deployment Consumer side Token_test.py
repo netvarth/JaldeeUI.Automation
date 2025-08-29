@@ -23,23 +23,21 @@ def test_consumer_side_token(consumer_login):
     print("Pre-Deployment Existing Consumer Token",current_date)
     try:
         time.sleep(5)
-        # Scroll to the element
-        book_now_button = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Book Now']")
+        
+        wait = WebDriverWait(consumer_login, 30)
+
+        book_now_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "(//button[normalize-space()='Book Now'])[1]")
             )
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView();", book_now_button)
+        book_now_button.click()
 
-        # Wait for the element to be clickable
-        clickable_book_now_button = WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
-        )
-        try:
-            clickable_book_now_button.click()
-        except:
-            consumer_login.execute_script("arguments[0].click();", clickable_book_now_button)
-            # wait = WebDriverWait(consumer_login, 10)
+        time.sleep(3)
+
+
+        # wait = WebDriverWait(consumer_login, 30)
+
         # location_button = WebDriverWait(consumer_login, 10).until(
         #     EC.presence_of_element_located(
         #         (
@@ -68,14 +66,16 @@ def test_consumer_side_token(consumer_login):
         #     )
         # ).click()
 
-        WebDriverWait(consumer_login, 10).until(
+        card =  WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(
                 (
                     By.XPATH,
                     "(//div[@class='serviceName ng-star-inserted'][normalize-space()='Consultation'])[2]",
-                )
+                )     
             )
-        ).click()
+        )
+        consumer_login.execute_script("arguments[0].click(true);", card)
+
         time.sleep(3)
         Today_Date = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(
