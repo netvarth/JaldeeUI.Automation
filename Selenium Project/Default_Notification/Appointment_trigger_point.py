@@ -1486,8 +1486,6 @@ def test_create_patient(login):
         )
         raise e
     
-
-
 # ######################################################################################################
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -3717,13 +3715,12 @@ def test_donation(con_login):
     ).click()
 
     time.sleep(5)
-
     
 ########################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
-@allure.title("Confirmation,Reschedule,Send Message, Send attachment")
+@allure.title("Appointment from the consumer side notification for Confirmation,Reschedule,Send Message, Send attachment")
 @pytest.mark.parametrize("url", [consumer_login_url_1])
-def test_confirmation(consumer_login):
+def test_consumer_side_notification(consumer_login):
     try:    
         time.sleep(5)
         # Scroll to the element
@@ -4308,192 +4305,4 @@ def test_confirmation(consumer_login):
             raise e
 
 
-##################################################################################################################################################
-@allure.severity(allure.severity_level.NORMAL)
-@allure.title("Reschedule")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/visionhospital/"])
-def test_reschedule(con_login):
-    time.sleep(3)
-    book_now_button = WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Book Now']")
-        )
-    )
-    con_login.execute_script("arguments[0].scrollIntoView();", book_now_button)
 
-    # Wait for the element to be clickable
-    clickable_book_now_button = WebDriverWait(con_login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Book Now']"))
-    )
-
-    # Attempt to click the element
-    try:
-        clickable_book_now_button.click()
-    except:
-        # If click is intercepted, click using JavaScript
-        con_login.execute_script("arguments[0].click();", clickable_book_now_button)
-
-    time.sleep(2)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(@class,'serviceName ng-star-inserted')]")
-        )
-    ).click()
-
-    time.sleep(2)
-    Today_Date = WebDriverWait(con_login, 10).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                "//button[@aria-pressed='true'] [@aria-current='date']",
-            )
-        )
-    )
-
-    Today_Date.click()
-
-    print("Today Date:", Today_Date.text)
-
-    wait = WebDriverWait(con_login, 10)
-    time_slot = wait.until(
-        EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']"))
-    )
-    time_slot.click()
-    print("Time Slot:", time_slot.text)
-
-    con_login.find_element(By.XPATH, "//button[normalize-space()='Next']").click()
-
-    time.sleep(1)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
-    ).send_keys("9207206005")
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='continue ng-star-inserted']")
-        )
-    ).click()
-
-    time.sleep(2)
-    otp_digits = "5555"
-
-    # Wait for the OTP input fields to be present
-    otp_inputs = WebDriverWait(con_login, 10).until(
-        EC.presence_of_all_elements_located(
-            (By.XPATH, "//input[contains(@id, 'otp_')]")
-        )
-    )
-
-    for i, otp_input in enumerate(otp_inputs):
-        otp_input.send_keys(otp_digits[i])
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='continue ng-star-inserted']")
-        )
-    ).click()
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Confirm']")
-        )
-    ).click()
-
-    time.sleep(4)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
-
-    time.sleep(3)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'My Bookings')]")
-        )
-    ).click()
-
-    time.sleep(1)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (
-                By.XPATH,
-                "//span//mat-icon[@class='mat-icon notranslate material-icons mat-ligature-font mat-icon-no-color']",
-            )
-        )
-    ).click()
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Reschedule']")
-        )
-    ).click()
-
-    today_date = datetime.now()
-    print(today_date.day)
-    today_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-today'][normalize-space()='{}']".format(
-        today_date.day
-    )
-    print(today_xpath_expression)
-    tomorrow_date = today_date + timedelta(days=1)
-    print(tomorrow_date.day)
-
-    # current_month_year = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (
-    #             By.XPATH,
-    #             "//button[@aria-label='Choose month and year']//span[@class='mat-button-wrapper']",
-    #         )
-    #     )
-    # )
-    # print(current_month_year.text)
-    # print(current_month_year.text.lower())
-    # print(tomorrow_date.strftime("%b %Y").lower())
-    # if current_month_year.text.lower() != tomorrow_date.strftime("%b %Y").lower():
-    #     login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
-    time.sleep(3)
-    tomorrow_xpath_expression = "//div[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{}']".format(
-        tomorrow_date.day
-    )
-    print(tomorrow_xpath_expression)
-
-    Tomorrow_Date = WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
-    )
-    Tomorrow_Date.click()
-
-    print("Tomorrow Date:", Tomorrow_Date.text)
-
-    wait = WebDriverWait(con_login, 10)
-    time_slot = wait.until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                "//mat-chip[@class='mat-chip mat-focus-indicator text-center mat-primary mat-standard-chip mat-chip-selected ng-star-inserted']",
-            )
-        )
-    )
-    time_slot.click()
-    print("Time Slot:", time_slot.text)
-
-    time.sleep(3)
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Next']"))
-    ).click()
-
-    time.sleep(2)
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Reschedule']")
-        )
-    ).click()
-
-    time.sleep(2)
-
-    WebDriverWait(con_login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
-    ).click()
-
-    print("Appointment Rescheduled successfully")
-
-
-######################################################################################################################################################

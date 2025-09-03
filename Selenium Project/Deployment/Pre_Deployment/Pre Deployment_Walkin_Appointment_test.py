@@ -447,18 +447,18 @@ def test_account_signup():
         )
     ).click()
 
-    time.sleep(6)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]")
-        )
-    ).click()
+    # time.sleep(6)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]")
+    #     )
+    # ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
-        )
-    ).click()
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
+    #     )
+    # ).click()
 
     time.sleep(2)
     WebDriverWait(login, 10).until(

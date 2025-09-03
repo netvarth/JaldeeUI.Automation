@@ -1712,12 +1712,12 @@ def test_lab_order_6(login):
         )
         login.execute_script("arguments[0].click()", checkbox)
 
-        time.sleep(2)
+        
 
         time.sleep(3)
         # Questionnaire
 
-        time.sleep(2)
+        
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Add'])[1]"))
         ).click()
@@ -2089,7 +2089,7 @@ def test_lab_order_6(login):
         print("Login with Sales officer")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
-        login_id.send_keys("ArchanaS")
+        login_id.send_keys("shinoj@9741")
 
         password = login.find_element(By.XPATH, "//input[@id='password']")
         password.clear()
@@ -2148,7 +2148,7 @@ def test_lab_order_7(login):
 
         clinic_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Pirme Clinic'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sanoop Clinic'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", clinic_option)
 
@@ -2162,7 +2162,7 @@ def test_lab_order_7(login):
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Store'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Care_dental'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
@@ -2186,96 +2186,36 @@ def test_lab_order_7(login):
         )
         login.execute_script("arguments[0].click()", checkbox)
 
-        time.sleep(2)
+        
 
         time.sleep(3)
         # Questionnaire
 
-        random_form_number = random.randint(100, 9999)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Add'])[1]"))
+        ).click()
 
+
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter form number'])[1]"))
-        ).send_keys(str(random_form_number))
-
-        time.sleep(2)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+                (By.XPATH, "(//span[normalize-space()='Select Prosthesis Type'])[1]"))
         ).click()
 
         time.sleep(2)
 
-        today_element = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-        (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
-                )
-        )          
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
 
-        # Click using JavaScript in case normal click doesn't work
-        login.execute_script("arguments[0].click();", today_element)
+        # Select a random option from the list
+        random_option = random.choice(options)
+        random_option_text = random_option.text
+        random_option.click()
 
-        print("Clicked today's date:", today_element.text)
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Please enter the doctor’s name'])[1]"))
-        ).send_keys("Naveen P")
-
-        time.sleep(2)
-        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Please enter the patient name'])[1]"))
-        ).send_keys(f"{first_name} {last_name}")
-
-        time.sleep(1)
-
-        random_age = random.randint(23, 65)
-        print("Random Age:", random_age)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Age'])[1]"))
-        ).send_keys(str(random_age)) 
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Male'])[1]"))
-        ).click()
-
-        prosthesis_types = [
-        "Complete Denture",
-        "Partial Denture",
-        "Fixed Bridge",
-        "Crown",
-        "Implant",
-        "Implant-Supported Denture",
-        "Veneer",
-        "Inlay",
-        "Onlay",
-        "Orthodontic Appliance"
-        ]
-
-        random_type = random.choice(prosthesis_types)
-        print("Random Prosthesis Type:", random_type)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Prosthesis Type'])[1]"))
-        ).send_keys(random_type)
-
-        time.sleep(2)
+        print(f"Selected option: {random_option_text}")
 
         # Locate all the circle elements inside the quadrant-container
         circles = login.find_elements(By.CSS_SELECTOR, ".quadrant-container .circle")
@@ -2291,47 +2231,60 @@ def test_lab_order_7(login):
             circle.click()
 
 
-        time.sleep(2)
-        Pontic_types = [
-        "Saddle Pontic",
-        "Modified Ridge Lap Pontic",
-        "Conical Pontic",
-        "Ovate Pontic",
-        "Prefabricated Pontics"
-         ]
 
-        random_pontic_type = random.choice(prosthesis_types)
-        print("Random Pontic types:", random_pontic_type)
+        # Wait until all shade elements are present
+        shades = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//div[contains(@class,'shade') and contains(@class,'pointer-cursor')]")
+            )
+        )
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Type Of Ponti'])[1]"))
-        ).send_keys(random_pontic_type)
+        # Randomly select 2 or 3 shades
+        selected_shades = random.sample(shades, k=random.choice([2, 3]))
 
+        # Click each selected shade
+        for shade in selected_shades:
+            shade_text = shade.text.strip()
+            login.execute_script("arguments[0].scrollIntoView(true);", shade)
+            shade.click()
+            print(f"Selected Shade: {shade_text}")
 
-        time.sleep(2)
-        Shade_types = [
-        "Reddish-Brownish",
-        "Reddish-Yellowish",
-        "Greyish",
-        "Reddish-Grey"
-       	]
-
-        random_Shade_types = random.choice(Shade_types)
-        print("Random Pontic types:", random_Shade_types)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Shade'])[1]"))
-        ).send_keys(random_Shade_types)
 
         time.sleep(2)
+
         wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[11]"))
         ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Type Of Pontic'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        # Wait for options to be visible
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
+
+        # Select a random option
+        random_option = random.choice(options)
+        option_text = random_option.text.strip()
+        random_option.click()
+
+        print(f"Selected option: {option_text}")
+
+        time.sleep(3)
+        
+        drop_down1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[6]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down1)
 
         time.sleep(2)
         wait.until(
@@ -2363,10 +2316,11 @@ def test_lab_order_7(login):
 
 
         time.sleep(2)
-        wait.until(
+        drop_down2 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
-        ).click()
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[7]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down2)   
 
         time.sleep(2)
         wait.until(
@@ -2565,7 +2519,7 @@ def test_lab_order_7(login):
         print("Login with Sales officer")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
-        login_id.send_keys("ArchanaS")
+        login_id.send_keys("shinoj@9741")
 
         password = login.find_element(By.XPATH, "//input[@id='password']")
         password.clear()
@@ -2730,7 +2684,7 @@ def test_lab_order_8(login):
 
         clinic_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Pirme Clinic'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sanoop Clinic'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", clinic_option)
 
@@ -2744,7 +2698,7 @@ def test_lab_order_8(login):
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Aster Store'])[1]"))
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Care_dental'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
@@ -2768,96 +2722,37 @@ def test_lab_order_8(login):
         )
         login.execute_script("arguments[0].click()", checkbox)
 
-        time.sleep(2)
+        
 
         time.sleep(3)
         # Questionnaire
 
-        random_form_number = random.randint(100, 9999)
+        
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Add'])[1]"))
+        ).click()
 
+
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter form number'])[1]"))
-        ).send_keys(str(random_form_number))
-
-        time.sleep(2)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+                (By.XPATH, "(//span[normalize-space()='Select Prosthesis Type'])[1]"))
         ).click()
 
         time.sleep(2)
 
-        today_element = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-        (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
-                )
-        )          
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
 
-        # Click using JavaScript in case normal click doesn't work
-        login.execute_script("arguments[0].click();", today_element)
+        # Select a random option from the list
+        random_option = random.choice(options)
+        random_option_text = random_option.text
+        random_option.click()
 
-        print("Clicked today's date:", today_element.text)
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Please enter the doctor’s name'])[1]"))
-        ).send_keys("Naveen P")
-
-        time.sleep(2)
-        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Please enter the patient name'])[1]"))
-        ).send_keys(f"{first_name} {last_name}")
-
-        time.sleep(1)
-
-        random_age = random.randint(23, 65)
-        print("Random Age:", random_age)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Age'])[1]"))
-        ).send_keys(str(random_age)) 
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Male'])[1]"))
-        ).click()
-
-        prosthesis_types = [
-        "Complete Denture",
-        "Partial Denture",
-        "Fixed Bridge",
-        "Crown",
-        "Implant",
-        "Implant-Supported Denture",
-        "Veneer",
-        "Inlay",
-        "Onlay",
-        "Orthodontic Appliance"
-        ]
-
-        random_type = random.choice(prosthesis_types)
-        print("Random Prosthesis Type:", random_type)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Prosthesis Type'])[1]"))
-        ).send_keys(random_type)
-
-        time.sleep(2)
+        print(f"Selected option: {random_option_text}")
 
         # Locate all the circle elements inside the quadrant-container
         circles = login.find_elements(By.CSS_SELECTOR, ".quadrant-container .circle")
@@ -2873,47 +2768,60 @@ def test_lab_order_8(login):
             circle.click()
 
 
-        time.sleep(2)
-        Pontic_types = [
-        "Saddle Pontic",
-        "Modified Ridge Lap Pontic",
-        "Conical Pontic",
-        "Ovate Pontic",
-        "Prefabricated Pontics"
-         ]
 
-        random_pontic_type = random.choice(prosthesis_types)
-        print("Random Pontic types:", random_pontic_type)
+        # Wait until all shade elements are present
+        shades = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//div[contains(@class,'shade') and contains(@class,'pointer-cursor')]")
+            )
+        )
 
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Type Of Ponti'])[1]"))
-        ).send_keys(random_pontic_type)
+        # Randomly select 2 or 3 shades
+        selected_shades = random.sample(shades, k=random.choice([2, 3]))
 
+        # Click each selected shade
+        for shade in selected_shades:
+            shade_text = shade.text.strip()
+            login.execute_script("arguments[0].scrollIntoView(true);", shade)
+            shade.click()
+            print(f"Selected Shade: {shade_text}")
 
-        time.sleep(2)
-        Shade_types = [
-        "Reddish-Brownish",
-        "Reddish-Yellowish",
-        "Greyish",
-        "Reddish-Grey"
-       	]
-
-        random_Shade_types = random.choice(Shade_types)
-        print("Random Pontic types:", random_Shade_types)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Shade'])[1]"))
-        ).send_keys(random_Shade_types)
 
         time.sleep(2)
+
         wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[11]"))
         ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Select Type Of Pontic'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        # Wait for options to be visible
+        options = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+            )
+        )
+
+        # Select a random option
+        random_option = random.choice(options)
+        option_text = random_option.text.strip()
+        random_option.click()
+
+        print(f"Selected option: {option_text}")
+
+        time.sleep(3)
+        
+        drop_down1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[6]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down1)
 
         time.sleep(2)
         wait.until(
@@ -2945,10 +2853,11 @@ def test_lab_order_8(login):
 
 
         time.sleep(2)
-        wait.until(
+        drop_down2 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
-        ).click()
+                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[7]"))
+        )
+        login.execute_script("arguments[0].click();", drop_down2)   
 
         time.sleep(2)
         wait.until(
@@ -3147,7 +3056,7 @@ def test_lab_order_8(login):
         print("Login with Sales officer")
         login_id = login.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
-        login_id.send_keys("ArchanaS")
+        login_id.send_keys("shinoj@9741")
 
         password = login.find_element(By.XPATH, "//input[@id='password']")
         password.clear()
