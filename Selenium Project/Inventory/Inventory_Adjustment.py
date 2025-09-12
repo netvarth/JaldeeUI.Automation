@@ -47,12 +47,6 @@ def test_stock_adjustment(login):
                 (By.XPATH, "//p-dropdown[@placeholder='Select Catalog']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
         ).click()
 
-        # element_invcatalog = wait.until(
-        # EC.presence_of_element_located(
-        #     (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
-        # )
-        # login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
-        # element_invcatalog.click()
         time.sleep(3)
         element_invcatalog = wait.until(
         EC.presence_of_element_located(
@@ -77,15 +71,16 @@ def test_stock_adjustment(login):
                 (By.XPATH, "//span[normalize-space()='Add Items']"))
         ).click()
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox'])[6]"))
+                (By.XPATH, "(//input[@type='checkbox'])[7]"))
         ).click()
 
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "(//i[@class='pi pi-check'])[1]"))
         ).click()
 
         
@@ -100,7 +95,7 @@ def test_stock_adjustment(login):
         # Capture the initial stock before adding the quantity
         initial_stock_element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'Item_6 Green')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+                (By.XPATH, "//div[contains(text(),'Item_6 White')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
             )
         )
 
@@ -254,10 +249,12 @@ def test_stock_adjustment(login):
                 (By.XPATH, "(//td[@class='fw-bold'])[1]"))
         ).click()
 
+
+        time.sleep(2)
         # Capture the updated stock after clicking "View"
         updated_stock_element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[normalize-space()='Item_6 Green']/ancestor::tr//td[@class='fw-bold']//span[normalize-space()]")
+                (By.XPATH, "//div[normalize-space()='Item_6 White']/ancestor::tr//td[@class='fw-bold']//span[normalize-space()]")
             )
         )
         updated_stock = int(updated_stock_element.text.strip())  
@@ -331,7 +328,7 @@ def test_stock_adjustment(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(@class, 'mdc-form-field')]//input[@type='radio'])[2]"))
+                (By.XPATH, "(//div[contains(@class, 'mdc-form-field')]//input[@type='radio'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -352,7 +349,7 @@ def test_stock_adjustment(login):
         # Capture the updated stock after clicking "View"
         updated_stock_element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//table[contains(@class, 'p-datatable-table')]//tr[td//div[contains(text(),'Item_6 Green')]]/td[2]//div[contains(@class,'text-nowrap')]")
+                (By.XPATH, "//table[contains(@class, 'p-datatable-table')]//tr[td//div[contains(text(),'Item_6 White')]]/td[2]//div[contains(@class,'text-nowrap')]")
             )
         )
         updated_stock = int(updated_stock_element.text.strip())
@@ -382,342 +379,327 @@ def test_stock_adjustment(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_stock_adjustment_1(login):
 
-    time.sleep(5)
-    wait = WebDriverWait(login, 10)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//img)[3]"))
-    ).click()
-
-    time.sleep(3)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Inv.Adjust')]"))
-    ).click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Create']"))
-    ).click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-dropdown[@placeholder='Select Store']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
-    ).click()
-
-    element_store = wait.until(
-    EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
-    )
-    login.execute_script("arguments[0].scrollIntoView();", element_store)
-
-    element_store.click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-dropdown[@placeholder='Select Catalog']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
-    ).click()
-
-    element_invcatalog = wait.until(
-    EC.presence_of_element_located(
-        (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Catalog_Inventory'])[1]"))
-    )
-    login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
-    element_invcatalog.click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-dropdown[@placeholder='Select Remark']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
-    ).click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='stock adjustment'])[1]"))
-    ).click()
-
-    wait.until( 
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Add Items']"))
-    ).click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//mat-checkbox[contains(@class,'mat-mdc-checkbox')]//input[@type='checkbox'])[2]"))
-    ).click()
-
-    time.sleep(2)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
-    ).click()
-    time.sleep(3)
-
-    # wait.until(
-    #     EC.presence_of_element_located((By.XPATH, "(//span[@class='fw-bold shadow p-1 pointer-cursor ng-star-inserted'])[1]"))
-    # )
-
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//td[@class='fw-bold']//div[@class='ng-star-inserted']"))
-    ).click()
-    time.sleep(1)
-    # Capture the initial stock before adding the quantity
-    initial_stock_element = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//tr[td//div[normalize-space(text())='Item_9']]/td[3]//span[normalize-space()]")
-        )
-    )
-    initial_stock = int(initial_stock_element.text.strip())
-    print(f"Initial stock: {initial_stock}")
-
-
-    time.sleep(3)
-    qty_element = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@type='number']"))
-    )
-    qty_element.clear()
-    qty_element.send_keys("10")  
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Save']"))
-    ).click()
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Yes']"))
-    ).click()
-
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
-
-    time.sleep(3)
-    # Wait for the table to be present
-    table_body = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//tbody"))
-    )
-
-    # Locate the first table row
-    first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
-
-    # Find the status element within the first row
-    status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
-    status_text = status_element.text
-    expected_status = "DRAFT"
-
-    print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
-
-    # Assert that the status is "IN REVIEW"
-    assert status_text == "DRAFT", f"Expected status to be 'DRAFT', but got '{status_text}'"
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Update'])[1]"))
-    ).click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Submit']"))
-    ).click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Yes']"))
-    ).click()
-
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
-
-    time.sleep(3)
-    # Wait for the table to be present
-    table_body = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//tbody"))
-    )
-
-    # Locate the first table row
-    first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
-
-    # Find the status element within the first row
-    status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
-    status_text = status_element.text
-    expected_status = "SUBMITTED"
-
-    print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
-
-    # Assert that the status is "IN REVIEW"
-    assert status_text == "SUBMITTED", f"Expected status to be 'SUBMITTED', but got '{status_text}'"
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-    ).click()
-
-    time.sleep(3)
-
-    click_approve = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Approve']"))
-    )
     try:
-        click_approve.click()
-    except:
-        login.execute_script("arguments[0].click();", click_approve)
-    
-    wait.until(
+        time.sleep(5)
+        wait = WebDriverWait(login, 10)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(text(),'Inv.Adjust')]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Create']"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//p-dropdown[@placeholder='Select Store']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+        ).click()
+
+        element_store = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Yes']"))
-    ).click()
+            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", element_store)
 
-    toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-    )
-    message = toast_detail.text
-    print("toast_Message:", message)
-    
+        element_store.click()
 
-    time.sleep(3)
-    # Wait for the table to be present
-    table_body = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//tbody"))
-    )
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//p-dropdown[@placeholder='Select Catalog']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+        ).click()
 
-    # Locate the first table row
-    first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
-
-    # Find the status element within the first row
-    status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
-    status_text = status_element.text
-    expected_status = "PROCESSED"
-
-    print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
-
-    # Assert that the status is "IN REVIEW"
-    assert status_text == "PROCESSED", f"Expected status to be 'PROCESSED', but got '{status_text}'"
-
-    wait.until(
+        element_invcatalog = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-    ).click()
+            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Catalog_Inventory'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
+        element_invcatalog.click()
 
-    wait.until(
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//p-dropdown[@placeholder='Select Remark']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='stock adjustment'])[1]"))
+        ).click()
+
+        wait.until( 
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Add Items']"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//mat-checkbox[contains(@class,'mat-mdc-checkbox')]//input[@type='checkbox'])[3]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//i[@class='pi pi-check'])[1]"))
+        ).click()
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//span[contains(@class,'fw-bold') and normalize-space()='Add']")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//td[@class='fw-bold']//div[@class='ng-star-inserted']"))
+        ).click()
+        time.sleep(1)
+        # Capture the initial stock before adding the quantity
+        initial_stock_element = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tr[td//div[normalize-space(text())='Item_8']]/td[3]//span[normalize-space()]")
+            )
+        )
+        initial_stock = int(initial_stock_element.text.strip())
+        print(f"Initial stock: {initial_stock}")
+
+
+        time.sleep(3)
+        qty_element = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@type='number']"))
+        )
+        qty_element.clear()
+        qty_element.send_keys("10")  
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Save']"))
+        ).click()
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Yes']"))
+        ).click()
+
+        toast_detail = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_detail.text
+        print("toast_Message:", message)
+
+        time.sleep(3)
+        # Wait for the table to be present
+        table_body = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody"))
+        )
+
+        # Locate the first table row
+        first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
+
+        # Find the status element within the first row
+        status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+        status_text = status_element.text
+        expected_status = "DRAFT"
+
+        print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+        # Assert that the status is "IN REVIEW"
+        assert status_text == "DRAFT", f"Expected status to be 'DRAFT', but got '{status_text}'"
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Update'])[1]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Submit']"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Yes']"))
+        ).click()
+
+        toast_detail = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_detail.text
+        print("toast_Message:", message)
+
+        time.sleep(3)
+        # Wait for the table to be present
+        table_body = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody"))
+        )
+
+        # Locate the first table row
+        first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
+
+        # Find the status element within the first row
+        status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+        status_text = status_element.text
+        expected_status = "SUBMITTED"
+
+        print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+        # Assert that the status is "IN REVIEW"
+        assert status_text == "SUBMITTED", f"Expected status to be 'SUBMITTED', but got '{status_text}'"
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        click_approve = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Approve']"))
+        )
+        try:
+            click_approve.click()
+        except:
+            login.execute_script("arguments[0].click();", click_approve)
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Yes']"))
+        ).click()
+
+        toast_detail = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_detail.text
+        print("toast_Message:", message)
+        
+
+        time.sleep(3)
+        # Wait for the table to be present
+        table_body = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody"))
+        )
+
+        # Locate the first table row
+        first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
+
+        # Find the status element within the first row
+        status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+        status_text = status_element.text
+        expected_status = "PROCESSED"
+
+        print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+        # Assert that the status is "IN REVIEW"
+        assert status_text == "PROCESSED", f"Expected status to be 'PROCESSED', but got '{status_text}'"
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='fw-bold card shadow p-1 pointer-cursor'])[1]"))
+        ).click()
+
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='pi pi-arrow-left']"))
+        ).click() 
+
+        time.sleep
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//i[@class='pi pi-arrow-left']"))
+        ).click()
+
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Stocks')])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
+
+        element_geetha = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='fw-bold card shadow p-1 pointer-cursor'])[1]"))
-    ).click()
+            (By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", element_geetha)
 
+        element_geetha.click()
 
-    # Click to see the current stock
-    wait.until(
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+        ).click()
+
+        element_invcatalog = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//td[@class='fw-bold'])[1]"))
-    ).click()
+            (By.XPATH, "(//span[normalize-space()='Catalog_Inventory'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
+        element_invcatalog.click()
 
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder='Search items']"))
+        ).send_keys("Item_8")
+
+        click_item = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(text(),'Item_8')]"))
+        )
+
+        try:
+            click_item.click()
+        except:
+            login.execute_script("arguments[0].click();", click_item)
+
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Check Stock']"))
+        ).click()
+
+        time.sleep(2)
     # Capture the updated stock after clicking "View"
-    updated_stock_element = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Item_batchdisable')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+        updated_stock_element = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody/tr[@class='ng-star-inserted']/td[2]/div[1]")
+            )
         )
-    )
-    updated_stock = int(updated_stock_element.text.strip())
-    print(f"Updated stock: {updated_stock}")
+        updated_stock = int(updated_stock_element.text.strip())
+        print(f"Updated stock: {updated_stock}")
 
-     # Calculate the expected stock after adding 10
-    expected_stock = initial_stock + 10
+        # Calculate the expected stock after adding 10
+        expected_stock = initial_stock + 10
 
-    # Assert that the stock increased correctly
-    assert updated_stock == expected_stock, f"Expected stock to be {expected_stock}, but got {updated_stock}"
-    print(f"Stock updated successfully: {updated_stock}")
-
-
+        # Assert that the stock increased correctly
+        assert updated_stock == expected_stock, f"Expected stock to be {expected_stock}, but got {updated_stock}"
+        print(f"Stock updated successfully: {updated_stock}")
     
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='pi pi-arrow-left']"))
-    ).click() 
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='pi pi-arrow-left']"))
-    ).click()
-
-
-
-    time.sleep(2)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//div[contains(text(),'Stocks')])[1]"))
-    ).click()
-
-    time.sleep(3)
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-    ).click()
-
-    element_geetha = wait.until(
-    EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Geetha']"))
-    )
-    login.execute_script("arguments[0].scrollIntoView();", element_geetha)
-
-    element_geetha.click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
-    ).click()
-
-    element_invcatalog = wait.until(
-    EC.presence_of_element_located(
-        (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
-    )
-    login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
-    element_invcatalog.click()
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Search items']"))
-    ).send_keys("item")
-
-    click_item = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Item_batchdisable')]"))
-    )
-
-    try:
-        click_item.click()
-    except:
-        login.execute_script("arguments[0].click();", click_item)
-
-
-    wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Check Stock']"))
-    ).click()
-
-    time.sleep(2)
-# Capture the updated stock after clicking "View"
-    updated_stock_element = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//tbody/tr[@class='ng-star-inserted']/td[2]/div[1]")
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
         )
-    )
-    updated_stock = int(updated_stock_element.text.strip())
-    print(f"Updated stock: {updated_stock}")
-
-     # Calculate the expected stock after adding 10
-    expected_stock = initial_stock + 10
-
-    # Assert that the stock increased correctly
-    assert updated_stock == expected_stock, f"Expected stock to be {expected_stock}, but got {updated_stock}"
-    print(f"Stock updated successfully: {updated_stock}")
-    
+        raise e 
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock Ajustment with one batch enabled item and one batch disabled item.")
@@ -730,7 +712,7 @@ def test_stock_adjustment_2(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[6]"))
+                (By.XPATH, "(//img)[3]"))
         ).click()
 
         wait.until(
@@ -750,7 +732,7 @@ def test_stock_adjustment_2(login):
 
         element_geetha = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Geetha']"))
+            (By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", element_geetha)
 
@@ -763,7 +745,7 @@ def test_stock_adjustment_2(login):
 
         element_invcatalog = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+            (By.XPATH, "(//span[normalize-space()='Catalog_Inventory'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
         element_invcatalog.click()
@@ -787,26 +769,27 @@ def test_stock_adjustment_2(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox'])[2]"))
+                (By.XPATH, "(//input[@type='checkbox'])[3]"))
         ).click()
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox'])[6]"))
+                (By.XPATH, "(//input[@type='checkbox'])[7]"))
         ).click()
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
         ).click()
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//td[@class='fw-bold']//div[@class='ng-star-inserted']"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//td[@class='fw-bold']//div[@class='ng-star-inserted'])[1]")
         time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//td[@class='fw-bold']//div[@class='ng-star-inserted'])[2]")
+        time.sleep(1)
+
+        
         # Capture the initial stock before adding the quantity
         initial_stock_element = wait.until(
             EC.presence_of_element_located(
@@ -1155,6 +1138,17 @@ def test_stock_adjustment_2(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
+
+
+
+
+
+
+
+
+
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock Ajustment")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])

@@ -27,7 +27,7 @@ def test_IP_Management_1(login):
 
         time.sleep(3)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "//button[contains(., 'Create Room')]"))
         ).click()
 
         time.sleep(2)
@@ -177,7 +177,7 @@ def test_IP_Management_2(login):
 
         time.sleep(1)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -287,7 +287,7 @@ def test_IP_Management_3(login):
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "//button[contains(., 'Create Room')]"))
         ).click()
 
         time.sleep(2)
@@ -408,7 +408,7 @@ def test_IP_Management_4(login):
 
         time.sleep(1)
 
-        room_name_to_find = "474B"
+        room_name_to_find = "581B"
         found = False
 
         while True:
@@ -454,7 +454,7 @@ def test_IP_Management_4(login):
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -766,9 +766,12 @@ def test_IP_Management_5(login):
                 (By.XPATH, "(//button[normalize-space()='Save'])[1]"))
         ).click()
 
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
         
         
-        time.sleep(2)
+        time.sleep(3)
         share_button = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Share'])[1]"))
@@ -802,7 +805,8 @@ def test_IP_Management_5(login):
                 (By.XPATH, "(//button[@type='button'][normalize-space()='Share'])[1]"))
         ).click()
 
-
+        message = get_toast_message(login)
+        print("Toast message:", message)
 
         time.sleep(5)
 
@@ -870,7 +874,7 @@ def test_IP_Management_6(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[15]"))
+                (By.XPATH, "(//img)[16]"))
         ).click()
 
         time.sleep(2)
@@ -895,6 +899,12 @@ def test_IP_Management_6(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='Prescription'])[1]"))
         ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Krishna JP'])[1]")
 
         time.sleep(2)
         
@@ -985,7 +995,10 @@ def test_IP_Management_6(login):
                 (By.XPATH, "(//button[normalize-space()='Create Prescription'])[1]"))
         ).click()
 
-        time.sleep(2)
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//img[@alt='dropdown'])[1]"))
         ).click()
@@ -1160,7 +1173,7 @@ def  test_IP_Management_7(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[15]"))
+                (By.XPATH, "(//img)[16]"))
         ).click()
 
         time.sleep(2)
@@ -1328,7 +1341,7 @@ def test_IP_Management_8(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[15]"))
+                (By.XPATH, "(//img)[16]"))
         ).click()
 
         time.sleep(2)
@@ -1453,7 +1466,7 @@ def test_IP_Management_9(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1] "))  
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))  
         ).click()
 
         time.sleep(2)
@@ -1558,7 +1571,7 @@ def test_IP_Management_9(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -1926,20 +1939,12 @@ def test_IP_Management_9(login):
 
 
         wait.until(
-            EC.presence_of_element_located(((By.XPATH, "//button[normalize-space()='Services']")))
-            ).click()
-
-        time.sleep(2)
-
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Services'])[1]"))
         ).click()
 
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
-        # ).click()
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-plus'])[1]")
 
         time.sleep(2)
         wait.until(
@@ -1955,79 +1960,62 @@ def test_IP_Management_9(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
                 (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
         ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(5):
-            minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 5 clicks.")
-        time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
-        
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(10):
-            minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 10 clicks.")
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
 
         time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        time.sleep(1)
+        # Locate the minute up arrow
+        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
+
+        # Click it 10 times
+        for _ in range(2):
+            minute_up_button.click()
+            time.sleep(0.5)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "2")
+      
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]")
 
         time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Add Service'])[1]"))
         ).click()
 
-        time.sleep(2)
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Medical Records'])[1]"))
@@ -2172,8 +2160,11 @@ def test_IP_Management_9(login):
         time.sleep(5)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "(//button[normalize-space()='Services'])[1]"))
         ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-plus'])[1]")
 
         time.sleep(2)
         wait.until(
@@ -2186,80 +2177,63 @@ def test_IP_Management_9(login):
             EC.presence_of_element_located((By.XPATH, "(//li[@role='option'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Krishna JP'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
-        ).click()
-
-        time.sleep(2)
+        time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
         ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(10):
-            minute_up_button.click()
-            time.sleep(0.5)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 10 clicks.")
-        time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
-        
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(20):
-            minute_up_button.click()
-            time.sleep(0.5)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 20 clicks.")
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
 
         time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        time.sleep(1)
+        # Locate the minute up arrow
+        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
+
+        # Click it 10 times
+        for _ in range(2):
+            minute_up_button.click()
+            time.sleep(0.5)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "2")
+      
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@class='p-checkbox-box'])[2]")
 
         time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Add Service'])[1]"))
         ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
 
         time.sleep(1)
         wait.until(
@@ -2296,7 +2270,7 @@ def test_IP_Management_9(login):
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Invoices')])[1]"))
         ).click()
 
         time.sleep(2)
@@ -2378,6 +2352,9 @@ def test_IP_Management_9(login):
         ).click()
 
         time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Overview')])[1]")
+
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//div[@class='my-1 font-small fw-bold text-capitalize ng-star-inserted'][normalize-space()='Discharge'])[1]"))
         ).click()
@@ -2438,6 +2415,41 @@ def test_IP_Management_9(login):
 
         print("✅ Discharge status is visible after discharge.")
 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Create Invoice')])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Generate'])[1]")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]")
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Pay by Cash'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Pay'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        ).click()                   
 
         time.sleep(2)
         wait.until(
@@ -2530,7 +2542,7 @@ def  test_IP_Management_10(login):
         time.sleep(2)
         wait.until( 
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1] "))  
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))  
         ).click()
 
         time.sleep(2)
@@ -2629,7 +2641,7 @@ def  test_IP_Management_10(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+                (By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -2978,14 +2990,12 @@ def  test_IP_Management_10(login):
         time.sleep(5)
 
         wait.until(
-            EC.presence_of_element_located(((By.XPATH, "(//button[normalize-space()='Services'])[1]")))
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Services'])[1]"))
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-plus'])[1]")
 
         time.sleep(2)
         wait.until(
@@ -3001,77 +3011,60 @@ def  test_IP_Management_10(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
                 (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
         ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(10):
-            minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 10 clicks.")
-        time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
-        
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(20):
-            minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 20 clicks.")
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
 
         time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        time.sleep(1)
+        # Locate the minute up arrow
+        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
+
+        # Click it 10 times
+        for _ in range(2):
+            minute_up_button.click()
+            time.sleep(0.5)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "2")
+      
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]")
 
         time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Add Service'])[1]"))
         ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
 
         time.sleep(2)
         wait.until(
@@ -3080,7 +3073,7 @@ def  test_IP_Management_10(login):
 
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//div[normalize-space()='Vital Signs'])[1]"))
@@ -3253,8 +3246,11 @@ def  test_IP_Management_10(login):
         time.sleep(5)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "(//button[normalize-space()='Services'])[1]"))
         ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-plus'])[1]")
 
         time.sleep(2)
         wait.until(
@@ -3267,80 +3263,63 @@ def  test_IP_Management_10(login):
             EC.presence_of_element_located((By.XPATH, "(//li[@role='option'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Krishna JP'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
-        ).click()
-
-        time.sleep(2)
+        time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
         ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(10):
-            minute_up_button.click()
-            time.sleep(0.5)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 10 clicks.")
-        time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
-        
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(20):
-            minute_up_button.click()
-            time.sleep(0.5)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 20 clicks.")
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
 
         time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        time.sleep(1)
+        # Locate the minute up arrow
+        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
+
+        # Click it 10 times
+        for _ in range(2):
+            minute_up_button.click()
+            time.sleep(0.5)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "2")
+      
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@class='p-checkbox-box'])[2]")
 
         time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Add Service'])[1]"))
         ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
 
         time.sleep(1)
         wait.until(
@@ -3377,7 +3356,7 @@ def  test_IP_Management_10(login):
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Invoices')])[1]"))
         ).click()
 
         time.sleep(2)
@@ -3480,7 +3459,7 @@ def  test_IP_Management_10(login):
         time.sleep(3)
 
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Billing / Invoices')])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[@class='fw-bold ng-star-inserted'][normalize-space()='Invoices'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -3503,54 +3482,54 @@ def  test_IP_Management_10(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space(.)='Generate Invoice'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[2]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='+ Link Invoice'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-checkbox']//input[@type='checkbox'])[1]"))
-        ).click()
-
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
-        ).click()
-
-        # # time.sleep(2)
-
-        # # wait.until(
-        # #     EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
-        # # ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        # ).click()
 
         # time.sleep(2)
         # wait.until(
-        #     EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        #     EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[2]"))
         # ).click()
 
-        time.sleep(2)
-        yes_button = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//app-confirm-box//button[normalize-space(text())='Yes']"))
-        )
-        login.execute_script("arguments[0].click();", yes_button)
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='+ Link Invoice'])[1]"))
+        # ).click()
+
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-checkbox']//input[@type='checkbox'])[1]"))
+        # ).click()
+
+
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
+        # ).click()
+
+        # # # time.sleep(2)
+
+        # # # wait.until(
+        # # #     EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
+        # # # ).click()
+
+        # # time.sleep(2)
+        # # wait.until(
+        # #     EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
+        # # ).click()
+
+        # time.sleep(2)
+        # yes_button = wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "//app-confirm-box//button[normalize-space(text())='Yes']"))
+        # )
+        # login.execute_script("arguments[0].click();", yes_button)
         
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
-        message = toast_message.text
-        print("Toast Message:", message)
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
+        # message = toast_message.text
+        # print("Toast Message:", message)
 
         
         time.sleep(3)
@@ -3589,14 +3568,18 @@ def  test_IP_Management_10(login):
             message = snack_bar.text
             print("Snack bar message:", message)
 
-        time.sleep(3)
+        time.sleep(2)
 
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
         ).click()
 
+        time.sleep(3)
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Overview')])[1]"))
+        ).click()
 
-        time.sleep(2)
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Checkout'])[1]"))
@@ -4137,14 +4120,12 @@ def test_IP_Management_11(login):
         time.sleep(5)
 
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Services'])[1]"))
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[normalize-space()='Services'])[1]"))
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-plus'])[1]")
 
         time.sleep(2)
         wait.until(
@@ -4160,80 +4141,62 @@ def test_IP_Management_11(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))
-        ).click()
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
                 (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
         ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # Click it 10 times
-        for _ in range(10):
-            minute_up_button.click()
-            time.sleep(0.2)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 10 clicks.")
-        time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
-        
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
 
         time.sleep(2)
-        # Locate the minute up arrow
-        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        time.sleep(3)
-        # Click it 10 times
-        for _ in range(20):
-            minute_up_button.click()
-            time.sleep(1)  # slight delay to ensure the click registers
-
-        print("✅ Increased minutes by 20 clicks.")
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
 
         time.sleep(2)
 
         today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-
         # Click on today's date
         today_element.click()
-
         print("Clicked today's date:", today_element.text)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        time.sleep(1)
+        # Locate the minute up arrow
+        minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
+
+        # Click it 10 times
+        for _ in range(3):
+            minute_up_button.click()
+            time.sleep(0.5)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "2")
+      
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]")
 
         time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Add Service'])[1]"))
         ).click()
 
-        time.sleep(2)
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Medical Records'])[1]"))

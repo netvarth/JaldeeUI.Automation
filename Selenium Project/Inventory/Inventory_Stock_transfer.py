@@ -7,23 +7,23 @@ from selenium.webdriver.support.ui import WebDriverWait
 from Framework.common_dates_utils import *
 
 
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_stock_transfer(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//img)[6]"))
+            (By.XPATH, "(//img)[3]"))
     ).click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Stock Transfer')]"))
+            (By.XPATH, "(//div[contains(text(),'Stock Transfer')])[1]"))
     ).click()
 
     login.implicitly_wait(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//i[@class='pi pi-plus']"))
+            (By.XPATH, "(//i[@class='pi pi-plus'])[1]"))
     ).click()
 
     time.sleep(3)
@@ -32,7 +32,7 @@ def test_stock_transfer(login):
             (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
     ).click()
 
-    element_scroll = login.find_element(By.XPATH, "//span[normalize-space()='Geetha']")
+    element_scroll = login.find_element(By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]")
     login.execute_script("arguments[0].scrollIntoView();", element_scroll)
     element_scroll.click()
 
@@ -44,7 +44,7 @@ def test_stock_transfer(login):
     time.sleep(1)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Inventory_catalog']"))
+            (By.XPATH, "(//span[normalize-space()='Catalog_Inventory'])[1]"))
     ).click()
 
     time.sleep(1)
@@ -54,7 +54,7 @@ def test_stock_transfer(login):
             (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
     ).click()
 
-    element_scroll_1 = login.find_element(By.XPATH, "//span[normalize-space()='Swathy Pharmacy']")
+    element_scroll_1 = login.find_element(By.XPATH, "(//span[normalize-space()='B&B Store_1'])[1]")
     login.execute_script("arguments[0].scrollIntoView();", element_scroll_1)
     element_scroll_1.click()
 
@@ -68,19 +68,21 @@ def test_stock_transfer(login):
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Inventory Catalog2']"))
+            (By.XPATH, "(//span[normalize-space()='Catalog_Inventoary_1'])[1]"))
     ).click()
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Search items']"))
+            (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
     ).send_keys("item")
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='Items']"))
+            (By.XPATH, "(//div[contains(text(),'Item_8')])[1]"))
     ).click()
+
+    
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -89,10 +91,7 @@ def test_stock_transfer(login):
     ).click()
     
     time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//li[@aria-label='69']"))
-    ).click()
+    wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='501'])[1]")
 
     qty= WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -100,7 +99,7 @@ def test_stock_transfer(login):
     )
     qty.click()
     qty.clear()
-    qty.send_keys("25")
+    qty.send_keys("10")
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -136,10 +135,8 @@ def test_stock_transfer(login):
     time.sleep(3)
     store = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Geetha'])[1]"))
+            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
     )
-    login.execute_script("arguments[0].scrollIntoView();", store)
-
     store.click()
 
     time.sleep(5)
@@ -174,10 +171,8 @@ def test_stock_transfer(login):
     time.sleep(3)
     store1 = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[normalize-space()='Swathy Pharmacy'])[1]"))
+            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Store_1'])[1]"))
     )
-    login.execute_script("arguments[0].scrollIntoView();", store1)
-
     store1.click()
 
     time.sleep(2)

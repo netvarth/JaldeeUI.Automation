@@ -435,12 +435,12 @@ def test_signup():
             )
         ).click()
 
-        time.sleep(6)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]")
-            )
-        ).click()
+        # time.sleep(6)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]")
+        #     )
+        # ).click()
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(

@@ -106,8 +106,11 @@ def test_create_sales_order_1(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
+                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
         ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//i[@class='pi pi-check'])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
@@ -284,8 +287,11 @@ def test_create_sales_order_2(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
+                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
         ).click()
+       
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//i[@class='pi pi-check'])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
@@ -464,6 +470,12 @@ def test_create_sales_order_3(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
+                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
                 (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
         ).click()
 
@@ -636,6 +648,12 @@ def test_create_sales_order_4(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
+                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
                 (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
         ).click()
 
@@ -710,7 +728,7 @@ def test_create_sales_order_4(login):
     
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Creating a walk-in sales order and invoice, and cancel Invoice.")
+@allure.title("Creating a online sales order and invoice, and cancel Invoice.")
 @pytest.mark.parametrize("url" , [(sales_order_consumer_scale_url)])
 def test_create_sales_order_5(consumer_login):
 

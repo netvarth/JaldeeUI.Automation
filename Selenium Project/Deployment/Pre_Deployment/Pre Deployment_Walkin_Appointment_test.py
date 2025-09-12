@@ -1526,6 +1526,301 @@ def test_walkin_appointment(login):
 
         print("Prescription Shared Successfully")
 
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+
+        time.sleep(2)
+        setting_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='POS Ordering'])[1]"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", setting_element)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//p[normalize-space()='RX Push Management System'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[1]")
+
+        get_snack_bar_message(login)
+        print("Snack bar message:", get_snack_bar_message(login))
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
+
+        time.sleep(2)
+        while True:
+            try:
+                
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                    )
+                )
+
+                
+                if next_button.is_enabled():
+                   
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                  
+                    break
+
+            except Exception as e:
+                
+                break
+
+        time.sleep(1)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        )
+        last_element_in_accordian.click()
+
+        time.sleep(3)
+        View_Detail_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(text(), 'View Details')]")
+            )
+        )
+        click_to_element(login, View_Detail_button)
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Prescriptions']")
+
+        time.sleep(2)
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        ).click()
+
+        select_doc = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Naveen KP']"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", select_doc)
+
+        select_doc.click()
+
+        # Loop through rows and interact with each row
+        # Medicines: first is manual, rest are normal
+        medicines_to_add = [
+            {"name": "Paracetamol", "manual": True},  # manual entry
+            {"name": "items", "manual": False},
+            {"name": "Item4", "manual": False}
+        ]
+        for index, med in enumerate(medicines_to_add):
+            # Click the "+ Add Medicine" button
+            wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//button[normalize-space()='+ Add Medicine']")
+                )
+            ).click()
+
+            # Find the search box
+            search_box = wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "input[role='searchbox']"))
+            )
+            search_box.clear()
+            search_box.send_keys(med["name"])
+            time.sleep(1)
+
+            if not med["manual"]:
+                # Normal item → pick from autocomplete
+                suggestions = login.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
+                if suggestions:
+                    suggestions[0].click()
+            else:
+                # Manual (ADOCH) item → confirm typed entry
+                search_box.send_keys(Keys.ENTER)
+
+            time.sleep(1)
+
+            # Locate the current row
+            row = wait.until(
+                EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))
+            )
+
+            # Duration
+            duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")
+            duration.clear()
+            duration.send_keys("5")
+
+            # Frequency dropdown
+            dropdown_trigger = row.find_element(
+                By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown-trigger')]"
+            )
+            dropdown_trigger.click()
+
+            dropdown_options = WebDriverWait(login, 10).until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH, "//div[contains(@class,'p-dropdown-items-wrapper')]//li")
+                )
+            )
+            if dropdown_options:
+                option_to_click = random.choice(dropdown_options)
+                login.execute_script("arguments[0].scrollIntoView(true);", option_to_click)
+                time.sleep(0.5)
+                login.execute_script("arguments[0].click();", option_to_click)
+
+            # Qty
+            qty_input = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")
+            qty_input.clear()
+            qty_input.send_keys("1")
+
+            # Remarks
+            row.find_element(By.XPATH, ".//td[6]").click()
+            remarks = row.find_element(By.XPATH, "//input[@role='searchbox']")
+            remarks.clear()
+            remarks.send_keys(f"Notes for {med['name']}")
+
+            time.sleep(1)
+
+        # Finally submit
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Create Prescription']")
+            )
+        ).click()
+
+        time.sleep(3)  # Wait for the prescription to be processed
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Push RX']"))
+        ).click()
+
+        store = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[normalize-space()='Geetha']"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", store)
+        store.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Push']"))
+        ).click()
+
+        toast_message = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[5]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-valid']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+        ).click()
+
+        stores = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Geetha']"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", stores)
+        stores.click()
+
+        time.sleep(2)
+        
+        RX_request_element = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Rx Requests']"))
+        )
+
+        scroll_to_element(login, RX_request_element) 
+        time.sleep(1)
+        RX_request_element.click()
+
+        time.sleep(2)
+        # Wait for the table to be present
+        table_body = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//tbody"))
+        )
+
+        # Locate the first table row
+        first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
+                                                                    
+        # Find the status element within the first row
+        status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+        status_text = status_element.text
+        expected_status = "Pushed"
+
+        print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
+
+        # Assert that the status is "Pushed"
+        assert status_text == "Pushed", f"Expected status to be 'Pushed', but got '{status_text}'"
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+
+        time.sleep(2)
+        setting_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='POS Ordering'])[1]"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", setting_element)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//p[normalize-space()='RX Push Management System'])[1]")
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='RX Push  On'])[1]")
+
+        get_snack_bar_message(login)
+        print("Snack bar message:", get_snack_bar_message(login))
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")    
+
+        time.sleep(3)
+        while True:
+            try:
+                
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                    )
+                )
+
+                
+                if next_button.is_enabled():
+                   
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                  
+                    break
+
+            except Exception as e:
+                
+                break
+
+        time.sleep(1)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        )
+        last_element_in_accordian.click()
+
+        time.sleep(3)
+        View_Detail_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(text(), 'View Details')]")
+            )
+        )
+        click_to_element(login, View_Detail_button)
+
+
+
         # ************************* Case Creation and Sharing *********************
 
         time.sleep(5)
@@ -3656,55 +3951,50 @@ def test_walkin_appointment(login):
         )
         login.execute_script("arguments[0].click();", yes_button)
         
-        
-        # snack_bar = WebDriverWait(login, 30).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        # )
-        # message = snack_bar.text
-        # print("Snack bar message:", message)
-
-        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-arrow-left'])[1]")
         time.sleep(2)
 
-        login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
+        # login.find_element(By.XPATH, "(//span[@class='fa fa-arrow-left pointer-cursor'])[1]").click()
 
-        while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
+        # time.sleep(3)
+        # while True:
+        #     try:
+        #         # Attempt to locate the "Next" button using the button's class
+        #         next_button = WebDriverWait(login, 10).until(
+        #             EC.presence_of_element_located(
+        #                 (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+        #             )
+        #         )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+        #         # Check if the button is enabled (i.e., not disabled)
+        #         if next_button.is_enabled():
+        #             # print("Next button found and clickable.")
+        #             # Click using JavaScript to avoid interception issues
+        #             login.execute_script("arguments[0].click();", next_button)
+        #         else:
+        #             # print("Next button is disabled. Reached the last page.")
+        #             break
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+        #     except Exception as e:
+        #         # # If no next button is found or any other exception occurs, exit the loop
+        #         # print("End of pages or error encountered:", e)
+        #         break
 
-        # After clicking through all pages, locate and click the last accordion
-        time.sleep(1)
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
-        )
-        last_element_in_accordian.click()
+        # # After clicking through all pages, locate and click the last accordion
+        # time.sleep(1)
+        # last_element_in_accordian = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        # )
+        # last_element_in_accordian.click()
 
-        time.sleep(3)
-        View_Detail_button = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
-            )
-        )
-        View_Detail_button.click()
+        # time.sleep(3)
+        # View_Detail_button = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[contains(text(), 'View Details')]")
+        #     )
+        # )
+        # View_Detail_button.click()
 
         
 
@@ -3713,7 +4003,7 @@ def test_walkin_appointment(login):
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='New Invoice']")
+                (By.XPATH, "(//button[normalize-space()='New Invoice'])[1]")
             )
         ).click()
 
@@ -3918,49 +4208,49 @@ def test_walkin_appointment(login):
 
         login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
 
-        while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
+        # while True:
+        #     try:
+        #         # Attempt to locate the "Next" button using the button's class
+        #         next_button = WebDriverWait(login, 10).until(
+        #             EC.presence_of_element_located(
+        #                 (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+        #             )
+        #         )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+        #         # Check if the button is enabled (i.e., not disabled)
+        #         if next_button.is_enabled():
+        #             # print("Next button found and clickable.")
+        #             # Click using JavaScript to avoid interception issues
+        #             login.execute_script("arguments[0].click();", next_button)
+        #         else:
+        #             # print("Next button is disabled. Reached the last page.")
+        #             break
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+        #     except Exception as e:
+        #         # # If no next button is found or any other exception occurs, exit the loop
+        #         # print("End of pages or error encountered:", e)
+        #         break
 
-        # After clicking through all pages, locate and click the last accordion
-        time.sleep(1)
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
-        )
-        last_element_in_accordian.click()
+        # # After clicking through all pages, locate and click the last accordion
+        # time.sleep(5)
+        # last_element_in_accordian = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        # )
+        # last_element_in_accordian.click()
 
-        time.sleep(3)
-        # print("Before clicking View Details button")
-        View_Detail_button = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
-            )
-        )
-        View_Detail_button.click()
+        # time.sleep(3)
+        # # print("Before clicking View Details button")
+        # View_Detail_button = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[contains(text(), 'View Details')]")
+        #     )
+        # )
+        # View_Detail_button.click()
 
         # *************************** Reschedule **********************
 
         time.sleep(3)
-        login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
+        login.find_element(By.XPATH, "(//button[normalize-space()='Reschedule'])[1]").click()
         time.sleep(2)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(

@@ -1070,8 +1070,86 @@ def test_Prescription_3(login):
         select_doc.click()
 
         # Loop through rows and interact with each row
-        # Loop through rows and interact with each row
-        for index in range(4):  # Assuming you're iterating through 2 rows
+        # # Loop through rows and interact with each row
+        # for index in range(3):  # Assuming you're iterating through 2 rows
+        #     # Click the "+ Add Medicine" button
+        #     wait.until(
+        #         EC.presence_of_element_located(
+        #             (By.XPATH, "//button[normalize-space()='+ Add Medicine']")
+        #         )
+        #     ).click()
+
+        #     # Find the search box and clear it
+        #     search_box = login.find_element(By.CSS_SELECTOR, "input[role='searchbox']")
+        #     search_box.clear()
+
+        #     # Type 'item' into the search box (you can replace with dynamic name)
+        #     search_box.send_keys('item')
+        #     time.sleep(1)  # Wait for suggestions to load
+
+        #     # Get the list of suggestions
+        #     suggestions = login.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
+
+        #     # Select a suggestion based on the index or randomly
+        #     if suggestions:
+        #         suggestions[index].click()
+        #         time.sleep(1)
+
+        #         # Locate the current row
+        #         row = wait.until(
+        #             EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))
+        #         )
+
+        #         # Enter Duration
+        #         duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")
+        #         duration.clear()
+        #         duration.send_keys("5")
+
+        #         # ✅ Updated Frequency Dropdown Selection
+        #         dropdown_trigger = row.find_element(
+        #             By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown-trigger')]"
+        #         )
+        #         dropdown_trigger.click()
+
+        #         dropdown_options = WebDriverWait(login, 10).until(
+        #             EC.presence_of_all_elements_located(
+        #                 (By.XPATH, "//div[contains(@class,'p-dropdown-items-wrapper')]//li")
+        #             )
+        #         )
+
+        #         if dropdown_options:
+        #             option_to_click = random.choice(dropdown_options)
+        #             login.execute_script("arguments[0].scrollIntoView(true);", option_to_click)
+        #             time.sleep(0.5)
+        #             login.execute_script("arguments[0].click();", option_to_click)
+        #         # Qty
+        #         qty_input = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")
+        #         qty_input.clear()
+        #         qty_input.send_keys("1")
+
+        #         # Remarks (Notes / Instructions)
+        #         row.find_element(By.XPATH, ".//td[6]").click()
+        #         remarks = row.find_element(By.XPATH, "//input[@role='searchbox']")
+        #         remarks.clear()
+        #         remarks.send_keys("After food")
+
+        #         time.sleep(1)  # Pause before moving to the next row
+
+
+        # # Finally, submit the prescription by clicking the "Create Prescription" button
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[normalize-space()='Create Prescription']")
+        #     )
+        # ).click()
+
+        # Medicines: first is manual, rest are normal
+        medicines_to_add = [
+            {"name": "Paracetamol", "manual": True},  # manual entry
+            {"name": "items", "manual": False},
+            {"name": "Item4", "manual": False}
+        ]
+        for index, med in enumerate(medicines_to_add):
             # Click the "+ Add Medicine" button
             wait.until(
                 EC.presence_of_element_located(
@@ -1079,64 +1157,66 @@ def test_Prescription_3(login):
                 )
             ).click()
 
-            # Find the search box and clear it
-            search_box = login.find_element(By.CSS_SELECTOR, "input[role='searchbox']")
+            # Find the search box
+            search_box = wait.until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "input[role='searchbox']"))
+            )
             search_box.clear()
+            search_box.send_keys(med["name"])
+            time.sleep(1)
 
-            # Type 'item' into the search box (you can replace with dynamic name)
-            search_box.send_keys('item')
-            time.sleep(1)  # Wait for suggestions to load
+            if not med["manual"]:
+                # Normal item → pick from autocomplete
+                suggestions = login.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
+                if suggestions:
+                    suggestions[0].click()
+            else:
+                # Manual (ADOCH) item → confirm typed entry
+                search_box.send_keys(Keys.ENTER)
 
-            # Get the list of suggestions
-            suggestions = login.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
+            time.sleep(1)
 
-            # Select a suggestion based on the index or randomly
-            if suggestions:
-                suggestions[index].click()
-                time.sleep(1)
+            # Locate the current row
+            row = wait.until(
+                EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))
+            )
 
-                # Locate the current row
-                row = wait.until(
-                    EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))
+            # Duration
+            duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")
+            duration.clear()
+            duration.send_keys("5")
+
+            # Frequency dropdown
+            dropdown_trigger = row.find_element(
+                By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown-trigger')]"
+            )
+            dropdown_trigger.click()
+
+            dropdown_options = WebDriverWait(login, 10).until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH, "//div[contains(@class,'p-dropdown-items-wrapper')]//li")
                 )
+            )
+            if dropdown_options:
+                option_to_click = random.choice(dropdown_options)
+                login.execute_script("arguments[0].scrollIntoView(true);", option_to_click)
+                time.sleep(0.5)
+                login.execute_script("arguments[0].click();", option_to_click)
 
-                # Enter Duration
-                duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")
-                duration.clear()
-                duration.send_keys("5")
+            # Qty
+            qty_input = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")
+            qty_input.clear()
+            qty_input.send_keys("1")
 
-                # ✅ Updated Frequency Dropdown Selection
-                dropdown_trigger = row.find_element(
-                    By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown-trigger')]"
-                )
-                dropdown_trigger.click()
+            # Remarks
+            row.find_element(By.XPATH, ".//td[6]").click()
+            remarks = row.find_element(By.XPATH, "//input[@role='searchbox']")
+            remarks.clear()
+            remarks.send_keys(f"Notes for {med['name']}")
 
-                dropdown_options = WebDriverWait(login, 10).until(
-                    EC.presence_of_all_elements_located(
-                        (By.XPATH, "//div[contains(@class,'p-dropdown-items-wrapper')]//li")
-                    )
-                )
+            time.sleep(1)
 
-                if dropdown_options:
-                    option_to_click = random.choice(dropdown_options)
-                    login.execute_script("arguments[0].scrollIntoView(true);", option_to_click)
-                    time.sleep(0.5)
-                    login.execute_script("arguments[0].click();", option_to_click)
-                # Qty
-                qty_input = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")
-                qty_input.clear()
-                qty_input.send_keys("1")
-
-                # Remarks (Notes / Instructions)
-                row.find_element(By.XPATH, ".//td[6]").click()
-                remarks = row.find_element(By.XPATH, "//input[@role='searchbox']")
-                remarks.clear()
-                remarks.send_keys("After food")
-
-                time.sleep(1)  # Pause before moving to the next row
-
-
-        # Finally, submit the prescription by clicking the "Create Prescription" button
+        # Finally submit
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Create Prescription']")
@@ -1189,11 +1269,18 @@ def test_Prescription_3(login):
         login.execute_script("arguments[0].scrollIntoView();", stores)
         stores.click()
 
-        wait.until(
+        time.sleep(2)
+        
+        RX_request_element = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Rx Requests']"))
-        ).click()
+        )
 
+        scroll_to_element(login, RX_request_element) 
+        time.sleep(1)
+        RX_request_element.click()
+
+        time.sleep(2)
         # Wait for the table to be present
         table_body = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//tbody"))
@@ -1205,12 +1292,12 @@ def test_Prescription_3(login):
         # Find the status element within the first row
         status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
         status_text = status_element.text
-        expected_status = "PUSHED"
+        expected_status = "Pushed"
 
         print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
 
-        # Assert that the status is "PUSHED"
-        assert status_text == "PUSHED", f"Expected status to be 'PUSHED', but got '{status_text}'"
+        # Assert that the status is "Pushed"
+        assert status_text == "Pushed", f"Expected status to be 'Pushed', but got '{status_text}'"
 
         wait.until(
             EC.presence_of_element_located(
