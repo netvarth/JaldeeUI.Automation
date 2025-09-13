@@ -1486,7 +1486,7 @@ def test_create_patient(login):
         )
         raise e
     
-# ######################################################################################################
+##########################################################################################################################################################################
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Confirmation, Send_message, Send_Attachment, Prescription_Sharing, Case_Sharing, Auto and Manual Invoice, Reschedule, Cancellation")
@@ -2802,7 +2802,7 @@ def test_notification_single_location(login):
         )
         raise e
 
-######################################################################################################################################################################################
+############################################################################################################################################################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reconfirmation")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])  
@@ -3057,7 +3057,7 @@ def test_patient_Reconfirmation(login):
         )
         raise e
 
-####################################################################################################################################################################
+############################################################################################################################################################################
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Start")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)]) 
