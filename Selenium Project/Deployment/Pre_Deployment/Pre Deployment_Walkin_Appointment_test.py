@@ -468,27 +468,14 @@ def test_account_signup():
     ).click()
     time.sleep(3)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='lnk setings ml-auto'])[10]")
-        )
-    ).click()
+    wait_and_click(login, By.XPATH, "(//div[normalize-space()='Finance manager'])[1]")
     time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-button[@class='p-element add-btn ng-star-inserted']")
-        )
-    ).click()
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//a[@class='mat-mdc-tooltip-trigger pointlist'][normalize-space()='Click here'])[1]")
-        )
-    ).click()
-    time.sleep(2)
+
+
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Jaldee Finance  Off']"))
     ).click()
+
     time.sleep(2)
     try:
 
@@ -505,21 +492,30 @@ def test_account_signup():
         )
         message = snack_bar.text
         print("Snack bar message:", message)
+
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
     ).click()
     time.sleep(2)
-    WebDriverWait(login, 10).until(
+
+    wait_and_click(login, By.XPATH, "(//span[@class='lnk setings ml-auto'])[8]")
+    time.sleep(2)
+
+    wait_and_click(login, By.XPATH, "(//i[@class='pi pi-plus text-light'])[1]")
+    time.sleep(2)  
+    
+    WebDriverWait(login, 30).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='Service Details']")
         )
     ).click()
     time.sleep(2)
     service_name = "Service_" + str(uuid.uuid4())[:8]
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 30).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='service_name']"))
     ).send_keys(service_name)
-    WebDriverWait(login, 10).until(
+    WebDriverWait(login, 30).until(
         EC.presence_of_element_located((By.XPATH, "//input[@id='serviceOrder']"))
     ).send_keys(1)
     time.sleep(2)
@@ -6320,7 +6316,9 @@ def test_reschedule_cancel_predeployment(login):
         today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
             today_date.day
         )
-        print(today_xpath_expression)
+        print("Today Date : ", today_date.day)
+
+        # print(today_xpath_expression)
         tomorrow_date = today_date + timedelta(days=1)
         print(tomorrow_date.day)
 #===============================================================
@@ -6341,7 +6339,7 @@ def test_reschedule_cancel_predeployment(login):
         tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
             tomorrow_date.day
         )
-        print(tomorrow_xpath_expression)
+        # print(tomorrow_xpath_expression)
 
         Tomorrow_Date = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
@@ -6469,6 +6467,9 @@ def test_appointment_family_confirmation_attachment_predeployment(login):
         print("New patient create")
         
         wait_and_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]")
+        
+        time.sleep(3)
+        wait_and_click(login, By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]")
 
         time.sleep(2)
         WebDriverWait(login, 10).until(

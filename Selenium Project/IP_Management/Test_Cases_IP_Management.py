@@ -1981,13 +1981,13 @@ def test_IP_Management_9(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
 
         # Click it 10 times
-        for _ in range(2):
+        for _ in range(3):
             minute_up_button.click()
             time.sleep(0.5)
 
@@ -2201,13 +2201,13 @@ def test_IP_Management_9(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
 
         # Click it 10 times
-        for _ in range(2):
+        for _ in range(3):
             minute_up_button.click()
             time.sleep(0.5)
 
@@ -3032,7 +3032,7 @@ def  test_IP_Management_10(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
@@ -3287,7 +3287,7 @@ def  test_IP_Management_10(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
@@ -3568,13 +3568,49 @@ def  test_IP_Management_10(login):
             message = snack_bar.text
             print("Snack bar message:", message)
 
-        time.sleep(2)
-
+        time.sleep(3)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
         ).click()
 
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//div[@class='fw-bold ng-star-inserted'][normalize-space()='Invoices'])[1]")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[2]")
+        
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]")
+
+        time.sleep(1)
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Pay by Cash'])[1]")  
+
+        time.sleep(1)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Pay'])[1]")   
+
+        time.sleep(1)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+        
+        try:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
+        except:
+
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            )
+            message = snack_bar.text
+            print("Snack bar message:", message)
+
         time.sleep(3)
+        wait_and_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
+
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Overview')])[1]"))
         ).click()
@@ -3598,12 +3634,19 @@ def  test_IP_Management_10(login):
                 (By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
         ).click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
-        message = toast_message.text
-        print("Toast Message:", message)
+        message = get_toast_message(login)
+        print("Snack bar message:", message)
+        
  
         time.sleep(3)
+
+        wait_and_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
+        time.sleep(2)
+
+        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+        time.sleep(2)
+
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Checked Out'])[1]")
         # XPath for "Checked Out" status
         checkout_xpath = "//div[contains(@class, 'status-checkout') and normalize-space()='Checked Out']"
 
@@ -3618,25 +3661,24 @@ def  test_IP_Management_10(login):
 
         print("✅ Checked Out status is visible after checkout.")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
+        # ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+        # ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Checked Out'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Checked Out'])[1]"))
+        # ).click()
 
         time.sleep(5)
 
         
-
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
@@ -4601,7 +4643,7 @@ def test_IP_Management_14(login):
 
         time.sleep(2)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element create-item-button p-button p-component ng-star-inserted'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -4674,3 +4716,6 @@ def test_IP_Management_14(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
+
+

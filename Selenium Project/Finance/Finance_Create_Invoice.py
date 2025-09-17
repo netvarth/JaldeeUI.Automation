@@ -7,125 +7,153 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Auto Invoice for Walkin Appointment and Sharepayment link and Settled")
+@allure.title("Create the Invoice for Booking and pay by cash from Finance Module")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_appointment_autoinvoice(login):
+def test_Finance_Create_Invoice_Booking(login):
+    wait= WebDriverWait(login, 30)
     try:
-        
+        time.sleep(5)
+        wait_and_click(login, By.XPATH, "(//div[contains(text(),'Finance')])[1]")
 
-        wait = WebDriverWait(login, 30)
-        login.implicitly_wait(15)
+        time.sleep(3)
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
 
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]")
-        login.implicitly_wait(20)
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]")
-        wait_and_click(login, By.XPATH, "//b[contains(text(),'Create New Patient')]")
-    
-        wait_and_send_keys(login, By.ID, "last_name", str(last_name))
-        wait_and_send_keys(login, By.ID, "customer_id", cons_manual_id)
-        wait_and_send_keys(login, By.ID, "phone", phonenumber)
-        wait_and_send_keys(login, By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']", phonenumber)
-        wait_and_send_keys(login, By.ID, "email_id", email)
-        wait_and_click(login, By.XPATH, "//span[contains(text(),'Save')]")
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
 
-        message = get_snack_bar_message(login)
-        print("Snack bar message:", message)
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
 
-        wait_and_click(login, By.CSS_SELECTOR, "p-dropdown[optionlabel='place']")
-        wait_and_click(login, By.XPATH, "(//li[@id='p-highlighted-option'])[1]")
-        print("Location selected: Chavakkad")
+        time.sleep(3)
+        referral_number = f"REF-{random.randint(100000, 999999)}"
+        # wait_and_click(login, By.XPATH, "(//input[@placeholder='Referal Number'])[1]")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Referal Number'])[1]", referral_number)
+        print("Referral Number:", referral_number)  
 
-        wait_and_click(login, By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']")
-        wait_and_click(login, By.XPATH, "(//li[@aria-label='ENT'])[1]")
-        print("Department selected: ENT")
 
-        wait_and_click(login, By.XPATH, "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid ng-dirty'])[1]")
-        wait_and_click(login, By.XPATH, "(//li[@aria-label='Naveen KP'])[1]")
-        print("User selected: Naveen KP")
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
 
-        service = login.find_element(By.XPATH, "//p-dropdown[@optionlabel='name']")
-        scroll_to_element(login, service)
-        service.click()
-        wait_and_click(login, By.XPATH, "//li[@aria-label='Naveen Consultation']//div[1]")
-        print("Service selected: Naveen Consultation")
-
-        wait_and_click(login, By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")
-        time_slot = WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']")))
-        time_slot.click()
-        print("Time Slot selected:", time_slot.text)
-
-        note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
-        scroll_to_element(login, note_input)
-        note_input.click()
-
-        wait_and_send_keys(login, By.XPATH, "//textarea[@id='message']", "test_selenium project")
-
-        wait_and_click(login, By.XPATH, "//span[normalize-space()='Save']")
-        wait_and_click(login, By.XPATH, "//span[normalize-space()='Confirm']")
-
-        message = get_snack_bar_message(login)
-        print("Snack bar message:", message)
+        # Calculate today + 5 days
+        today = datetime.today()
+        future_date = today + timedelta(days=5)
+        future_day = future_date.day
+        future_month = future_date.strftime("%B")   # e.g., 'October'
+        future_year = future_date.year              # int
 
         while True:
-            try:
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']")
-                    )
-                )
-                next_button.click()
-            except Exception:
-                print("Reached last page of appointments.")
-                break
-        time.sleep(3)
-        login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]")
-        wait_and_click(login, By.XPATH, "(//button[normalize-space()='View Details'])[1]")
+            # Example header text: "September 2025"
+            header_text = wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "p-datepicker-title"))
+            ).text.strip()
 
-        booking_id_element = wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[@class='fw-bold ng-star-inserted'])[1]"))
+            # Split into month and year
+            current_month, current_year = header_text.split()
+            current_year = int(current_year)
+
+            if current_month == future_month and current_year == future_year:
+                break  # ✅ target month/year reached
+
+            # Compare dates
+            current_date = datetime.strptime(f"{current_month} {current_year}", "%B %Y")
+
+            if current_date < future_date:
+                # Need to go forward
+                next_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-next")))
+                next_btn.click()
+            else:
+                # (Optional) Go backward if future_date is before current_date
+                prev_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-prev")))
+                prev_btn.click()
+
+            time.sleep(0.5)
+
+        # ✅ Once correct month/year → pick the day
+        future_day_element = wait.until(
+            EC.element_to_be_clickable((By.XPATH, f"//td//span[normalize-space()='{future_day}']"))
         )
-        actual_booking_id = booking_id_element.text.strip('"').strip()
-        print("Actual Booking ID:", actual_booking_id)
-
-        time.sleep(3)
-        wait_and_click(login, By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]")
-        time.sleep(3)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Invoices'])[1]")
-        time.sleep(3)
-        wait_and_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space(.)='View'])[1]")
-
-        invoice_booking_id_element = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[text()='Booking Reference :']/following-sibling::div[contains(@class, 'invoice-detail-style')]")
-            )
-        )
-
-
-        expected_booking_id = invoice_booking_id_element.text.strip('"')
-
-        print(f"Expected Booking ID: '{expected_booking_id}', Actual Booking ID: '{actual_booking_id}'")
-
-        assert actual_booking_id == expected_booking_id, f"Mismatch Booking IDs: Expected '{expected_booking_id}', got '{actual_booking_id}'"
-
-        scroll_to_window(login)
-
-        wait_and_click(login, By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']")
-        wait_and_click(login, By.XPATH, "//span[normalize-space()='Share Payment Link']")
-        wait_and_click(login, By.XPATH, "//span[@class='mdc-button__label']")
-
-        message = get_snack_bar_message(login)
-        expected_message = "The invoice has been sent to the patient"
-        print(f"Expected Message: '{expected_message}', Actual Message: '{message}'")
-        assert message == expected_message, f"Share Payment Link failed: {message}"
-        time.sleep(3)
-        wait_and_click(login, By.XPATH, "(//button[normalize-space(.)='Settle Invoice'])[1]")
-        wait_and_click(login, By.XPATH, "(//button[normalize-space(.)='Yes'])[1]")
+        future_day_element.click()
+        
         time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='ENT'])[1]")
+
+        login.implicitly_wait(5)
+
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Let your patient know what this invoice is for'])[1]", "Booking Invoice")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Add Procedure/Item'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Choose Procedure/Item'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//div[@class='item-name'][normalize-space()='Consultation'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//input[@id='from'])[2]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//td[contains(@class,'p-datepicker-today')]//span") 
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Add'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'invoice-update-btn') and normalize-space()='Update']")
+
         message = get_snack_bar_message(login)
-        expected_settle_message = "Invoice Settled Successfully"
-        print(f"Expected Message: '{expected_settle_message}', Actual Message: '{message}'")
-        assert message == expected_settle_message, f"Settle Invoice failed: {message}"
+        print("Snack bar message:", message)
+
+        time.sleep(5)
+
+        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Pay by Cash'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Pay'])[1]")
+
+        login.implicitly_wait(5)    
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+
+        time.sleep(3)
+
+        wait_and_click(login, By.XPATH, "(//i[@class='fa fa-arrow-left'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//img[contains(@src,'viewinvoice.gif')]/following-sibling::span[normalize-space()='Invoices']")
+
+        login.implicitly_wait(5)
+        #Get first invoice ID dynamically
+        first_invoice_id = login.find_element(
+            By.XPATH, "(//tbody[@class='p-element p-datatable-tbody']//tr/td[1]/span)[1]"
+        ).text
+        print(f"First Invoice ID: {first_invoice_id}")
+
+        # Get first row (latest invoice)
+        first_row = login.find_element(
+            By.XPATH, "(//tbody[@class='p-element p-datatable-tbody']//tr)[1]"
+        )
+
+        # Get status of first invoice
+        status = first_row.find_element(
+            By.XPATH, ".//td/span[contains(text(),'Paid')]"
+        ).text
+        print(f"Status for Invoice {first_invoice_id}: {status}")
+
+        # Click "View" button of first invoice
+        view_button = first_row.find_element(
+            By.XPATH, ".//button[span[normalize-space()='View']]"
+        )
+        view_button.click()
 
     except Exception as e:
         allure.attach(
@@ -136,150 +164,303 @@ def test_appointment_autoinvoice(login):
         raise e
 
 
-
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Auto Invoice paybycash for Walkin Appointment and Settled Invoice")
-@pytest.mark.parametrize('url', ["https://test.jaldee.com/business/"])
-def test_appointment_paybycash(login):
+@allure.title("Create the Invoice for Booking and Settled from Finance Module")
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+def test_Finance_Create_Invoice_Booking_settled(login):
+    wait= WebDriverWait(login, 30)
     try:
         time.sleep(5)
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]") 
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]") 
-        time.sleep(3)
-        wait_and_click(login, By.XPATH, "//b[contains(text(),'Create New Patient')]") 
-        time.sleep(3)
-        login.implicitly_wait(3)
+        wait_and_click(login, By.XPATH, "(//div[contains(text(),'Finance')])[1]")
 
-        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
-        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
-        login.find_element(By.XPATH, "//*[@id='customer_id']").send_keys(cons_manual_id)
-        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
-        login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
-        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
-        login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
-        message = get_snack_bar_message(login)
-        print("Snack bar message:", message)
-        time.sleep(5)
-        wait_and_click(login, By.CSS_SELECTOR, "p-dropdown[optionlabel='place']") 
         time.sleep(3)
-        login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
-        print("location : Chavakkad")
-        login.find_element(By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']").click()
-        login.implicitly_wait(5)
-        login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
-        print("Department : ENT")
-        user_dropdown_xpath = ("(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-                            "ng-dirty'])[1]")
-        WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))).click()
-        user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
-        WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
-        print("Select user : Naveen")
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
 
-        service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        service = login.find_element(By.XPATH, service_dropdown_xpath)
-        scroll_to_element(login, service)
-        service.click()
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
 
-        service_option_xpath = ("(//div[@class='option-container ng-star-inserted'][normalize-space()='Naveen "
-                                "Consultation'])[2]")
-        wait_and_click(login, By.XPATH, service_option_xpath) 
-        print("Select Service : Naveen Consultation")
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
+
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']") 
-        time_slot = WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']")))
-        time_slot.click()
-        print("Time Slot:", time_slot.text)
-        note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
-        scroll_to_element(login,note_input)
+        referral_number = f"REF-{random.randint(100000, 999999)}"
+        # wait_and_click(login, By.XPATH, "(//input[@placeholder='Referal Number'])[1]")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Referal Number'])[1]", referral_number)
+        print("Referral Number:", referral_number)  
+
+
         time.sleep(2)
-        note_input.click()
-        time.sleep(2)
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Save']")
-        time.sleep(2)
-        login.find_element(By.XPATH,
-                        "//span[normalize-space()='Confirm']").click()
-        
-        message = get_snack_bar_message(login)
-        print("Snack bar message:", message)
-        time.sleep(3)
-        
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        # Calculate today + 5 days
+        today = datetime.today()
+        future_date = today + timedelta(days=5)
+        future_day = future_date.day
+        future_month = future_date.strftime("%B")   # e.g., 'October'
+        future_year = future_date.year              # int
 
         while True:
-            try:
-                print("before in loop")
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
-                )
+            # Example header text: "September 2025"
+            header_text = wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "p-datepicker-title"))
+            ).text.strip()
 
-                next_button.click()
+            # Split into month and year
+            current_month, current_year = header_text.split()
+            current_year = int(current_year)
 
-            except:
-                print("EC caught:")
-                break
+            if current_month == future_month and current_year == future_year:
+                break  # ✅ target month/year reached
 
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+            # Compare dates
+            current_date = datetime.strptime(f"{current_month} {current_year}", "%B %Y")
+
+            if current_date < future_date:
+                # Need to go forward
+                next_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-next")))
+                next_btn.click()
+            else:
+                # (Optional) Go backward if future_date is before current_date
+                prev_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-prev")))
+                prev_btn.click()
+
+            time.sleep(0.5)
+
+        # ✅ Once correct month/year → pick the day
+        future_day_element = wait.until(
+            EC.element_to_be_clickable((By.XPATH, f"//td//span[normalize-space()='{future_day}']"))
         )
-        last_element_in_accordian.click()
-        time.sleep(3)
-        viewdetails = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='View Details'])[1]"))
-        )
-        scroll_to_element(login, viewdetails)
+        future_day_element.click()
+        
         time.sleep(2)
-        viewdetails.click()
-        time.sleep(3)
-        booking_Id = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//span[@class='fw-bold ng-star-inserted'])[1]"))
-        )
-        actual_booking_id = booking_Id.text.strip('"').strip()
-        print("Actual_BookingId:",actual_booking_id)
+        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]")
+
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]") 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Invoices'])[1]") 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]") 
-        time.sleep(2)
-        invoice_booking_Id = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[text()='Booking Reference :']/following-sibling::div[contains(@class, 'invoice-detail-style')]"))
-        )
-        expected_invoice_booking_Id = invoice_booking_Id.text.strip('"')
-        print("Expected_BookingId:",expected_invoice_booking_Id)
-        print(f"Expected_BookingId: '{expected_invoice_booking_Id}', Actual_BookingId: '{actual_booking_id}'")
-        assert actual_booking_id == expected_invoice_booking_Id, f"Expected_BookingId: '{expected_invoice_booking_Id}', but got Actual_BookingId: '{actual_booking_id}'"
-        time.sleep(2)
-        scroll_to_window(login)
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']")
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Pay by Cash']")
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Pay']")
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Yes']")
-        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='ENT'])[1]")
+
+        login.implicitly_wait(5)
+
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Let your patient know what this invoice is for'])[1]", "Booking Invoice")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Add Procedure/Item'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Choose Procedure/Item'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//div[@class='item-name'][normalize-space()='Consultation'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//input[@id='from'])[2]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//td[contains(@class,'p-datepicker-today')]//span") 
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Add'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'invoice-update-btn') and normalize-space()='Update']")
+
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
+
         time.sleep(3)
-        expected_message = "Payment completed successfully"
-        print(f"Expected status: '{expected_message}', Actual status: '{message}'")
-        assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
+
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Settle Invoice'])[1]")
+
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Settle Invoice']")
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Yes']")
-        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Confirm & Settle Invoice'])[1]")
+
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
-        expected_message = "Invoice Settled Successfully"
-        print(f"Expected status: '{expected_message}', Actual status: '{message}'")
-        assert message == expected_message, f"Expected message '{expected_message} but got Message '{message}'"
+
         time.sleep(3)
+
+        wait_and_click(login, By.XPATH, "(//i[@class='fa fa-arrow-left'])[1]")
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//img[contains(@src,'viewinvoice.gif')]/following-sibling::span[normalize-space()='Invoices']")
+
+        login.implicitly_wait(5)
+        #Get first invoice ID dynamically
+        first_invoice_id = login.find_element(
+            By.XPATH, "(//tbody[@class='p-element p-datatable-tbody']//tr/td[1]/span)[1]"
+        ).text
+        print(f"First Invoice ID: {first_invoice_id}")
+
+        # Get first row (latest invoice)
+        first_row = login.find_element(
+            By.XPATH, "(//tbody[@class='p-element p-datatable-tbody']//tr)[1]"
+        )
+
+        # Get status of first invoice
+        status = first_row.find_element(
+            By.XPATH, ".//td/span[contains(text(),'Settled')]"
+        ).text
+        print(f"Status for Invoice {first_invoice_id}: {status}")
+
+        # Click "View" button of first invoice
+        view_button = first_row.find_element(
+            By.XPATH, ".//button[span[normalize-space()='View']]"
+        )
+        view_button.click()
+
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create the Invoice for Booking and Share payment link from Finance Module")
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+def test_Finance_Create_Invoice_Booking_Sharepaymentlink(login):
+    wait = WebDriverWait(login, 30)
+    try:
+        time.sleep(5)
+        wait_and_click(login, By.XPATH, "(//div[contains(text(),'Finance')])[1]")
+
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
+
+        time.sleep(3)
+        referral_number = f"REF-{random.randint(100000, 999999)}"
+        # wait_and_click(login, By.XPATH, "(//input[@placeholder='Referal Number'])[1]")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Referal Number'])[1]", referral_number)
+        print("Referral Number:", referral_number)  
+
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        # Calculate today + 5 days
+        today = datetime.today()
+        future_date = today + timedelta(days=5)
+        future_day = future_date.day
+        future_month = future_date.strftime("%B")   # e.g., 'October'
+        future_year = future_date.year              # int
+
+        while True:
+            # Example header text: "September 2025"
+            header_text = wait.until(
+                EC.presence_of_element_located((By.CLASS_NAME, "p-datepicker-title"))
+            ).text.strip()
+
+            # Split into month and year
+            current_month, current_year = header_text.split()
+            current_year = int(current_year)
+
+            if current_month == future_month and current_year == future_year:
+                break  # ✅ target month/year reached
+
+            # Compare dates
+            current_date = datetime.strptime(f"{current_month} {current_year}", "%B %Y")
+
+            if current_date < future_date:
+                # Need to go forward
+                next_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-next")))
+                next_btn.click()
+            else:
+                # (Optional) Go backward if future_date is before current_date
+                prev_btn = wait.until(EC.element_to_be_clickable((By.CLASS_NAME, "p-datepicker-prev")))
+                prev_btn.click()
+
+            time.sleep(0.5)
+
+        # ✅ Once correct month/year → pick the day
+        future_day_element = wait.until(
+            EC.element_to_be_clickable((By.XPATH, f"//td//span[normalize-space()='{future_day}']"))
+        )
+        future_day_element.click()
+        
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='ENT'])[1]")
+
+        login.implicitly_wait(5)
+
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Let your patient know what this invoice is for'])[1]", "Booking Invoice")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Add Procedure/Item'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//input[@placeholder='Choose Procedure/Item'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//div[@class='item-name'][normalize-space()='Consultation'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//input[@id='from'])[2]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//td[contains(@class,'p-datepicker-today')]//span") 
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Add'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'invoice-update-btn') and normalize-space()='Update']")
+
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+
+        time.sleep(5)
+
+        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Share Payment Link'])[1]")
+
+        time.sleep(1)
+        wait_and_click(login, By.XPATH, "(//span[@class='mdc-button__label'])[1]")
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+
+        time.sleep(3)
+
+        wait_and_click(login, By.XPATH, "(//i[@class='fa fa-arrow-left'])[1]")
+
+        login.implicitly_wait(5)
+        wait_and_click(login, By.XPATH, "//img[contains(@src,'viewinvoice.gif')]/following-sibling::span[normalize-space()='Invoices']")
+
+        login.implicitly_wait(5)
+        #Get first invoice ID dynamically
+        first_invoice_id = login.find_element(
+            By.XPATH, "(//tbody[@class='p-element p-datatable-tbody']//tr/td[1]/span)[1]"
+        ).text
+        print(f"First Invoice ID: {first_invoice_id}")
+
+        # Get first row (latest invoice)
+        first_row = login.find_element(
+            By.XPATH, "(//tbody[@class='p-element p-datatable-tbody']//tr)[1]"
+        )
+
+        # Get status of first invoice
+        status = first_row.find_element(
+            By.XPATH, ".//td/span[contains(text(),'Not Paid')]"
+        ).text
+        print(f"Status for Invoice {first_invoice_id}: {status}")
+
+        # Click "View" button of first invoice
+        view_button = first_row.find_element(
+            By.XPATH, ".//button[span[normalize-space()='View']]"
+        )
+        view_button.click()
+
+
     except Exception as e:
         allure.attach(  
         login.get_screenshot_as_png(),  

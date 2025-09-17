@@ -27,7 +27,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException 
 from selenium.common.exceptions import TimeoutException
-
+from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 
 
@@ -81,22 +82,6 @@ def create_user_data():
 
 
 @pytest.fixture()
-# def login(url, username, password):
-
-#     driver = webdriver.Chrome(
-#         service=ChromeService(
-#             executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-#         )
-#     )
-#     driver.get(url)
-#     driver.maximize_window()
-#     time.sleep(5)
-#     driver.find_element(By.ID, "loginId").send_keys(username)   
-#     driver.find_element(By.ID, "password").send_keys(password)
-#     driver.find_element(By.XPATH, "//div[@class='mt-2']").click()
-#     driver.implicitly_wait(5)
-#     yield driver
-#     driver.close()
 def login(url, username, password):
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_experimental_option("prefs", {
@@ -104,6 +89,25 @@ def login(url, username, password):
         "profile.password_manager_enabled": False
     })
     chrome_options.add_argument("--disable-notifications")
+
+    prefs = {
+    "credentials_enable_service": False,
+    "profile.password_manager_enabled": False,
+    "profile.password_manager_leak_detection_enabled": False,
+    "password_manager_enabled": False,  # extra precaution
+    }
+
+    chrome_options.add_experimental_option("prefs", prefs)
+
+    # Disable Chrome popups, notifications, infobars, safe browsing
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--disable-infobars")
+    chrome_options.add_argument("--disable-save-password-bubble")
+    chrome_options.add_argument("--disable-password-manager-reauthentication")
+    chrome_options.add_argument("--no-first-run")  # skips first run popups
+    chrome_options.add_argument("--disable-blink-features=AutomationControlled")  # optional
+    chrome_options.add_argument("--incognito")  # optional
+   
 
     # Initialize Chrome driver with options
     driver = webdriver.Chrome(
@@ -139,8 +143,33 @@ def login(url, username, password):
     finally:
         driver.quit()
 
+# @pytest.fixture()
+# def login(url, username, password):
+#     options = FirefoxOptions()
+#     options.set_preference("dom.webnotifications.enabled", False)
+#     options.set_preference("signon.rememberSignons", False)
+#     options.set_preference("network.cookie.cookieBehavior", 0)
+#     options.binary_location = r"C:\Program Files\Mozilla Firefox\firefox.exe"
 
+#     driver = webdriver.Firefox(
+#         service=FirefoxService(executable_path=r"Drivers\geckodriver-win64\geckodriver.exe"),
+#         options=options
+#     )
 
+#     wait = WebDriverWait(driver, 5)  # Shorter explicit wait
+
+#     try:
+#         driver.get(url)
+
+#         # Fast login
+#         wait.until(EC.visibility_of_element_located((By.ID, "loginId"))).send_keys(username)
+#         wait.until(EC.visibility_of_element_located((By.ID, "password"))).send_keys(password)
+#         wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='mt-2']"))).click()
+
+#         yield driver
+
+#     finally:
+#         driver.quit()
 
 @pytest.fixture()
 def con_login(url):
@@ -187,10 +216,20 @@ def create_business_detail():
  
 
 
-def wait_and_click(login, by, value, timeout=30):
+# def wait_and_click(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.element_to_be_clickable((by, value)))
     element.click()
     return element
+
+
+def wait_and_click(login, by, value, timeout=30):
+    wait = WebDriverWait(login, timeout)
+    element = wait.until(EC.presence_of_element_located((by, value)))
+    wait.until(EC.visibility_of(element))
+    wait.until(EC.element_to_be_clickable((by, value)))
+    element.click()
+    return element
+
 
 def wait_and_locate_click(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))

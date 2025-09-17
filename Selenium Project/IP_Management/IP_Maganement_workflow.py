@@ -525,7 +525,7 @@ def test_IP_workflow_New_IP_Patient(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")

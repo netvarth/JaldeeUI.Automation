@@ -23,3 +23,4 @@ venv/
 apache-jmeter-5.6.3/*
 OS Process Sampler.jmx
 python_runner_template.jmx
+allure-report_*
