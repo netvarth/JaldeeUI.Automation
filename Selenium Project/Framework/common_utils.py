@@ -297,7 +297,7 @@ def scroll_to_window(login):
     login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 def scroll_to_element(login, element):
-    login.execute_script("arguments[0].scrollIntoView(true);", element)
+    login.execute_script("arguments[0].scrollIntoView();", element)
 
 def click_to_element(login, element):
     login.execute_script("arguments[0].click();", element)
