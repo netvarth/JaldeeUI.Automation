@@ -252,7 +252,6 @@ def test_appt_manualinvoice(login):
 
     time.sleep(5)
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Apply the discount in the Invoice and Share the payment link")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -547,7 +546,6 @@ def test_appt_manualinvoice1(login):
 
     time.sleep(5)
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item in the Invoice and Share the payment link")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -808,7 +806,6 @@ def test_appt_manualinvoice2(login):
         print("Snack bar message:", message)
 
     time.sleep(5)
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item and apply the discount in the Invoice and Share the payment link")
@@ -1112,7 +1109,6 @@ def test_appt_manualinvoice3(login):
 
     time.sleep(5)
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the sub service in the invoice")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -1412,7 +1408,6 @@ def test_appt_manualinvoice4(login):
 
     time.sleep(5)
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Settled the Manual Invoice ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -1652,7 +1647,6 @@ def test_appt_manualinvoice5(login):
         print("Snack bar message:", message)
 
     time.sleep(5)
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Apply coupon in manual Invoice")
@@ -1959,7 +1953,6 @@ def test_appt_manualinvoice6(login):
 
     time.sleep(5)
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Update bill status as canceled")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -2199,9 +2192,7 @@ def test_appt_manualinvoice7(login):
         print("Snack bar message:", message)
 
     time.sleep(5)
-
-
-    
+   
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Consumer take prepayment booking")
 @pytest.mark.parametrize('url', ["https://scale.jaldee.com/visionhospital/"])
@@ -2422,8 +2413,6 @@ def test_prepaymentbooking(con_login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Payment Refund")

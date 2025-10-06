@@ -6,8 +6,6 @@ import random
 from faker import Faker
 
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic lab order work flow")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
@@ -974,6 +972,75 @@ def test_lab_order_3(login):
         message = toast_message.text
         print("Toast Message:", message)
         
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Create Lab Order Item")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_3(login):
+
+    time.sleep(5)
+    try:
+        
+        wait = WebDriverWait(login, 20)
+        # order_element = wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//img)[3]"))
+        # )
+        # order_element.click()
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Items'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//button[normalize-space()='Actions'])[1]")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[3]")
+
+        time.sleep(2)
+        # 1. Capture the item name from the first row (or whichever row you act on)
+        item_name_elem = login.find_element(
+            By.XPATH, "//table[@id='pr_id_13-table']//tr[1]//td[1]//div"
+        )
+        item_name = item_name_elem.text
+        print("Selected Item:", item_name)
+
+        # 2. Click Actions → Disable for this row
+        actions_btn = login.find_element(
+            By.XPATH, f"//table[@id='pr_id_13-table']//tr[td//div[normalize-space()='{item_name}']]//button[normalize-space()='Actions']"
+        )
+        actions_btn.click()
+
+        disable_btn = login.find_element(
+            By.XPATH, "//button[span[normalize-space()='Disable']]"
+        )
+        disable_btn.click()
+
+        # 3. Wait until the status changes to Disable for the same item
+        status_xpath = f"//table[@id='pr_id_13-table']//tr[td//div[normalize-space()='{item_name}']]//td[6]//span"
+        WebDriverWait(login, 15).until(
+            EC.text_to_be_present_in_element((By.XPATH, status_xpath), "Disable")
+        )
+
+        # 4. Assertion
+        status_text = login.find_element(By.XPATH, status_xpath).text
+        print(f"Item '{item_name}' status after action:", status_text)
+        assert status_text == "Disable", f"❌ Expected 'Disable' but got '{status_text}'"
+
 
 
     except Exception as e:
@@ -2110,10 +2177,7 @@ def test_lab_order_6(login):
                 (By.XPATH, "(//span[normalize-space()='Rejected'])[1]"))
         ).click()
 
-       
-
         time.sleep(3)
-
 
 
     except Exception as e:
@@ -3247,10 +3311,12 @@ def test_lab_order_9(consumer_login):
         time.sleep(2)
         create_order.click()
 
-        time.sleep(3)
-        wait.until(
+        time.sleep(5)
+        Add_button = wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[@type='button'][normalize-space()='Add'])[1]"))
-        ).click()
+        )
+
+        click_to_element(consumer_login, Add_button)
 
         time.sleep(3)
         # Questionnaire
@@ -3353,13 +3419,13 @@ def test_lab_order_9(consumer_login):
         time.sleep(2)
 
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[11]"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[13]"))
         ).click()
 
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Select Type Of Pontic'])[1]"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
         ).click()
 
         time.sleep(3)
@@ -3395,7 +3461,7 @@ def test_lab_order_9(consumer_login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]"))
         ).click()
 
         time.sleep(2)
@@ -3490,13 +3556,211 @@ def test_lab_order_9(consumer_login):
                 (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
         ).click()
 
- 
+        time.sleep(3)
+        wait_and_click(consumer_login, By.XPATH, "(//button[normalize-space()='View Cart'])[1]")
+        
+        time.sleep(2)
+        wait_and_click(consumer_login, By.XPATH, "(//button[normalize-space()='Checkout'])[1]")
+
+        time.sleep(2)
+        wait_and_click(consumer_login, By.XPATH, "(//button[normalize-space()='Confirm'])[1]")
+
+        time.sleep(2)
+        wait_and_click(consumer_login, By.XPATH, "(//div[contains(text(),'NET BANKING')])[1]")
+
+        time.sleep(2)
+        wait_and_click(consumer_login, By.XPATH, "(//button[normalize-space()='Pay'])[1]")
+
+        time.sleep(3)
+        # Switch into iframe if present
+        simulate_success = True   # 👈 change to False when you want failure
+        try:
+            iframe = WebDriverWait(consumer_login, 6).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, "iframe[src*='razorpay'],iframe[id*='razorpay'],iframe[name*='razorpay']"))
+            )
+            consumer_login.switch_to.frame(iframe)
+        except Exception:
+            pass
+
+        # Click Netbanking tab
+        el = WebDriverWait(consumer_login, 12).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR, "[data-value='netbanking']"))
+        )
+        consumer_login.execute_script("arguments[0].click();", el)
+
+        # Select State Bank of India
+        sbi = WebDriverWait(consumer_login, 12).until(
+            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space(.)='State Bank of India']"))
+        )
+        consumer_login.execute_script("arguments[0].click();", sbi)
+
+        # Leave iframe
+        consumer_login.switch_to.default_content()
+
+        # ==== Mock bank window ====
+        original = consumer_login.current_window_handle
+        WebDriverWait(consumer_login, 30).until(EC.number_of_windows_to_be(2))
+        bank_window = [h for h in consumer_login.window_handles if h != original][0]
+        consumer_login.switch_to.window(bank_window)
+
+        # Wait until bank page loads
+        WebDriverWait(consumer_login, 10).until(EC.title_contains("Razorpay Bank"))
+
+        if simulate_success:
+            btn = WebDriverWait(consumer_login, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-val='S']"))
+            )
+            consumer_login.execute_script("arguments[0].click();", btn)
+        else:
+            btn = WebDriverWait(consumer_login, 10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-val='F']"))
+            )
+            consumer_login.execute_script("arguments[0].click();", btn)
+
+        # Switch back to app
+        WebDriverWait(consumer_login, 8).until(EC.number_of_windows_to_be(1))
+        consumer_login.switch_to.window(original)
+        consumer_login.switch_to.default_content()
+
 
         time.sleep(5)
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             consumer_login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Create Lab Order Store without location")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_10(login):
+
+    time.sleep(5)
+    try:
+ 
+        wait = WebDriverWait(login, 20)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Stores')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Create Store'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
+        ).click()
+
+        select_option_1 = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='OTHERS'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", select_option_1)
+        select_option_1.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Name'])[1]"))
+        ).send_keys("Store" + str(uuid.uuid4())[:4])
+
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='phone'])[1]"))
+        ).send_keys(phonenumber)
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='email'])[1]"))
+        ).send_keys(email)
+
+        time.sleep(1)   
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Invoice prefix'])[1]"))
+        ).send_keys("INV" + str(uuid.uuid1())[:4])
+
+
+        time.sleep(2)
+        create_btn = login.find_element(By.XPATH, "//button[normalize-space()='Create']")
+
+        create_btn.click()
+    
+        # snack_bar = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+        # )
+        # message = snack_bar.text
+        # print("Snack bar message:", message)
+
+
+        message = get_snack_bar_message(login)
+        print("Snack bar message:", message)
+        time.sleep(3)
+        # assert message == "Invalid Location", f"❌ Expected 'Invalid Location' but got '{message}'"
+        # time.sleep(2)
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Edit Lab Order Store and update")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_11(login):
+
+    time.sleep(5)
+    try:
+ 
+        wait = WebDriverWait(login, 20)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Stores')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//span[@class='p-button-label ng-star-inserted'][normalize-space()='Edit'])[1]")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='Add Another']")
+
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@id='phone'])[2]", phonenumber)
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "//button[normalize-space()='Update']")
+
+        message = get_snack_bar_message(login)
+        print("Snack Bar Message :", message)
+
+        time.sleep(5)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
             # login.screenshot()
             name="full_page",  # param2
             attachment_type=AttachmentType.PNG,

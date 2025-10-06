@@ -29,7 +29,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
-
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 
 
 test_url = "https://test.jaldee.com/business/"
@@ -229,7 +229,20 @@ def wait_and_click(login, by, value, timeout=30):
     wait.until(EC.element_to_be_clickable((by, value)))
     element.click()
     return element
-
+# def wait_and_click(login, by, value, timeout=30):
+#     wait = WebDriverWait(login, timeout)
+#     last_err = None
+#     for _ in range(3):  # small retry for Angular re-render
+#         try:
+#             # Don't cache an earlier element; get a FRESH clickable element now
+#             el = wait.until(EC.element_to_be_clickable((by, value)))
+#             el.click()
+#             return el
+#         except StaleElementReferenceException as e:
+#             last_err = e
+#     # If we still fail after retries, raise the last error
+#     if last_err:
+#         raise last_err
 
 def wait_and_locate_click(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))

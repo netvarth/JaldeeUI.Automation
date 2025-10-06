@@ -151,7 +151,6 @@ def test_IP_Management_1(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Bed creation for room")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -262,7 +261,6 @@ def test_IP_Management_2(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: IP room creation with existing room name")
@@ -387,7 +385,6 @@ def test_IP_Management_3(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: IP room creation with existing bed name")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -530,7 +527,6 @@ def test_IP_Management_4(login):
         )
         raise e
     
-
 # <<  <<  <<  <<  IP Prescription  >>  >>  >>  >>>  >>>
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -1152,8 +1148,6 @@ def test_IP_Management_6(login):
         )
         raise e
     
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Retained Bed when transfer")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -1320,8 +1314,6 @@ def  test_IP_Management_7(login):
         )
         raise e
     
-  
-
 @allure.severity(allure.severity_level.CRITICAL) 
 @allure.title("Test Case:  Not Retained Bed when transfer")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -1439,9 +1431,6 @@ def test_IP_Management_8(login):
         )
         raise e
     
-    
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create 2 unpaid invoices, then create a master invoice and pay it. After that, discharge and check out.")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -2517,7 +2506,6 @@ def test_IP_Management_9(login):
         )
         raise e
      
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:Create two invoices, one paid and one unpaid, then group them into a master invoice. Make a payment for the unpaid invoice, then proceed to discharge and check out.")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -3688,8 +3676,6 @@ def  test_IP_Management_10(login):
         )
         raise e
     
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:After Discharge Create 2 Invoice with unpaid and paid and make it master invoice, make payment to the unpaid invoice and check out")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -4490,8 +4476,6 @@ def test_IP_Management_11(login):
         )
         raise e
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create a Service")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -4557,8 +4541,6 @@ def test_IP_Management_12(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-    
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create a Service without pricing and addon applicable")
@@ -4624,7 +4606,6 @@ def test_IP_Management_13(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Treatment Room Creation and Patient Admission")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -4719,3 +4700,162 @@ def test_IP_Management_14(login):
 
 
 
+
+
+
+@allure.step("Click on IP Management Menu")
+def click_ip_management_menu(driver):
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, "(//img)[4]"))
+    ).click()
+
+
+@allure.step("Navigate to Room Management")
+def navigate_to_room_management(driver):
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, "(//div[@class='dashboard-card-image'])[6]"))
+    ).click()
+
+
+@allure.step("Click on 'Create Room' button")
+def click_create_room(driver):
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, "//button[contains(., 'Create Room')]"))
+    ).click()
+
+
+@allure.step("Select building: Block B")
+def select_building(driver):
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Building'])[1]"))
+    ).click()
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Block B'])[1]"))
+    ).click()
+
+
+@allure.step("Select floor: Second Floor B")
+def select_floor(driver):
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"))
+    ).click()
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor B'])[1]"))
+    ).click()
+
+
+@allure.step("Select room type: Normal Room")
+def select_room_type(driver):
+    WebDriverWait(driver, 30).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Type'])[1]"))
+    ).click()
+    room_type = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Normal Room'])[1]"))
+    )
+    driver.execute_script("arguments[0].scrollIntoView();", room_type)
+    room_type.click()
+
+
+@allure.step("Select room category: Private Room")
+def select_room_category(driver):
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Category'])[1]"))
+    ).click()
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
+    ).click()
+
+
+@allure.step("Enter room name: {room_name}")
+def enter_room_name(driver, room_name):
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Room Name'])[1]"))
+    ).send_keys(room_name)
+
+
+@allure.step("Select room nature: Room")
+def select_room_nature(driver):
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Select Room Nature'])[1]"))
+    ).click()
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Room'])[1]"))
+    ).click()
+
+
+@allure.step("Click Create button")
+def click_create_button(driver):
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Create'])[1]"))
+    ).click()
+
+
+@allure.step("Validate room creation: {room_name}")
+def validate_room_creation(driver, room_name):
+    toast_detail = WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_detail.text
+    print("toast_Message:", message)
+
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//tbody//tr[1]"))
+    )
+    first_row = driver.find_element(By.XPATH, "//tbody//tr[1]")
+    print(f"First row text: {first_row.text}")
+
+    if room_name in first_row.text:
+        print(f"✅ Room '{room_name}' is present in the first row.")
+    else:
+        print(f"❌ Room '{room_name}' NOT found in the first row: {first_row.text}")
+        assert False, f"{room_name} not found in first row"
+
+
+# >>> Test Case <<<
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Room creation")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_101(login):
+    try:
+        time.sleep(3)
+        click_ip_management_menu(login)
+
+        time.sleep(3)
+        navigate_to_room_management(login)
+
+        time.sleep(3)
+        click_create_room(login)
+
+        time.sleep(2)
+        select_building(login)
+
+        time.sleep(1)
+        select_floor(login)
+
+        time.sleep(1)
+        select_room_type(login)
+
+        time.sleep(1)
+        select_room_category(login)
+
+        room_name = get_next_room_name()
+        enter_room_name(login, room_name)
+
+        time.sleep(2)
+        select_room_nature(login)
+
+        time.sleep(1)
+        click_create_button(login)
+
+        validate_room_creation(login, room_name)
+
+        time.sleep(5)
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e

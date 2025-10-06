@@ -337,7 +337,6 @@ def test_Prescription(login):
         )
         raise e
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription upload Sharing")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -616,7 +615,6 @@ def test_Prescription_1(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription using Template")
@@ -915,7 +913,6 @@ def test_Prescription_2(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Complete Order")
@@ -1439,7 +1436,6 @@ def test_Prescription_3(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Decline Order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -1785,7 +1781,6 @@ def test_Prescription_4(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("RX Push Draft Order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])

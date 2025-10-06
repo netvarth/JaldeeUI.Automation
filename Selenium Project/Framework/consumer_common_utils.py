@@ -84,6 +84,9 @@ def scroll_to_window(consumer_login):
 def scroll_to_element(consumer_login, element):
     consumer_login.execute_script("arguments[0].scrollIntoView(true);", element)
 
+def click_to_element(consumer_login, element):
+    consumer_login.execute_script("arguments[0].click(true);", element)
+
 
 def wait_and_click(consumer_login, by, value, timeout=10):
     element = WebDriverWait(consumer_login, timeout).until(EC.element_to_be_clickable((by, value)))

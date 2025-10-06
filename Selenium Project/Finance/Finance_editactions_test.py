@@ -4,7 +4,7 @@ from Framework.common_dates_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Finance Edit Actions Tab")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_FinanceEdit_Actions(login):
     try:
         time.sleep(5)

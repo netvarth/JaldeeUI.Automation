@@ -5,7 +5,7 @@ from allure_commons.types import AttachmentType
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Invoices Filter")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_InvoiceFilter(login):
     try:
         time.sleep(5)
@@ -75,7 +75,7 @@ def test_InvoiceFilter(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Order Invoices Filter")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_OrderInvoiceFilter(login):
     try:
         time.sleep(5)
@@ -91,7 +91,7 @@ def test_OrderInvoiceFilter(login):
         wait_and_locate_click(login, By.XPATH, "//i[@class='pi pi-filter-fill']") 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//div[@role='tablist'])[1]") 
-        time.sleep(2)
+        time.sleep(3)
         wait_and_send_keys(login, By.XPATH, "//input[@id='providerConsumerName']", "Stephanie Herrera")
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//div[@role='tablist'])[2]") 

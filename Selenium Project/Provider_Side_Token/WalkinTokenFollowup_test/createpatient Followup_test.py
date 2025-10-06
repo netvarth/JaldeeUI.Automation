@@ -4,7 +4,7 @@ from Framework.common_dates_utils import *
 from selenium.common import TimeoutException
 
 
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_followup_create_patient(login):
     time.sleep(5)
     WebDriverWait(login, 20).until(

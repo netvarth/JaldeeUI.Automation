@@ -954,14 +954,12 @@ def test_walkin_appointment(login):
         element.click()
 
         service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
+        
         time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.element_to_be_clickable((By.XPATH, service_option_xpath))
-        # ).click()
-
         wait_and_locate_click(login, By.XPATH, service_option_xpath)
         
         print("Select Service : Naveen Consultation")
+        
         time.sleep(5)
 
         Today_Date = WebDriverWait(login, 10).until(
@@ -4388,7 +4386,6 @@ def test_walkin_appointment(login):
         raise e
 
 ##############################################################################################################################################################
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Predeployment – Confirmation, Label, Message Sending, and Attachment Handling")

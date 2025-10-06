@@ -802,7 +802,6 @@ def test_followup_history(login):
 
         time.sleep(5)
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup to nextmonth")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])

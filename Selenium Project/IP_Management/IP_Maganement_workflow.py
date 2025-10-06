@@ -1051,7 +1051,6 @@ def test_IP_workflow_New_IP_Patient(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic workflow of IP Mangement with Reservations")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -2125,8 +2124,6 @@ def test_IP_workflow_Reservations(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic workflow of IP Mangement to Convert Patient to IP Patient")
@@ -3249,8 +3246,6 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         )
         raise e
     
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Basic workflow of IP Mangement to Convert OP Patient to IP Patient")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)]) 

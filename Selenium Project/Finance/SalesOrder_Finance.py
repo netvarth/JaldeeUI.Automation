@@ -4,18 +4,19 @@ import re
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create_WalkinOrder_confirmed and completed_order")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_walkin_Order(login):
     try:
         time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "//li[3]//a[1]//div[1]//span[1]//span[1]//img[1]") 
+        wait_and_locate_click(login, By.XPATH, "/html[1]/body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[4]/a[1]/div[1]/span[1]/span[1]/img[1]") 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Create Order')]")
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Search customers']", "9400553615")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Search customers']", "9207206005")
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 131']")
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 2']")
         time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]")
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Next']")
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//div[@class='d-flex item-btn align-items-center']")
@@ -294,6 +295,7 @@ def orderinvoiceid(consumer_login):
         return orderinvoiceid
     finally:
             consumer_login.quit()
+
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Online order invoice and provider side order invoice on Finance Dashboard")

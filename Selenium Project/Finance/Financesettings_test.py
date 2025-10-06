@@ -3,7 +3,7 @@ from Framework.common_utils import *
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Finance Enabling and Disabling in Settings")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_finance_settings(login):
     try:
         time.sleep(5)
