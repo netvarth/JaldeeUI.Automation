@@ -41,6 +41,8 @@ test_mail = ".test@jaldee.com"
 consumer_url = "https://scale.jaldee.com/visionhospital/"
 test_consumer_url = "https://scale.jaldeetest.in/visionhospital/"
 test_prod_url = "https://beta.jaldee.com/business/"
+lead_scale_url = "https://scale.jaldee.com/visionhospital/lead/create/ch-73b91u7-55"
+
 
 sales_officer = "001920"
 credit_head = "001921"
@@ -184,7 +186,20 @@ def con_login(url):
     time.sleep(5)
     yield driver
 
+@pytest.fixture()
+def open_browser():
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument("--disable-notifications")
+    chrome_options.add_argument("--incognito")
+    chrome_options.add_argument("--start-maximized")
 
+    driver = webdriver.Chrome(
+        service=ChromeService(executable_path=r"Drivers\\chromedriver-win64\\chromedriver.exe"),
+        options=chrome_options
+    )
+
+    yield driver
+    driver.quit()
 
 
 
