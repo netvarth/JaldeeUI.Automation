@@ -4932,7 +4932,6 @@ def test_confirmation_label_message_attachment(login):
             )
             raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Prescription and RX Push Prescription Pre deployment testing")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -5161,74 +5160,83 @@ def test_prescription_rxpush_predeployment(login):
         # Loop through rows and interact with each row
         # Medicines: first is manual, rest are normal
         medicines_to_add = [
-            {"name": "Paracetamol", "manual": True},  # manual entry
+            {"name": "Paracetamol", "manual": True},
             {"name": "items", "manual": False},
             {"name": "Item4", "manual": False}
         ]
+
         for index, med in enumerate(medicines_to_add):
-            # Click the "+ Add Medicine" button
+            # Click "+ Add Medicine"
             wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//button[normalize-space()='+ Add Medicine']")
-                )
+                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
             ).click()
 
-            # Find the search box
-            search_box = wait.until(
-                EC.presence_of_element_located((By.CSS_SELECTOR, "input[role='searchbox']"))
+            # Locate the newly added row dynamically (last row)
+            row = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//tbody/tr[last()]"))
             )
+
+            # Search box inside current row
+            search_box = row.find_element(By.XPATH, ".//td[2]//input[@role='searchbox']")
             search_box.clear()
             search_box.send_keys(med["name"])
             time.sleep(1)
 
             if not med["manual"]:
-                # Normal item → pick from autocomplete
-                suggestions = login.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
+                suggestions = row.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
                 if suggestions:
                     suggestions[0].click()
             else:
-                # Manual (ADOCH) item → confirm typed entry
                 search_box.send_keys(Keys.ENTER)
 
             time.sleep(1)
 
-            # Locate the current row
-            row = wait.until(
-                EC.presence_of_element_located((By.XPATH, f"//tbody/tr[{index + 1}]"))
-            )
-
-            # Duration
-            duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")
-            duration.clear()
-            duration.send_keys("5")
+          
 
             # Frequency dropdown
-            dropdown_trigger = row.find_element(
-                By.XPATH, ".//td[4]//div[contains(@class, 'p-dropdown-trigger')]"
-            )
+            dropdown_trigger = row.find_element(By.XPATH, ".//td[3]//div[contains(@class, 'p-dropdown-trigger')]")
             dropdown_trigger.click()
-
+         
+        
+            # Wait for the dropdown list to appear (overlay in body)
             dropdown_options = WebDriverWait(login, 10).until(
                 EC.presence_of_all_elements_located(
                     (By.XPATH, "//div[contains(@class,'p-dropdown-items-wrapper')]//li")
                 )
             )
+
             if dropdown_options:
+                # Choose randomly
                 option_to_click = random.choice(dropdown_options)
                 login.execute_script("arguments[0].scrollIntoView(true);", option_to_click)
-                time.sleep(0.5)
+                time.sleep(0.3)
                 login.execute_script("arguments[0].click();", option_to_click)
 
-            # Qty
+            # Duration
+            duration = row.find_element(By.XPATH, ".//td[4]/input[@type='number']")
+            duration.clear()
+            duration.send_keys("5")
+
+            # Quantity
             qty_input = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")
             qty_input.clear()
             qty_input.send_keys("1")
 
-            # Remarks
-            row.find_element(By.XPATH, ".//td[6]").click()
-            remarks = row.find_element(By.XPATH, "//input[@role='searchbox']")
-            remarks.clear()
-            remarks.send_keys(f"Notes for {med['name']}")
+            # Locate the remarks cell in the current row
+            remarks_cell = row.find_element(By.XPATH, ".//td[6][@class='p-element p-editable-column']")
+
+            # Click to activate editing
+            login.execute_script("arguments[0].scrollIntoView(true);", remarks_cell)
+            remarks_cell.click()
+            time.sleep(0.3)  # tiny wait for input to appear
+
+            # Find the inner input
+            remarks_input = row.find_element(By.XPATH, ".//td[6]//input")
+            remarks_input.clear()
+            remarks_input.send_keys(f"Notes for {med['name']}")
+
+            time.sleep(1)
+
 
             time.sleep(1)
 
@@ -5344,7 +5352,6 @@ def test_prescription_rxpush_predeployment(login):
                 attachment_type=AttachmentType.PNG,
             )
             raise e
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Case Creation with Treatment Plan and Prescription Pre deployment testing")
@@ -5763,7 +5770,6 @@ def test_case_creation_treatplan_prescription_predeployment(login):
                 attachment_type=AttachmentType.PNG,
             )
             raise e
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Auto and Manual Invoice with Adhoc Item Pre deployment testing")
@@ -6247,7 +6253,6 @@ def test_auto_manual_invoice_adhoc_predeployment(login):
             )
             raise e
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedule and Cancel Pre deployment testing")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -6449,7 +6454,6 @@ def test_reschedule_cancel_predeployment(login):
                 attachment_type=AttachmentType.PNG,
             )
             raise e
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Appointment with Family Member Confirmation and Attachment Handling Pre deployment testing")

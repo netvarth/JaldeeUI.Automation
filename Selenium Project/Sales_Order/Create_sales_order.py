@@ -52,7 +52,7 @@ def test_create_sales_order_1(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-checkbox-box'])[2]"))
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
         ).click()
 
         time.sleep(1)

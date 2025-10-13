@@ -372,8 +372,7 @@ def test_stock_adjustment(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
-   
+  
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock adjustment with batch enabled item ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
@@ -1138,16 +1137,6 @@ def test_stock_adjustment_2(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
-
-
-
-
-
-
-
-
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Stock Ajustment")

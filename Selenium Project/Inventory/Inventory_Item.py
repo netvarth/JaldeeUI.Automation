@@ -286,7 +286,6 @@ def test_item_disable_and_enabled(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Item Edit and update")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
@@ -316,7 +315,6 @@ def test_item_edit_update(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
-
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test for item filter item id ")

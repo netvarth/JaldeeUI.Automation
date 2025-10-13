@@ -615,8 +615,10 @@ def test_signup():
             )
         ).click()
 
-        time.sleep(1)
+        time.sleep(2)
+        wait_and_locate_click(login,By.XPATH, "(//img)[12]")
 
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//img[@src='./assets/images/menu/home-color.png']")

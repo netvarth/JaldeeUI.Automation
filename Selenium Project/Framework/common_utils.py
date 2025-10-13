@@ -269,25 +269,54 @@ def wait_for_text(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     return element.text
 
-def get_snack_bar_message(login, timeout=30):
-    try:
-        # Try to get the normal snack bar message
-        snack_bar = WebDriverWait(login, timeout).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        return message
+# def get_snack_bar_message(login, timeout=30):
+#     try:
+#         # Try to get the normal snack bar message
+#         snack_bar = WebDriverWait(login, timeout).until(
+#             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+#         )
+#         message = snack_bar.text
+#         return message
 
-    except:
-        # If not found, try to get the error snack bar message
+#     except:
+#         # If not found, try to get the error snack bar message
+#         try:
+#             snack_bar = WebDriverWait(login, timeout).until(
+#                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+#             )
+#             message = snack_bar.text
+#             return message
+#         except Exception as e:
+#             return None
+
+def get_snack_bar_message(login, timeout=5):
+    """
+    Captures the snackbar message (normal or error) from Angular Material.
+    Returns the message text if found, else None.
+    """
+    selectors = [
+        ".cdk-overlay-container mat-snack-bar-container .mat-mdc-snack-bar-label.mdc-snackbar__label",
+        ".cdk-overlay-container .mat-mdc-snack-bar-label.mdc-snackbar__label",
+        "mat-snack-bar-container .mat-mdc-snack-bar-label.mdc-snackbar__label"
+    ]
+
+    for selector in selectors:
         try:
-            snack_bar = WebDriverWait(login, timeout).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+            # Wait for snackbar presence (not just visible)
+            element = WebDriverWait(login, timeout).until(
+                EC.presence_of_element_located((By.CSS_SELECTOR, selector))
             )
-            message = snack_bar.text
-            return message
+
+            # Capture text before it disappears
+            msg = element.text.strip()
+            if msg:
+                # allure.attach(msg, "Snackbar Message", allure.attachment_type.TEXT)
+                return msg
+
         except Exception as e:
-            return None
+            continue
+
+    return None
 
 
 def get_toast_message(login, timeout=10):

@@ -685,8 +685,6 @@ def test_IP_workflow_New_IP_Patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Save'])[1]"))
         ).click()
-
-        
         
         time.sleep(3)
         share_button = wait.until(
@@ -1607,7 +1605,7 @@ def test_IP_workflow_Reservations(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
@@ -2728,7 +2726,7 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
@@ -3782,16 +3780,7 @@ def  test_OP_Converted_to_IP_Patient(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//button[normalize-space()='Assign Bed'])[1]"))
-        # ).click()
-
-        # toast_message = WebDriverWait(login, 10).until(
-        # EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        # )
-        # message = toast_message.text
-        # print("Toast Message:", message)
+        
         time.sleep(5)
 
         wait.until(
@@ -3884,7 +3873,7 @@ def  test_OP_Converted_to_IP_Patient(login):
         print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+        wait_and_click(login, By.XPATH, "//button[contains(@class,'p-datepicker-trigger')]//span[contains(@class,'pi-clock')]")
         time.sleep(1)
         # Locate the minute up arrow
         minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
@@ -3898,7 +3887,7 @@ def  test_OP_Converted_to_IP_Patient(login):
         wait_and_click(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]")
 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "2")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "1")
       
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
