@@ -48,7 +48,13 @@ def test_lab_order_1(login):
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
 
-        time.sleep(1)
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Care Dental Catalog'])[1]")
+
+        time.sleep
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
@@ -992,12 +998,7 @@ def test_lab_order_3(login):
     try:
         
         wait = WebDriverWait(login, 20)
-        # order_element = wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//img)[3]"))
-        # )
-        # order_element.click()
-
+    
         time.sleep(2)
 
         wait.until(
@@ -1050,12 +1051,280 @@ def test_lab_order_3(login):
             name="full_page",  # param2
             attachment_type=AttachmentType.PNG,
         )
+        raise e 
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Create Lab Order Catalog without item")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_4(login):
+    wait = WebDriverWait(login, 20)
+    
+    try:
+        
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Care_dental'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Catalogs')])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@class='p-ripple p-element p-button p-component'])[1]")
+
+        time.sleep(1)
+        catalog_name = "Catalog" + str(uuid.uuid4())[:4]
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Catalog Name'])[1]", catalog_name)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        store_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Care_dental'])[1]")))
+        scroll_to_element(login,store_element)
+        store_element.click()
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save & Next'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-times'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
+
+
+        # ✅ ASSERTION: Verify the created catalog name appears in the table
+        catalog_xpath = f"//tbody//div[@class='fw-bold' and normalize-space()='{catalog_name}']"
+        created_catalog = wait.until(EC.presence_of_element_located((By.XPATH, catalog_xpath)))
+        scroll_to_element(login, created_catalog)
+
+        assert created_catalog.is_displayed(), f"❌ Catalog '{catalog_name}' not found in the list"
+        print(f"✅ Catalog '{catalog_name}' successfully created and visible in the table.")
+
+        time.sleep(3)
+
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Create Lab Order catalog with item")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_5(login):
+    wait = WebDriverWait(login, 20)
+    
+    try:
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Care_dental'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Catalogs')])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@class='p-ripple p-element p-button p-component'])[1]")
+
+        time.sleep(1)
+        catalog_name = "Catalog" + str(uuid.uuid4())[:4]
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Catalog Name'])[1]", catalog_name)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        store_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Care_dental'])[1]")))
+        scroll_to_element(login,store_element)
+        store_element.click()
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save & Next'])[1]")
+
+        time.sleep(2)
+        # Wait for the item table to appear
+        table_body = wait.until(EC.presence_of_element_located((By.XPATH, "//tbody[@class='p-element p-datatable-tbody']")))
+        time.sleep(2)
+
+        # Define the list of items to select
+        items_to_select = ["Invisalign", "Crown", "Metal implant"]
+
+        for item_name in items_to_select:
+            try:
+                # Locate the checkbox using item name
+                item_row_xpath = f"//tbody//tr[.//span[normalize-space()='{item_name}']]//input[@type='checkbox']"
+                checkbox = wait.until(EC.presence_of_element_located((By.XPATH, item_row_xpath)))
+
+                # Scroll to and click the checkbox
+                scroll_to_element(login, checkbox)
+                login.execute_script("arguments[0].click();", checkbox)
+                print(f"✅ Selected item: {item_name}")
+
+            except Exception as e:
+                print(f"⚠️ Could not select item: {item_name} — {e}")
+
+        # Optional: Proceed with next step after selecting items
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-check'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
+
+        time.sleep(2)
+        # ✅ ASSERTION: Verify the created catalog name appears in the table
+        catalog_xpath = f"//tbody//div[@class='fw-bold' and normalize-space()='{catalog_name}']"
+        created_catalog = wait.until(EC.presence_of_element_located((By.XPATH, catalog_xpath)))
+        scroll_to_element(login, created_catalog)
+
+        assert created_catalog.is_displayed(), f"❌ Catalog '{catalog_name}' not found in the list"
+        print(f"✅ Catalog '{catalog_name}' successfully created and visible in the table.")
+
+        time.sleep(3)
+
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Add the price and tax for the item from catalog")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_6(login):
+    wait = WebDriverWait(login, 20)
+    
+    try:
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Care_dental'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Catalogs')])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@class='p-element mat-mdc-menu-trigger btn fw-bold p-button-light p-button p-component'][normalize-space()='Actions'])[1]"
+            )
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]")
+
+        time.sleep(2)
+        item_names = ["Invisalign", "Crown", "Metal implant"]
+
+        for index, name in enumerate(item_names, start=1):
+            # Locate the row freshly each time
+            row = wait.until(
+                EC.presence_of_element_located(
+                    (By.XPATH, f"//tbody[@class='p-element p-datatable-tbody']/tr[.//div[text()='{name}']]")
+                )
+            )
+
+            print(f"Editing item: {name}")
+
+            # Click Edit Details
+            edit_button = row.find_element(By.XPATH, ".//button[contains(., 'Edit Details')]")
+            login.execute_script("arguments[0].scrollIntoView();", edit_button)
+            edit_button.click()
+            time.sleep(2)
+
+            # --- Set Display Order ---
+            display_order_input = wait_and_locate_click(login, By.XPATH, "(//input[@placeholder='Enter Display Order'])[1]")
+            display_order_input.clear()
+            display_order_input.send_keys(str(index))  # Using loop index as display order
+
+            # --- Set Yes for dropdown ---
+            wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+            time.sleep(1)
+            wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Yes'])[1]")
+
+            # --- Fill MRP ---
+            mrp_input = wait_and_locate_click(login, By.XPATH, "(//input[@placeholder='Enter Price'])[1]")
+            mrp_input.clear()
+            mrp_input.send_keys("400")
+
+            # --- Fill Sale Price ---
+            sale_price_input = wait_and_locate_click(login, By.XPATH, "(//input[@placeholder='Enter Price'])[2]")
+            sale_price_input.clear()
+            sale_price_input.send_keys("360")
+
+            # --- Select Tax ---
+            wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+            time.sleep(1)
+            wait_and_locate_click(login, By.XPATH, "(//div[@class='p-checkbox-box'])[3]")
+
+            # --- Save ---
+            wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Save'])[1]")
+            time.sleep(3)
+            print(f"✅ Saved item {index}: {name}")
+
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
         raise e
     
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Lab Order Store")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_4(login):
+def test_lab_order_7(login):
 
     time.sleep(5)
     try:
@@ -1152,7 +1421,7 @@ def test_lab_order_4(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Delivery failed order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_5(login):
+def test_lab_order_8(login):
 
     time.sleep(5)
     try:
@@ -1718,11 +1987,10 @@ def test_lab_order_5(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Agent Reject Order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_6(login):
+def test_lab_order_9(login):
 
     try:  
         time.sleep(5)
@@ -2189,11 +2457,10 @@ def test_lab_order_6(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Agent accept the order and Delivered the order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_7(login):
+def test_lab_order_10(login):
 
     try:  
         time.sleep(5)
@@ -2729,7 +2996,7 @@ def test_lab_order_7(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Agent accept the order and Delivery Failed ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_8(login):
+def test_lab_order_11(login):
 
     try:  
         time.sleep(5)
@@ -3262,11 +3529,10 @@ def test_lab_order_8(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:  Auto-generate Task on Online Order")
 @pytest.mark.parametrize("url", [Scale_Lab_order_consumer_url])
-def test_lab_order_9(consumer_login):
+def test_lab_order_12(consumer_login):
     try:
         
         time.sleep(3)
@@ -3634,12 +3900,10 @@ def test_lab_order_9(consumer_login):
         )
         raise e
     
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Lab Order Store without location")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_10(login):
+def test_lab_order_13(login):
 
     time.sleep(5)
     try:
@@ -3724,12 +3988,10 @@ def test_lab_order_10(login):
         )
         raise e
     
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Edit Lab Order Store and update")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_11(login):
+def test_lab_order_14(login):
 
     time.sleep(5)
     try:
@@ -3758,6 +4020,254 @@ def test_lab_order_11(login):
         print("Snack Bar Message :", message)
 
         time.sleep(5)
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Edit an order by adding one item and removing another")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_15(login):
+
+    try:
+        
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+        ).click()
+ 
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+        ).click()
+
+        clinic_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sanoop Clinic'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", clinic_option)
+
+        clinic_option.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
+        ).click()
+
+        store_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Care_dental'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", store_option)
+        store_option.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Care Dental Catalog'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Add Item'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@class='mdc-checkbox__native-control'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        checkbox = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//mat-checkbox[contains(@class, 'mat-mdc-checkbox')]//input[@type='checkbox'])[1]"))
+        )
+        login.execute_script("arguments[0].click()", checkbox)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSelDone_LBODR_itemSeletn']")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrCnfm_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='spnDelet_LBODR_cretOdr'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowItms_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//input[@id='chekBx_LBODR_itemSeletn-input'])[2]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDone_LBODR_itemSeletn'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdteOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Edit an order by adding one item and removing another")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_16(login):
+
+    try:
+        
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='drpPartnrs_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        clinic_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sanoop Clinic'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", clinic_option)
+
+        clinic_option.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='drpSelStr1_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        store_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Care_dental'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", store_option)
+        store_option.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='multiCatData_LBODR_crtOdrPop'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Care Dental Catalog'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSveOrdr_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnBrowItms_LBODR_cretOdr'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[1]"))
+        ).click()
+  
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDne_LBODR_itemSeletn'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrCnfm_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='spnDelet_LBODR_cretOdr'])[2]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdteOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrDiscar1_LBODR_cretOdr'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
