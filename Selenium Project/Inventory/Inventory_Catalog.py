@@ -428,4 +428,25 @@ def test_inventory_catalog_filter(login):
         raise e 
     
 
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Inventory Catalog - Edit and update the price of the item ")
+def test_inventory_catalog_name_update(login):
+
+    wait = WebDriverWait(login, 30)
+    try:
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]")
+            
+
+    
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
  

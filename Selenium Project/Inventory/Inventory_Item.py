@@ -435,5 +435,86 @@ def test_item_filter(login):
     print("Assertion passed: All rows in the table have Transaction Type as 'SALES'.")
 
 
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create the Remarks from item Variant")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_item_variant_remarks(login):
+    wait = WebDriverWait(login, 30)
+    try:
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[7]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionSltOpt_ORD_ItemVar'])[8]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCrt_ORD_Remarks'])[1]")
+
+        Remarks = "ItemRemarks" + str(uuid.uuid4())[:4]
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@id='inputHsn_ORD_ItemCrtPop'])[1]", Remarks)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectRmrks_ORD_ItemCrtPop'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Adjustment'])[1]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_ORD_ItemCrtPop']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+        
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
 
 
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Update the Remarks from item Variant")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_update_item_variant_remarks(login):
+    wait = WebDriverWait(login, 30)
+    try:
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[7]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionSltOpt_ORD_ItemVar'])[8]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCraeat_ORD_Remarks'])[1]")
+
+        Remarks = "Rename_ItemRemarks" + str(uuid.uuid4())[:4]
+        time.sleep(2)
+        remarks_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@id='inputHsn_ORD_ItemCrtPop'])[1]"))
+        )
+        remarks_element.clear()
+        remarks_element.send_keys(Remarks)
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectRmrks_ORD_ItemCrtPop'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Adjustment'])[1]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_ORD_ItemCrtPop']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+        
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e

@@ -107,7 +107,7 @@ def test_create_patient(login):
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
         ).click()
 
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("Note for the walkin token")
+        login.find_element(By.XPATH, "(//textarea[@id='tctareaMsg_BUS_addNote'])[1]").send_keys("Note for the walkin token")
 
         WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))
@@ -885,7 +885,7 @@ def test_create_patient(login):
         time.sleep(3)
         price = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@id='mat-input-4'])[2]"))
+                (By.XPATH, "(//input[@id='inputPriceServ_FIN_inv'])[1]"))
         )
         price.clear()
         price.click()
@@ -1077,7 +1077,7 @@ def test_create_patient(login):
         time.sleep(3)
         price = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@id='mat-input-4'])[2]"))
+                (By.XPATH, "(//input[@id='inputPriceServ_FIN_inv'])[1]"))
         )
         price.clear()
         price.click()

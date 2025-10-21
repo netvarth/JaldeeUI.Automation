@@ -13,23 +13,17 @@ def test_lab_order_1(login):
 
     try:
         
-        time.sleep(5)
+        time.sleep(3)
         wait = WebDriverWait(login, 30)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Create Order')])[1]")
  
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='drpPartnrs_LBODR_crtOdrPop'])[1]")
 
         clinic_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sanoop Clinic'])[1]"))
+                (By.XPATH, "(//span[normalize-space()='Sanoop Clinic'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", clinic_option)
 
@@ -38,89 +32,44 @@ def test_lab_order_1(login):
         time.sleep(1)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
+                (By.XPATH, "(//*[@id='drpSelStr1_LBODR_crtOdrPop'])[1]"))
         ).click()
 
         store_option = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Care_dental'])[1]"))
+                (By.XPATH, "(//span[normalize-space()='Care_dental'])[1]"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store_option)
         store_option.click()
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='multiCatData_LBODR_crtOdrPop'])[1]")
 
-        time.sleep(2)
+        time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Care Dental Catalog'])[1]")
 
         time.sleep
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSveOrdr_LBODR_crtOdrPop'])[1]")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Add Item'])[1]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowItms_LBODR_cretOdr'])[1]")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@class='mdc-checkbox__native-control'])[1]"))
-        ).click()
-
-        time.sleep(3)
-        checkbox = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//mat-checkbox[contains(@class, 'mat-mdc-checkbox')]//input[@type='checkbox'])[1]"))
-        )
-        login.execute_script("arguments[0].click()", checkbox)
-
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//input[@id='chekBx_LBODR_itemSeletn-input'])[1]")
 
         time.sleep(3)
         # Questionnaire
 
         random_form_number = random.randint(100, 9999)
 
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//input[@placeholder='Enter form number'])[1]"))
-        # ).send_keys(str(random_form_number))
-
-        # time.sleep(2)
-
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-
-        # today_element = WebDriverWait(login, 10).until(
-        #         EC.presence_of_element_located(
-        # (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
-        #         )
-        # )          
-
-        # # Click using JavaScript in case normal click doesn't work
-        # login.execute_script("arguments[0].click();", today_element)
-
-        # print("Clicked today's date:", today_element.text)
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Please enter the doctor’s name'])[1]"))
-        ).send_keys("Naveen P")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@id='inpt1_LBODR_fieldRendr'])[1]", "Naveen KP")
 
         time.sleep(2)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Please enter the patient name'])[1]"))
+                (By.XPATH, "(//input[@id='inpt1_LBODR_fieldRendr'])[2]"))
         ).send_keys(f"{first_name} {last_name}")
 
         time.sleep(1)
@@ -130,38 +79,30 @@ def test_lab_order_1(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Age'])[1]"))
+                (By.XPATH, "(//input[@id='inpt2_LBODR_fieldRendr'])[1]"))
         ).send_keys(str(random_age)) 
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='drop1_LBODR_fieldRendr'])[1]")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Male'])[1]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Male'])[1]")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Add'])[1]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnAddArr_LBODR_dynFrms'])[1]")
 
 
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Select Prosthesis Type'])[1]"))
+                (By.XPATH, "(//*[@id='drop1_LBODR_fieldRendr'])[2]"))
         ).click()
 
         time.sleep(2)
 
         options = WebDriverWait(login, 10).until(
             EC.presence_of_all_elements_located(
-                (By.XPATH, "//li[contains(@class,'p-dropdown-item')]")
+                (By.XPATH, "//*[@role='listbox']")
             )
         )
 
@@ -205,17 +146,14 @@ def test_lab_order_1(login):
             print(f"Selected Shade: {shade_text}")
 
 
+        time.sleep(1)
+
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//button[@id='btnClose_LBODR_dynFrms'])[1]"))
+        ).click()
+
         time.sleep(2)
-
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//button[@type='button'])[11]"))
-        ).click()
-
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Select Type Of Pontic'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='drop1_LBODR_fieldRendr'])[3]")
 
         time.sleep(3)
 
@@ -233,25 +171,15 @@ def test_lab_order_1(login):
 
         print(f"Selected option: {option_text}")
 
-        time.sleep(3)
+        time.sleep(2)
         
-        drop_down1 = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[6]"))
-        )
-        login.execute_script("arguments[0].click();", drop_down1)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='drop1_LBODR_fieldRendr'])[4]")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Yes'])[1]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Yes'])[1]")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='cal1_LBODR_fieldRendr'])[2]")
 
         time.sleep(2)
         
@@ -270,25 +198,15 @@ def test_lab_order_1(login):
         print("Clicked future date (+4):", future_date_element.text)
 
 
-        time.sleep(2)
-        drop_down2 = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//div[@aria-label='dropdown trigger'])[7]"))
-        )
-        login.execute_script("arguments[0].click();", drop_down2)   
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='drop1_LBODR_fieldRendr'])[5]")   
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Yes'])[1]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Yes'])[2]")
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]"))
-        ).click()
-        time.sleep(2)
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='cal1_LBODR_fieldRendr'])[3]")
+        time.sleep(1)
         
         future_date = datetime.now() + timedelta(days=6)
         future_day = str(future_date.day)
@@ -305,17 +223,11 @@ def test_lab_order_1(login):
         print("Clicked future date (+6):", future_date_element.text)
 
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Final Finish'])[1]"))
-        ).send_keys("Final Finish")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//*[@id='inpt1_LBODR_fieldRendr'])[4]", "Final Finish")
         
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[4]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='cal1_LBODR_fieldRendr'])[4]")
 
         time.sleep(2)
         
@@ -333,126 +245,56 @@ def test_lab_order_1(login):
 
         print("Clicked future date (+10):", future_date_element.text)
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter your notes'])[1]"))
-        ).send_keys("Some notes")   
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='View Invoice'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Share Payment Link'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='mdc-button__label'])[1]"))
-        ).click()
-
-        try:
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        ).click()
-
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Complete Order'])[1]"))
-        ).click()
-
-        toast_detail = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_detail.text
-        print("toast_Message:", message)
-
-        time.sleep(3)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Pass To Delivery'])[1]"))
-        ).click()
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//*[@id='inpt1_LBODR_fieldRendr'])[5]", "Note for item" )  
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@name='radioBtn'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='btnSelDne_LBODR_ordrTempts'])[1]")
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Assign Agent'])[1]"))
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDone_LBODR_itemSeletn'])[1]")
 
-        try:
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrCnfm_LBODR_cretOdr'])[1]")
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCretInv_LBODR_cretOdr'])[1]")
 
-        except:
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='View Invoice'])[1]")
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Share Payment Link'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOnSend_LBODR_pamntLnk'])[1]")
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message : ", msg)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='divGoBack_LBODR_invoice'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrCompl_LBODR_cretOdr'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='btnPasDeli_LBODR_cretOdr'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='radioBtn_LBODR_delvryManLst'])[1]")
+
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnAssnDlvryAgent_LBODR_delvryManLst'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message:", msg)
 
         Assigned_status_element = wait.until(
             EC.presence_of_element_located(
@@ -463,32 +305,13 @@ def test_lab_order_1(login):
         assert Assigned_status_text == "ASSIGNED", f"Expected 'ASSIGNED' status, but got {Assigned_status_text}"
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Change Status'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnChngeSts_LBODR_delvryDetls'])[1]")
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='mdc-list-item__primary-text'][normalize-space()='Accepted'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdateStatusAcc_LBODR_delvryDetls'])[1]")
 
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
 
         Accepted_status_element = wait.until(
             EC.presence_of_element_located(
@@ -499,32 +322,13 @@ def test_lab_order_1(login):
         assert Accepted_status_text == "ACCEPTED", f"Expected 'ACCEPTED' status, but got {Accepted_status_text}"
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Change Status'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnChngeSts_LBODR_delvryDetls'])[1]")
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='mdc-list-item__primary-text'][normalize-space()='Dispatched']"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdateStatusDis_LBODR_delvryDetls'])[1]")
 
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
 
         pickup_status_element = wait.until(
             EC.presence_of_element_located(
@@ -535,32 +339,13 @@ def test_lab_order_1(login):
         assert pickup_status_text == "Dispatched", f"Expected 'Dispatched' status, but got {pickup_status_text}"
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Change Status'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnChngeSts_LBODR_delvryDetls'])[1]")
 
         time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='mdc-list-item__primary-text'][normalize-space()='Delivered'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdateStatusDeld_LBODR_delvryDetls'])[1]")
 
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
 
 
         time.sleep(5)
@@ -2992,7 +2777,6 @@ def test_lab_order_10(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Agent accept the order and Delivery Failed ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
@@ -4029,7 +3813,6 @@ def test_lab_order_14(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Edit an order by adding one item and removing another")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
@@ -4149,6 +3932,10 @@ def test_lab_order_15(login):
         print("Toast Message :", msg)
         time.sleep(3)
 
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrDiscar1_LBODR_cretOdr'])[1]")
+        msg = get_toast_message(login)
+        print("Toast Message :", msg )
+        time.sleep(3)
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
@@ -4158,9 +3945,8 @@ def test_lab_order_15(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: Edit an order by adding one item and removing another")
+@allure.title("Test Case: Edit an order by adding two item and removing one item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
 def test_lab_order_16(login):
 
@@ -4225,16 +4011,29 @@ def test_lab_order_16(login):
                 (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[1]"))
         ).click()
   
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[2]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
 
         time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+
+        time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDne_LBODR_itemSeletn'])[1]")
 
         time.sleep(2)
@@ -4266,7 +4065,7 @@ def test_lab_order_16(login):
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
-        time.sleep(2)
+        time.sleep(5)
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -4276,3 +4075,327 @@ def test_lab_order_16(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Edit an order by adding two item and removing one item update and add another item")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_17(login):
+
+    try:
+        
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='drpPartnrs_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        clinic_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sanoop Clinic'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", clinic_option)
+
+        clinic_option.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='drpSelStr1_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        store_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Care_dental'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", store_option)
+        store_option.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='multiCatData_LBODR_crtOdrPop'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Care Dental Catalog'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSveOrdr_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnBrowItms_LBODR_cretOdr'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[1]"))
+        ).click()
+  
+        time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[2]")
+
+        time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDne_LBODR_itemSeletn'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrCnfm_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='spnDelet_LBODR_cretOdr'])[2]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdteOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowItms_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[3]"))
+        ).click()
+  
+        time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDone_LBODR_itemSeletn'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdteOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrDiscar1_LBODR_cretOdr'])[1]")
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Edit an order by adding two item ")
+@pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
+def test_lab_order_18(login):
+
+    try:
+        
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='drpPartnrs_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        clinic_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sanoop Clinic'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", clinic_option)
+
+        clinic_option.click()
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='drpSelStr1_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        store_option = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Care_dental'])[1]"))
+        )
+        login.execute_script("arguments[0].scrollIntoView();", store_option)
+        store_option.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='multiCatData_LBODR_crtOdrPop'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Care Dental Catalog'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSveOrdr_LBODR_crtOdrPop'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnBrowItms_LBODR_cretOdr'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[1]"))
+        ).click()
+  
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+
+        time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+        
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDne_LBODR_itemSeletn'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrCnfm_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowItms_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[2]"))
+        ).click()
+  
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+
+        time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[3]"))
+        ).click()
+  
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+
+        time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[@id='chekBx_LBODR_itemSeletn'])[4]"))
+        ).click()
+  
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnClse_LBODR_ordrTempts'])[1]")
+
+        time.sleep(2)
+        close_element = wait.until(EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSelDne_LBODR_ordrTempts'])[1]")))
+        scroll_to_element(login, close_element)
+        time.sleep(2)
+        close_element.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSelDone_LBODR_itemSeletn'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnUpdteOdr_LBODR_cretOdr'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdrDiscar1_LBODR_cretOdr'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(5)
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+    
+

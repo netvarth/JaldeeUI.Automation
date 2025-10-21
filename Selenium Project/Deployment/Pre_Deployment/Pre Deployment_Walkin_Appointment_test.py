@@ -61,7 +61,7 @@ def test_account_signup():
     ).click()
 
     next_button = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//input[@class='form-submit']"))
+        EC.element_to_be_clickable((By.XPATH, "(//input[@id='signup'])[2]"))
     )
 
     login.execute_script("arguments[0].scrollIntoView(true);", next_button)
@@ -73,7 +73,7 @@ def test_account_signup():
     # login.find_element(By.XPATH,"//h6[normalize-space()='Doctor / Clinic']").click()
 
     next_button1 = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@value='Next']"))
+        EC.presence_of_element_located((By.XPATH, "(//input[@id='signup'])[2]"))
     )
 
     login.execute_script("arguments[0].scrollIntoView(true);", next_button1)
@@ -85,30 +85,17 @@ def test_account_signup():
     time.sleep(2)
 
     next_button2 = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//input[@id='signup']"))
+        EC.element_to_be_clickable((By.XPATH, "(//input[@id='signup'])[1]"))
     )
     login.execute_script("arguments[0].scrollIntoView(true);", next_button2)
     time.sleep(1)
     next_button2.click()
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
+    msg = get_snack_bar_message(login)
+    print("Toast Message :", msg)
+    time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter OTP']"))
+        EC.presence_of_element_located((By.XPATH, "//input[@id='mat-input-0']"))
     ).send_keys("55555")
 
     confirm_button = WebDriverWait(login, 10).until(
@@ -224,21 +211,8 @@ def test_account_signup():
         EC.presence_of_element_located((By.XPATH, "//span[@class='mdc-button__label']"))
     ).click()
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    msg = get_snack_bar_message(login)
+    print("Toast Message :", msg)
 
     time.sleep(3)
     WebDriverWait(login, 20).until(
@@ -903,12 +877,12 @@ def test_walkin_appointment(login):
 
         time.sleep(3)
       
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]")
+        wait_and_click(login, By.XPATH, "(//div[@id='actionCreate_BUS_bookList'])[1]")
         
         time.sleep(3)
         print("Create new patient")
        
-        wait_and_click(login, By.XPATH, "//b[normalize-space()='Create New Patient']")
+        wait_and_click(login, By.XPATH, "(//span[@id='btnCreateCust_BUS_appt'])[1]")
         
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -917,43 +891,40 @@ def test_walkin_appointment(login):
         wait_and_send_keys(login, By.XPATH, "//input[@id='last_name']", str(last_name))
         wait_and_send_keys(login, By.XPATH, "//*[@id='customer_id']", cons_manual_id)
         wait_and_send_keys(login, By.XPATH, "//*[@id='phone']", phonenumber)
-        wait_and_send_keys(login, By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']", phonenumber)
+        wait_and_send_keys(login, By.XPATH, "(//input[@id='phone'])[3]", phonenumber)
         wait_and_send_keys(login, By.XPATH, "//input[@id='email_id']", email)
         wait_and_click(login, By.XPATH, "//span[contains(text(),'Save')]")
 
         time.sleep(5)
 
-        wait_and_click(login, By.CSS_SELECTOR, "p-dropdown[optionlabel='place']")
+        wait_and_click(login, By.XPATH, "(//p-dropdown[@id='selctLoc_BUS_apptForm'])[1]")
         wait_and_visible_click (login, By.XPATH, "(//li[@id='p-highlighted-option'])[1]")
         
         print("location : Chavakkad")
         login.implicitly_wait(5)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectDept_BUS_apptForm'])[1]")
 
         login.implicitly_wait(5)
         wait_and_visible_click(login, By.XPATH, "(//li[@aria-label='ENT'])[1]")
     
         print("Department : ENT")
-        user_dropdown_xpath = (
-            "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-            "ng-dirty'])[1]"
-        )
+        user_dropdown_xpath = ("(//p-dropdown[@id='selectUser_BUS_apptForm'])[1]")
 
         wait_and_click(login, By.XPATH, user_dropdown_xpath)
         
-        user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
+        user_option_xpath = ("(//li[@aria-label='Naveen KP'])[1]")
         wait_and_click(login, By.XPATH, user_option_xpath)
         print("Select user : Naveen")
 
         time.sleep(3)
-        service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+        service_dropdown_xpath = "(//p-dropdown[@id='selectService_BUS_apptForm'])[1]"
         element= login.find_element(By.XPATH, service_dropdown_xpath)
         scroll_to_element(login, element)
         # login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        service_option_xpath = ("//li[@aria-label='Naveen Consultation']//div[1]")
+        service_option_xpath = ("(//li[@aria-label='Naveen Consultation'])[1]")
         
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, service_option_xpath)
@@ -1021,18 +992,10 @@ def test_walkin_appointment(login):
         
         
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/div[1]/span[1]/span[1]/img[1]")
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
         
         time.sleep(2)
-        element =wait.until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
-                )
-            )
-        )
-        click_to_element(login, element)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Appointment'])[1]")
 
         wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter name or phone or id']", "9207206005")
         time.sleep(2)
@@ -1040,22 +1003,17 @@ def test_walkin_appointment(login):
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 2']")
         
         time.sleep(2)
-        wait_and_locate_click(login, By.CSS_SELECTOR, "p-dropdown[optionlabel='place']")
+        wait_and_locate_click(login, By.CSS_SELECTOR, "(//p-dropdown[@id='selctLoc_BUS_apptForm'])[1]")
         
         login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
         print("location : Chavakkad")
         login.implicitly_wait(5)
 
-        login.find_element(
-            By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectDept_BUS_apptForm'])[1]")
         login.implicitly_wait(5)
         login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
         print("Department : ENT")
-        user_dropdown_xpath = (
-            "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-            "ng-dirty'])[1]"
-        )
+        user_dropdown_xpath = ("(//p-dropdown[@id='selectUser_BUS_apptForm'])[1]")
         wait_and_click(login, By.XPATH, user_dropdown_xpath)
         
         user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
@@ -1064,7 +1022,7 @@ def test_walkin_appointment(login):
         print("Select user : Naveen")
 
         # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        element = login.find_element(By.XPATH, "//p-dropdown[@optionlabel='name']")
+        element = login.find_element(By.XPATH, "(//p-dropdown[@id='selectService_BUS_apptForm'])[1]")
         scroll_to_element(login, element)
         time.sleep(2)
         element.click()
@@ -1101,7 +1059,7 @@ def test_walkin_appointment(login):
 
         wait_and_locate_click(login, By.XPATH, "//a[contains(text(),'Notes')]")
         
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("Note for the walkin appointment")
+        wait_and_send_keys(login, XPATH, "//a[@id='actnAddNote_BUS_notAttch']", "Note added for walkin appointment")
 
         wait_and_visible_click(login, By.XPATH, "//span[normalize-space()='Save']")
          
@@ -1125,7 +1083,8 @@ def test_walkin_appointment(login):
         time.sleep(3)
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "//span[contains(text(),'Confirm')]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnConfirm_BUS_apptForm'])[1]")
+        
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
 
