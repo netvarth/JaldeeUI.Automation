@@ -22,14 +22,14 @@ def test_create_sales_order_1(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
         ).click()
         
         first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
         
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='New customer'])[1]"))
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
         ).click()
 
         
@@ -46,7 +46,7 @@ def test_create_sales_order_1(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-multiselect-label p-placeholder'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
     
         time.sleep(2)
@@ -62,63 +62,56 @@ def test_create_sales_order_1(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
-        ).send_keys("item")
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
         time.sleep(3)
-
         element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
         click_to_element(login, element)
-
-        # time.sleep(3)
-        # # Re-locate to avoid stale reference
-        # element = wait.until(EC.element_to_be_clickable((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
-        # element.click()
-
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Blue'])[1]"))
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
         ).click()
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[.//span[normalize-space(text())='Select Item']])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
         
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Add Item'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox' and contains(@class,'mdc-checkbox__native-control')])[2]"))
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[2]"))
         ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//i[@class='pi pi-check'])[1]")
+        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
         ).click()
 
         message = get_toast_message(login)
@@ -126,19 +119,19 @@ def test_create_sales_order_1(login):
 
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCrtInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='View Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnViewInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@placeholder='Get Payment'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Share Payment Link'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='mdc-button__label'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSend_ORD_PayBill'])[1]")
 
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
@@ -147,7 +140,7 @@ def test_create_sales_order_1(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Complete Order'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdCng_ORD_CrtItem'])[1]")
 
         message = get_toast_message(login)
         print("Toast message:", message)
@@ -156,7 +149,7 @@ def test_create_sales_order_1(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Orders'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
         # Locate the first row of the orders table
@@ -198,7 +191,6 @@ def test_create_sales_order_2(login):
         wait = WebDriverWait(login, 30)
 
 
-        
         wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
@@ -208,14 +200,14 @@ def test_create_sales_order_2(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
         ).click()
         
         first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
         
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='New customer'])[1]"))
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
         ).click()
 
         
@@ -232,13 +224,13 @@ def test_create_sales_order_2(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-multiselect-label p-placeholder'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
     
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-checkbox-box'])[2]"))
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -248,58 +240,56 @@ def test_create_sales_order_2(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
-        ).send_keys("item")
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
         time.sleep(3)
-
         element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
         click_to_element(login, element)
-
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Blue'])[1]"))
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
         ).click()
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[.//span[normalize-space(text())='Select Item']])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
         
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Add Item'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox' and contains(@class,'mdc-checkbox__native-control')])[2]"))
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[2]"))
         ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
        
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//i[@class='pi pi-check'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
         ).click()
 
         message = get_toast_message(login)
@@ -307,22 +297,22 @@ def test_create_sales_order_2(login):
 
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCrtInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='View Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnViewInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@placeholder='Get Payment'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Pay by Cash'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Pay'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnMkPay_ORD_PayBill'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSltYes_ORD_ConfPay'])[1]")
 
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
@@ -331,7 +321,7 @@ def test_create_sales_order_2(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Complete Order'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdCng_ORD_CrtItem'])[1]")
 
         message = get_toast_message(login)
         print("Toast message:", message)
@@ -340,7 +330,7 @@ def test_create_sales_order_2(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Orders'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
         # Locate the first row of the orders table
@@ -391,14 +381,14 @@ def test_create_sales_order_3(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
         ).click()
         
         first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
         
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='New customer'])[1]"))
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
         ).click()
 
         
@@ -415,13 +405,13 @@ def test_create_sales_order_3(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-multiselect-label p-placeholder'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
     
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-checkbox-box'])[2]"))
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -431,17 +421,16 @@ def test_create_sales_order_3(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
-        ).send_keys("item")
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
         time.sleep(3)
-
         element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
         click_to_element(login, element)
 
@@ -449,43 +438,43 @@ def test_create_sales_order_3(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Blue'])[1]"))
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
         ).click()
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[.//span[normalize-space(text())='Select Item']])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
         
 
-        time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Add Item'])[1]")
+        # time.sleep(3)
+        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox' and contains(@class,'mdc-checkbox__native-control')])[2]"))
-        ).click()
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//input[@type='checkbox' and contains(@class,'mdc-checkbox__native-control')])[2]"))
+        # ).click()
+
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
+        # ).click()
+
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
+        # ).click()
+
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
-        ).click()
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
         ).click()
 
         message = get_toast_message(login)
@@ -493,10 +482,10 @@ def test_create_sales_order_3(login):
 
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCrtInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='View Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnViewInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Settle Invoice'])[1]")
@@ -512,7 +501,7 @@ def test_create_sales_order_3(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Complete Order'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdCng_ORD_CrtItem'])[1]")
 
         message = get_toast_message(login)
         print("Toast message:", message)
@@ -521,7 +510,7 @@ def test_create_sales_order_3(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Orders'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
         # Locate the first row of the orders table
@@ -569,14 +558,14 @@ def test_create_sales_order_4(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Create Order')])[1]"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
         ).click()
         
         first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
         
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='New customer'])[1]"))
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
         ).click()
 
         
@@ -593,13 +582,13 @@ def test_create_sales_order_4(login):
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-multiselect-label p-placeholder'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
     
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='p-checkbox-box'])[2]"))
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -609,17 +598,16 @@ def test_create_sales_order_4(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Search items'])[1]"))
-        ).send_keys("item")
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
         time.sleep(3)
-
         element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
         click_to_element(login, element)
 
@@ -627,28 +615,28 @@ def test_create_sales_order_4(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Blue'])[1]"))
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
         ).click()
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[.//span[normalize-space(text())='Select Item']])[1]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
         
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Add Item'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
 
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox' and contains(@class,'mdc-checkbox__native-control')])[2]"))
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[2]"))
         ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -658,12 +646,12 @@ def test_create_sales_order_4(login):
         ).click()
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
         ).click()
 
         message = get_toast_message(login)
@@ -671,16 +659,16 @@ def test_create_sales_order_4(login):
 
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCrtInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='View Invoice'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnViewInv_ORD_CrtItem'])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Cancel Invoice'])[1]")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//button[@class='cs-btn btn btn-primary settle-button'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCancelInv_ORD_SetInv'])[1]")
 
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
@@ -689,7 +677,7 @@ def test_create_sales_order_4(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Complete Order'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnOdCng_ORD_CrtItem'])[1]")
 
         message = get_toast_message(login)
         print("Toast message:", message)
@@ -698,7 +686,7 @@ def test_create_sales_order_4(login):
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Orders'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
         # Locate the first row of the orders table

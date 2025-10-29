@@ -30,54 +30,31 @@ def  test_consumer_side(consumer_login):
     try:    
         time.sleep(5)
         
-        consultation = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//h3[normalize-space()='GET YOUR CONSULTATION TODAY'])[1]")
-            )
-        )
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", consultation)
+        # consultation = WebDriverWait(consumer_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//h3[normalize-space()='GET YOUR CONSULTATION TODAY'])[1]")
+        #     )
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView(true);", consultation)
         
         time.sleep(3)
         wait = WebDriverWait(consumer_login, 30)
 
         book_now_button = wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "(//button[@id='btnBookNow'])[3]")
+                (By.XPATH, "(//button[@id='btnBookNow'])[1]")
             )
         )
+        scroll_to_element(consumer_login, book_now_button)
+
+        time.sleep(2)
         book_now_button.click()
 
         time.sleep(3)
 
+        wait_and_locate_click(consumer_login, By.XPATH, "(//div[normalize-space()='Kunduvara'])[1]")
 
-        # location_button = wait.until(
-        #     EC.presence_of_element_located(
-        #         (
-        #             By.XPATH,
-        #             "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]",
-        #         )
-        #     )
-        # )
-        # location_button.click()
-
-        # wait = WebDriverWait(consumer_login, 10)
-        # depart_button = wait.until(
-        #     EC.presence_of_element_located(
-        #         (
-        #             By.XPATH,
-        #             "//div[@class='deptName ng-star-inserted'][normalize-space()='ENT']",
-        #         )
-        #     )
-        # )
-        # depart_button.click()
-
-        # wait = WebDriverWait(consumer_login, 10)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]")
-        #     )
-        # ).click()
-
+        time.sleep(2)
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(
                 (

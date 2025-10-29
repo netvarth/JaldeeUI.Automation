@@ -130,7 +130,6 @@ def test_IP_Management_1(login):
         # Step 4: Assertion and print result
         if room_name in first_row.text:
             print(f"✅ Room '{room_name}' is present in the first row.")
-        else:
             print(f"❌ Room '{room_name}' NOT found in the first row: {first_row.text}")
             assert False, f"{room_name} not found in first row"
 
@@ -177,7 +176,6 @@ def test_IP_Management_2(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1] "))
         ).click()
-
 
         time.sleep(3)
         wait.until(
@@ -232,7 +230,6 @@ def test_IP_Management_2(login):
 
         print(f"🛏️ Bed created: {bed_name}")
 
-
         time.sleep(2)
 
         wait.until(
@@ -275,7 +272,6 @@ def test_IP_Management_3(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//div[@class='dashboard-card-image'])[6]"))
         ).click()
-
 
         time.sleep(2)
         wait.until(
@@ -506,10 +502,6 @@ def test_IP_Management_4(login):
         message = toast_detail.text
         print("toast_Message:", message)
 
-
-        
-        
-        
         time.sleep(5)
 
     except Exception as e:
@@ -617,7 +609,6 @@ def test_IP_Management_5(login):
             row = i + 1
             if i > 0:
                 trXPath = before_XPath + str([row])
-            else:
                 trXPath = before_XPath
 
             PreFinalXPath = trXPath + aftertd_XPath_1
@@ -659,8 +650,6 @@ def test_IP_Management_5(login):
         message = get_toast_message(login)
         print("Toast message:", message)
 
-        
-        
         time.sleep(3)
         share_button = wait.until(
             EC.presence_of_element_located(
@@ -709,7 +698,6 @@ def test_IP_Management_5(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Upload the prescription From Medical Record")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -819,8 +807,6 @@ def test_IP_upload_prescription(login):
         )
         raise e
     
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @pytest.mark.xfail(reason="Save button not clickable")
 @allure.title("Test Case: Upload the prescription From Medical Record and edit upload another record")
@@ -951,7 +937,6 @@ def test_IP_upload_prescription_edit_upload_second_one (login):
         print("Toast Message :", msg)
         time.sleep(3)
 
-        
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save'])[1]")
 
         time.sleep(3)
@@ -1048,7 +1033,6 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
 
-
         room_name = get_next_room_name()
 
         wait.until(
@@ -1137,7 +1121,6 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -1192,7 +1175,6 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@id='last_name'])[1]"))
         ).send_keys(last_name)
-
 
         time.sleep(1)
         wait.until(
@@ -1265,7 +1247,6 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
                 (By.XPATH, "(//span[normalize-space()='Save'])[1]"))
         ).click()
 
-
         try:
 
             snack_bar = WebDriverWait(login, 10).until(
@@ -1284,7 +1265,6 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
         
         time.sleep(5)
        
-        
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Confirm']"))
@@ -1300,11 +1280,9 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
                     )
                 )
 
-                
                 if next_button.is_enabled():
                    
                     login.execute_script("arguments[0].click();", next_button)
-                else:
                   
                     break
 
@@ -1326,14 +1304,12 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
         )
         View_Detail_button.click()
 
-
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Convert to IP'])[1]"))
         ).click()
 
         time.sleep(2)
-
 
         admission_dropdown = wait.until(
             EC.element_to_be_clickable(
@@ -1386,7 +1362,6 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -1422,7 +1397,6 @@ def  test_OP_Converted_to_IP_Patient_cancel(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -1609,7 +1583,6 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
 
-
         room_name = get_next_room_name()
 
         wait.until(
@@ -1698,7 +1671,6 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -1753,7 +1725,6 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@id='last_name'])[1]"))
         ).send_keys(last_name)
-
 
         time.sleep(1)
         wait.until(
@@ -1836,7 +1807,6 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
         
         time.sleep(5)
        
-        
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Confirm']"))
@@ -1852,11 +1822,9 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
                     )
                 )
 
-                
                 if next_button.is_enabled():
                    
                     login.execute_script("arguments[0].click();", next_button)
-                else:
                   
                     break
 
@@ -1878,14 +1846,12 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
         )
         View_Detail_button.click()
 
-
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Convert to IP'])[1]"))
         ).click()
 
         time.sleep(2)
-
 
         admission_dropdown = wait.until(
             EC.element_to_be_clickable(
@@ -1938,7 +1904,6 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -1974,7 +1939,6 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -2137,7 +2101,6 @@ def  test_take_admission_from_op_and_cancel_after_conversion(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
 def test_IP_Reservations_cancel(login):
 
-
     wait = WebDriverWait(login, 20)
     try:
         time.sleep(5)
@@ -2146,7 +2109,6 @@ def test_IP_Reservations_cancel(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//img)[4]"))
         ).click()
-
 
         wait.until(
             EC.presence_of_element_located(
@@ -2215,7 +2177,6 @@ def test_IP_Reservations_cancel(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
-
 
         room_name = get_next_room_name()
 
@@ -2315,7 +2276,6 @@ def test_IP_Reservations_cancel(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -2334,8 +2294,6 @@ def test_IP_Reservations_cancel(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
-
-
 
         time.sleep(3)
 
@@ -2400,7 +2358,6 @@ def test_IP_Reservations_cancel(login):
                 (By.XPATH, "(//button[normalize-space()='Save & Next'])[1]"))
         ).click()
 
-
         time.sleep(2)
 
         wait.until(
@@ -2462,7 +2419,6 @@ def test_IP_Reservations_cancel(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -2498,7 +2454,6 @@ def test_IP_Reservations_cancel(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -2566,7 +2521,6 @@ def test_IP_Reservations_cancel(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//button[normalize-space()='Reserve Now'])[1]"))
         ).click()
-
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
@@ -2639,8 +2593,6 @@ def test_IP_Reservations_cancel(login):
 
         assert cancellation_verified, "❌ Cancelled admission record not found in the table"
 
-
-
         time.sleep(5)
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -2692,10 +2644,8 @@ def test_IP_Management_6(login):
         if is_checked == "false":
             print("RX Push is disabled. Enabling it now.")
             toggle_button.click()
-        else:
             print("RX Push is already enabled. No action needed.")
 
-        
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -2856,7 +2806,6 @@ def test_IP_Management_6(login):
         message = toast_detail.text
         print("toast_Message:", message)    
 
-
         # time.sleep(2)
         # wait.until(
         #     EC.presence_of_element_located(
@@ -2874,7 +2823,6 @@ def test_IP_Management_6(login):
         #     EC.presence_of_element_located(
         #         (By.XPATH, "(//button[normalize-space()='Push'])[1]"))
         # ).click()
-
 
         time.sleep(2)
         wait.until(
@@ -2904,13 +2852,10 @@ def test_IP_Management_6(login):
             EC.presence_of_element_located((By.XPATH, "(//span[contains(text(),'View')])[1]"))
         ).click()
 
-
-
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Confirm Order'])[1]"))
         ).click()
-
 
         toast_detail = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
@@ -2919,7 +2864,6 @@ def test_IP_Management_6(login):
         print("toast_Message:", message) 
 
         time.sleep(3)
-
 
         wait.until(
             EC.presence_of_element_located(
@@ -2970,8 +2914,6 @@ def test_IP_Management_6(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Complete Order'])[1]"))    
         ).click()
-
-
 
         time.sleep(5)
 
@@ -3140,7 +3082,6 @@ def  test_IP_Management_7(login):
 
         time.sleep(5)
 
-
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
@@ -3237,7 +3178,6 @@ def test_IP_Management_8(login):
 
         time.sleep(2)
 
-
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//textarea[@placeholder='Enter Notes'])[1]"))
         ).send_keys("Note for the Transfering Bed")
@@ -3253,9 +3193,6 @@ def test_IP_Management_8(login):
         message = toast_message.text
         print("Toast Message:", message)    
 
-
-
-         
         time.sleep(5)
 
     except Exception as e:
@@ -3351,7 +3288,6 @@ def test_IP_Management_9(login):
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
 
-
         room_name = get_next_room_name()
 
         wait.until(
@@ -3440,7 +3376,6 @@ def test_IP_Management_9(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -3459,8 +3394,6 @@ def test_IP_Management_9(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
-
-
 
         time.sleep(3)
 
@@ -3525,7 +3458,6 @@ def test_IP_Management_9(login):
                 (By.XPATH, "(//button[normalize-space()='Save & Next'])[1]"))
         ).click()
 
-        
         time.sleep(2)
         admission_dropdown = wait.until(
             EC.element_to_be_clickable(
@@ -3580,7 +3512,6 @@ def test_IP_Management_9(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -3616,7 +3547,6 @@ def test_IP_Management_9(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -3705,7 +3635,6 @@ def test_IP_Management_9(login):
             )
         ).click()
 
-        
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
@@ -3761,7 +3690,6 @@ def test_IP_Management_9(login):
         print("Toast Message:", message)    
         
         time.sleep(3)
-
 
         wait.until(
             EC.presence_of_element_located(
@@ -3923,13 +3851,11 @@ def test_IP_Management_9(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         ).click()
 
-
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
         message = toast_message.text
         print("Toast Message:", message)
-
 
         time.sleep(3)
         wait.until(
@@ -4080,13 +4006,11 @@ def test_IP_Management_9(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         ).click()
 
-
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
         message = toast_message.text
         print("Toast Message:", message)
-
 
         time.sleep(3)
         wait.until(
@@ -4127,7 +4051,6 @@ def test_IP_Management_9(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
         ).click()
-
 
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
@@ -4332,7 +4255,6 @@ def test_IP_Management_9(login):
 
         time.sleep(5)
 
-
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
@@ -4342,10 +4264,6 @@ def test_IP_Management_9(login):
         )
         raise e
     
-
-
-
-     
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:Create two invoices, one paid and one unpaid, then group them into a master invoice. Make a payment for the unpaid invoice, then proceed to discharge and check out.")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
@@ -4423,7 +4341,6 @@ def  test_IP_Management_10(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
-
 
         room_name = get_next_room_name()
 
@@ -4513,7 +4430,6 @@ def  test_IP_Management_10(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -4532,8 +4448,6 @@ def  test_IP_Management_10(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
-
-
 
         time.sleep(3)
 
@@ -4598,7 +4512,6 @@ def  test_IP_Management_10(login):
                 (By.XPATH, "(//button[normalize-space()='Save & Next'])[1]"))
         ).click()
 
-        
         time.sleep(2)
         admission_dropdown = wait.until(
             EC.element_to_be_clickable(
@@ -4653,7 +4566,6 @@ def  test_IP_Management_10(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -4689,7 +4601,6 @@ def  test_IP_Management_10(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -4752,7 +4663,6 @@ def  test_IP_Management_10(login):
              
         ).click()
 
-
         time.sleep(2)
 
         wait.until(
@@ -4761,7 +4671,6 @@ def  test_IP_Management_10(login):
             )
         ).click()
 
-        
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
@@ -4978,7 +4887,6 @@ def  test_IP_Management_10(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         ).click()
 
-
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
@@ -5169,13 +5077,11 @@ def  test_IP_Management_10(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         ).click()
 
-
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
         message = toast_message.text
         print("Toast Message:", message)
-
 
         time.sleep(3)
         wait.until(
@@ -5330,7 +5236,6 @@ def  test_IP_Management_10(login):
         #     EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-checkbox']//input[@type='checkbox'])[1]"))
         # ).click()
 
-
         # time.sleep(2)
         # wait.until(
         #     EC.presence_of_element_located((By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"))
@@ -5353,13 +5258,11 @@ def  test_IP_Management_10(login):
         # )
         # login.execute_script("arguments[0].click();", yes_button)
         
-
         # toast_message = WebDriverWait(login, 10).until(
         #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail")))
         # message = toast_message.text
         # print("Toast Message:", message)
 
-        
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted'])[1]"))
@@ -5465,7 +5368,6 @@ def  test_IP_Management_10(login):
         message = get_toast_message(login)
         print("Snack bar message:", message)
         
- 
         time.sleep(3)
 
         wait_and_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
@@ -5506,7 +5408,6 @@ def  test_IP_Management_10(login):
 
         time.sleep(5)
 
-        
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
             login.get_screenshot_as_png(),  # param1
@@ -5593,7 +5494,6 @@ def test_IP_Management_11(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
-
 
         room_name = get_next_room_name()
 
@@ -5683,7 +5583,6 @@ def test_IP_Management_11(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -5702,8 +5601,6 @@ def test_IP_Management_11(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
-
-
 
         time.sleep(3)
 
@@ -5768,7 +5665,6 @@ def test_IP_Management_11(login):
                 (By.XPATH, "(//button[normalize-space()='Save & Next'])[1]"))
         ).click()
 
-        
         time.sleep(2)
         admission_dropdown = wait.until(
             EC.element_to_be_clickable(
@@ -5823,7 +5719,6 @@ def test_IP_Management_11(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -5859,7 +5754,6 @@ def test_IP_Management_11(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -5922,7 +5816,6 @@ def test_IP_Management_11(login):
              
         ).click()
 
-
         time.sleep(2)
 
         wait.until(
@@ -5931,7 +5824,6 @@ def test_IP_Management_11(login):
             )
         ).click()
 
-        
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
@@ -6147,7 +6039,6 @@ def test_IP_Management_11(login):
         #     EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         # ).click()
 
-
         # toast_message = WebDriverWait(login, 10).until(
         # EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         # )
@@ -6235,7 +6126,6 @@ def test_IP_Management_11(login):
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         ).click()
-
 
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
@@ -6400,7 +6290,6 @@ def test_IP_master_invoice_edit(login):
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
 
-
         room_name = get_next_room_name()
 
         wait.until(
@@ -6489,7 +6378,6 @@ def test_IP_master_invoice_edit(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -6508,8 +6396,6 @@ def test_IP_master_invoice_edit(login):
         )
         message = toast_message.text
         print("Toast Message:", message)
-
-
 
         time.sleep(3)
 
@@ -6574,7 +6460,6 @@ def test_IP_master_invoice_edit(login):
                 (By.XPATH, "(//button[normalize-space()='Save & Next'])[1]"))
         ).click()
 
-        
         time.sleep(2)
         admission_dropdown = wait.until(
             EC.element_to_be_clickable(
@@ -6629,7 +6514,6 @@ def test_IP_master_invoice_edit(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -6665,7 +6549,6 @@ def test_IP_master_invoice_edit(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -6754,7 +6637,6 @@ def test_IP_master_invoice_edit(login):
             )
         ).click()
 
-        
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
@@ -6810,7 +6692,6 @@ def test_IP_master_invoice_edit(login):
         print("Toast Message:", message)    
         
         time.sleep(3)
-
 
         wait.until(
             EC.presence_of_element_located(
@@ -6972,13 +6853,11 @@ def test_IP_master_invoice_edit(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         ).click()
 
-
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
         message = toast_message.text
         print("Toast Message:", message)
-
 
         time.sleep(3)
         wait.until(
@@ -7129,13 +7008,11 @@ def test_IP_master_invoice_edit(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Generate Invoice'])[1]"))
         ).click()
 
-
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
         message = toast_message.text
         print("Toast Message:", message)
-
 
         time.sleep(3)
         wait.until(
@@ -7177,14 +7054,11 @@ def test_IP_master_invoice_edit(login):
             EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Yes'])[1]"))
         ).click()
 
-
         toast_message = WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
         )
         message = toast_message.text
         print("Toast Message:", message)
-
-
 
         time.sleep(3)
     except Exception as e:
@@ -7303,7 +7177,6 @@ def test_IP_Management_13(login):
         wait.until(EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'mat-mdc-select-trigger') and .//span[text()='Service Building *']]"))).click()
         wait.until(EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Block B'])[1]"))).click()
 
-
         toggle_button3 = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[@class='mdc-switch__ripple'])[3]")))
         login.execute_script("arguments[0].click();", toggle_button3)
 
@@ -7418,13 +7291,11 @@ def test_IP_Management_14(login):
         )
         raise e
 
-
 @allure.step("Click on IP Management Menu")
 def click_ip_management_menu(driver):
     WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.XPATH, "(//img)[4]"))
     ).click()
-
 
 @allure.step("Navigate to Room Management")
 def navigate_to_room_management(driver):
@@ -7432,13 +7303,11 @@ def navigate_to_room_management(driver):
         EC.presence_of_element_located((By.XPATH, "(//div[@class='dashboard-card-image'])[6]"))
     ).click()
 
-
 @allure.step("Click on 'Create Room' button")
 def click_create_room(driver):
     WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.XPATH, "//button[contains(., 'Create Room')]"))
     ).click()
-
 
 @allure.step("Select building: Block B")
 def select_building(driver):
@@ -7449,7 +7318,6 @@ def select_building(driver):
         EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Block B'])[1]"))
     ).click()
 
-
 @allure.step("Select floor: Second Floor B")
 def select_floor(driver):
     WebDriverWait(driver, 30).until(
@@ -7458,7 +7326,6 @@ def select_floor(driver):
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Second Floor B'])[1]"))
     ).click()
-
 
 @allure.step("Select room type: Normal Room")
 def select_room_type(driver):
@@ -7471,7 +7338,6 @@ def select_room_type(driver):
     driver.execute_script("arguments[0].scrollIntoView();", room_type)
     room_type.click()
 
-
 @allure.step("Select room category: Private Room")
 def select_room_category(driver):
     WebDriverWait(driver, 10).until(
@@ -7481,13 +7347,11 @@ def select_room_category(driver):
         EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
     ).click()
 
-
 @allure.step("Enter room name: {room_name}")
 def enter_room_name(driver, room_name):
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Room Name'])[1]"))
     ).send_keys(room_name)
-
 
 @allure.step("Select room nature: Room")
 def select_room_nature(driver):
@@ -7498,13 +7362,11 @@ def select_room_nature(driver):
         EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Room'])[1]"))
     ).click()
 
-
 @allure.step("Click Create button")
 def click_create_button(driver):
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.XPATH, "(//button[normalize-space()='Create'])[1]"))
     ).click()
-
 
 @allure.step("Validate room creation: {room_name}")
 def validate_room_creation(driver, room_name):
@@ -7522,17 +7384,15 @@ def validate_room_creation(driver, room_name):
 
     if room_name in first_row.text:
         print(f"✅ Room '{room_name}' is present in the first row.")
-    else:
         print(f"❌ Room '{room_name}' NOT found in the first row: {first_row.text}")
         assert False, f"{room_name} not found in first row"
-
 
 # >>> Test Case <<<
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Room creation")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_101(login):
+def test_IP_Management_15(login):
     try:
         time.sleep(3)
         click_ip_management_menu(login)
@@ -7576,12 +7436,10 @@ def test_IP_Management_101(login):
         )
         raise e
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Reservation with existing IP Patient without bed")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_102(login):
-
+def test_IP_Management_16(login):
 
     wait = WebDriverWait(login, 20)
     try:
@@ -7655,7 +7513,6 @@ def test_IP_Management_102(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -7691,7 +7548,6 @@ def test_IP_Management_102(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -7732,13 +7588,10 @@ def test_IP_Management_102(login):
         )
         raise e
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Reservation with existing IP Patient with bed")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_103(login):
-
+def test_IP_Management_17(login):
 
     wait = WebDriverWait(login, 20)
     try:
@@ -7748,7 +7601,6 @@ def test_IP_Management_103(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//img)[4]"))
         ).click()
-
 
         wait.until(
             EC.presence_of_element_located(
@@ -7817,7 +7669,6 @@ def test_IP_Management_103(login):
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[normalize-space()='Private Room'])[1]"))
         ).click()
-
 
         room_name = get_next_room_name()
 
@@ -7917,7 +7768,6 @@ def test_IP_Management_103(login):
         time.sleep(1)
         bed_price.click()
 
-
         bed_name  = f'Bed{room_name}'
         wait.until(
             EC.presence_of_element_located(
@@ -7937,10 +7787,7 @@ def test_IP_Management_103(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-
-
         time.sleep(3)
-
 
         wait_and_locate_click(login, By.XPATH, "(//img)[4]")
 
@@ -8010,7 +7857,6 @@ def test_IP_Management_103(login):
 
         print("Clicked today's date:", today_element.text)
 
-
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
@@ -8046,7 +7892,6 @@ def test_IP_Management_103(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -8115,7 +7960,6 @@ def test_IP_Management_103(login):
         print("Toas Message :", msg)
         time.sleep(3)
 
-
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),
@@ -8124,12 +7968,10 @@ def test_IP_Management_103(login):
         )
         raise e
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Update the Reservation")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_104(login):
-
+def test_IP_Management_18(login):
 
     wait = WebDriverWait(login, 20)
     try:
@@ -8177,7 +8019,6 @@ def test_IP_Management_104(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -8221,7 +8062,6 @@ def test_IP_Management_104(login):
 
             next_month_arrow.click()
             time.sleep(1)
-        else:
             raise Exception("❌ Could not navigate to the target date in calendar.")
 
         # Click the future day
@@ -8247,11 +8087,10 @@ def test_IP_Management_104(login):
         )
         raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Cancel the Reservation")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_105(login):
+def test_IP_Management_19(login):
     wait = WebDriverWait(login, 20)
     try:
         time.sleep(5)
@@ -8286,28 +8125,302 @@ def test_IP_Management_105(login):
         )
         raise e
 
-
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: Cancel the Reservation")
+@allure.title("Test Case: Add the service with recurrent")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_106(login):
-    wait = WebDriverWait(login, 20)
+def test_IP_Management_20(login):
+
     try:
+
+        wait = WebDriverWait(login, 30)
         time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+        wait_and_locate_click(
+            login, By.XPATH, "(//div[@routerlinkactive='active-menu'])[3]"
+        )
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[3]")
+        wait_and_locate_click(
+            login, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+        )
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Admit'])[1]")
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@id='btnViewIp_IP_IpGrd'])[1]"
+        )
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Admit'])[1]")
+        wait_and_locate_click(
+            login, By.XPATH, "(//div[contains(text(),'Medical Record')])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[normalize-space()='Services'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//label[normalize-space()='Recurrent'])[1]"
+        )   
+
+        time.sleep(1)
+        wait_and_send_keys(
+            login, By.XPATH, "(//input[@placeholder='Search Service'])[1]", "Doc"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            login, By.XPATH, "(//li[@role='option'])[1]"
+        )
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=1)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=4)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Service Duration (in minutes)'])[1]", "2")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//p-multiselect[@placeholder='Select Doctors'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Krishna JP'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Next'])[1]")
+
+        # Verify follow-up containers/cards are rendered for all dates
+        time.sleep(2)
+        try:
+            wait.until(EC.presence_of_element_located((By.XPATH, "//*[contains(@class,'followup-container')]")))
+            print("Follow-up container detected.")
+        except Exception:
+            # Fallback: presence of section header indicating recurrence summary
+            wait.until(EC.presence_of_element_located((By.XPATH, "//h4[contains(., 'Recurrent')]")))
+            print("Fallback used: 'Recurrent' header present (container class not found).")
+
+        # Collect displayed dates from follow-up cards
+        date_elements = login.find_elements(By.XPATH, "//div[contains(@class,'followup-card')]//p[contains(., 'Date')]/span | //div[contains(@class,'followup-card')]//span[contains(@class,'text-blue-600')]")
+        displayed_dates = [el.text.strip() for el in date_elements if el.text and el.text.strip()]
+        print(f"Displayed follow-up dates: {displayed_dates}")
+        assert displayed_dates, "No follow-up dates rendered in UI"
+
+        # Compute expected dates between selected start and end (inclusive)
+        start_dt = (datetime.now() + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
+        end_dt = (datetime.now() + timedelta(days=4)).replace(hour=0, minute=0, second=0, microsecond=0)
+        expected_dates = []
+        cur = start_dt
+        while cur <= end_dt:
+            expected_dates.append(cur.strftime("%d/%m/%Y"))
+            cur += timedelta(days=1)
+        print(f"Expected follow-up dates: {expected_dates}")
+
+        # Assert card count and exact dates
+        cards = login.find_elements(By.XPATH, "//div[contains(@class,'followup-card')]")
+        cards_count = len(cards)
+        expected_count = len(expected_dates)
+        print(f"Asserting card count. Found: {cards_count}, Expected: {expected_count}")
+        assert cards_count == expected_count, f"Expected {expected_count} follow-up cards, found {cards_count}"
+        print("Card count assertion passed.")
+        missing = [d for d in expected_dates if d not in displayed_dates]
+        if missing:
+            print(f"Missing follow-up dates in UI: {missing}")
+        else:
+            print("All expected follow-up dates are present.")
+        assert not missing, f"Missing follow-up dates in UI: {missing}"
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Add Service'])[1]")
 
         msg = get_toast_message(login)
-        print("Toast Message :",msg)
+        print("Toast Message :", msg)
         time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@placeholder='Select TimeStamp'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Date Range'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=1)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=4)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_IP_DBAnltcs']")
+
+        time.sleep(2)
 
     except Exception as e:
         allure.attach(
@@ -8319,23 +8432,165 @@ def test_IP_Management_106(login):
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: Cancel the Reservation")
+@allure.title("Test Case: Update the service")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_107(login):
-    wait = WebDriverWait(login, 20)
-    try:
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+def test_IP_Management_21(login):
 
+    try:
+
+        wait = WebDriverWait(login, 30)
+        time.sleep(5)
+        wait_and_locate_click(
+            login, By.XPATH, "(//div[@routerlinkactive='active-menu'])[3]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@id='btnViewIp_IP_IpGrd'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//div[contains(text(),'Visits & Services')])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//p-dropdown[@placeholder='Select TimeStamp'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='All'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//img[@alt='add'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@role='menuitem'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=2)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=7)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Update Service'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Update the service")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_21(login):
+
+    try:
+
+        wait = WebDriverWait(login, 30)
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "(//div[@routerlinkactive='active-menu'])[3]")
+        
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//img[@alt='add'])[2]")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdt_IP_IpGrd'])[1]")
-        
 
     except Exception as e:
         allure.attach(
