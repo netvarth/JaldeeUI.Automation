@@ -14,14 +14,14 @@ def test_sales_order_catalog_with_item(login):
     try:
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Catalogs')])[1]"))    
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3]"))    
         ).click()
 
         time.sleep(1)
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-ripple p-element p-button p-component'])[1]"))
+                (By.XPATH, "(//p-button[@id='btnCrtCat_ORD_OrdCat'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -29,12 +29,12 @@ def test_sales_order_catalog_with_item(login):
         catalog_name = "Catalog_" + str(uuid.uuid4())[:6]
         print(catalog_name)
         WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Catalog Name'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@id='inputCatName_ORD_CatCrt'])[1]"))
         ).send_keys(catalog_name)
         
         dropdown = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+                    (By.XPATH, "(//p-dropdown[@id='selectStore_ORD_CatCrt'])[1]"))
         )
         dropdown.click()
         WebDriverWait(login, 10).until(
@@ -44,7 +44,7 @@ def test_sales_order_catalog_with_item(login):
     
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+                (By.XPATH, "(//p-dropdown[@id='selectOrdType_ORD_CatCrt'])[1]"))
         ).click()
         time.sleep(1)
         WebDriverWait(login, 20).until(
@@ -54,7 +54,7 @@ def test_sales_order_catalog_with_item(login):
     
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Save & Next'])[1]"))
+                (By.XPATH, "//button[@id='btnSave_ORD_CatCrt']"))
         ).click()
 
         time.sleep(3)
@@ -63,7 +63,7 @@ def test_sales_order_catalog_with_item(login):
         end_index = 4     # Last checkbox to select
 
         # Find all checkboxes using XPath
-        checkboxes = login.find_elements(By.XPATH, "//input[@type='checkbox' and contains(@id, 'mat-mdc-checkbox')]")
+        checkboxes = login.find_elements(By.XPATH, "//input[@id='SelectItem_ORD_ItemSelection-input']")
 
         # Iterate and select checkboxes within the range
         for i in range(start_index - 1, min(end_index, len(checkboxes))):  # Adjusting for 0-based index
@@ -76,7 +76,7 @@ def test_sales_order_catalog_with_item(login):
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[2]"))
+                (By.XPATH, "//button[@id='btnSubmitItems_ORD_ItemSelection']"))
         ).click()
 
         
@@ -116,14 +116,14 @@ def test_sales_order_catalog(login):
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Catalogs')])[1]"))    
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3]"))    
         ).click()
 
         time.sleep(1)
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-ripple p-element p-button p-component'])[1]"))
+                (By.XPATH, "(//p-button[@id='btnCrtCat_ORD_OrdCat'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -131,12 +131,12 @@ def test_sales_order_catalog(login):
         catalog_name = "Catalog_" + str(uuid.uuid4())[:6]
         print(catalog_name)
         WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Catalog Name'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@id='inputCatName_ORD_CatCrt'])[1]"))
         ).send_keys(catalog_name)
         
         dropdown = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+                    (By.XPATH, "//p-dropdown[@id='selectStore_ORD_CatCrt']"))
         )
         dropdown.click()
         WebDriverWait(login, 10).until(
@@ -146,7 +146,7 @@ def test_sales_order_catalog(login):
     
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
+                (By.XPATH, "//p-dropdown[@id='selectOrdType_ORD_CatCrt']"))
         ).click()
         time.sleep(1)
         WebDriverWait(login, 20).until(
@@ -156,7 +156,7 @@ def test_sales_order_catalog(login):
     
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Save & Next'])[1]"))
+                (By.XPATH, "//button[@id='btnSave_ORD_CatCrt']"))
         ).click()
 
         time.sleep(3)
@@ -201,7 +201,7 @@ def test_sales_order_catalog_update(login):
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[contains(text(),'Catalogs')])[1]"))    
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3]"))    
         ).click()
 
         time.sleep(2)
@@ -212,16 +212,16 @@ def test_sales_order_catalog_update(login):
         wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[@class='p-element mat-mdc-menu-trigger btn fw-bold p-button-light p-button p-component'][normalize-space()='Actions'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnActMenu_ORD_OrdCat'])[1]")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[2]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtCat_ORD_OrdCat'])[1]")
         
         time.sleep(2)
         catalog_rename = "Catalog_Rename" + str(uuid.uuid4())[:6]
         print("Catalog name : ", catalog_rename)
         catalog_name = WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Catalog Name'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//input[@id='inputCatName_ORD_CatCrt'])[1]"))
         )
         catalog_name.clear()
         time.sleep(1)
@@ -230,12 +230,14 @@ def test_sales_order_catalog_update(login):
         time.sleep(2)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Update Catalog'])[1]"))
+                (By.XPATH, "//button[@id='btnSave_ORD_CatCrt']"))
         ).click()
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-times'])[1]")
-    
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
         time.sleep(3)
 
     except Exception as e:
@@ -437,18 +439,18 @@ def test_sales_order_catalog_disable_active_order(login):
         # Step 3: Navigate to order.Catalogs
         time.sleep(3)
         wait.until(EC.presence_of_element_located(
-            (By.XPATH, "(//*[contains(text(),'Catalogs')])[1]"))).click()
+            (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3] "))).click()
         
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH,
-                              "(//*[@aria-haspopup='menu'][normalize-space()='Actions'])[2]")
+                              "(//button[@id='btnActMenu_ORD_OrdCat'])[2]")
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH,
-                              "(//span[@class='mdc-list-item__primary-text'])[1]")
+                              "(//button[@id='btnViewCata_ORD_OrdCat'])[1]")
         
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//span[normalize-space()='Disable'])[1]")
+                              "(//p-button[@id='btnCatSts_ORD_CatDet'])[1]")
         
         msg = get_toast_message(login)
         print("Toast Message : ", msg)

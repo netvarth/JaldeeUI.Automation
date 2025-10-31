@@ -1120,7 +1120,7 @@ def test_walkin_appointment(login):
         time.sleep(3)
         View_Detail_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
             )
         )
         click_to_element(login, View_Detail_button)
@@ -4351,23 +4351,22 @@ def test_walkin_appointment(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_confirmation_label_message_attachment(login):
 
-
     current_date = datetime.now().strftime("%Y-%m-%d")
     print("Pre-Deployment predeployment_confirmation_label_message_attachment : ",current_date)
     try:
 
         time.sleep(5)
         
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]")
+        wait_and_click(login, By.XPATH, "(//div[@class='p-card p-component'])[5]")
 
         time.sleep(3)
       
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]")
+        wait_and_click(login, By.XPATH, "(//div[@id='actionCreate_BUS_bookList'])[1]")
         
         time.sleep(3)
         print("Create new patient")
        
-        wait_and_click(login, By.XPATH, "//b[normalize-space()='Create New Patient']")
+        wait_and_click(login, By.XPATH, "(//span[@id='btnCreateCust_BUS_appt'])[1]")
         
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -4382,21 +4381,20 @@ def test_confirmation_label_message_attachment(login):
 
         time.sleep(5)
 
-        wait_and_click(login, By.CSS_SELECTOR, "p-dropdown[optionlabel='place']")
+        wait_and_click(login, By.XPATH, "(//p-dropdown[@id='selctLoc_BUS_apptForm'])[1]")
         wait_and_visible_click (login, By.XPATH, "(//li[@id='p-highlighted-option'])[1]")
         
         print("location : Chavakkad")
         login.implicitly_wait(5)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectDept_BUS_apptForm'])[1]")
 
         login.implicitly_wait(5)
         wait_and_visible_click(login, By.XPATH, "(//li[@aria-label='ENT'])[1]")
     
         print("Department : ENT")
         user_dropdown_xpath = (
-            "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-            "ng-dirty'])[1]"
+            "(//p-dropdown[@id='selectUser_BUS_apptForm'])[1]"
         )
 
         wait_and_click(login, By.XPATH, user_dropdown_xpath)
@@ -4406,7 +4404,7 @@ def test_confirmation_label_message_attachment(login):
         print("Select user : Naveen")
 
         time.sleep(3)
-        service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+        service_dropdown_xpath = "(//p-dropdown[@id='selectService_BUS_apptForm'])[1]"
         element= login.find_element(By.XPATH, service_dropdown_xpath)
         scroll_to_element(login, element)
         # login.execute_script("arguments[0].scrollIntoView();", element)
@@ -4440,7 +4438,7 @@ def test_confirmation_label_message_attachment(login):
         )
         click_to_element(login, time_slot)
 
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Confirm']")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnConfirm_BUS_apptForm'])[1]")
         time.sleep(4)
         
         # WebDriverWait(login, 15).until(
@@ -4482,14 +4480,14 @@ def test_confirmation_label_message_attachment(login):
         
         
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/div[1]/span[1]/span[1]/img[1]")
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
         
         time.sleep(2)
         element =wait.until(
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                    "(//div[@id='actionCreate_BUS_bookList'])[1]",
                 )
             )
         )
@@ -4501,21 +4499,20 @@ def test_confirmation_label_message_attachment(login):
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 2']")
         
         time.sleep(2)
-        wait_and_locate_click(login, By.CSS_SELECTOR, "p-dropdown[optionlabel='place']")
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selctLoc_BUS_apptForm'])[1]")
         
         login.find_element(By.XPATH, "(//li[@id='p-highlighted-option'])[1]").click()
         print("location : Chavakkad")
         login.implicitly_wait(5)
 
         login.find_element(
-            By.CSS_SELECTOR, "p-dropdown[optionlabel='departmentName']"
+            By.XPATH, "(//p-dropdown[@id='selectDept_BUS_apptForm'])[1]"
         ).click()
         login.implicitly_wait(5)
         login.find_element(By.XPATH, "(//li[@aria-label='ENT'])[1]").click()
         print("Department : ENT")
         user_dropdown_xpath = (
-            "(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-            "ng-dirty'])[1]"
+            "(//p-dropdown[@id='selectUser_BUS_apptForm'])[1]"
         )
         wait_and_click(login, By.XPATH, user_dropdown_xpath)
         
@@ -4525,7 +4522,7 @@ def test_confirmation_label_message_attachment(login):
         print("Select user : Naveen")
 
         # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        element = login.find_element(By.XPATH, "//p-dropdown[@optionlabel='name']")
+        element = login.find_element(By.XPATH, "(//p-dropdown[@id='selectService_BUS_apptForm'])[1]")
         scroll_to_element(login, element)
         time.sleep(2)
         element.click()
@@ -4560,16 +4557,16 @@ def test_confirmation_label_message_attachment(login):
         time_slot.click()
         print("Time Slot:", time_slot.text)
 
-        wait_and_locate_click(login, By.XPATH, "//a[contains(text(),'Notes')]")
+        wait_and_locate_click(login, By.XPATH, "//a[@id='actnAddNote_BUS_notAttch']")
         
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("Note for the walkin appointment")
+        login.find_element(By.XPATH, "(//textarea[@id='tctareaMsg_BUS_addNote'])[1]").send_keys("Note for the walkin appointment")
 
-        wait_and_visible_click(login, By.XPATH, "//span[normalize-space()='Save']")
+        wait_and_visible_click(login, By.XPATH, "(//button[@id='btnSave_BUS_addNote'])[1]")
          
         print("Note added for walkin appointment")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Upload File']")
+        wait_and_locate_click(login, By.XPATH, "(//a[@id='actnImg_BUS_notAttch'])[1]")
 
         time.sleep(4)
        # Get the current working directory
@@ -4586,7 +4583,7 @@ def test_confirmation_label_message_attachment(login):
         time.sleep(3)
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "//span[contains(text(),'Confirm')]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnConfirm_BUS_apptForm'])[1]")
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
 
@@ -4622,7 +4619,7 @@ def test_confirmation_label_message_attachment(login):
         time.sleep(3)
         View_Detail_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
             )
         )
         click_to_element(login, View_Detail_button)
@@ -4815,7 +4812,7 @@ def test_confirmation_label_message_attachment(login):
         time.sleep(3)
         more_actions_button = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located(
-                (By.XPATH, "//button[normalize-space()='More Actions']")
+                (By.XPATH, "//button[@id='btnMoreactn_BUS_bookAction']")
             )
         )
         click_to_element(login, more_actions_button)
@@ -4828,15 +4825,15 @@ def test_confirmation_label_message_attachment(login):
         time.sleep(3)
         message_button = WebDriverWait(login, 15).until(
         EC.presence_of_element_located(
-        (By.XPATH, "//button[normalize-space()='Send Message']"))
+        (By.XPATH, "//button[@id='btnSendMsg_BUS_bookAction']"))
         )
         click_to_element(login, message_button)
 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "//textarea[@id='messageData']", "Send Message to the Patient")
+        wait_and_send_keys(login, By.XPATH, "(//textarea[@id='messageData'])[1]", "Send Message to the Patient")
 
         time.sleep(3)
-        wait_and_click(login, By.XPATH, "//label[normalize-space()='Click here to select the files']")
+        wait_and_click(login, By.XPATH, "(//label[normalize-space()='Click here to select the files'])[1]")
         
         time.sleep(3)
         # Get the current working directory
@@ -4857,10 +4854,10 @@ def test_confirmation_label_message_attachment(login):
 
         # ******************* Send Attachment ************************
         time.sleep(5)
-        wait_and_visible_click(login, By.XPATH, "//button[normalize-space()='Send Attachments']")
+        wait_and_visible_click(login, By.XPATH, "//button[@id='btnSendAttch_BUS_bookAction']")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "//label[normalize-space()='Click here to select the files']")
+        wait_and_click(login, By.XPATH, "(//label[normalize-space()='Click here to select the files'])[1]")
 
         time.sleep(3)
         # Get the current working directory
@@ -4902,7 +4899,7 @@ def test_prescription_rxpush_predeployment(login):
         wait = WebDriverWait(login, 30)
         time.sleep(3)
 
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]")
+        wait_and_click(login, By.XPATH, "(//div[@class='p-card p-component'])[5]")
 
         time.sleep(3)
         while True:
@@ -4935,7 +4932,7 @@ def test_prescription_rxpush_predeployment(login):
         time.sleep(3)
         View_Detail_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
             )
         )
         click_to_element(login, View_Detail_button)
@@ -5005,13 +5002,9 @@ def test_prescription_rxpush_predeployment(login):
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
         
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        msg = get_toast_message(login)
+        print("Toast Message :", msg )
 
-        # print("prescription created successfully")
         time.sleep(2)
 
         login.find_element(By.XPATH, "//img[@alt='share']").click()
@@ -5026,21 +5019,14 @@ def test_prescription_rxpush_predeployment(login):
         ).click()
         login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
         login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
-        # login.find_element(
-        #     By.XPATH, "//textarea[@placeholder='Enter message description']"
-        # ).send_keys("Prescription Message to Patient")
-
-        # toast_message = WebDriverWait(login, 10).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        # )
-        # message = toast_message.text
-        # print("Toast Message:", message)
-
-        print("Prescription Shared Successfully")
+        
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
 
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+
 
         time.sleep(2)
         setting_element = wait.until(
@@ -5092,7 +5078,7 @@ def test_prescription_rxpush_predeployment(login):
         time.sleep(3)
         View_Detail_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
             )
         )
         click_to_element(login, View_Detail_button)
@@ -5241,7 +5227,7 @@ def test_prescription_rxpush_predeployment(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-pristine ng-valid']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
+                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
         ).click()
 
         stores = wait.until(
@@ -5256,7 +5242,7 @@ def test_prescription_rxpush_predeployment(login):
         
         RX_request_element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Rx Requests']"))
+                (By.XPATH, "//button[@id='btnRXReq_ORD_Dashbrd']"))
         )
 
         scroll_to_element(login, RX_request_element) 
@@ -5298,8 +5284,8 @@ def test_prescription_rxpush_predeployment(login):
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='RX Push  On'])[1]")
 
-        get_snack_bar_message(login)
-        print("Snack bar message:", get_snack_bar_message(login))
+        msg = get_snack_bar_message(login)
+        print("Snack bar message:", msg)
 
         time.sleep(5)
 
@@ -5354,7 +5340,7 @@ def test_case_creation_treatplan_prescription_predeployment(login):
         time.sleep(3)
         View_Detail_button = WebDriverWait(login, 30).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
             )
         )
         click_to_element(login, View_Detail_button)
@@ -5439,14 +5425,6 @@ def test_case_creation_treatplan_prescription_predeployment(login):
         time.sleep(1)
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].click();", element)
-        
-
-        # time.sleep(2)
-        # toast_message = WebDriverWait(login, 10).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        # )
-        # message = toast_message.text
-        # print("Toast Message:", message)
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
@@ -5477,11 +5455,8 @@ def test_case_creation_treatplan_prescription_predeployment(login):
 
         # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -5661,11 +5636,8 @@ def test_case_creation_treatplan_prescription_predeployment(login):
         login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
         time.sleep(2)
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
         
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -5714,11 +5686,8 @@ def test_case_creation_treatplan_prescription_predeployment(login):
             )
         ).click()
 
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
 
 
     except Exception as e:

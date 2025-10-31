@@ -26,17 +26,17 @@ def test_create_delivery_profile(login):
                               "(//img)[2]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, 
-                              "(//*[contains(text(),'Delivery Profile')])[1]")
+        wait_and_locate_click(login, By.XPATH,  
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[8]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//*[normalize-space()='Delivery Profile'])[3]")
+                              "(//p-button[@id='btnCretDprofile_ORD_DProfille'])[1]")
         
         delivery_profile = "Delivery_Profile" + str(uuid.uuid4())[:6]
         time.sleep(1)
         wait_and_send_keys(login, By.XPATH, 
-                              "(//*[@placeholder='Delivery Profile 1'])[1]", delivery_profile)
+                              "(//input[@id='inputDPName_ORD_CreateDP'])[1]", delivery_profile)
         
 
         minimum_amount = WebDriverWait(login, 20).until(
@@ -66,7 +66,7 @@ def test_create_delivery_profile(login):
 
         
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='+ Add Price Range'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnAdPrice_ORD_CreateDP']")
 
 
         minimum_amount = WebDriverWait(login, 20).until(
@@ -95,14 +95,13 @@ def test_create_delivery_profile(login):
         wait_and_send_keys(login, By.XPATH, "(//input[@type='number'])[6]", "15")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//*[normalize-space()='Create'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnCreate_ORD_CreateDP']")
 
         msg = get_snack_bar_message(login)
         print("Toast Message :",msg)
 
         time.sleep(3)
 
-    
 
     except Exception as e:
         allure.attach(  
@@ -123,14 +122,14 @@ def test_create_delivery_profile_with_empty_fields(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//*[contains(text(),'Delivery Profile')])[1]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[8]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//*[normalize-space()='Delivery Profile'])[3]")
+                              "(//p-button[@id='btnCretDprofile_ORD_DProfille'])[1]")
         
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//*[normalize-space()='Create'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnCreate_ORD_CreateDP']")
 
         msg = get_snack_bar_message(login)
         print("Snack bar Message :", msg)
@@ -155,19 +154,19 @@ def test_create_delivery_profile_with_empty_price_range(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//*[contains(text(),'Delivery Profile')])[1]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[8]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//*[normalize-space()='Delivery Profile'])[3]")
+                              "(//p-button[@id='btnCretDprofile_ORD_DProfille'])[1]")
         
         delivery_profile = "Delivery_Profile" + str(uuid.uuid4())[:6]
         time.sleep(1)
         wait_and_send_keys(login, By.XPATH, 
-                              "(//*[@placeholder='Delivery Profile 1'])[1]", delivery_profile)
+                              "(//input[@id='inputDPName_ORD_CreateDP'])[1]", delivery_profile)
         
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//*[normalize-space()='Create'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnCreate_ORD_CreateDP']")
 
         msg = get_snack_bar_message(login, timeout=5)
         print("Snack bar Message :", msg)

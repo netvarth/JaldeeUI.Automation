@@ -20,12 +20,12 @@ def test_item_creation_sale_order(login):
         time.sleep(3)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//*[normalize-space()='Items']"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[5]"))
         ).click()           
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Create']"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@id='btnCrtItem_ORD_Items'])[1]"))
         ).click()
 
         item_name = "Item_" + str(uuid.uuid4())[:4]
@@ -39,7 +39,7 @@ def test_item_creation_sale_order(login):
         ).send_keys("A Item name is required and recommended to be unique.")
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Category']"))
+            EC.presence_of_element_located((By.XPATH, "(//p-dropdown[@id='ddCategory_ORD_INV_ItemCreate'])[1]"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -47,7 +47,7 @@ def test_item_creation_sale_order(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(text(),'Select Group')]"))
+            EC.presence_of_element_located((By.XPATH, "(//p-multiselect[@id='msGroup_ORD_INV_ItemCreate'])[1]"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -55,7 +55,7 @@ def test_item_creation_sale_order(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Type']"))
+            EC.presence_of_element_located((By.XPATH, "(//p-dropdown[@id='ddType_ORD_INV_ItemCreate'])[1]"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -64,7 +64,7 @@ def test_item_creation_sale_order(login):
 
         login.implicitly_wait(5)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Manufacturer']"))
+            EC.presence_of_element_located((By.XPATH, "(//p-dropdown[@id='ddManufacturer_ORD_INV_ItemCreate'])[1]"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -73,7 +73,7 @@ def test_item_creation_sale_order(login):
 
         dropdown = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//*[contains(text(),'Select Unit')]"))
+                    (By.XPATH, "(//p-multiselect[@id='msUnits_ORD_INV_ItemCreate'])[1]"))
         )
         dropdown.click()
 
@@ -97,7 +97,7 @@ def test_item_creation_sale_order(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select HSN Code']"))
+            EC.presence_of_element_located((By.XPATH, "(//p-dropdown[@id='ddHSN_ORD_INV_ItemCreate'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -118,7 +118,7 @@ def test_item_creation_sale_order(login):
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(text(),'Select Item Tax')]"))
+            EC.presence_of_element_located((By.XPATH, "(//p-multiselect[@id='msTaxes_ORD_INV_ItemCreate'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -130,13 +130,13 @@ def test_item_creation_sale_order(login):
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element fw-bold create-button p-button p-component'])[1]"))
+                (By.XPATH, "(//button[@id='btnAddOption_ORD_ItemOpt'])[1]"))
         ).click()
         
         time.sleep(2)
         option_name = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//*[@placeholder='Enter Option Name']"))
+                (By.XPATH, "(//input[@id='inputOptName_ORD_ItemOpt'])[1]"))
         )  
         login.execute_script("arguments[0].click();", option_name)
         time.sleep(3)
@@ -145,7 +145,7 @@ def test_item_creation_sale_order(login):
         time.sleep(2)
         enter_name = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//*[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "(//input[@id='inputOptVal_ORD_ItemOpt'])[1]"))
         )
         enter_name.send_keys("Bule")
         enter_name.send_keys(Keys.RETURN)
@@ -161,21 +161,18 @@ def test_item_creation_sale_order(login):
         time.sleep(2)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//*[normalize-space()='Done']"))
+                (By.XPATH, "//button[@id='btnAddItem_ORD_ItemOpt']"))
         ).click()
 
 
         scroll_to_window(login)
         time.sleep(1)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create Item']"))
+            EC.presence_of_element_located((By.XPATH, "(//button[@id='btnSubmit_ORD_INV_ItemCreate'])[1]"))
         ).click()
 
-        toast_detail = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_detail.text
-        print("toast_Message:", message)
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
 
         time.sleep(3)
 
@@ -191,12 +188,14 @@ def test_item_creation_sale_order(login):
 @allure.title("Item disable and enabled in sales order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_disable_and_enabled_sales_order(login):
+    time.sleep(5)
     try:
         # ---- Navigate to Items ----
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, "(//img)[2]"))
         ).click()
 
+        time.sleep(2)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, "//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Items']"))
         ).click()
@@ -296,17 +295,17 @@ def test_item_edit_update(login):
 
         time.sleep(2)
         WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Items']"))
+            EC.presence_of_element_located((By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[5]"))
         ).click()
 
         time.sleep(1)
-        wait_and_click(login, By.XPATH, "(//*[normalize-space()='Actions'])[2]")
+        wait_and_click(login, By.XPATH, "(//td[@id='actionViewItm_ORD_ItemList'])[2]")
         
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[2]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtItem_ORD_ItemList'])[1]")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[4]")
+        wait_and_click(login, By.XPATH, "(//p-multiselect[@id='msTaxes_ORD_INV_ItemCreate'])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//*[normalize-space()='GST 5%'])[8]")
@@ -315,7 +314,7 @@ def test_item_edit_update(login):
         wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='GST 18%'])[1]")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//*[normalize-space()='Update Item'])[6]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSubmit_ORD_INV_ItemCreate'])[1]")
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
@@ -338,19 +337,19 @@ def test_item_filter(login):
         time.sleep(3)
         wait = WebDriverWait(login, 20)
         wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[6]"))
+            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))
         ).click()
 
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Items']"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[5]"))
         ).click()  
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-filter-fill'])[1]"))
+                (By.XPATH, "(//i[@id='viewSidebar_ORD_FLTR'])[1]"))
         ).click()
 
         time.sleep(2)
