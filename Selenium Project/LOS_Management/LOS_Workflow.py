@@ -29,7 +29,7 @@ def test_los_workflow(login):
         login.implicitly_wait(10)
         los_menu = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//img)[3]"))
+                (By.XPATH, "(//img)[4]"))
         )
         login.execute_script("arguments[0].click();", los_menu)
 
@@ -1060,10 +1060,10 @@ def test_los_workflow(login):
 
         try:
             # Locate the input field using XPath
-            input_field = login.find_element(By.XPATH, "//input[@id='pac-input']")
+            input_field = login.find_element(By.XPATH, "//input[@id='txtsearchlocation_LMS_googlemap']")
 
             # Input "Thrissur" into the text field
-            input_field.send_keys("Thrissur")
+            input_field.send_keys("thrissur")
             time.sleep(3)
 
             # Wait for the suggestions to appear and select the appropriate one

@@ -434,7 +434,7 @@ def test_account_signup():
     #     )
     # ).click()
 
-    time.sleep(2)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
@@ -1059,7 +1059,7 @@ def test_walkin_appointment(login):
 
         wait_and_locate_click(login, By.XPATH, "//a[contains(text(),'Notes')]")
         
-        wait_and_send_keys(login, XPATH, "//a[@id='actnAddNote_BUS_notAttch']", "Note added for walkin appointment")
+        wait_and_send_keys(login, By.XPATH, "//a[@id='actnAddNote_BUS_notAttch']", "Note added for walkin appointment")
 
         wait_and_visible_click(login, By.XPATH, "//span[normalize-space()='Save']")
          
@@ -5259,7 +5259,7 @@ def test_prescription_rxpush_predeployment(login):
         first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
                                                                     
         # Find the status element within the first row
-        status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
+        status_element = first_row.find_element(By.XPATH, '(.//span[contains(@class, "status-")])[2]')
         status_text = status_element.text
         expected_status = "Pushed"
 
@@ -5807,12 +5807,16 @@ def test_auto_manual_invoice_adhoc_predeployment(login):
         ).click()
         print("Added Sub Service to the Invoice")
         
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
+        time.sleep(3)
+        element = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        ).click()
-        
+        )
+
+        scroll_to_element(login, element)
+
+        element.click()
+
         item_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
@@ -6315,12 +6319,10 @@ def test_reschedule_cancel_predeployment(login):
             )
         ).click()
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Today')]")
-            )
-        ).click()
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectTime_BUS_bookList'])[1]")
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Future']")
@@ -6339,7 +6341,7 @@ def test_reschedule_cancel_predeployment(login):
         last_accordian.click()
 
         # *******************Cancellation **********************
-
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Change Status']")

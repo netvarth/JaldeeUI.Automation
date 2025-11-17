@@ -109,7 +109,7 @@ def test_create_order(login):
                 (By.XPATH, item_xpath))
         ).click()
 
-        qty_xpath = f"(//input[@min='1'])[{i + 1}]"
+        qty_xpath = f"//input[@id='inputQty_ORD_CrtItem'][{i + 1}]"
         qty = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, qty_xpath))

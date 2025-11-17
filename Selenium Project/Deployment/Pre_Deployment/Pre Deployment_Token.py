@@ -159,7 +159,7 @@ def test_walkin_token(login):
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
         ).click()
 
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
+        login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys(
             "Note for the walkin Token"
         )
 
@@ -1195,10 +1195,14 @@ def test_walkin_token(login):
         print("Added Sub Service to the Invoice")
         
         time.sleep(2)
-        WebDriverWait(login, 10).until(
+        element = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        ).click()
+        )
+
+        scroll_to_element(login, element)
+
+        element.click()
         
         item_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -1406,10 +1410,12 @@ def test_walkin_token(login):
         print("Added Sub Service to the Invoice")
         
         time.sleep(2)
-        WebDriverWait(login, 10).until(
+        element = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        ).click()
+        )
+
+        scroll_to_element(login, element)
         
         item_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -1644,10 +1650,10 @@ def test_walkin_token(login):
             )
         ).click()
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Today')]"))
-        ).click()
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@id='selectTime_BUS_bookList']")
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Future']"))
         ).click()

@@ -615,8 +615,8 @@ def test_signup():
             )
         ).click()
 
-        time.sleep(2)
-        wait_and_locate_click(login,By.XPATH, "(//img)[12]")
+        # time.sleep(2)
+        # wait_and_locate_click(login,By.XPATH, "(//img)[12]")
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -1347,7 +1347,9 @@ def test_create_patient(login):
         absolute_path = os.path.abspath(
             os.path.join(current_working_directory, r"Extras\test.png")
         )
+        time.sleep(2)
         pyautogui.write(absolute_path)
+        time.sleep(1)
         pyautogui.press("enter")
 
         time.sleep(2)
@@ -1378,11 +1380,13 @@ def test_create_patient(login):
         # Get the current working directory
         current_working_directory = os.getcwd()
 
+        time.sleep(2)
         # Construct the absolute path
         absolute_path = os.path.abspath(
             os.path.join(current_working_directory, r"Extras\test.png")
         )
         pyautogui.write(absolute_path)
+        time.sleep(1)
         pyautogui.press("enter")
 
         time.sleep(2)
@@ -1956,24 +1960,29 @@ def test_create_patient(login):
                 (By.XPATH, "//button[normalize-space()='Add']"))
         ).click()
         print("Added Sub Service to the Invoice")
-        
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+
+        time.sleep(3)
+        element = login.find_element(By.XPATH, "(//button[normalize-space()='Add Procedure/Item'])[1]")
+        scroll_to_element(login, element)
+        time.sleep(1)
+        element.click()
+
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        ).click()
-        
         item_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
         )
+        time.sleep(2)
         item_button.click()
+        time.sleep(1)
         item_button.send_keys("item1234")
         
         time.sleep(3)
         price = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@id='inputPriceServ_FIN_inv'])[1]"))
+                (By.XPATH, "//input[@placeholder='Price']"))
         )
         price.clear()
         price.click()
@@ -2169,29 +2178,34 @@ def test_create_patient(login):
                 (By.XPATH, "//button[normalize-space()='Add']"))
         ).click()
         print("Added Sub Service to the Invoice")
-        
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+
+        time.sleep(3)
+        element = login.find_element(By.XPATH, "(//button[normalize-space()='Add Procedure/Item'])[1]")
+        scroll_to_element(login, element)
+        time.sleep(1)
+        element.click()
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        ).click()
-        
-        item_button = WebDriverWait(login, 10).until(
+        item_button = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
         )
+        time.sleep(2)
         item_button.click()
+        time.sleep(1)
         item_button.send_keys("item1234")
         
         time.sleep(3)
         price = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@id='mat-input-4'])[2]"))
+                (By.XPATH, "//input[@placeholder='Price']"))
         )
         price.clear()
         price.click()
         price.send_keys("1")
         
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Add']"))
@@ -2381,7 +2395,7 @@ def test_create_patient(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Today')]"))
+            EC.presence_of_element_located((By.XPATH, "(//p-dropdown[@id='selectTime_BUS_bookList'])[1]"))
         ).click()
 
         WebDriverWait(login, 10).until(

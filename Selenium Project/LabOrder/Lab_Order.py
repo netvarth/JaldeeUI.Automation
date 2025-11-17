@@ -777,7 +777,7 @@ def test_lab_order_3(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Lab Order Item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_3(login):
+def test_lab_order_4(login):
 
     time.sleep(5)
     try:
@@ -841,7 +841,7 @@ def test_lab_order_3(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Lab Order Catalog without item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_4(login):
+def test_lab_order_5(login):
     wait = WebDriverWait(login, 20)
     
     try:
@@ -922,7 +922,7 @@ def test_lab_order_4(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Lab Order catalog with item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_5(login):
+def test_lab_order_6(login):
     wait = WebDriverWait(login, 20)
     
     try:
@@ -1025,7 +1025,7 @@ def test_lab_order_5(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Add the price and tax for the item from catalog")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_6(login):
+def test_lab_order_7(login):
     wait = WebDriverWait(login, 20)
     
     try:
@@ -1109,7 +1109,7 @@ def test_lab_order_6(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Lab Order Store")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_7(login):
+def test_lab_order_8(login):
 
     time.sleep(5)
     try:
@@ -1206,7 +1206,7 @@ def test_lab_order_7(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Delivery failed order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_8(login):
+def test_lab_order_9(login):
 
     time.sleep(5)
     try:
@@ -1775,7 +1775,7 @@ def test_lab_order_8(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Agent Reject Order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_9(login):
+def test_lab_order_10(login):
 
     try:  
         time.sleep(5)
@@ -2245,7 +2245,7 @@ def test_lab_order_9(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Agent accept the order and Delivered the order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_10(login):
+def test_lab_order_11(login):
 
     try:  
         time.sleep(5)
@@ -2780,7 +2780,7 @@ def test_lab_order_10(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Agent accept the order and Delivery Failed ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_11(login):
+def test_lab_order_12(login):
 
     try:  
         time.sleep(5)
@@ -3316,7 +3316,7 @@ def test_lab_order_11(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case:  Auto-generate Task on Online Order")
 @pytest.mark.parametrize("url", [Scale_Lab_order_consumer_url])
-def test_lab_order_12(consumer_login):
+def test_lab_order_13(consumer_login):
     try:
         
         time.sleep(3)
@@ -3687,7 +3687,7 @@ def test_lab_order_12(consumer_login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create Lab Order Store without location")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_13(login):
+def test_lab_order_14(login):
 
     time.sleep(5)
     try:
@@ -3775,7 +3775,7 @@ def test_lab_order_13(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Edit Lab Order Store and update")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_14(login):
+def test_lab_order_15(login):
 
     time.sleep(5)
     try:
@@ -3816,7 +3816,7 @@ def test_lab_order_14(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Edit an order by adding one item and removing another")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_15(login):
+def test_lab_order_16(login):
 
     try:
         
@@ -3948,7 +3948,7 @@ def test_lab_order_15(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Edit an order by adding two item and removing one item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_16(login):
+def test_lab_order_17(login):
 
     try:
         
@@ -4080,7 +4080,7 @@ def test_lab_order_16(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Edit an order by adding two item and removing one item update and add another item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_17(login):
+def test_lab_order_18(login):
 
     try:
         
@@ -4236,7 +4236,7 @@ def test_lab_order_17(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Edit an order by adding two item ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, Lab_order_user, password)])
-def test_lab_order_18(login):
+def test_lab_order_19(login):
 
     try:
         

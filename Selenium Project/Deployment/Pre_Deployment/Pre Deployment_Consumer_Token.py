@@ -39,6 +39,9 @@ def test_consumer_side_token(consumer_login):
                 (By.XPATH, "(//button[@id='btnBookNow'])[3]")
             )
         )
+        scroll_to_element(consumer_login, book_now_button)
+
+        time.sleep(2)
         book_now_button.click()
 
         time.sleep(3)
