@@ -749,16 +749,19 @@ def test_stock_adjustment_2(login):
         login.execute_script("arguments[0].scrollIntoView();", element_invcatalog)
         element_invcatalog.click()
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//p-dropdown[@placeholder='Select Remark']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
         ).click()
 
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Adjustment']"))
+                (By.XPATH, "//span[normalize-space()='stock adjustment']"))
         ).click()
-
+        
+        time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Add Items']"))
@@ -792,7 +795,7 @@ def test_stock_adjustment_2(login):
         # Capture the initial stock before adding the quantity
         initial_stock_element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'Item_batchdisable')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+                (By.XPATH, "//tr[td//div[normalize-space(text())='Item_8']]/td[3]//span[normalize-space()]")
             )
         )
         initial_stock = int(initial_stock_element.text.strip())
@@ -821,7 +824,7 @@ def test_stock_adjustment_2(login):
         # Capture the initial stock before adding the quantity
         initial_stock_element_1 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'items')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+                (By.XPATH, "//tr[td//div[normalize-space(text())='Item_6 White']]/td[3]//span[normalize-space()]")
             )
         )
         initial_stock_1 = int(initial_stock_element_1.text.strip())
@@ -977,7 +980,7 @@ def test_stock_adjustment_2(login):
         # Capture the updated stock after clicking "View"
         updated_stock_element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'Item_batchdisable')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+                (By.XPATH, "//tr[td//div[normalize-space(text())='Item_8']]/td[3]//span[normalize-space()]")
             )
         )
         updated_stock = int(updated_stock_element.text.strip())
@@ -1000,7 +1003,7 @@ def test_stock_adjustment_2(login):
         #Capture the updated stock after clicking "View"
         updated_stock_element_1 = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'items')]/ancestor::tr/td[contains(@class, 'fw-bold')]")
+                (By.XPATH, "//tr[td//div[normalize-space(text())='Item_6 White']]/td[3]//span[normalize-space()]")
             )
         )
         updated_stock_1 = int(updated_stock_element_1.text.strip())

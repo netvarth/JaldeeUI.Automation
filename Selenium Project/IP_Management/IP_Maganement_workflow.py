@@ -986,8 +986,7 @@ def test_IP_workflow_Reservations(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
-
-        time.sleep(2)
+        
         time.sleep(2)
 
         today_element = WebDriverWait(login, 10).until(

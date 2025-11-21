@@ -6965,7 +6965,7 @@ def test_IP_Management_21(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Apply discount at item level in the invoice")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_21(login):
+def test_IP_Management_22(login):
 
     try:
 
@@ -7042,9 +7042,15 @@ def test_IP_Management_21(login):
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "//select[@id='slctItemDiscount_IP_Invoice']")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'On Demand Discount')]")
+        
 
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//option[normalize-space()='On Demand Discount'])[2]"))
+            ).click()
+
+        time.sleep(2)
         discount_amount = random.randint(20, 100)
         wait_and_send_keys(login, By.XPATH, "//input[@id='inptItemDiscAmt_IP_Invoice']", discount_amount)
 
@@ -7063,6 +7069,363 @@ def test_IP_Management_21(login):
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Change the Admit Date and Checkout date from Reservation")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_23(login):
+
+    try:
+        driver = login
+        wait = WebDriverWait(driver, 30)
+
+        time.sleep(5)
+        wait_and_locate_click(driver, By.XPATH, "(//img)[4]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[3]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//button[@id='btnActMenu_IP_RG_LI'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Edit']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=3)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+        else:
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=6)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+        else:
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='btnReserveNow_IP_NA_NA']")
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(
+            driver.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Change the Admit Date and Checkout date from Reservation")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_24(login):
+
+    try:
+        driver = login
+        wait = WebDriverWait(driver, 30)
+
+        time.sleep(5)
+        wait_and_locate_click(driver, By.XPATH, "(//img)[4]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//button[@id= 'btnViewIp_IP_IpGrd'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//div[contains(text(),'Medical Record')]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Services']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='btnAddService_IP_VL_VL']")
+        time.sleep(2)
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Search Service']", "Doc")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "(//li[@role='option'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Duration (mins)']", "2")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//div[contains(text(),'Select Doctors')]")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Krishna JP']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Add Service']")
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+        service_type = driver.find_element(
+            By.XPATH,
+            "//tbody/tr[1]/td[3]/span"
+        ).text
+
+        print("Service Type from row 1:", service_type)
+
+        assert service_type.strip() == "Single", f"Expected Single but got {service_type}"
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//i[@class='pi pi-arrow-left']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//div[contains(text(),'Medical Record')]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Services']")
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='btnAddService_IP_VL_VL']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//div[normalize-space()='Recurrent']")
+
+        time.sleep(2)
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Search Service']", "Doc")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//li[@role='option']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=3)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+        else:
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        time.sleep(2)
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Duration (mins)']", "2")
+        
+        # time.sleep(1)
+        # wait_and_send_keys(driver, By.XPATH, "//div[contains(text(),'Select Doctors')]")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Next']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Add Service']")
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(
+            driver.get_screenshot_as_png(),
+            name="full_page",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Change the Admit Date and Checkout date from Reservation")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_25(login):
+
+    try:
+        driver = login
+        wait = WebDriverWait(driver, 30)
+
+        time.sleep(5)
+        wait_and_locate_click(driver, By.XPATH, "(//img)[4]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//div[@id= 'actionNav_IP_DBoard'])[10]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='btnCreate_IP_SE_SE']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//span[@class='font-weight-bold grouping-heading float-left']")
+
+        time.sleep(2)
+        ser_name = "Service" + str(uuid.uuid4())[:4]
+        wait_and_send_keys(driver, By.XPATH, "//input[@id='service_name']", ser_name)
+
+        time.sleep(2)
+        wait_and_send_keys(driver, By.XPATH, "//textarea[@id='description']", "Briefly describe service")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//label[normalize-space()='Rate Type']/following-sibling::mat-select")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Fixed']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//label[normalize-space()='Service Type']/following-sibling::mat-select")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Inpatient']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//label[normalize-space()='Service Category']/following-sibling::mat-select")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Inpatient Services']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATh, "(//div[@class='mdc-switch__ripple'])[5]")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[@class='service-item-add-btn']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "(//input[@id='SelectItem_BUS_ItemSelection-input'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "(//input[@id='SelectItem_BUS_ItemSelection-input'])[2]")
+
+        time.sleep|(1)
+        wait_and_locate_click(driver, By.XPATH, "(//button[@id='btnSubmitItems_BUS_ItemSelection'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Pricing']")
+
+        price_element = str(random.randint(1000, 3000))
+
+        wait_and_send_keys(driver, By.XPATH, "//input[@id='price']", price_element)
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//button[@type='submit']")
+
+        msg = get_snack_bar_message(driver)
+        print("Toast Message:", msg)
+
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(
+            driver.get_screenshot_as_png(),
             name="full_page",
             attachment_type=AttachmentType.PNG,
         )

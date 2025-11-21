@@ -44,7 +44,7 @@ def test_create_order(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//input[@placeholder='Search customers'])[1]"))
+            (By.XPATH, "//input[@placeholder='Select customer']"))
     ).send_keys("5556829244")
 
     WebDriverWait(login, 20).until(

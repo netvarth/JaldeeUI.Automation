@@ -83,7 +83,7 @@ def test_store_creation(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Chavakkad']"))
+            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='West Nada']"))
         ).click()
 
         create_button = WebDriverWait(login, 10).until(
@@ -91,21 +91,9 @@ def test_store_creation(login):
         )
         login.execute_script("arguments[0].click();", create_button)
 
-        try:
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
         time.sleep(3)
 
 
@@ -160,20 +148,8 @@ def test_rename_store(login):
         )
         login.execute_script("arguments[0].click();", update_button)
 
-        # Validate snackbar message
-        try:
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("✅ Snackbar (success):", message)
-
-        except:
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("❌ Snackbar (error):", message)
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
 
         time.sleep(3)
 

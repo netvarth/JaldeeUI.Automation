@@ -206,7 +206,7 @@ def test_item_disable_and_enabled(login):
 
         # ---- Row 1 locators ----
         row1_xpath = "//table[@role='table']//tbody/tr[1]"
-        status_cell_xpath = "//table[@role='table']//tbody/tr[1]/td[8]//span[contains(@class,'status-')]"
+        status_cell_xpath = "//table[@role='table']//tbody/tr[1]//span[contains(@class,'status-')]"
         actions_btn_xpath = "(//table[@role='table']//tbody/tr[1]//button[@aria-haspopup='menu' and normalize-space()='Actions'])[1]"
         overlay_xpath = "//div[contains(@class,'cdk-overlay-pane')]"
 
@@ -234,7 +234,7 @@ def test_item_disable_and_enabled(login):
 
         # Toast + wait for status text to become "Disable"
         message = get_toast_message(login)
-        print("Toast (Disable):", message)
+        print("Toast Message :", message)
 
         WebDriverWait(login, 15).until(
             EC.text_to_be_present_in_element((By.XPATH, status_cell_xpath), "Disable")

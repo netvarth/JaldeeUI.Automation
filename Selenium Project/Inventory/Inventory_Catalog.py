@@ -51,7 +51,7 @@ def test_inventory_catalog(login):
         time.sleep(5)
 
         checkboxes = WebDriverWait(login, 10).until(
-            EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@id, 'mat-mdc-checkbox')]"))
+            EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@type, 'checkbox')]"))
         )
 
         # Click the first three checkboxes

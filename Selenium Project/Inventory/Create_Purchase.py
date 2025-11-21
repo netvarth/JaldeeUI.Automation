@@ -378,7 +378,7 @@ def test_create_purchase(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//img[@src='./assets/images/finance/uil.svg']"))
+                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
         ).click()
 
         time.sleep(3)

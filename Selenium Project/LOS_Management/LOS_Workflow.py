@@ -2962,3 +2962,22 @@ def test_marketing_activity(login):
         raise e
         
         
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Branch Tranfer fron Lead")
+@pytest.mark.parametrize("url, username, password", [(scale_url, credit_head, password)])
+def test_(login):
+
+    try:
+
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(# use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e

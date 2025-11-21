@@ -54,7 +54,7 @@ def test_stock_transfer(login):
             (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]"))
     ).click()
 
-    element_scroll_1 = login.find_element(By.XPATH, "(//span[normalize-space()='B&B Store_1'])[1]")
+    element_scroll_1 = login.find_element(By.XPATH, "//span[normalize-space()='B&B Store 2']")
     login.execute_script("arguments[0].scrollIntoView();", element_scroll_1)
     element_scroll_1.click()
 

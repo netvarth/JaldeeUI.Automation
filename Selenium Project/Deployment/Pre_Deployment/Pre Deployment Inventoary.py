@@ -85,10 +85,8 @@ def test_Inventory_work_flow(login):
         else:
             print("No options found in the dropdown.")
 
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='ddHSN_ORD_INV_ItemCreate']")
 
-        time.sleep(1)
+        time.sleep(2)
         dropdown = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//p-dropdown[@id='ddHSN_ORD_INV_ItemCreate']"))
@@ -96,7 +94,7 @@ def test_Inventory_work_flow(login):
         dropdown.click()
 
         time.sleep(2)
-        options = dropdown.find_elements(By.XPATH, "//div[@class='p-dropdown-panel p-component ng-star-inserted']")
+        options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
 
         # Select a random option
         if options:
@@ -105,7 +103,86 @@ def test_Inventory_work_flow(login):
         else:
             print("No options found in the dropdown.")
 
-            time.sleep(2)
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='ddBatchApplicable_ORD_INV_ItemCreate']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Yes']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']")
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg )
+
+        time.sleep(3)
+
+        wait_and_locate_click(driver, By.XPATH, "//div[@id='actionBack__ORD_Items']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='B&B Stores']")
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Create Store']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@placeholder='Type']")
+
+        time.sleep(1)
+        dropdown = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//p-dropdown[@placeholder='Type']"))
+        )
+        dropdown.click()
+
+        time.sleep(2)
+        options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
+
+        # Select a random option
+        if options:
+            random_option = random.choice(options)
+            random_option.click()
+        else:
+            print("No options found in the dropdown.")
+
+
+        store_name = "Store_" + str(uuid.uuid4())[:6]
+        time.sleep(2)
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Name']", store_name)
+
+        email = f"{store_name}{test_mail}"
+        random_number = str(random.randint(1111111, 9999999))
+        phonenumber = f"{555}{random_number}"
+        time.sleep(2)
+        wait_and_send_keys(driver, By.XPATH, "//input[@id='phone']", phonenumber)
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//input[@id='email']", email)
+
+        invoice_prefix = "KT_" + str(uuid.uuid4())[:6]
+        print(invoice_prefix)
+
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Invoice prefix']", invoice_prefix)
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@placeholder='Location']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='West Nada']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Create']")
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+
+        time.sleep(3)
+        
 
     except Exception as e:
             allure.attach(  # use Allure package, .attach() method, pass 3 params

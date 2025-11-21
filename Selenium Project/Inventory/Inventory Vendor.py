@@ -44,7 +44,7 @@ def test_vendor_creation(login):
         vendor_id = "ven_id"+ str(uuid.uuid4())[:8]
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='vendorID']"))
+                (By.XPATH, "(//input[@id='inputId_FIN_VendorDet'])[1]"))
         ).send_keys(vendor_id)
 
         print("Vendor_ID : ", vendor_id)
@@ -53,7 +53,7 @@ def test_vendor_creation(login):
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='ownerName']"))
+                (By.XPATH, "(//input[@id='ownerName'])[1]"))
         ).send_keys(first_name)
         time.sleep(2)
         WebDriverWait(login, 10).until(
@@ -63,13 +63,13 @@ def test_vendor_creation(login):
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='email']"))
+                (By.XPATH, "//input[@id='inputEmail_FIN_VendorDet']"))
         ).send_keys(email)
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='mdc-button__label'])[1]"))
+                (By.XPATH, "//button[@id='btnSave_FIN_VendorDet']"))
         ).click()
 
         try:
