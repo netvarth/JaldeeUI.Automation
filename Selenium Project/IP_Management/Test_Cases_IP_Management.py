@@ -7430,3 +7430,104 @@ def test_IP_Management_25(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("IP Management - Room Creation")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_26(login):
+
+    wait = WebDriverWait(login, 30)
+    time.sleep(3)
+    try:
+
+        with allure.step("Navigate to IP Dashboard"):
+            wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+            wait_and_locate_click(
+                login,
+                By.XPATH,
+                "(//div[@id='actionNav_IP_DBoard'])[6]"
+            )
+
+        with allure.step("Open Room Creation Dialog"):
+            wait_and_locate_click(login, By.ID, "btnCreate_IP_RO_RO")
+
+        with allure.step("Select Building as Block B"):
+            wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='building']")
+            wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Block B'])[1]")
+
+        with allure.step("Select Floor as Second Floor B"):
+            wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='floor']")
+            wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Second Floor B'])[1]")
+
+        with allure.step("Select Room Type → Normal Room"):
+            wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='roomType']")
+            room_type = wait.until(EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Normal Room'])[1]")))
+            login.execute_script("arguments[0].scrollIntoView();", room_type)
+            room_type.click()
+
+        with allure.step("Select Room Category → Private Room"):
+            wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='roomCategory']")
+            wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Private Room'])[1]")
+
+        with allure.step("Enter Room Name"):
+            room_name = get_next_room_name()
+            wait.until(EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Room Name'])[1]")
+            )).send_keys(room_name)
+            print(f"🏨 Room created: {room_name}")
+
+        with allure.step("Select Room Nature → Room"):
+            wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='roomNature']")
+            wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Room'])[1]")
+
+        with allure.step("Click Create"):
+            wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Create'])[1]")
+
+        with allure.step("Verify Toast Message"):
+            msg = get_toast_message(login)
+            print("Toast Message:", msg)
+
+        with allure.step("Verify Newly Created Room Appears in Table"):
+            wait.until(EC.presence_of_element_located((By.XPATH, "//tbody//tr[1]")))
+
+            found = False
+            for _ in range(5):
+                first_row_text = login.find_element(By.XPATH, "//tbody//tr[1]").text.strip()
+                if room_name in first_row_text:
+                    print(f"✅ Room '{room_name}' found in the first row.")
+                    found = True
+                    break
+                time.sleep(1)
+
+            assert found, f"❌ Room '{room_name}' not found after retries"
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="Failure Screenshot",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: ")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
+def test_IP_Management_27(login):
+
+    try:
+        driver = login
+        wait = WebDriverWait(driver, 30)
+
+        time.sleep(3)
+        wait_and_locate_click(driver, By.XPATH, "")
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="Failure Screenshot",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e

@@ -109,9 +109,7 @@ def test_los_workflow(login):
         time.sleep(2)
         # Select Year
         year_xpath = f"//span[normalize-space()='{year}']"
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, year_xpath))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, year_xpath)
 
         time.sleep(2)
         # Select Month
