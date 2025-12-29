@@ -76,7 +76,7 @@ def test_IP_workflow_New_IP_Patient(login):
         
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Room Details'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[contains(@class, 'btnView_IP_RmGrd')])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[@id='btnCreateBed_IP_RmDet']")
@@ -448,63 +448,103 @@ def test_IP_workflow_New_IP_Patient(login):
 
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//div[normalize-space()='Prescription'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'btnSelectSection_IP_VL_VL')][10]")
 
         time.sleep(2)
-        for i in range(5):
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Krishna JP']")
+        time.sleep(2)
+
+        for i in range(4):
+
+            # Add medicine
             login.find_element(
                 By.XPATH, "//button[normalize-space()='+ Add Medicine']"
             ).click()
-            login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
-                "Medicine"
+
+            # search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            # search_box.clear()
+            # search_box.send_keys("Medicine")
+
+            search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            search_box.clear()
+            search_box.send_keys("Item")
+
+            items = wait.until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH, "//div[contains(@class,'p-autocomplete-panel')]//li[@role='option']")
+                )
             )
 
-            # Scope to the prescription modal dialog
-            
-            before_XPath = "//mat-dialog-container[@role='dialog' and contains(@class, 'mat-mdc-dialog-container')]//table[contains(@class, 'p-datatable-table')]//tbody/tr"
-            aftertd_XPath_1 = "/td[2]"
-            aftertd_XPath_2 = "/td[3]"
-            aftertd_XPath_3 = "/td[4]"
-            aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "//input[@role='searchbox']"
+            items[i].click()
+            time.sleep(1)
+
+            # Row index (1-based)
             row = i + 1
-            if i > 0:
-                trXPath = before_XPath + str([row])
-            else:
-                trXPath = before_XPath
 
-            PreFinalXPath = trXPath + aftertd_XPath_1
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # Scope row inside prescription dialog
+            row_xpath = (
+                "//mat-dialog-container[@role='dialog' and contains(@class,'mat-mdc-dialog-container')]"
+                "//tbody/tr[" + str(row) + "]"
+            )
 
-            Dose = login.find_element(By.XPATH, PreFinalXPath)
-            Dose.click()
-            Dose1 = login.find_element(By.XPATH, FinalXPath)
-            Dose1.send_keys("650 mg")
 
-            PreFinalXPath = trXPath + aftertd_XPath_2
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # ---------------- DOSE ----------------
+            dose_input = login.find_element(
+                By.XPATH,
+                row_xpath + "//td[contains(@class,'medicine-name')]/following-sibling::td//input[@type='text']"
+            )
+            dose_input.clear()
+            dose_input.send_keys("650 mg")
 
-            Frequency = login.find_element(By.XPATH, PreFinalXPath)
-            Frequency.click()
-            Frequency1 = login.find_element(By.XPATH, FinalXPath)
-            Frequency1.send_keys("1-1-1")
+            # ---------------- FREQUENCY (p-dropdown) ----------------
+            freq_dropdown = login.find_element(
+                By.XPATH,
+                row_xpath + "//p-dropdown//div[contains(@class,'p-dropdown-trigger')]"
+            )
+            freq_dropdown.click()
 
-            PreFinalXPath = trXPath + aftertd_XPath_3
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Duration = login.find_element(By.XPATH, PreFinalXPath)
-            Duration.click()
-            Duration1 = login.find_element(By.XPATH, FinalXPath)
-            Duration1.send_keys("5 Days")
+            time.sleep(2)
+            # Select value from overlay (appendTo=body)
+            element = login.find_element(By.XPATH, "//li[@role='option']//span[normalize-space()='TID (1-1-1)']")
+            scroll_to_element(login, element)
 
-            PreFinalXPath = trXPath + aftertd_XPath_4
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Notes = login.find_element(By.XPATH, PreFinalXPath)
-            Notes.click()
-            Notes1 = login.find_element(By.XPATH, FinalXPath)
-            Notes1.send_keys("After Food")
+            element .click()
+            # wait_and_locate_click(
+            #     login,
+            #     By.XPATH,
+            #     "//li[@role='option']//span[normalize-space()='TID (1-1-1)']"
+            # )
+            time.sleep(2)
+            # ---------------- DURATION ----------------
+            duration_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@type='number']"
+            )[0]
+            duration_input.clear()
+            time.sleep(2)
+            duration_input.send_keys("5")
 
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save'])[1]")
+            
+            # ---------------- NOTES ----------------
+
+            login.find_element(
+                By.XPATH,
+                row_xpath + "//td[7]"
+            ).click()
+            
+            notes_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@role='searchbox']"
+            )[0]
+
+            notes_input.clear()
+            notes_input.send_keys("After Food")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Create Prescription']")
+
         
         time.sleep(3)
         share_button = wait.until(
@@ -575,6 +615,8 @@ def test_IP_workflow_New_IP_Patient(login):
         bed_name = random_bed.find_element(By.XPATH, ".//span[contains(@class, 'bed-title')]").text
         print(f"Selected Bed: {bed_name}")
 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//label[normalize-space()='Yes']")
         # time.sleep(2)
         # wait.until(
         #     EC.presence_of_element_located(
@@ -602,7 +644,7 @@ def test_IP_workflow_New_IP_Patient(login):
         wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Select Bed'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[contains(@class,'btnSelectBed_IP_BedTfr')]")
 
         # time.sleep(2)
         # wait.until(
@@ -615,8 +657,8 @@ def test_IP_workflow_New_IP_Patient(login):
         # today_date.click()
         # print("Clicked today's date:", today_date.text)
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='No'])[1]")
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='No'])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save & Transfer'])[1]")
@@ -850,7 +892,7 @@ def test_IP_workflow_Reservations(login):
         
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Room Details'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[contains(@class, 'btnView_IP_RmGrd')])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[@id='btnCreateBed_IP_RmDet']")
@@ -1246,64 +1288,103 @@ def test_IP_workflow_Reservations(login):
         message = toast_message.text
         print("Toast Message:", message)
 
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//div[normalize-space()='Prescription'])[1]")
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'btnSelectSection_IP_VL_VL')][10]")
 
         time.sleep(2)
-        for i in range(5):
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Krishna JP']")
+        time.sleep(2)
+
+        for i in range(4):
+
+            # Add medicine
             login.find_element(
                 By.XPATH, "//button[normalize-space()='+ Add Medicine']"
             ).click()
-            login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
-                "Medicine"
+
+            # search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            # search_box.clear()
+            # search_box.send_keys("Medicine")
+
+            search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            search_box.clear()
+            search_box.send_keys("Item")
+
+            items = wait.until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH, "//div[contains(@class,'p-autocomplete-panel')]//li[@role='option']")
+                )
             )
 
-            # Scope to the prescription modal dialog
-            
-            before_XPath = "//mat-dialog-container[@role='dialog' and contains(@class, 'mat-mdc-dialog-container')]//table[contains(@class, 'p-datatable-table')]//tbody/tr"
-            aftertd_XPath_1 = "/td[2]"
-            aftertd_XPath_2 = "/td[3]"
-            aftertd_XPath_3 = "/td[4]"
-            aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "//input[@role='searchbox']"
+            items[i].click()
+            time.sleep(1)
+
+            # Row index (1-based)
             row = i + 1
-            if i > 0:
-                trXPath = before_XPath + str([row])
-            else:
-                trXPath = before_XPath
 
-            PreFinalXPath = trXPath + aftertd_XPath_1
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # Scope row inside prescription dialog
+            row_xpath = (
+                "//mat-dialog-container[@role='dialog' and contains(@class,'mat-mdc-dialog-container')]"
+                "//tbody/tr[" + str(row) + "]"
+            )
 
-            Dose = login.find_element(By.XPATH, PreFinalXPath)
-            Dose.click()
-            Dose1 = login.find_element(By.XPATH, FinalXPath)
-            Dose1.send_keys("650 mg")
 
-            PreFinalXPath = trXPath + aftertd_XPath_2
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # ---------------- DOSE ----------------
+            dose_input = login.find_element(
+                By.XPATH,
+                row_xpath + "//td[contains(@class,'medicine-name')]/following-sibling::td//input[@type='text']"
+            )
+            dose_input.clear()
+            dose_input.send_keys("650 mg")
 
-            Frequency = login.find_element(By.XPATH, PreFinalXPath)
-            Frequency.click()
-            Frequency1 = login.find_element(By.XPATH, FinalXPath)
-            Frequency1.send_keys("1-1-1")
+            # ---------------- FREQUENCY (p-dropdown) ----------------
+            freq_dropdown = login.find_element(
+                By.XPATH,
+                row_xpath + "//p-dropdown//div[contains(@class,'p-dropdown-trigger')]"
+            )
+            freq_dropdown.click()
 
-            PreFinalXPath = trXPath + aftertd_XPath_3
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Duration = login.find_element(By.XPATH, PreFinalXPath)
-            Duration.click()
-            Duration1 = login.find_element(By.XPATH, FinalXPath)
-            Duration1.send_keys("5 Days")
+            time.sleep(2)
+            # Select value from overlay (appendTo=body)
+            element = login.find_element(By.XPATH, "//li[@role='option']//span[normalize-space()='TID (1-1-1)']")
+            scroll_to_element(login, element)
 
-            PreFinalXPath = trXPath + aftertd_XPath_4
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Notes = login.find_element(By.XPATH, PreFinalXPath)
-            Notes.click()
-            Notes1 = login.find_element(By.XPATH, FinalXPath)
-            Notes1.send_keys("After Food")
+            element .click()
+            # wait_and_locate_click(
+            #     login,
+            #     By.XPATH,
+            #     "//li[@role='option']//span[normalize-space()='TID (1-1-1)']"
+            # )
+            time.sleep(2)
+            # ---------------- DURATION ----------------
+            duration_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@type='number']"
+            )[0]
+            duration_input.clear()
+            time.sleep(2)
+            duration_input.send_keys("5")
+
+            
+            # ---------------- NOTES ----------------
+
+            login.find_element(
+                By.XPATH,
+                row_xpath + "//td[7]"
+            ).click()
+            
+            notes_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@role='searchbox']"
+            )[0]
+
+            notes_input.clear()
+            notes_input.send_keys("After Food")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Create Prescription']")
         
         time.sleep(3)
         share_button = wait.until(
@@ -1379,16 +1460,8 @@ def test_IP_workflow_Reservations(login):
         bed_name = random_bed.find_element(By.XPATH, ".//span[contains(@class, 'bed-title')]").text
         print(f"Selected Bed: {bed_name}")
 
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-        # today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-        # today_date.click()
-        # print("Clicked today's date:", today_date.text)
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//label[normalize-space()='Yes']")
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save & Transfer'])[1]")
@@ -1396,28 +1469,12 @@ def test_IP_workflow_Reservations(login):
         msg = get_toast_message(login)
         print("Toast Message:", msg)    
 
-        # time.sleep(3)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        # ).click()
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]")
 
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Select Bed'])[1]")
-
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-        # today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-        # today_date.click()
-        # print("Clicked today's date:", today_date.text)
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='No'])[1]")
@@ -1655,7 +1712,7 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Room Details'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[contains(@class, 'btnView_IP_RmGrd')])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[@id='btnCreateBed_IP_RmDet']")
@@ -1993,24 +2050,11 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
 
         time.sleep(2)
 
-        # today_element = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-        # # Click on today's date
-        # today_element.click()
-        # print("Clicked today's date:", today_element.text)
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//li[@role='option' and contains(@class,'p-dropdown-item')])[1]")
         time.sleep(1)
-        # # Locate the minute up arrow
-        # minute_up_button = login.find_element(By.XPATH, "//div[contains(@class,'p-minute-picker')]//button[1]")
-
-        # # Click it 10 times
-        # for _ in range(3):
-        #     minute_up_button.click()
-        #     time.sleep(0.5)
-
-        # time.sleep(2)
-        # wait_and_click(login, By.XPATH, "(//input[@placeholder='Duration (mins)']")
+        
 
         time.sleep(2)
         wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Duration (mins)']", "2")
@@ -2080,64 +2124,103 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
 
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//div[normalize-space()='Prescription'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'btnSelectSection_IP_VL_VL')][10]")
 
         time.sleep(2)
-        for i in range(5):
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Krishna JP']")
+        time.sleep(2)
+
+        for i in range(4):
+
+            # Add medicine
             login.find_element(
                 By.XPATH, "//button[normalize-space()='+ Add Medicine']"
             ).click()
-            login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
-                "Medicine"
+
+            # search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            # search_box.clear()
+            # search_box.send_keys("Medicine")
+
+            search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            search_box.clear()
+            search_box.send_keys("Item")
+
+            items = wait.until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH, "//div[contains(@class,'p-autocomplete-panel')]//li[@role='option']")
+                )
             )
 
-            # Scope to the prescription modal dialog
-            
-            before_XPath = "//mat-dialog-container[@role='dialog' and contains(@class, 'mat-mdc-dialog-container')]//table[contains(@class, 'p-datatable-table')]//tbody/tr"
-            aftertd_XPath_1 = "/td[2]"
-            aftertd_XPath_2 = "/td[3]"
-            aftertd_XPath_3 = "/td[4]"
-            aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "//input[@role='searchbox']"
+            items[i].click()
+            time.sleep(1)
+
+            # Row index (1-based)
             row = i + 1
-            if i > 0:
-                trXPath = before_XPath + str([row])
-            else:
-                trXPath = before_XPath
 
-            PreFinalXPath = trXPath + aftertd_XPath_1
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # Scope row inside prescription dialog
+            row_xpath = (
+                "//mat-dialog-container[@role='dialog' and contains(@class,'mat-mdc-dialog-container')]"
+                "//tbody/tr[" + str(row) + "]"
+            )
 
-            Dose = login.find_element(By.XPATH, PreFinalXPath)
-            Dose.click()
-            Dose1 = login.find_element(By.XPATH, FinalXPath)
-            Dose1.send_keys("650 mg")
 
-            PreFinalXPath = trXPath + aftertd_XPath_2
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # ---------------- DOSE ----------------
+            dose_input = login.find_element(
+                By.XPATH,
+                row_xpath + "//td[contains(@class,'medicine-name')]/following-sibling::td//input[@type='text']"
+            )
+            dose_input.clear()
+            dose_input.send_keys("650 mg")
 
-            Frequency = login.find_element(By.XPATH, PreFinalXPath)
-            Frequency.click()
-            Frequency1 = login.find_element(By.XPATH, FinalXPath)
-            Frequency1.send_keys("1-1-1")
+            # ---------------- FREQUENCY (p-dropdown) ----------------
+            freq_dropdown = login.find_element(
+                By.XPATH,
+                row_xpath + "//p-dropdown//div[contains(@class,'p-dropdown-trigger')]"
+            )
+            freq_dropdown.click()
 
-            PreFinalXPath = trXPath + aftertd_XPath_3
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Duration = login.find_element(By.XPATH, PreFinalXPath)
-            Duration.click()
-            Duration1 = login.find_element(By.XPATH, FinalXPath)
-            Duration1.send_keys("5 Days")
+            time.sleep(2)
+            # Select value from overlay (appendTo=body)
+            element = login.find_element(By.XPATH, "//li[@role='option']//span[normalize-space()='TID (1-1-1)']")
+            scroll_to_element(login, element)
 
-            PreFinalXPath = trXPath + aftertd_XPath_4
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Notes = login.find_element(By.XPATH, PreFinalXPath)
-            Notes.click()
-            Notes1 = login.find_element(By.XPATH, FinalXPath)
-            Notes1.send_keys("After Food")
+            element .click()
+            # wait_and_locate_click(
+            #     login,
+            #     By.XPATH,
+            #     "//li[@role='option']//span[normalize-space()='TID (1-1-1)']"
+            # )
+            time.sleep(2)
+            # ---------------- DURATION ----------------
+            duration_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@type='number']"
+            )[0]
+            duration_input.clear()
+            time.sleep(2)
+            duration_input.send_keys("5")
 
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save'])[1]")
-        
+            
+            # ---------------- NOTES ----------------
+
+            login.find_element(
+                By.XPATH,
+                row_xpath + "//td[7]"
+            ).click()
+            
+            notes_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@role='searchbox']"
+            )[0]
+
+            notes_input.clear()
+            notes_input.send_keys("After Food")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Create Prescription']")
+
         time.sleep(3)
         share_button = wait.until(
             EC.presence_of_element_located(
@@ -2207,16 +2290,8 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         bed_name = random_bed.find_element(By.XPATH, ".//span[contains(@class, 'bed-title')]").text
         print(f"Selected Bed: {bed_name}")
 
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-        # today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-        # today_date.click()
-        # print("Clicked today's date:", today_date.text)
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//label[normalize-space()='Yes']")
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_IP_BedTfr']")
@@ -2225,30 +2300,13 @@ def test_IP_workflow_Patient_to_IP_Patient(login):
         print("Toast Message:", msg)    
 
         time.sleep(3)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
+       
         wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]")
 
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Select Bed'])[1]")
 
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-        # today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-        # today_date.click()
-        # print("Clicked today's date:", today_date.text)
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='No'])[1]")
+        
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save & Transfer'])[1]")
@@ -2481,7 +2539,7 @@ def  test_OP_Converted_to_IP_Patient(login):
         
         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-button-label'][normalize-space()='Room Details'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[contains(@class, 'btnView_IP_RmGrd')])[1]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//button[@id='btnCreateBed_IP_RmDet']")
@@ -2960,65 +3018,105 @@ def  test_OP_Converted_to_IP_Patient(login):
         msg = get_toast_message(login)
         print("Toast Message:", msg)
 
-
+        
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//div[normalize-space()='Prescription'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'btnSelectSection_IP_VL_VL')][10]")
 
         time.sleep(2)
-        for i in range(5):
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Krishna JP']")
+        time.sleep(2)
+
+        for i in range(4):
+
+            # Add medicine
             login.find_element(
                 By.XPATH, "//button[normalize-space()='+ Add Medicine']"
             ).click()
-            login.find_element(By.XPATH, "//input[@role='searchbox']").send_keys(
-                "Medicine"
+
+            # search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            # search_box.clear()
+            # search_box.send_keys("Medicine")
+
+            search_box = login.find_element(By.XPATH, "//input[@role='searchbox']")
+            search_box.clear()
+            search_box.send_keys("Item")
+
+            items = wait.until(
+                EC.presence_of_all_elements_located(
+                    (By.XPATH, "//div[contains(@class,'p-autocomplete-panel')]//li[@role='option']")
+                )
             )
 
-            # Scope to the prescription modal dialog
-            
-            before_XPath = "//mat-dialog-container[@role='dialog' and contains(@class, 'mat-mdc-dialog-container')]//table[contains(@class, 'p-datatable-table')]//tbody/tr"
-            aftertd_XPath_1 = "/td[2]"
-            aftertd_XPath_2 = "/td[3]"
-            aftertd_XPath_3 = "/td[4]"
-            aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "//input[@role='searchbox']"
+            items[i].click()
+            time.sleep(1)
+
+            # Row index (1-based)
             row = i + 1
-            if i > 0:
-                trXPath = before_XPath + str([row])
-            else:
-                trXPath = before_XPath
 
-            PreFinalXPath = trXPath + aftertd_XPath_1
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # Scope row inside prescription dialog
+            row_xpath = (
+                "//mat-dialog-container[@role='dialog' and contains(@class,'mat-mdc-dialog-container')]"
+                "//tbody/tr[" + str(row) + "]"
+            )
 
-            Dose = login.find_element(By.XPATH, PreFinalXPath)
-            Dose.click()
-            Dose1 = login.find_element(By.XPATH, FinalXPath)
-            Dose1.send_keys("650 mg")
 
-            PreFinalXPath = trXPath + aftertd_XPath_2
-            FinalXPath = PreFinalXPath + textarea_xpath
+            # ---------------- DOSE ----------------
+            dose_input = login.find_element(
+                By.XPATH,
+                row_xpath + "//td[contains(@class,'medicine-name')]/following-sibling::td//input[@type='text']"
+            )
+            dose_input.clear()
+            dose_input.send_keys("650 mg")
 
-            Frequency = login.find_element(By.XPATH, PreFinalXPath)
-            Frequency.click()
-            Frequency1 = login.find_element(By.XPATH, FinalXPath)
-            Frequency1.send_keys("1-1-1")
+            # ---------------- FREQUENCY (p-dropdown) ----------------
+            freq_dropdown = login.find_element(
+                By.XPATH,
+                row_xpath + "//p-dropdown//div[contains(@class,'p-dropdown-trigger')]"
+            )
+            freq_dropdown.click()
 
-            PreFinalXPath = trXPath + aftertd_XPath_3
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Duration = login.find_element(By.XPATH, PreFinalXPath)
-            Duration.click()
-            Duration1 = login.find_element(By.XPATH, FinalXPath)
-            Duration1.send_keys("5 Days")
+            time.sleep(2)
+            # Select value from overlay (appendTo=body)
+            element = login.find_element(By.XPATH, "//li[@role='option']//span[normalize-space()='TID (1-1-1)']")
+            scroll_to_element(login, element)
 
-            PreFinalXPath = trXPath + aftertd_XPath_4
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Notes = login.find_element(By.XPATH, PreFinalXPath)
-            Notes.click()
-            Notes1 = login.find_element(By.XPATH, FinalXPath)
-            Notes1.send_keys("After Food")
+            element .click()
+            # wait_and_locate_click(
+            #     login,
+            #     By.XPATH,
+            #     "//li[@role='option']//span[normalize-space()='TID (1-1-1)']"
+            # )
+            time.sleep(2)
+            # ---------------- DURATION ----------------
+            duration_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@type='number']"
+            )[0]
+            duration_input.clear()
+            time.sleep(2)
+            duration_input.send_keys("5")
 
-        time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save'])[1]")
+            
+            # ---------------- NOTES ----------------
+
+            login.find_element(
+                By.XPATH,
+                row_xpath + "//td[7]"
+            ).click()
+            
+            notes_input = login.find_elements(
+                By.XPATH,
+                row_xpath + "//input[@role='searchbox']"
+            )[0]
+
+            notes_input.clear()
+            notes_input.send_keys("After Food")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Create Prescription']")
+
         
         time.sleep(3)
         share_button = wait.until(
@@ -3089,16 +3187,8 @@ def  test_OP_Converted_to_IP_Patient(login):
         bed_name = random_bed.find_element(By.XPATH, ".//span[contains(@class, 'bed-title')]").text
         print(f"Selected Bed: {bed_name}")
 
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-        # today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-        # today_date.click()
-        # print("Clicked today's date:", today_date.text)
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//label[normalize-space()='Yes']") 
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_IP_BedTfr']")
@@ -3107,27 +3197,11 @@ def  test_OP_Converted_to_IP_Patient(login):
         print("Toast Message:", msg)    
 
         time.sleep(3)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
+       
         wait_and_locate_click(login, By.XPATH, "(//div[contains(text(),'Transfer Bed')])[1]")
 
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Select Bed'])[1]")
-
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]"))
-        # ).click()
-
-        # time.sleep(2)
-        # today_date = wait.until(EC.element_to_be_clickable((By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")))
-        # today_date.click()
-        # print("Clicked today's date:", today_date.text)
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='No'])[1]")

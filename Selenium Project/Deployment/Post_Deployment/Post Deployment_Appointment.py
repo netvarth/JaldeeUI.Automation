@@ -17,8 +17,8 @@ def test_signup():
                 executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
             )
         )
-        # login.get("https://www.jaldee.com/business/")
-        login.get("https://scale.jaldee.com/business/signup")
+        login.get("https://www.jaldee.com/business/signup")
+        # login.get("https://scale.jaldee.com/business/signup")
         login.maximize_window()
 
         # time.sleep(3)

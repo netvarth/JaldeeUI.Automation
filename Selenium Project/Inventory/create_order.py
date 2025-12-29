@@ -22,42 +22,10 @@ def test_create_order(login):
         EC.presence_of_element_located(
             (By.XPATH, "(//img)[2]"))
     ).click()
+  
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
-    time.sleep(3)
-    WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//p-dropdown[@optionlabel='name']"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//div[contains(text(),'Create Order')]"))
-    ).click()
-
-
-    time.sleep(3)
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Select customer']"))
-    ).send_keys("5556829244")
-
-    WebDriverWait(login, 20).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[normalize-space()='Id : 10'])[1]"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[5]"))
-    ).click()              
-
-    time.sleep(1)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]"))
@@ -66,7 +34,29 @@ def test_create_order(login):
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+            (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
+    ).click()
+
+
+    time.sleep(3)
+    wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Select customer']", "5556829244")
+    
+    time.sleep(2)
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//span[normalize-space()='Id : 10']"))
+    ).click()
+
+    wait_and_locate_click(
+        login, By.XPATH, "//p-dropdown[@id='selectStore_ORD_CrtItemPop']")            
+
+    time.sleep(1)
+    wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")
+
+    time.sleep(2)       
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//p-multiselect[@id='selectCat_ORD_CrtItemPop']"))
     ).click()
 
     time.sleep(2)
@@ -75,13 +65,10 @@ def test_create_order(login):
             (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
     ).click()
 
-    time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "(//button[@class='p-ripple p-element p-multiselect-close p-link p-button-icon-only ng-star-inserted'])[1]")
-
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable(
-            (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+            (By.XPATH, "//button[@id='btnSave_ORD_CrtItemPop']"))
     ).click()
 
 

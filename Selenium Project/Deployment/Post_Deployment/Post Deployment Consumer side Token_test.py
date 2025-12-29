@@ -21,14 +21,16 @@ import os
 def test_consumer_side_token(consumer_login):
     current_date = datetime.now().strftime("%d-%m-%Y")
     print("Pre-Deployment Existing Consumer Token",current_date)
+    
+    time.sleep(5)
     try:
-        time.sleep(5)
         
+        time.sleep(5)
         wait = WebDriverWait(consumer_login, 30)
 
         book_now_button = wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "(//button[normalize-space()='Book Now'])[1]")
+                (By.XPATH, "(//button[@id='btnBookNow'])[1]")
             )
         )
         book_now_button.click()
@@ -36,17 +38,17 @@ def test_consumer_side_token(consumer_login):
         time.sleep(3)
 
 
-        # wait = WebDriverWait(consumer_login, 30)
+        wait = WebDriverWait(consumer_login, 30)
 
-        # location_button = WebDriverWait(consumer_login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (
-        #             By.XPATH,
-        #             "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]",
-        #         )
-        #     )
-        # )
-        # location_button.click()
+        location_button = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[normalize-space()='Kunduvara']",
+                )
+            )
+        )
+        location_button.click()
 
         # # wait = WebDriverWait(consumer_login, 10)
         # depart_button = WebDriverWait(consumer_login, 10).until(
@@ -66,6 +68,7 @@ def test_consumer_side_token(consumer_login):
         #     )
         # ).click()
 
+        time.sleep(2)
         card =  WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(
                 (

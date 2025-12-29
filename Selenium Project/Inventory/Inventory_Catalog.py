@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale , password)])
-@allure.title("Inventoary Catalog Creation")
+@allure.title(" Create Inventoary Catalog")
 def test_inventory_catalog(login):
     try:
         time.sleep(5)
@@ -16,39 +16,30 @@ def test_inventory_catalog(login):
                 (By.XPATH, "(//img)[3]"))
         ).click()
 
-        # time.sleep(3)
-        # wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
-
-        # time.sleep(1)
-        # wait_and_locate_click(login, By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='B&B Stores']")
-
         time.sleep(3)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(text(),'Inv.Catalogs')]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[4]"))
         ).click()
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[@class='p-ripple p-element p-button p-component']"))
+            EC.presence_of_element_located((By.XPATH, "//p-button[@id='btnCreateCat_ORD_Catalog']"))
         ).click()
 
         catalog_name = "Inventory_Catalog_" + str(uuid.uuid4())[:6]
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Catalog Name']"))
+            EC.presence_of_element_located((By.XPATH, "//input[@id='inputCatName_ORD_CatlgCreate']"))
         ).send_keys(catalog_name)
 
-        login.find_element(By.XPATH, "//span[@class='p-dropdown-label p-inputtext p-placeholder ng-star-inserted']").click()
+        login.find_element(By.XPATH, "//p-dropdown[@id='selectStore_ORD_CatlgCreate']").click()
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            login, By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]")
 
-        WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Create Catalog']"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnCrtCat_ORD_CatlgCreate']")
 
-        time.sleep(5)
+        time.sleep(3)
 
         checkboxes = WebDriverWait(login, 10).until(
             EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@type, 'checkbox')]"))
@@ -82,23 +73,16 @@ def test_inventory_catalog(login):
         yes_button.click()
 
         time.sleep(3)
-        toast_detail = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_detail.text
-        print("toast_Message:", message)
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        
+        time.sleep(3)
+        wait_and_locate_click(
+            login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"))
-        ).click()
-
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         time.sleep(2)
         store_dropdown = WebDriverWait(login, 10).until(
@@ -122,36 +106,38 @@ def test_inventory_catalog(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Inventory Catalog - Edit and Verify Updated Name")
 def test_inventory_catalog_name_update(login):
+    
+
     try:
         time.sleep(3)
         # Step 1: Open the Inventory module
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
         ).click()
-
+        
         time.sleep(3)
+
+        # Navigate to Inv.Catalogs
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[4]")
+
         # Select store from dropdown
         wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='B&B Stores']")
-
         time.sleep(3)
-        # Navigate to Inv.Catalogs
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(text(),'Inv.Catalogs')]"))
-        ).click()
+        store = login.find_element(By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='B&B Stores']")
+        scroll_to_element(login, store)
+        store.click()
 
         time.sleep(3)
         # Open Actions menu for the first catalog
-        wait_and_locate_click(login, By.XPATH, "(//*[@aria-haspopup='menu'][normalize-space()='Actions'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnActMenu_ORD_Catalog'])[1]")
         time.sleep(2)
         # Click 'Edit Catalog'
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[2]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnEditCat_ORD_Catalog']")
 
         time.sleep(3)
         # Step 2: Edit the catalog name
         name_field = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Enter Catalog Name'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "//input[@id='inputCatName_ORD_CatlgCreate']"))
         )
         old_name = name_field.get_attribute("value")
         new_name = old_name + "_Edited"
@@ -161,15 +147,18 @@ def test_inventory_catalog_name_update(login):
 
         time.sleep(1)
         # Step 3: Click Update Catalog button
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Update Catalog'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnCrtCat_ORD_CatlgCreate']")
+
+        msg = get_toast_message(login)
+        print("Toast Message: ", msg)
 
         time.sleep(3)
         # Step 4: Click Done button (don't add any items)
-        wait_and_locate_click(login, By.XPATH, "(//button[@class='p-element p-button-primary p-button p-component'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSelect_ORD_ItemSelection']")
 
         time.sleep(3)
         # Step 5: Click Back Arrow to return to Catalog list
-        wait_and_locate_click(login, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//div[@id='actionBack_ORD_CatlgDetls']")
 
         time.sleep(3)
         # Step 6: Assert that the edited name appears in the catalog table
@@ -213,7 +202,7 @@ def test_inventory_catalog_enable_disable(login):
         # Step 3: Navigate to Inv.Catalogs
         time.sleep(3)
         wait.until(EC.presence_of_element_located(
-            (By.XPATH, "//*[contains(text(),'Inv.Catalogs')]"))).click()
+            (By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[4]"))).click()
 
         # Step 4: Capture current state
         time.sleep(3)
@@ -229,10 +218,10 @@ def test_inventory_catalog_enable_disable(login):
         # Step 5: Disable if currently enabled
         if current_state == "true":
             wait_and_locate_click(login, By.XPATH,
-                                  "(//*[@aria-haspopup='menu'][normalize-space()='Actions'])[1]")
+                                  "(//button[@id='btnActMenu_ORD_Catalog'])[1]")
             time.sleep(2)
             wait_and_locate_click(login, By.XPATH,
-                                  "(//span[@class='mdc-list-item__primary-text'])[1]")
+                                  "//button[@id='btnViewCatlg_ORD_Catalog']")
             time.sleep(1)
             wait_and_locate_click(login, By.XPATH, "//*[normalize-space()='Disable']")
             time.sleep(2)
@@ -253,10 +242,10 @@ def test_inventory_catalog_enable_disable(login):
 
         # Step 6: Enable back
         wait_and_locate_click(login, By.XPATH,
-                              "(//*[@aria-haspopup='menu'][normalize-space()='Actions'])[1]")
+                              "(//button[@id='btnActMenu_ORD_Catalog'])[1]")
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH,
-                              "(//span[@class='mdc-list-item__primary-text'])[1]")
+                              "//button[@id='btnViewCatlg_ORD_Catalog']")
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "//*[normalize-space()='Enable']")
         time.sleep(2)
@@ -430,7 +419,7 @@ def test_inventory_catalog_filter(login):
 
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Inventory Catalog - Edit and update the price of the item ")
-def test_inventory_catalog_name_update(login):
+def test_inventory_catalog_name_update_11(login):
 
     wait = WebDriverWait(login, 30)
     try:

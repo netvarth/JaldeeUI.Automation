@@ -13,7 +13,9 @@ from selenium.common.exceptions import TimeoutException
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Creating the item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
-def test_item_creation(login):
+def test_item_creation_1(login):
+
+    wait = WebDriverWait(login, 30)
     try:
         time.sleep(5)
         WebDriverWait(login, 20).until(
@@ -21,14 +23,11 @@ def test_item_creation(login):
         ).click()
 
         time.sleep(3)
-        WebDriverWait(login, 20).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Items']"))
-        ).click()           
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[3]")          
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create']"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnCrtItem_ORD_Items']"))
         ).click()
 
         item_name = "Item_" + str(uuid.uuid4())[:4]
@@ -42,7 +41,7 @@ def test_item_creation(login):
         ).send_keys("A Item name is required and recommended to be unique.")
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Category']"))
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddCategory_ORD_INV_ItemCreate']"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -50,7 +49,7 @@ def test_item_creation(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(text(),'Select Group')]"))
+            EC.presence_of_element_located((By.XPATH, "//p-multiselect[@id='msGroup_ORD_INV_ItemCreate']"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -58,7 +57,7 @@ def test_item_creation(login):
         ).click()
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Type']"))
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddType_ORD_INV_ItemCreate']"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -67,7 +66,7 @@ def test_item_creation(login):
 
         login.implicitly_wait(5)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Manufacturer']"))
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddManufacturer_ORD_INV_ItemCreate']"))
         ).click()
 
         WebDriverWait(login, 10).until(
@@ -76,7 +75,7 @@ def test_item_creation(login):
 
         dropdown = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
-                    (By.XPATH, "//*[contains(text(),'Select Unit')]"))
+                    (By.XPATH, "//p-multiselect[@id='msUnits_ORD_INV_ItemCreate']"))
         )
         dropdown.click()
 
@@ -99,14 +98,164 @@ def test_item_creation(login):
             EC.presence_of_element_located((By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='Yes']"))
         ).click()
 
+        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@id='ddHSN_ORD_INV_ItemCreate']")
+
+        time.sleep(2)
+        options = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option']")
+            )
+        )
+
+        # Pick a random option
+        random_option = random.choice(options)
+
+        # Scroll into view (important for PrimeNG)
+        login.execute_script("arguments[0].scrollIntoView(true);", random_option)
+
+        # Click the option
+        random_option.click()
+
+        # (Optional) Print selected value
+        print("Selected value:", random_option.text)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselect[@id='msTaxes_ORD_INV_ItemCreate']")
+        
+        time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select HSN Code']"))
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='GST 5%']"))
         ).click()
 
         time.sleep(2)
+
+        scroll_to_window(login)
+        time.sleep(1)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//li[@aria-label='7542'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']"))
         ).click()
+
+        msg = get_toast_message(login)
+        print("Toast Message : ", msg)
+
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e 
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Creating the item with item option")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_item_creation_2(login):
+
+    wait = WebDriverWait(login, 30)
+    try:
+        time.sleep(5)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[3]")          
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnCrtItem_ORD_Items']"))
+        ).click()
+
+        item_name = "Item_" + str(uuid.uuid4())[:4]
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@id='inpItemName_ORD_INV_ItemCreate']"))
+        ).send_keys(item_name)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@id='txtaShortDesc_ORD_INV_ItemCreate']"))
+        ).send_keys("A Item name is required and recommended to be unique.")
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddCategory_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Stationary']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-multiselect[@id='msGroup_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Stationary_Item']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddType_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Office_Item']"))
+        ).click()
+
+        login.implicitly_wait(5)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddManufacturer_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='SC.PVT.Limited']"))
+        ).click()
+
+        dropdown = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//p-multiselect[@id='msUnits_ORD_INV_ItemCreate']"))
+        )
+        dropdown.click()
+
+        time.sleep(2)
+        options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
+
+        # Select a random option
+        if options:
+            random_option = random.choice(options)
+            random_option.click()
+        else:
+            print("No options found in the dropdown.")
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[@placeholder='Track Inventory or Not']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='Yes']"))
+        ).click()
+
+        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@id='ddHSN_ORD_INV_ItemCreate']")
+
+        time.sleep(2)
+        options = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option']")
+            )
+        )
+
+        # Pick a random option
+        random_option = random.choice(options)
+
+        # Scroll into view (important for PrimeNG)
+        login.execute_script("arguments[0].scrollIntoView(true);", random_option)
+
+        # Click the option
+        random_option.click()
+
+        # (Optional) Print selected value
+        print("Selected value:", random_option.text)
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
@@ -114,16 +263,11 @@ def test_item_creation(login):
                 (By.XPATH, "//*[@id='ddBatchApplicable_ORD_INV_ItemCreate']"))
         ).click()
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//*[@class='ng-star-inserted'][normalize-space()='Yes'])[1]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//*[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
 
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//*[contains(text(),'Select Item Tax')]"))
-        ).click()
-
+        wait_and_locate_click(login, By.XPATH, "//p-multiselect[@id='msTaxes_ORD_INV_ItemCreate']")
+        
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='GST 5%']"))
@@ -133,13 +277,13 @@ def test_item_creation(login):
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@class='p-element fw-bold create-button p-button p-component'])[1]"))
+                (By.XPATH, "//button[@id='btnAddOption_ORD_ItemOpt']"))
         ).click()
         
         time.sleep(2)
         option_name = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//*[@placeholder='Enter Option Name']"))
+                (By.XPATH, "//input[@id='inputOptName_ORD_ItemOpt']"))
         )  
         login.execute_script("arguments[0].click();", option_name)
         time.sleep(3)
@@ -148,7 +292,7 @@ def test_item_creation(login):
         time.sleep(2)
         enter_name = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//*[@placeholder='Enter Value'])[1]"))
+                (By.XPATH, "//input[@id='inputOptVal_ORD_ItemOpt']"))
         )
         enter_name.send_keys("Bule")
         enter_name.send_keys(Keys.RETURN)
@@ -164,21 +308,164 @@ def test_item_creation(login):
         time.sleep(2)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//*[normalize-space()='Done']"))
+                (By.XPATH, "//button[@id='btnAddItem_ORD_ItemOpt']"))
         ).click()
 
 
         scroll_to_window(login)
         time.sleep(1)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create Item']"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']"))
         ).click()
 
-        toast_detail = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        msg = get_toast_message(login)
+        print("Toast Message : ", msg)
+
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e 
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Creating the item wit Batch Enabled")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_item_creation_3(login):
+
+    wait = WebDriverWait(login, 30)
+    try:
+        time.sleep(5)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[3]")          
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnCrtItem_ORD_Items']"))
+        ).click()
+
+        item_name = "Item_" + str(uuid.uuid4())[:4]
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@id='inpItemName_ORD_INV_ItemCreate']"))
+        ).send_keys(item_name)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@id='txtaShortDesc_ORD_INV_ItemCreate']"))
+        ).send_keys("A Item name is required and recommended to be unique.")
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddCategory_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Stationary']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-multiselect[@id='msGroup_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Stationary_Item']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddType_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Office_Item']"))
+        ).click()
+
+        login.implicitly_wait(5)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='ddManufacturer_ORD_INV_ItemCreate']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='SC.PVT.Limited']"))
+        ).click()
+
+        dropdown = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//p-multiselect[@id='msUnits_ORD_INV_ItemCreate']"))
         )
-        message = toast_detail.text
-        print("toast_Message:", message)
+        dropdown.click()
+
+        time.sleep(2)
+        options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
+
+        # Select a random option
+        if options:
+            random_option = random.choice(options)
+            random_option.click()
+        else:
+            print("No options found in the dropdown.")
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[@placeholder='Track Inventory or Not']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='Yes']"))
+        ).click()
+
+        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@id='ddHSN_ORD_INV_ItemCreate']")
+
+        time.sleep(2)
+        options = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@role='listbox']//li[@role='option']")
+            )
+        )
+
+        # Pick a random option
+        random_option = random.choice(options)
+
+        # Scroll into view (important for PrimeNG)
+        login.execute_script("arguments[0].scrollIntoView(true);", random_option)
+
+        # Click the option
+        random_option.click()
+
+        # (Optional) Print selected value
+        print("Selected value:", random_option.text)
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='ddBatchApplicable_ORD_INV_ItemCreate']"))
+        ).click()
+
+        wait_and_locate_click(login, By.XPATH, "(//*[@class='ng-star-inserted'][normalize-space()='Yes'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselect[@id='msTaxes_ORD_INV_ItemCreate']")
+        
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='GST 5%']"))
+        ).click()
+
+        time.sleep(2)
+
+        scroll_to_window(login)
+        time.sleep(1)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']"))
+        ).click()
+
+        msg = get_toast_message(login)
+        print("Toast Message : ", msg)
 
         time.sleep(3)
 
@@ -201,7 +488,7 @@ def test_item_disable_and_enabled(login):
         ).click()
 
         WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Items']"))
+            EC.presence_of_element_located((By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[3]"))
         ).click()
 
         # ---- Row 1 locators ----
@@ -434,28 +721,32 @@ def test_item_filter(login):
 
     print("Assertion passed: All rows in the table have Transaction Type as 'SALES'.")
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create the Remarks from item Variant")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_item_variant_remarks(login):
     wait = WebDriverWait(login, 30)
     try:
+        time.sleep(5)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
+        ).click()
+
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[7]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[9]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionSltOpt_ORD_ItemVar'])[8]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCrt_ORD_Remarks'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnCrt_ORD_Remarks']")
 
         Remarks = "ItemRemarks" + str(uuid.uuid4())[:4]
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "(//input[@id='inputHsn_ORD_ItemCrtPop'])[1]", Remarks)
+        wait_and_send_keys(login, By.XPATH, "//input[@id='inputHsn_ORD_ItemCrtPop']", Remarks)
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectRmrks_ORD_ItemCrtPop'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@id='selectRmrks_ORD_ItemCrtPop']")
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Adjustment'])[1]")
@@ -464,8 +755,30 @@ def test_create_item_variant_remarks(login):
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(2)
+        # XPath for first row remark name (tr[1], td[1])
+        first_row_remark = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "(//tbody//tr)[1]/td[1]//span")
+            )
+        )
+
+        print("Table Remark:", first_row_remark.text)
+
+        assert Remarks.strip() == first_row_remark.text.strip(), (
+            f"Expected remark '{Remarks}' but found '{first_row_remark.text}'"
+        )
         
+
+        time.sleep(1)
+        status_switch = login.find_element(
+            By.XPATH,
+            "(//tbody//tr)[1]//input[@role='switch']"
+        )
+
+        assert status_switch.get_attribute("aria-checked") == "true", "Status is not enabled"
+
+        time.sleep(2)
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),
@@ -474,16 +787,19 @@ def test_create_item_variant_remarks(login):
         )
         raise e
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Update the Remarks from item Variant")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_update_item_variant_remarks(login):
     wait = WebDriverWait(login, 30)
     try:
+        time.sleep(5)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
+        ).click()
+
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[7]")
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[9]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionSltOpt_ORD_ItemVar'])[8]")
@@ -494,23 +810,31 @@ def test_update_item_variant_remarks(login):
         Remarks = "Rename_ItemRemarks" + str(uuid.uuid4())[:4]
         time.sleep(2)
         remarks_element = wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//input[@id='inputHsn_ORD_ItemCrtPop'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "//input[@id='inputHsn_ORD_ItemCrtPop']"))
         )
         remarks_element.clear()
         remarks_element.send_keys(Remarks)
         
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@id='selectRmrks_ORD_ItemCrtPop'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_ORD_ItemCrtPop']")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Adjustment'])[1]")
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_ORD_ItemCrtPop']")
+        
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(2)
+
+        updated_remark = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "(//tbody//tr)[1]/td[1]//span")
+            )
+        )
+
+        print("Table Remark:", updated_remark.text)
+        assert updated_remark.text.strip() == Remarks.strip()
         
+        time.sleep(2)
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),

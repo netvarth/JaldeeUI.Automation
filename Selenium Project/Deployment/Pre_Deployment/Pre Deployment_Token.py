@@ -1417,7 +1417,7 @@ def test_walkin_token(login):
 
         scroll_to_element(login, element)
         
-        item_button = WebDriverWait(login, 10).until(
+        item_button = WebDriverWait(login, 30).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
         )
