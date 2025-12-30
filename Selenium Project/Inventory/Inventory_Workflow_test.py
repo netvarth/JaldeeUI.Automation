@@ -209,21 +209,9 @@ def test_store_creation(login):
         EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Create']"))
     ).click()
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message: ", msg)
+    
     time.sleep(3)
 
 

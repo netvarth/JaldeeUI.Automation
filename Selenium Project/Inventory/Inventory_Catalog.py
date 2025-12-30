@@ -103,6 +103,208 @@ def test_inventory_catalog(login):
         ) 
         raise e 
 
+
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Inventory Catalog - Link catalog with sales order catalog ")
+def test_Link_catalog_with_sales_order_catalog(login):
+    driver = login
+    try:
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//img)[2]")
+
+
+        time.sleep(3)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]"
+        )
+
+        # Select store from dropdown
+        wait_and_locate_click(
+            login, By.XPATH,
+            "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"
+        )
+
+        time.sleep(3)
+        store = login.find_element(
+            By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='B&B Stores']"
+        )
+        scroll_to_element(login, store)
+        store.click()
+
+        time.sleep(3)
+
+        wait_and_locate_click(
+            login, By.XPATH, "//p-button[@id='btnCrtCat_ORD_OrdCat']"
+        )
+        
+        time.sleep(2)
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "(//button[@id='btnActMenu_ORD_OrdCat'])[1]"
+        # )
+
+        Inv_sales_catalog_name = "Inv_Sales_Catalog_" + str(uuid.uuid4())[:6]
+        # time.sleep(2)
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "//button[@id='btnEdtCat_ORD_OrdCat']"
+        # )
+
+        time.sleep(2)
+        wait_and_send_keys(
+            driver, By.XPATH, "//input[@id='inputCatName_ORD_CatCrt']", Inv_sales_catalog_name
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//p-dropdown[@id='selectStore_ORD_CatCrt']"
+        )
+
+        time.sleep(1)
+        element1 = driver.find_element(By.XPATH, "//span[normalize-space()='B&B Stores']")
+        scroll_to_element(driver, element1)
+        element1.click()
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//p-dropdown[@id='selectInvMgmt_ORD_CatCrt']"
+        )
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='Yes']"
+        )     
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//p-multiselect[@id='selectCatlog_ORD_CatCrt']"
+        )       
+
+        time.sleep(1)
+        element2 = driver.find_element(By.XPATH, "//span[normalize-space()='Catalog_Inventory']")
+        scroll_to_element(driver, element2)
+        element2.click()
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[@class='p-ripple p-element p-multiselect-close p-link p-button-icon-only ng-star-inserted'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//p-dropdown[@id='selectOrdType_ORD_CatCrt']"
+        )
+        wait_and_locate_click(
+            driver, By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Yes']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//p-dropdown[@id='selectSelf_ORD_CatCrt']"
+        )
+        wait_and_locate_click(
+            driver, By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Yes']"
+        )
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CatCrt']"
+        )
+
+        time.sleep(3)
+
+        checkboxes = WebDriverWait(login, 10).until(
+            EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@type, 'checkbox')]"))
+        )
+
+        # Click the first three checkboxes
+        for i in range(1, min(6, len(checkboxes))):
+            checkboxes[i].click()
+
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
+        ).click()
+
+        # Wait for the dialog to appear
+        dialog = WebDriverWait(login, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "(//p[contains(text(),'Warning: Once added to the catalog, item’s attribu')])[1]"))
+        )
+
+        # Extract the warning message
+        warning_text = dialog.text
+        print("message :", warning_text)
+        # Expected message
+        expected_message = "Warning: Once added to the catalog, item’s attributes cannot be edited. Do you want to proceed?"
+
+        # Assert the warning message  
+        assert warning_text.strip() == expected_message, f"Expected '{expected_message}', but got '{warning_text}'"
+
+        # Click the "Yes" button
+        yes_button = login.find_element(By.XPATH, "(//button[normalize-space()='Yes'])[1]")
+        yes_button.click()
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        # time.sleep(3)
+
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "(//div[@id='actionView_ORD_OrdCat'])[1]"
+        # )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[@id='btnEdtVItem_ORD_CatDet'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//p-dropdown[@id='selectMrp_ORD_AttrbtSltn'])[1]"
+        )
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[normalize-space()='Yes'])[1]"
+        )
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[@id='actionMrp_ORD_AttrbtSltn']"
+        )
+
+        mrp_price = round(random.uniform(400, 600))
+        print("Random MRP:", mrp_price)
+        time.sleep(1)
+
+        mrp_element = driver.find_element(By.XPATH, "(//input[@id='inputMrp_ORD_AttrbtSltn'])[1]")
+        mrp_element.clear()
+        mrp_element.send_keys(mrp_price)
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[@id='actionMrpAll_ORD_AttrbtSltn']"
+        )
+
+        sales_price = round(random.uniform(100, 399), 2)
+        print("Random MRP:", sales_price)
+        time.sleep(1)
+        sales_price_element = driver.find_element(By.XPATH, "(//input[@id='inputPrice_ORD_AttrbtSltn'])[1]")
+        sales_price_element.clear()
+        sales_price_element.send_keys(sales_price)
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[@id='actionPrice_ORD_AttrbtSltn']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_AttrbtSltn']"
+        )
+
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+    
+
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Inventory Catalog - Edit and Verify Updated Name")
 def test_inventory_catalog_name_update(login):
@@ -419,16 +621,45 @@ def test_inventory_catalog_filter(login):
 
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Inventory Catalog - Edit and update the price of the item ")
-def test_inventory_catalog_name_update_11(login):
+def test_inventory_catalog_name_update_price(login):
 
     wait = WebDriverWait(login, 30)
     try:
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='B&B Stores'])[1]")
-            
+        # Step 1: Open the Inventory module
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))
+        ).click()
+
+        time.sleep(3)
+
+        # Navigate to Inventory Catalogs
+        wait_and_locate_click(
+            login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]"
+        )
+
+        # Select store from dropdown
+        wait_and_locate_click(
+            login, By.XPATH,
+            "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"
+        )
+
+        time.sleep(3)
+        store = login.find_element(
+            By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='B&B Stores']"
+        )
+        scroll_to_element(login, store)
+        store.click()
+
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionView_ORD_OrdCat'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "")
+
+        
 
     
     except Exception as e:
@@ -439,3 +670,4 @@ def test_inventory_catalog_name_update_11(login):
         ) 
         raise e
  
+
