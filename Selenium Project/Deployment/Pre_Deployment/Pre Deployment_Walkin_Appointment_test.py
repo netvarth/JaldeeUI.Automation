@@ -421,18 +421,6 @@ def test_account_signup():
         )
     ).click()
 
-    # time.sleep(6)
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]")
-    #     )
-    # ).click()
-
-    # WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located(
-    #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
-    #     )
-    # ).click()
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -442,9 +430,11 @@ def test_account_signup():
     ).click()
     time.sleep(3)
 
+    wait_and_click(login, By.XPATH, "//app-sidebar-menu[@id='sidebar_BUS_business']//li[8]")
+    
+    time.sleep(2)
     wait_and_click(login, By.XPATH, "(//div[normalize-space()='Finance manager'])[1]")
     time.sleep(2)
-
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Jaldee Finance  Off']"))

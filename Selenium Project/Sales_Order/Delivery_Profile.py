@@ -27,7 +27,7 @@ def test_create_delivery_profile(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH,  
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[8]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
@@ -122,7 +122,7 @@ def test_create_delivery_profile_with_empty_fields(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[8]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
@@ -154,7 +154,7 @@ def test_create_delivery_profile_with_empty_price_range(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[8]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 

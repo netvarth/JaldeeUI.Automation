@@ -1553,7 +1553,7 @@ def test_create_purchase_1(login):
                 (By.XPATH, "//button[@id='btnCrete_FIN_Expense']"))
         ).click()
 
-        time.sleep(2)
+        time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(

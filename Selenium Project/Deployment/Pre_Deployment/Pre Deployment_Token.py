@@ -80,7 +80,7 @@ def test_walkin_token(login):
         ).send_keys("9207206005")
 
         time.sleep(3)
-
+        
 
 
         WebDriverWait(login, 10).until(
