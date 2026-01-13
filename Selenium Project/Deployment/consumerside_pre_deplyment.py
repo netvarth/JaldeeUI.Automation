@@ -10,7 +10,7 @@ from Framework.common_dates_utils import *
 def test_consumer_booking(con_login):
 
     try:
-        
+        wait_and_locate_click(login, )
         wait = WebDriverWait(con_login, 20)
         time.sleep(2)
         booking_button = wait.until(

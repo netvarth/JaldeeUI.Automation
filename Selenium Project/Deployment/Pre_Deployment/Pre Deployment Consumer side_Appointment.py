@@ -15,8 +15,6 @@ import allure
 from allure_commons.types import AttachmentType
 
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre-Deployment Consumer Appointment")
 @pytest.mark.parametrize("url", [consumer_login_url_1])

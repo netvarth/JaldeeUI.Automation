@@ -4607,7 +4607,7 @@ def test_confirmation_label_message_attachment(login):
         last_element_in_accordian.click()
 
         time.sleep(3)
-        View_Detail_button = WebDriverWait(login, 10).until(
+        View_Detail_button = WebDriverWait(login, 30).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
             )

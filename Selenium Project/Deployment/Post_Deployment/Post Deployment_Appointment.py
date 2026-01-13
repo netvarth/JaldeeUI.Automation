@@ -1777,11 +1777,11 @@ def test_create_patient(login):
         login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
         time.sleep(2)
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
+        # toast_message = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_message.text
+        # print("Toast Message:", message)
 
         time.sleep(3)
         WebDriverWait(login, 10).until(

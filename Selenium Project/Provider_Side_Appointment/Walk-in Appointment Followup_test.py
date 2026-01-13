@@ -11,7 +11,7 @@ def test_followup_sameday(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+                "(//img)[3]",
             )
         )
     ).click()
@@ -20,7 +20,7 @@ def test_followup_sameday(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                "(//div[@id='actionCreate_BUS_bookList'])[1]",
             )
         )
     )
@@ -29,7 +29,7 @@ def test_followup_sameday(login):
     wait = WebDriverWait(login, 10)
     element_appoint = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//b[contains(text(),'Create New Patient')]")
+            (By.XPATH, "//*[@id='btnCreateCust_BUS_appt']")
         )
     )
     element_appoint.click()
@@ -44,6 +44,7 @@ def test_followup_sameday(login):
     ).send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
     login.implicitly_wait(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
@@ -103,17 +104,14 @@ def test_followup_sameday(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//a[normalize-space()='Notes']")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
-        "test_selenium project"
-    )
-    WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))
-    ).click()
+    wait_and_send_keys(login, By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']", "Note for the patient")
+
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_BUS_addNote']")
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Upload File']")
+            (By.XPATH, "//a[@id='actnImg_BUS_notAttch']")
         )
     ).click()
 
@@ -127,56 +125,55 @@ def test_followup_sameday(login):
     )
     pyautogui.write(absolute_path)
     pyautogui.press("enter")
-
-    time.sleep(4)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
-    ).click()
+    print("Successfully upload the file")
 
     time.sleep(3)
+
+    time.sleep(3)
+    wait_and_locate_click(login, By.XPATH, "(//button[@id='btnConfirm_BUS_apptForm'])[1]")
+    message = get_snack_bar_message(login)
+    print("Snack bar message:", message)
+
+    time.sleep(3)
+
     while True:
         try:
-            # Attempt to locate the "Next" button using the button's class
+            
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                 )
             )
 
-            # Check if the button is enabled (i.e., not disabled)
+            
             if next_button.is_enabled():
-                # print("Next button found and clickable.")
-                # Click using JavaScript to avoid interception issues
+                
                 login.execute_script("arguments[0].click();", next_button)
             else:
-                # print("Next button is disabled. Reached the last page.")
+                
                 break
 
         except Exception as e:
-            # # If no next button is found or any other exception occurs, exit the loop
-            # print("End of pages or error encountered:", e)
+            
             break
 
-    # After clicking through all pages, locate and click the last accordion
     time.sleep(1)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
-    time.sleep(3)
-    print("Before clicking View Details button")
-    view_details_button = WebDriverWait(login, 30).until(
-        EC.visibility_of_element_located(
-            (By.XPATH, "//button[contains(text(), 'View Details')]")
-        )
-    )
-    print("View Details button found, attempting to click")
-    view_details_button.click()
-    print("View Details button clicked")
-    login.execute_script("arguments[0].click();", view_details_button)
 
     time.sleep(3)
-    login.find_element(By.XPATH, "//button[contains(text(),' Follow Up')]").click()
+    View_Detail_button = WebDriverWait(login, 30).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+            )
+        )
+    View_Detail_button.click()
+
+    time.sleep(3)
+    wait_and_locate_click(login, By.XPATH, "//*[@id='btnFollowp_BUS_bookAction']")
+
     time.sleep(3)
     Today_Date = wait.until(
         EC.presence_of_element_located(
@@ -194,10 +191,9 @@ def test_followup_sameday(login):
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
-    login.find_element(By.XPATH, "//a[normalize-space()='Notes']").click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
-        "test_selenium project"
-    )
+    login.find_element(By.XPATH, "//*[@id='actnAddNote_BUS_notAttch']").click()
+    wait_and_send_keys(login, By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']", "Note for the patient")
+
     login.find_element(By.XPATH, "//span[normalize-space()='Save']").click()
     uploadfile = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -242,7 +238,7 @@ def test_followup_nextday(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+                "(//img)[3]",
             )
         )
     ).click()
@@ -251,7 +247,7 @@ def test_followup_nextday(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                "(//div[@id='actionCreate_BUS_bookList'])[1]",
             )
         )
     )
@@ -260,7 +256,7 @@ def test_followup_nextday(login):
     wait = WebDriverWait(login, 10)
     element_appoint = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//b[contains(text(),'Create New Patient')]")
+            (By.XPATH, "//*[@id='btnCreateCust_BUS_appt']")
         )
     )
     element_appoint.click()
@@ -331,27 +327,12 @@ def test_followup_nextday(login):
     time_slot.click()
     print("Time Slot:", time_slot.text)
 
-    time.sleep(4)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
-    ).click()
+    time.sleep(3)
+    wait_and_locate_click(login, By.XPATH, "(//button[@id='btnConfirm_BUS_apptForm'])[1]")
+    message = get_snack_bar_message(login)
+    print("Snack bar message:", message)
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
+    time.sleep(2)
     while True:
         try:
             # Attempt to locate the "Next" button using the button's class
@@ -444,30 +425,12 @@ def test_followup_nextday(login):
 
     time.sleep(4)
 
-    confirm_button = WebDriverWait(login, 30).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Confirm']")
-        )
-    )
-    confirm_button.click()
+    time.sleep(3)
+    wait_and_locate_click(login, By.XPATH, "(//button[@id='btnConfirm_BUS_apptForm'])[1]")
+    message = get_snack_bar_message(login)
+    print("Snack bar message:", message)
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-        time.sleep(5)
+    time.sleep(5)
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Followup for 180day")
@@ -479,7 +442,7 @@ def test_followup_180day(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+                "(//img)[3]",
             )
         )
     ).click()
@@ -488,7 +451,7 @@ def test_followup_180day(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                "(//div[@id='actionCreate_BUS_bookList'])[1]",
             )
         )
     )
@@ -497,7 +460,7 @@ def test_followup_180day(login):
     wait = WebDriverWait(login, 10)
     element_appoint = wait.until(
         EC.presence_of_element_located(
-            (By.XPATH, "//b[contains(text(),'Create New Patient')]")
+            (By.XPATH, "//*[@id='btnCreateCust_BUS_appt']")
         )
     )
     element_appoint.click()
@@ -512,6 +475,7 @@ def test_followup_180day(login):
     ).send_keys(phonenumber)
     login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
     login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
     login.implicitly_wait(3)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable((By.CSS_SELECTOR, "p-dropdown[optionlabel='place']"))
@@ -540,7 +504,9 @@ def test_followup_180day(login):
         EC.element_to_be_clickable((By.XPATH, user_option_xpath))
     ).click()
     print("Select user : Naveen")
+    # time.sleep(3)
     service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
+    # WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, service_dropdown_xpath))).click()
     element = login.find_element(By.XPATH, service_dropdown_xpath)
     login.execute_script("arguments[0].scrollIntoView();", element)
     element.click()
@@ -567,54 +533,61 @@ def test_followup_180day(login):
     )
     time_slot.click()
     print("Time Slot:", time_slot.text)
+    note_input = login.find_element(By.XPATH, "//a[normalize-space()='Notes']")
+    note_input.click()
+    wait_and_send_keys(login, By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']", "Note for the patient")
 
-    time.sleep(4)
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnSave_BUS_addNote']")
+
+    time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//a[@id='actnImg_BUS_notAttch']")
+        )
     ).click()
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-       
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
     time.sleep(4)
+    # Get the current working directory
+    current_working_directory = os.getcwd()
+
+    # Construct the absolute path
+    absolute_path = os.path.abspath(
+        os.path.join(current_working_directory, r"Extras\test.png")
+    )
+    pyautogui.write(absolute_path)
+    pyautogui.press("enter")
+    print("Successfully upload the file")
+
+    time.sleep(3)
+
+    time.sleep(3)
+    wait_and_locate_click(login, By.XPATH, "(//button[@id='btnConfirm_BUS_apptForm'])[1]")
+    message = get_snack_bar_message(login)
+    print("Snack bar message:", message)
+
+    time.sleep(3)
 
     while True:
         try:
-            # Attempt to locate the "Next" button using the button's class
+            
             next_button = WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
                 )
             )
 
-            # Check if the button is enabled (i.e., not disabled)
+            
             if next_button.is_enabled():
-                # print("Next button found and clickable.")
-                # Click using JavaScript to avoid interception issues
+                
                 login.execute_script("arguments[0].click();", next_button)
             else:
-                # print("Next button is disabled. Reached the last page.")
+                
                 break
 
         except Exception as e:
-            # # If no next button is found or any other exception occurs, exit the loop
-            # print("End of pages or error encountered:", e)
+            
             break
 
-    # After clicking through all pages, locate and click the last accordion
     time.sleep(1)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
@@ -622,20 +595,16 @@ def test_followup_180day(login):
     last_element_in_accordian.click()
 
     time.sleep(3)
-    View_Detail_button = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[contains(text(), 'View Details')]")
+    View_Detail_button = WebDriverWait(login, 30).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+            )
         )
-    )
     View_Detail_button.click()
 
-    time.sleep(2)
+    time.sleep(3)
+    wait_and_locate_click(login, By.XPATH, "//*[@id='btnFollowp_BUS_bookAction']")
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Follow Up']")
-        )
-    ).click()
 
     time.sleep(5)
 

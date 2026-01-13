@@ -5,22 +5,16 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Assining the doctor")
+@allure.title("Assigning the doctor")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 
 def test_appt_assgin_doc(login):
     try:
-
+        
         time.sleep(5)
 
-        WebDriverWait(login, 20).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
-                )
-            )
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]")
+
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
             EC.element_to_be_clickable(
@@ -51,21 +45,9 @@ def test_appt_assgin_doc(login):
         login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
         save_button= login.find_element(By.XPATH, "//span[contains(text(),'Save')]")
         login.execute_script("arguments[0].click();", save_button)
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        
+        msg = get_snack_bar_message(login)
+        print("Sanck Bar Message :", msg)
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
