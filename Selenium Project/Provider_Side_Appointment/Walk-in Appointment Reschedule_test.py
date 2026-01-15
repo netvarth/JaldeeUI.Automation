@@ -54,13 +54,11 @@ def test_appt_reschedule_sameday(login):
         print("Snack Bar Message :", msg)
 
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//*[@id='selctLoc_BUS_apptForm']")
+        wait_and_locate_click(
+            login, By.XPATH, "//*[@id='selctLoc_BUS_apptForm']"
             )
-        ).click()
 
-        login.implicitly_wait(5)
+        time.sleep(2)
         login.find_element(By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='Chavakkad']").click()
         print("location : Chavakkad")
         
@@ -72,7 +70,10 @@ def test_appt_reschedule_sameday(login):
         
         time.sleep(2)
 
-        login.find_element(By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='ENT']").click()
+        login.find_element(
+            By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='ENT']"
+            ).click()
+        
         print("Department : ENT")
         
         time.sleep(2)
@@ -273,7 +274,8 @@ def  test_reschedule_anotherday(login):
             )
         ).click()
 
-        login.implicitly_wait(5)
+        time.sleep(2)
+
         login.find_element(By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='Chavakkad']").click()
         print("location : Chavakkad")
         
@@ -1021,22 +1023,9 @@ def test_reschedule_180day(login):
         time.sleep(2)
         reschedule_button.click()
 
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
+        msg = get_snack_bar_message(login)
+        print("Snac Bar Message :", msg)
+        time.sleep(3)
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),

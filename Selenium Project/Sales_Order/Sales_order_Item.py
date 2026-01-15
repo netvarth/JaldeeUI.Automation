@@ -20,7 +20,7 @@ def test_item_creation_sale_order(login):
         time.sleep(3)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[5]"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[6]"))
         ).click()           
 
         time.sleep(2)
@@ -102,7 +102,7 @@ def test_item_creation_sale_order(login):
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//li[@aria-label='7542'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//li[@aria-label='75420'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -202,7 +202,7 @@ def test_item_disable_and_enabled_sales_order(login):
 
         # ---- Row 1 locators ----
         row1_xpath = "//table[@role='table']//tbody/tr[1]"
-        status_cell_xpath = "//table[@role='table']//tbody/tr[1]/td[8]//span[contains(@class,'status-')]"
+        status_cell_xpath = "//table[@role='table']//tbody/tr[1]/td[9]//span[contains(@class,'status-')]"
         actions_btn_xpath = "(//table[@role='table']//tbody/tr[1]//button[@aria-haspopup='menu' and normalize-space()='Actions'])[1]"
         overlay_xpath = "//div[contains(@class,'cdk-overlay-pane')]"
 
@@ -274,6 +274,7 @@ def test_item_disable_and_enabled_sales_order(login):
 
         print("✅ Disable → verified in table, then Enable → verified in table")
 
+        time.sleep(3)
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),
@@ -295,14 +296,14 @@ def test_item_edit_update(login):
 
         time.sleep(2)
         WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[5]"))
+            EC.presence_of_element_located((By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[6]"))
         ).click()
 
         time.sleep(1)
         wait_and_click(login, By.XPATH, "(//td[@id='actionViewItm_ORD_ItemList'])[2]")
         
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnEdtItem_ORD_ItemList'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//*[@id='btnEdtItem_ORD_ItemDet'])[1]")
 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//p-multiselect[@id='msTaxes_ORD_INV_ItemCreate'])[1]")
@@ -343,7 +344,7 @@ def test_item_filter(login):
         time.sleep(3)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[5]"))
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[6]"))
         ).click()  
 
         time.sleep(2)

@@ -28,7 +28,12 @@ def test_Inventory_work_flow(login):
         time.sleep(5)
         driver = login
         wait = WebDriverWait(driver, 30)
-        wait_and_locate_click(driver, By.XPATH, "(//div[@id= 'actionRouteTo_ORD_Dashbrd'])[5]")
+
+        wait_and_locate_click(
+             login, By.XPATH, "(//img)[3]"
+        )
+
+        wait_and_locate_click(driver, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[3]")
         
         time.sleep(2)
         wait_and_locate_click(driver, By.XPATH, "//button[@id='btnCrtItem_ORD_Items']")
@@ -117,38 +122,30 @@ def test_Inventory_work_flow(login):
 
         time.sleep(3)
 
-        wait_and_locate_click(driver, By.XPATH, "//div[@id='actionBack__ORD_Items']")
+        wait_and_locate_click(driver, By.XPATH, "//*[@id='actionBack__ORD_Items']")
 
         time.sleep(2)
         wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         time.sleep(1)
-        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='B&B Stores']")
+        wait_and_locate_click(driver, By.XPATH, "//*[normalize-space()='B&B Stores']")
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]")
-
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Create Store']")
+        wait_and_locate_click(driver, By.XPATH, "(//*[@id='actionNav_ORD_Inventory'])[2]")
 
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@placeholder='Type']")
-
-        time.sleep(1)
-        dropdown = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//p-dropdown[@placeholder='Type']"))
-        )
-        dropdown.click()
+        wait_and_locate_click(driver, By.XPATH, "//*[normalize-space()='Create Store']")
 
         time.sleep(2)
-        options = dropdown.find_elements(By.XPATH, "//ul[@role='listbox']")
+       
+        wait.until(EC.element_to_be_clickable(
+            (By.XPATH, "//p-dropdown[@id='strType_ORD_storeCre']")
+        )).click()
 
-        # Select a random option
-        if options:
-            random_option = random.choice(options)
-            random_option.click()
-        else:
-            print("No options found in the dropdown.")
+        options = wait.until(EC.presence_of_all_elements_located(
+            (By.XPATH, "//ul[@role='listbox']//li[@role='option']")
+        ))
+
+        random.choice(options).click()
 
 
         store_name = "Store_" + str(uuid.uuid4())[:6]
@@ -162,7 +159,7 @@ def test_Inventory_work_flow(login):
         wait_and_send_keys(driver, By.XPATH, "//input[@id='phone']", phonenumber)
 
         time.sleep(1)
-        wait_and_locate_click(driver, By.XPATH, "//input[@id='email']", email)
+        wait_and_send_keys(driver, By.XPATH, "//input[@id='email']", email)
 
         invoice_prefix = "KT_" + str(uuid.uuid4())[:6]
         print(invoice_prefix)
@@ -181,7 +178,73 @@ def test_Inventory_work_flow(login):
         msg = get_snack_bar_message(driver)
         print("Snack Bar Message :", msg)
 
-        time.sleep(3)
+        time.sleep(2)
+        
+        wait_and_locate_click(
+             login, By.XPATH, "//i[@class='fa fa-arrow-left']"
+        )
+
+        time.sleep(2)
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[normalize-space()='Vendors']"))
+        ).click()  
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Create Vendor']"))
+        ).click()
+        
+        vendor_name = "vendor_"+ str(uuid.uuid4())[:4]
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='vendorName']"))
+        ).send_keys(vendor_name)
+
+        print("Vendor Name: ", vendor_name)
+
+        vendor_id = "ven_id"+ str(uuid.uuid4())[:8]
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='inputId_FIN_VendorDet'])[1]"))
+        ).send_keys(vendor_id)
+
+        print("Vendor_ID : ", vendor_id)
+
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='ownerName'])[1]"))
+        ).send_keys(first_name)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='phone']"))
+        ).send_keys(phonenumber)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='inputEmail_FIN_VendorDet']"))
+        ).send_keys(email)
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@id='btnSave_FIN_VendorDet']"))
+        ).click()
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+             login, By.XPATH, "//span[@id='goback_FIN_Vendr']"
+        )
+
+        time.sleep(2)
         
 
     except Exception as e:

@@ -14,7 +14,7 @@ def test_sales_order_catalog_with_item(login):
     try:
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3]"))    
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]"))    
         ).click()
 
         time.sleep(1)
@@ -116,7 +116,7 @@ def test_sales_order_catalog(login):
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3]"))    
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]"))    
         ).click()
 
         time.sleep(1)
@@ -201,7 +201,7 @@ def test_sales_order_catalog_update(login):
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3]"))    
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]"))    
         ).click()
 
         time.sleep(2)

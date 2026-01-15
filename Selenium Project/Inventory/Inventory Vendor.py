@@ -72,22 +72,9 @@ def test_vendor_creation(login):
                 (By.XPATH, "//button[@id='btnSave_FIN_VendorDet']"))
         ).click()
 
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+        time.sleep(2)
     except Exception as e:
         allure.attach(  
             login.get_screenshot_as_png(),  

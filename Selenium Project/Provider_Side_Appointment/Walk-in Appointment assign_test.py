@@ -168,11 +168,6 @@ def test_appt_assgin_doc(login):
         login.execute_script("arguments[0].click();", View_Detail_button)
         time.sleep(3)
 
-        
-
-
-
-
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -183,4 +178,4 @@ def test_appt_assgin_doc(login):
         )
         raise e
 
-    time.sleep(5)
+   
