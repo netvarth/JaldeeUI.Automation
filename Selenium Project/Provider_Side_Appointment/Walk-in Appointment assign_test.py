@@ -97,7 +97,7 @@ def test_appt_assgin_doc(login):
         print("Time Slot:", time_slot.text)
         note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
         note_input.click()
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
+        login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys(
             "test_selenium project"
         )
         WebDriverWait(login, 10).until(

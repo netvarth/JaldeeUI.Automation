@@ -103,7 +103,7 @@ def test_without_prescription(login):
 
         time.sleep(4)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnConfirm_BUS_apptForm']"))
         ).click()
 
 
@@ -233,8 +233,6 @@ def test_without_prescription(login):
         element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
-
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
@@ -581,7 +579,7 @@ def test_with_prescription(login):
 
         time.sleep(4)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnConfirm_BUS_apptForm']"))
         ).click()
 
 
@@ -1073,7 +1071,7 @@ def test_Case_Status(login):
         time.sleep(4)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Confirm')]")
+                (By.XPATH, "//button[@id='btnConfirm_BUS_apptForm']")
             )
         ).click()
 
@@ -1126,12 +1124,16 @@ def test_Case_Status(login):
         time.sleep(2)
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']"))
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']")
+            )
         ).send_keys("Fever")
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Save')]"))
-        ).click()
+        element = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Save']"))
+        )
+        login.execute_script("arguments[0].click();", element)
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
@@ -1207,10 +1209,11 @@ def test_Case_Status(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share']"))
-        ).click()
-
+        time.sleep(3)
+        wait_and_locate_click(
+             login, By.XPATH, "//span[normalize-space()='Share']" 
+        )
+        time.sleep(1)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter message description']"))
         ).send_keys("case sharing testing")
@@ -1354,7 +1357,7 @@ def test_treatment_plan(login):
 
         time.sleep(4)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnConfirm_BUS_apptForm']"))
         ).click()
 
         msg = get_snack_bar_message(login)
@@ -1824,7 +1827,7 @@ def test_treatment_plan_1(login):
 
         time.sleep(4)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnConfirm_BUS_apptForm']"))
         ).click()
 
         msg = get_snack_bar_message(login)
@@ -2128,8 +2131,7 @@ def test_treatment_plan_1(login):
         name="full_page",                 # param2
         attachment_type=AttachmentType.PNG)
         raise e
-
-
+    
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Share the case from patient record tab menu")   
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -2189,10 +2191,8 @@ def test_share_case_from_patientrecord(login):
             # login.screenshot()
             name="full_page",                 # param2
             attachment_type=AttachmentType.PNG)
-            raise e
-    
-
-
+            raise e 
+       
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Share multiple case from patient record tab menu")   
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -2208,7 +2208,7 @@ def test_multiple_share_case(login):
         wait_and_send_keys(
              login, By.XPATH, "//*[@placeholder='Enter name or phone or id']", "9207206005"
         )
-        
+        time.sleep(2)
         wait_and_locate_click(
              login, By.XPATH, "//span[normalize-space()='Id : 2']"
         )

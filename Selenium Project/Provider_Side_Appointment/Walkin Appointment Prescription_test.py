@@ -126,7 +126,7 @@ def test_Prescription(login):
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
         ).click()
 
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
+        login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys(
             "Note for the walkin appointment"
         )
 
@@ -321,11 +321,11 @@ def test_Prescription(login):
             )
         ).click()
 
-        toast_detail = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_detail.text
-        print("toast_Message:", message)
+        # toast_detail = WebDriverWait(login, 10).until(
+        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        # )
+        # message = toast_detail.text
+        # print("toast_Message:", message)
 
         time.sleep(3)
     except Exception as e:
@@ -458,7 +458,7 @@ def test_Prescription_1(login):
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
         ).click()
 
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
+        login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys(
             "Note for the walkin appointment"
         )
 
@@ -738,7 +738,7 @@ def test_Prescription_2(login):
             EC.presence_of_element_located((By.XPATH, "//a[contains(text(),'Notes')]"))
         ).click()
 
-        login.find_element(By.XPATH, "//textarea[@id='message']").send_keys(
+        login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys(
             "Note for the walkin appointment"
         )
 
@@ -854,56 +854,6 @@ def test_Prescription_2(login):
         time.sleep(5)
         print("prescription created successfully")
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Print']")
-            )
-        ).click()
-
-        time.sleep(2)
-        # Wait until the shadow host element is present
-        shadow_host = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "#shadow-host"))
-        )
-
-        # Execute JavaScript to access the shadow root
-        shadow_root = login.execute_script(
-            "return arguments[0].shadowRoot", shadow_host
-        )
-
-        # Locate the button inside the shadow root
-        print_button = shadow_root.find_element(
-            By.CSS_SELECTOR, "cr-button.action-button"
-        )
-
-        # Click the button
-        print_button.click()
-
-        time.sleep(4)
-        # Get the current working directory
-        current_working_directory = os.getcwd()
-
-        # Construct the absolute path
-        absolute_path = os.path.abspath(
-            os.path.join(current_working_directory, r"Extras\test.png")
-        )
-        pyautogui.write(absolute_path)
-        pyautogui.press("enter")
-        print("Successfully upload the file")
-
-        # login.find_element(By.XPATH, "//img[@alt='share']").click()
-
-        # time.sleep(2)
-        # login.find_element(By.XPATH, "//textarea[@placeholder='Enter message description']").send_keys(
-        #     "prescription message")
-
-        # login.find_element(By.XPATH, "//span[normalize-space()='Email']").click()
-        # login.find_element(By.XPATH, "//div[@class='coupon-outer']").click()
-
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[normalize-space()='Share']"))
-        # ).click()
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -997,6 +947,30 @@ def test_Prescription_3(login):
         time.sleep(5)
        
 
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+
+
+        time.sleep(2)
+        setting_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='POS Ordering'])[1]"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", setting_element)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//p[normalize-space()='RX Push Management System'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[1]")
+
+        get_snack_bar_message(login)
+        print("Snack bar message:", get_snack_bar_message(login))
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
+
+        time.sleep(2)
         while True:
             try:
                 
@@ -1023,24 +997,19 @@ def test_Prescription_3(login):
             EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
         last_element_in_accordian.click()
-             
-        
 
         time.sleep(3)
-
         View_Detail_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[contains(text(), 'View Details')]")
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
             )
         )
-        login.execute_script("arguments[0].click();", View_Detail_button)
+        click_to_element(login, View_Detail_button)
+
         time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Prescriptions']")
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Prescriptions']"))
-        ).click()
-
+        time.sleep(2)
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -1056,8 +1025,9 @@ def test_Prescription_3(login):
 
         select_doc.click()
 
-      
 
+        time.sleep(2)
+        
         medicines_to_add = [
             {"name": "Paracetamol", "manual": True},
             {"name": "items", "manual": False},
@@ -1138,9 +1108,6 @@ def test_Prescription_3(login):
 
 
 
-
-
-
         # Finally submit
         wait.until(
             EC.presence_of_element_located(
@@ -1198,7 +1165,7 @@ def test_Prescription_3(login):
         
         RX_request_element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Rx Requests']"))
+                (By.XPATH, "//button[@id='btnRXReq_ORD_Dashbrd']"))
         )
 
         scroll_to_element(login, RX_request_element) 

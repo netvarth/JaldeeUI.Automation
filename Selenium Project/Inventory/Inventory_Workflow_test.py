@@ -42,22 +42,9 @@ def test_enable_inventory_setting(login):
         EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Sales Order  Off']"))
     ).click()
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message :", msg)
+    
     login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
 
     # Find the element you want to scroll to
@@ -76,21 +63,8 @@ def test_enable_inventory_setting(login):
         EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__icons']"))
     ).click()
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message :", msg)
 
     login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
 
@@ -108,21 +82,8 @@ def test_enable_inventory_setting(login):
         EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__icons']"))
     ).click()
 
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message :", msg))
 
     login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
 
