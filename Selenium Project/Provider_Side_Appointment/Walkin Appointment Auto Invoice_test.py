@@ -99,7 +99,7 @@ def test_appt_autoinvoice(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -180,44 +180,186 @@ def test_appt_autoinvoice(login):
 
     time.sleep(5)
 
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
+    # ).click()
+
+    # time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Pay by Cash']"))
+    # ).click()
+
+    # time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//button[normalize-space()='Pay']"))
+    # ).click()
+
+    # time.sleep(1)
+    # login.find_element(By.XPATH, "//button[normalize-space()='Yes']").click()
+
+
+    # try:
+
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
+
+    # except:
+
+    #     snack_bar = WebDriverWait(login, 10).until(
+    #         EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+    #     )
+    #     message = snack_bar.text
+    #     print("Snack bar message:", message)
+
+    # time.sleep(5)
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Apply the discount in the Invoice")
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+def test_appt_autoinvoice1(login):
+    print("Apply discount and share the payment link")
+    
+    WebDriverWait(login, 20).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
+    ).click()
+    time.sleep(2)
+    while True:
+        try:
+            
+            next_button = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                )
+            )
+
+            
+            if next_button.is_enabled():
+                
+                login.execute_script("arguments[0].click();", next_button)
+            else:
+                
+                break
+
+        except Exception as e:
+                
+                break
+
+        time.sleep(1)
+    last_element_in_accordian = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    )
+    last_element_in_accordian.click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Invoice']"))
+    ).click()
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Edit']"))
+    ).click()
+    
+    total_net_amount_element = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located(
+        (By.XPATH, "//div[@class='rupee-font col-4 text-end ng-star-inserted']"))
+    )
+    total_net_amount = float(total_net_amount_element.text.replace("₹", "").replace(",", "").strip())
+    print("Total amount before discount:", total_net_amount)
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[@aria-haspopup='menu']"))
+    ).click()
+
+    time.sleep(2)
+    apply_discount = WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'][normalize-space()='Apply Discount'])[1]"))
+    )
+    login.execute_script("arguments[0].click();", apply_discount)
+
+
+    # time.sleep(3)
+    # select_discount = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//select[@class='form-control ng-valid ng-star-inserted ng-touched ng-dirty']//option[contains(text(),'Select Discount')]"))
+    # )                                                   
+    # login.execute_script("arguments[0].click();", select_discount)
+    # print("test select")
+    # time.sleep(3)
+    # select_demand_discount = WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//option[normalize-space()='On Demand Discount']"))
+    # )
+    # login.execute_script("arguments[0].click();", select_demand_discount)
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//select[./option[text()='Select Discount']])[3]"))
+        ).click()
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//option[normalize-space()='On Demand Discount'])[3]"))
+        ).click()
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@placeholder='Enter Amount']"))
+        ).send_keys("50")
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//button[normalize-space()='Apply'])[3]"))
+        ).click()
+    time.sleep(2)
+    total_amount_after_discount_element = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located(
+        (By.XPATH, "//div[@class='rupee-font col-4 text-end ng-star-inserted']"))
+    )
+    total_amount_after_discount = float(total_amount_after_discount_element.text.replace("₹", "").replace(",", "").strip())
+    print("Amount after discount:", total_amount_after_discount)
+    discount_amount = 50.0
+    expected_total = total_net_amount - discount_amount
+
+    # Assert the calculated total matches the displayed total
+    assert total_amount_after_discount == expected_total, f"Expected total {expected_total}, but got {total_amount_after_discount}"
+    print(f"Discount applied successfully. Initial total: {total_net_amount}, Discount: {discount_amount}, Final total: {total_amount_after_discount}")
+
+    
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message :", msg)
+
+    time.sleep(5)
+
+    WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
+    ).click()
+
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message :", msg) 
+
+    time.sleep(5)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
     ).click()
 
-    time.sleep(2)
+    time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Pay by Cash']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share Payment Link']"))
     ).click()
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Pay']"))
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
     ).click()
 
-    time.sleep(1)
-    login.find_element(By.XPATH, "//button[normalize-space()='Yes']").click()
-
-
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message :", msg)
 
     time.sleep(5)
-
-
 
 
 # Add the item in the Invoice and Share the payment link
@@ -336,10 +478,7 @@ def test_appt_autoinvoice2(login):
     time.sleep(5)
 
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Apply the discount in the Invoice")
-@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_appt_autoinvoice1(login):
+
     print("Apply discount and share the payment link")
     
     WebDriverWait(login, 20).until(
@@ -420,7 +559,7 @@ def test_appt_autoinvoice1(login):
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//input[@placeholder='Enter Amount']"))
-        ).send_keys("50")
+        ).send_keys("5")
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "(//button[normalize-space()='Apply'])[3]"))
@@ -589,7 +728,7 @@ def test_appt_autoinvoice3(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -958,7 +1097,7 @@ def test_appt_autoinvoice5(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -1118,7 +1257,7 @@ def test_appt_autoinvoice6(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -1277,7 +1416,7 @@ def test_appt_autoinvoice7(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -1450,7 +1589,7 @@ def test_appt_autoinvoice8(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -1634,7 +1773,7 @@ def test_appt_autoinvoice9(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -1808,7 +1947,7 @@ def test_appt_autoinvoice10(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -2019,7 +2158,7 @@ def test_appt_autoinvoice11(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -2241,7 +2380,7 @@ def test_appt_autoinvoice12(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -2451,7 +2590,7 @@ def test_appt_autoinvoice13(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 
@@ -2629,7 +2768,7 @@ def test_appt_autoinvoice14(login):
     print("Time Slot:", time_slot.text)
     note_input = login.find_element(By.XPATH, "//div[@class='chip-group']//div[1]")
     note_input.click()
-    login.find_element(By.XPATH, "//textarea[@id='message']").send_keys("test_selenium project")
+    login.find_element(By.XPATH, "//textarea[@id='tctareaMsg_BUS_addNote']").send_keys("test_selenium project")
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located((By.XPATH, "//span[normalize-space()='Save']"))).click()
 

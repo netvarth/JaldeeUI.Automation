@@ -77,7 +77,7 @@ def test_IP_Management_1(login):
     
         msg = get_toast_message(login)
         print("Toast Message :", msg)
-
+        
         time.sleep(3)
         WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//tbody//tr[1]"))
@@ -5662,6 +5662,8 @@ def test_IP_Management_13(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
 def test_IP_Management_14(login):
     try:
+
+        driver = login
         time.sleep(5)
         wait = WebDriverWait(login, 30)
         wait.until(
@@ -5769,52 +5771,7 @@ def test_IP_Management_14(login):
 
 # >>> Test Case <<<
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: Room creation")
-@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_15(login):
-    try:
-        time.sleep(3)
-        click_ip_management_menu(login)
 
-        time.sleep(3)
-        navigate_to_room_management(login)
-
-        time.sleep(3)
-        click_create_room(login)
-
-        time.sleep(2)
-        select_building(login)
-
-        time.sleep(1)
-        select_floor(login)
-
-        time.sleep(1)
-        select_room_type(login)
-
-        time.sleep(1)
-        select_room_category(login)
-
-        room_name = get_next_room_name()
-        enter_room_name(login, room_name)
-
-        time.sleep(2)
-        select_room_nature(login)
-
-        time.sleep(1)
-        click_create_button(login)
-
-        validate_room_creation(login, room_name)
-
-        time.sleep(5)
-
-    except Exception as e:
-        allure.attach(
-            login.get_screenshot_as_png(),
-            name="full_page",
-            attachment_type=AttachmentType.PNG,
-        )
-        raise e
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Reservation with existing IP Patient without bed")

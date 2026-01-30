@@ -83,7 +83,7 @@ def test_enable_inventory_setting(login):
     ).click()
 
     msg = get_snack_bar_message(login)
-    print("Snack Bar Message :", msg))
+    print("Snack Bar Message :", msg)
 
     login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
 

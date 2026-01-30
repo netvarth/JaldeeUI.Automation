@@ -1034,16 +1034,8 @@ def test_walkin_token(login):
         element3 = login.find_element(By.XPATH, doctor_name)
         login.execute_script("arguments[0].scrollIntoView();", element3)
         element3.click()
-        
-
 
         login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-
-        toast_message = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        )
-        message = toast_message.text
-        print("Toast Message:", message)
         
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(

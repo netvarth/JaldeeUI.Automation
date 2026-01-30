@@ -1009,7 +1009,7 @@ def test_Prescription_3(login):
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Prescriptions']")
 
-        time.sleep(2)
+        
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -1865,7 +1865,7 @@ def test_Prescription_5(login):
                 )
 
                 # Find the duration input field inside the current row and send the value
-                duration = row.find_element(By.XPATH, ".//td[3]/input[@type='number']")  # Adjust if necessary
+                duration = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")  # Adjust if necessary
                 duration.clear()
                 duration.send_keys("5")  # Send the duration value
 
@@ -1884,7 +1884,7 @@ def test_Prescription_5(login):
                 time.sleep(1)  # Pause before interacting with the quantity field
 
                 # Optionally, send remarks (e.g., "After food")
-                row.find_element(By.XPATH, ".//td[6]").click()
+                row.find_element(By.XPATH, ".//td[7]").click()
                 remarks = row.find_element(By.XPATH, ".//textarea")  # Adjust if necessary
                 remarks.clear()
                 remarks.send_keys("After food")

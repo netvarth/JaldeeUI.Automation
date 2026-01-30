@@ -63,6 +63,7 @@ test_user = "Krishnadas"
 password_1 = "Netvarth1"
 Lab_order_user = "556333"
 IP_Management = "5555556633"
+IP_Management_1 = "40251"
 
 
 
@@ -398,7 +399,7 @@ def generate_random_billing_india_address():
     return street_address, city, state, zip_code, country
 
 
-def get_next_room_name(file_path='room_counter.txt', prefix='B', start=305):
+def get_next_room_name(file_path='room_counter.txt', prefix='B', start=101):
     try:
         with open(file_path, 'r') as f:
             last_number = int(f.read().strip())

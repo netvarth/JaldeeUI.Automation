@@ -26,7 +26,7 @@ def test_create_purchase(login):
         time.sleep(5)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[normalize-space()='Purchase']"))
+                (By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[5]"))
         ).click()
         login.implicitly_wait(3)
 
