@@ -5,15 +5,14 @@ from faker import Faker
 
 
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Buliding creation, Updation, Status Enable and Disable")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
 def test_IP_Management_1(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -122,8 +121,8 @@ def test_IP_Management_1(login):
         time.sleep(2)
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
+            driver.get_screenshot_as_png(),  # param1
+            # driver.screenshot()
             name="full_page",  # param2
             attachment_type=AttachmentType.PNG,
         )
@@ -135,8 +134,8 @@ def test_IP_Management_1(login):
 def test_IP_Management_2(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -243,8 +242,8 @@ def test_IP_Management_2(login):
 
     except Exception as e:
         allure.attach(  # use Allure package, .attach() method, pass 3 params
-            login.get_screenshot_as_png(),  # param1
-            # login.screenshot()
+            driver.get_screenshot_as_png(),  # param1
+            # driver.screenshot()
             name="full_page",  # param2
             attachment_type=AttachmentType.PNG,
         )
@@ -256,8 +255,8 @@ def test_IP_Management_2(login):
 def test_IP_Management_3(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait.until(
@@ -265,37 +264,37 @@ def test_IP_Management_3(login):
         ).click()
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//*[@id='btnCreate_IP_RO_RO']")
+        wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCreate_IP_RO_RO']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//*[@formcontrolname='building']")
+        wait_and_locate_click(driver, By.XPATH, "//*[@formcontrolname='building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//*[normalize-space()='Block C']")
+        wait_and_locate_click(driver, By.XPATH, "//*[normalize-space()='Block C']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='floor']")
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@formcontrolname='floor']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='First floor']")
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='First floor']")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='roomType']")
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@formcontrolname='roomType']")
 
         drop_downlist = wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[normalize-space()='Private']"))
         )
 
-        login.execute_script("arguments[0].scrollIntoView();", drop_downlist)
+        driver.execute_script("arguments[0].scrollIntoView();", drop_downlist)
         time.sleep(1)   
         drop_downlist.click()
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='roomCategory']")
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@formcontrolname='roomCategory']")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Private'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Private'])[1]")
 
 
         room_name = get_next_room_name()
@@ -309,15 +308,15 @@ def test_IP_Management_3(login):
         print(f"🏨 Room created: {room_name}")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@formcontrolname='roomNature']")
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@formcontrolname='roomNature']")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Room'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Room'])[1]")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Create'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//button[normalize-space()='Create'])[1]")
     
-        msg = get_toast_message(login)
+        msg = get_toast_message(driver)
         print("Toast Message :", msg)
         
         time.sleep(2)
@@ -397,8 +396,8 @@ def test_IP_Management_3(login):
         time.sleep(3)
     except Exception as e:
             allure.attach(  # use Allure package, .attach() method, pass 3 params
-                login.get_screenshot_as_png(),  # param1
-                # login.screenshot()
+                driver.get_screenshot_as_png(),  # param1
+                # driver.screenshot()
                 name="full_page",  # param2
                 attachment_type=AttachmentType.PNG,
             )
@@ -410,8 +409,8 @@ def test_IP_Management_3(login):
 def test_IP_Management_4(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -511,8 +510,8 @@ def test_IP_Management_4(login):
 
     except Exception as e:
             allure.attach(  # use Allure package, .attach() method, pass 3 params
-                login.get_screenshot_as_png(),  # param1
-                # login.screenshot()
+                driver.get_screenshot_as_png(),  # param1
+                # driver.screenshot()
                 name="full_page",  # param2
                 attachment_type=AttachmentType.PNG,
             )
@@ -524,8 +523,8 @@ def test_IP_Management_4(login):
 def test_IP_Management_5(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -610,8 +609,8 @@ def test_IP_Management_5(login):
 
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
@@ -623,8 +622,8 @@ def test_IP_Management_5(login):
 def test_IP_Management_6(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -830,8 +829,8 @@ def test_IP_Management_6(login):
         time.sleep(2)
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
@@ -843,8 +842,8 @@ def test_IP_Management_6(login):
 def test_IP_Management_7(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -955,8 +954,8 @@ def test_IP_Management_7(login):
 
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
@@ -968,8 +967,8 @@ def test_IP_Management_7(login):
 def test_IP_Management_8(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -1062,8 +1061,8 @@ def test_IP_Management_8(login):
 
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
@@ -1075,8 +1074,8 @@ def test_IP_Management_8(login):
 def test_IP_Management_9(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -1162,8 +1161,8 @@ def test_IP_Management_9(login):
 
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
@@ -1175,8 +1174,8 @@ def test_IP_Management_9(login):
 def test_IP_Management_10(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -1250,22 +1249,21 @@ def test_IP_Management_10(login):
 
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
                 raise e
     
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Service creation, Updation, Status Enable and Disable")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
 def test_IP_Management_11(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -1409,23 +1407,21 @@ def test_IP_Management_11(login):
         time.sleep(3)
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
                 raise e
     
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Service creation with location, Updation, Status Enable and Disable")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
 def test_IP_Management_12(login):
 
     try:
-        wait = WebDriverWait(login, 30)
-        driver = login
+        wait = WebDriverWait(driver, 30)
+        driver = driver
         time.sleep(3)
 
         wait_and_locate_click(
@@ -1457,7 +1453,7 @@ def test_IP_Management_12(login):
         )
 
         wait_and_locate_click(
-             driver, By.XPATH, "(//button[contains(@class,'mdc-switch')])[1]"
+             driver, By.XPATH, "(//*[contains(@class,'mdc-switch')])[1]"
         )
 
         wait_and_locate_click(
@@ -1497,13 +1493,757 @@ def test_IP_Management_12(login):
         time.sleep(3)
 
 
-
-
     except Exception as e:
                 allure.attach(  # use Allure package, .attach() method, pass 3 params
-                    login.get_screenshot_as_png(),  # param1
-                    # login.screenshot()
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
                     name="full_page",  # param2
                     attachment_type=AttachmentType.PNG,
                 )
                 raise e
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Service creation with same gender, Updation, Status Enable and Disable")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_13(login):
+
+    try:
+        wait = WebDriverWait(driver, 30)
+        driver = driver
+        time.sleep(3)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[10]"
+        )
+
+        time.sleep(2)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnCreate_IP_SE_SE']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@class='fa fa-angle-down'])[1]"
+        )
+
+        Service_name = "Service" + str(uuid.uuid4().int)[:4]
+
+        wait_and_send_keys(
+             driver, By.XPATH, "//*[@id='service_name']", Service_name
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@placeholder='Rate type']"
+        )
+        
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[normalize-space()='Fixed']"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@class='mdc-switch__icons'])[4]"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@class='fa fa-angle-down'])[2]"
+        )
+
+        time_element = driver.find_element(By.XPATH, "//input[@placeholder='MM']")
+        time_element.click()
+        time_element.clear()
+        time_element.send_keys("5")
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@class='fa fa-angle-down'])[3]"
+        )
+
+        price = random.randint(400, 1000)
+
+        ser_price = driver.find_element(By.XPATH, "//*[@id='price']")
+        ser_price.click()
+        ser_price.clear()
+        ser_price.send_keys(price)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@type='submit']"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message: ", msg)
+        time.sleep(3)
+
+    except Exception as e:
+                allure.attach(  # use Allure package, .attach() method, pass 3 params
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
+                    name="full_page",  # param2
+                    attachment_type=AttachmentType.PNG,
+                )
+                raise e
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Discharge template creation, Updation, Status Inactive and Active")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_14(login):
+
+    try:
+        wait = WebDriverWait(driver, 30)
+        driver = driver
+        time.sleep(3)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[13]"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnCrtTemp_IP_Dscrg']"
+        )
+
+        Template_name = "Template" + str(uuid.uuid4().int)[:4]
+
+        time.sleep(2)
+        wait_and_send_keys(
+             driver, By.XPATH, "//*[@id='inputTname_IP_CrtDscrg']", Template_name 
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//p-dropdown[@id='selectUsrs_IP_CrtDscrg']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='Venu Gopal']"
+        )
+
+
+        discharge_summary = """
+            Discharge Summary
+
+            Patient Information:
+
+            Name : [d_var_providerConsumerFirstName] [d_var_providerConsumerLastName]
+            Age: [d_var_age]
+            Gender: [d_var_gender]
+            Date of Admission : [d_var_checkinDate]
+            Medical Record : [d_var_inPatientNumber]
+
+            Brief Hospital Course:
+            Carmel Ryan was admitted on June 14, 2050, with complaints of chest pain, shortness of breath, and diaphoresis. Initial evaluation revealed an ST-segment elevation myocardial infarction (STEMI) on the electrocardiogram (ECG). Prompt treatment was initiated with aspirin, clopidogrel, and intravenous heparin. An urgent coronary angiography revealed critical stenosis in the left anterior descending artery (LAD), necessitating a percutaneous coronary intervention (PCI) with stent placement. The procedure successfully restored blood flow to the affected area.
+
+            Hospital Course:
+            Throughout her hospital stay, Carmel Ryan remained hemodynamically stable. Cardiac enzyme levels trended downwards, indicating successful myocardial reperfusion. Continuous monitoring in the coronary care unit (CCU) showed no signs of arrhythmias or hemodynamic instability. Her chest pain resolved completely, and no further ischemic events were observed.
+
+            Diagnostic Tests:
+            ECG: Showed ST-segment elevation in leads V1-V4, indicating an anterior wall myocardial infarction.
+            Cardiac Enzymes: Elevated troponin levels peaked 12 hours post-PCI and subsequently decreased.
+            Coronary Angiography: Revealed critical stenosis in the LAD, with successful PCI and stent placement.
+
+            Medications at Discharge:
+            Aspirin 81 mg once daily
+            Clopidogrel 75 mg once daily
+            Atorvastatin 40 mg once daily
+            Lisinopril 10 mg once daily
+
+            Follow-Up:
+            Dr. Sarah Patel is scheduled to follow up with a cardiologist in one week for a repeat ECG and further assessment of cardiac function. The patient is instructed to strictly adhere to the prescribed medication regimen, follow a heart-healthy diet, and engage in regular exercise as tolerated.
+
+            Discharge Instructions:
+            Education: Carmel Ryan was educated on recognizing the signs and symptoms of a recurrent myocardial infarction and instructed to seek immediate medical care if they occur.
+            Dietary Counseling: A low-sodium, low-fat diet was recommended to prevent future cardiovascular incidents.
+            Smoking Cessation: Counseling was provided, and Carmel Ryan was referred to smoking cessation resources for support.
+            Activity: Gradual resumption of activity is advised, starting with light exercises as tolerated.
+
+            Conclusion:
+            In summary, Carmel Ryan received prompt intervention with successful PCI, leading to stabilization of her cardiac condition. With proper discharge planning and follow-up care, continued recovery is anticipated. Strict adherence to the medication regimen, follow-up appointments, and lifestyle modifications are crucial to optimize long-term cardiovascular health.
+
+            Summarized By: [d_var_providerName]
+            """
+
+
+        temp_body = driver.find_element(
+             By.XPATH, "(//div[contains(@class,'ck-editor__editable')])[2]"
+        )
+        scroll_to_element(driver, temp_body)
+        temp_body.click()
+        temp_body.send_keys(discharge_summary)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//div[contains(@class,'ck-editor__editable')])[3]"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[contains(text(),'Add Variables')])[3]"
+        )
+
+        variables = driver.find_element(
+             By.XPATH, "(//li[contains(@class,'p-dropdown-item')])[8]"
+        )
+
+        scroll_to_element(driver, variables)
+        variables.click()
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnSave_IP_CrtDscrg']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(3)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@alt='add'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//button[@id='btnEdtTmp_IP_DscrgTemp']"
+        )
+
+        time.sleep(2)
+
+        Template_Rename = "Temp_Ren" + str(uuid.uuid4().int)[:4]
+
+        template_rename = driver.find_element(By.XPATH, "//*[@id='inputTname_IP_CrtDscrg']")
+        template_rename.click()
+        template_rename.clear()
+        template_rename.send_keys(Template_Rename)
+
+        time.sleep(2)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnSave_IP_CrtDscrg']"
+            
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@alt='add'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnSts_IP_DscrgTemp']//*[@class='mdc-list-item__primary-text']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+        inactive_xpath = (
+            "//tbody[contains(@class,'p-datatable-tbody')]"
+            "//tr[1]//td[4]//span[contains(normalize-space(.), 'Inactive')]"
+        )
+
+        try:
+            is_inactive = driver.find_element(By.XPATH, inactive_xpath).is_displayed()
+        except Exception:
+            is_inactive = False
+
+        print("ASSERT Inactive status :", is_inactive)
+        assert is_inactive, "Inactive status not displayed"
+        
+        
+        
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@alt='add'])[1]"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnSts_IP_DscrgTemp']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+        active_xpath = (
+            "//tbody[contains(@class,'p-datatable-tbody')]"
+            "//tr[1]//td[4]//span[contains(normalize-space(.), 'Active')]"
+        )
+
+        try:
+            is_active = driver.find_element(By.XPATH, active_xpath).is_displayed()
+        except Exception:
+            is_active = False
+
+        print("ASSERT Active status :", is_active)
+        assert is_active, "Active status not displayed"
+
+        time.sleep(3)
+        
+    except Exception as e:
+                allure.attach(  # use Allure package, .attach() method, pass 3 params
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
+                    name="full_page",  # param2
+                    attachment_type=AttachmentType.PNG,
+                )
+                raise e
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Custom Variables creation, Updation, Status Inactive and Active")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_15(login):
+
+    try:
+        wait = WebDriverWait(driver, 30)
+        driver = driver
+        time.sleep(3)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[13]"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnCfIlds_IP_Dscrg']"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//button[@id='CrtVarbls_IP_CsFld']"
+        )
+        
+        custom_var_name = "cus_var" + str(uuid.uuid4().int)[:4]
+
+        time.sleep(2)
+        wait_and_send_keys(
+             driver, By.XPATH, "//*[@id='inputName_IP_CsFlds']", custom_var_name
+        )
+
+        Display_name = "Display_name" + str(uuid.uuid4().int)[:4]
+        wait_and_send_keys(
+             driver, By.XPATH, "//*[@id='inputDisp_IP_CsFlds']", Display_name
+        )
+
+        wait_and_send_keys(
+             driver, By.XPATH, "//*[@id='inputVal_IP_CsFlds']", "Note for the custom variable"
+        )
+
+        time.sleep(1)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnCrtFld_IP_CsFlds']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@alt='add'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnEdtFld_IP_CsFld']"
+        )
+
+        custom_var_rename = "cus_var_re" + str(uuid.uuid4().int)[:4]
+
+        time.sleep(1)
+        Re_Name= driver.find_element(By.XPATH, "//input[@id='inputName_IP_CsFlds']")
+        Re_Name.click()
+        Re_Name.clear()
+        Re_Name.send_keys(custom_var_rename)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//*[@id='btnCrtFld_IP_CsFlds']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@alt='add'])[1]"
+        )
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//*[@id='btnSts_IP_CsFld']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+        inactive_xpath = (
+            "//tbody[contains(@class,'p-datatable-tbody')]"
+            "//tr[1]//td[3]//span[contains(normalize-space(.), 'Inactive')]"
+        )
+
+        try:
+            is_inactive = driver.find_element(By.XPATH, inactive_xpath).is_displayed()
+        except Exception:
+            is_inactive = False
+
+        print("ASSERT Inactive status :", is_inactive)
+        assert is_inactive, "Inactive status not displayed"
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[@alt='add'])[1]"
+        )
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnSts_IP_CsFld']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.sleep(2)
+
+        active_xpath = (
+            "//tbody[contains(@class,'p-datatable-tbody')]"
+            "//tr[1]//td[3]//span[contains(normalize-space(.), 'Active')]"
+        )
+
+        try:
+            is_active = driver.find_element(By.XPATH, active_xpath).is_displayed()
+        except Exception:
+            is_active = False
+
+        print("ASSERT Active status :", is_active)
+        assert is_active, "Active status not displayed"
+
+        time.sleep(2)
+    except Exception as e:
+                allure.attach(  # use Allure package, .attach() method, pass 3 params
+                    driver.get_screenshot_as_png(),  # param1
+                    # driver.screenshot()
+                    name="full_page",  # param2
+                    attachment_type=AttachmentType.PNG,
+                )
+                raise e
+
+
+        
+    try:
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(3)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "(//img)[5]"
+        )
+        
+        time.sleep(2)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[6]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCreate_IP_RO_RO']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//*[@formcontrolname='building']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//*[normalize-space()='Block D']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Select Type']")
+
+        room_type = driver.find_element(By.XPATH, "//span[normalize-space()='Private']")
+        scroll_to_element(driver, room_type)
+        room_type.click()
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Select Category']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Private'])[1]")
+        
+        time.sleep(1)
+        room_name = get_next_room_name()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Room Name'])[1]")
+            )
+        ).send_keys(room_name)
+
+        print(f"🏨 Room created: {room_name}")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@formcontrolname='roomNature']")
+
+        time.sleep(1)
+        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Room']")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//button[normalize-space()='Create'])[1]")
+    
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(driver, By.XPATH, "(//*[contains(@class,'btnView_IP_RmGrd')])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCreateBed_IP_RmDet']")
+
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='selectResrv_IP_BedCrt']")
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//li[@aria-label='Yes']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='selectBed_IP_BedCrt']")
+
+
+        bed_type = driver.find_element(By.XPATH, "//span[normalize-space()='Normal']")
+        scroll_to_element(driver, bed_type)
+        bed_type.click()
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='selectBedCat_IP_BedCrt']"
+        )
+
+        bed_cat = driver.find_element(By.XPATH, "//span[normalize-space()='Observation']")
+        scroll_to_element(driver, bed_cat)
+        bed_cat.click()
+        
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='selectBedPrice_IP_BedCrt']"
+        )
+
+        bed_price = driver.find_element(By.XPATH, "//span[normalize-space()='Normal Bed']")
+        scroll_to_element(driver, bed_price)
+        bed_price.click()
+
+        bed_name = f"Bed{room_name}"
+
+        bed_input = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//input[@id='inputBed_IP_BedCrt']")
+            )
+        )
+        bed_input.clear()
+        bed_input.send_keys(bed_name)
+
+        print(f"🛏️ Bed created: {bed_name}")
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//*[@id='btnCrt_IP_BedCrt']"
+        )
+        
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
+        )
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//img)[5]"
+        )
+        
+        time.sleep(2)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[3]"
+        )
+        
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[.//span[normalize-space()='New Reservation']]"
+        )
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//*[@id='btnCreatePatient_IP_NA_NA']"
+        )
+
+        time.sleep(1)
+
+        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter First Name'])[1]"))
+        ).send_keys(first_name)
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Last Name'])[1]"))
+        ).send_keys(last_name)
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@placeholder='Enter Email Id'])[1]"))
+        ).send_keys(email)
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='phone'])[1]"))
+        ).send_keys(phonenumber)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@placeholder='Select Gender'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Male'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save & Next'])[1]")
+
+        time.sleep(2)
+        admission_dropdown = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "(//p-dropdown[@placeholder='Select Admission Type'])[1]")
+            )
+        )
+        admission_dropdown.click()
+
+        # Wait and fetch all options in the dropdown
+        dropdown_options = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@role='listbox' and contains(@class, 'p-dropdown-items')]/p-dropdownitem/li")
+            )
+        )
+
+        # Randomly choose and click one option
+        random_option = random.choice(dropdown_options)
+        random_option_text = random_option.text.strip()
+        random_option.click()
+
+        print(f"✅ Randomly selected admission type: {random_option_text}")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@placeholder='Select Admitted Doctor'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Venu Gopal']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
+
+        time.sleep(2)
+        time.sleep(2)
+
+        today_element = WebDriverWait(login, 10).until(
+                EC.presence_of_element_located(
+        (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
+                )
+        )          
+
+        # Click using JavaScript in case normal click doesn't work
+        login.execute_script("arguments[0].click();", today_element)
+
+        print("Clicked today's date:", today_element.text)
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+
+        time.sleep(2)
+        future_date = datetime.now() + timedelta(days=3)
+        future_day = str(future_date.day)
+        future_month = future_date.strftime("%B")
+        future_year = str(future_date.year)
+
+        # Get the "next month" arrow
+        next_month_arrow = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+        )
+
+        # Loop until the correct month and year is visible
+        max_tries = 12  # Prevent infinite loop
+        for _ in range(max_tries):
+            month_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+            )
+            year_elem = wait.until(
+                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+            )
+
+            current_month = month_elem.text.strip()
+            current_year = year_elem.text.strip()
+
+            if current_month == future_month and current_year == future_year:
+                break
+
+            next_month_arrow.click()
+            time.sleep(1)
+            raise Exception("❌ Could not navigate to the target date in calendar.")
+
+        # Click the future day
+        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        target_date = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
+        )
+        target_date.click()
+
+        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//div[@class='p-checkbox-box'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"
+        )
+
+        time.sleep(2)
+        room_xpath = f"//div[contains(text(),'Room : {room_name}')]"
+        wait.until(
+            EC.presence_of_element_located((By.XPATH, room_xpath))
+             
+        ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//*[@id='btnReserveNow_IP_NA_NA']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+        time.sleep(3)
+
+
+
+    except Exception as e:
+                        allure.attach(  # use Allure package, .attach() method, pass 3 params
+                            driver.get_screenshot_as_png(),  # param1
+                            # driver.screenshot()
+                            name="full_page",  # param2
+                            attachment_type=AttachmentType.PNG,
+                        )
+                        raise e
