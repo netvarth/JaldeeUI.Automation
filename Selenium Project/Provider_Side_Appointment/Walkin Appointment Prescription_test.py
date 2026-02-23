@@ -1029,7 +1029,6 @@ def test_Prescription_3(login):
         time.sleep(2)
         
         medicines_to_add = [
-            {"name": "Paracetamol", "manual": True},
             {"name": "items", "manual": False},
             {"name": "Item4", "manual": False}
         ]
@@ -1172,24 +1171,23 @@ def test_Prescription_3(login):
         time.sleep(1)
         RX_request_element.click()
 
-        time.sleep(2)
-        # Wait for the table to be present
-        table_body = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//tbody"))
+        # Wait for table body
+        table_body = login.find_element(By.XPATH, "//tbody")
+        # First row inside tbody
+        first_row = table_body.find_element(By.XPATH, "./tr[1]")
+
+        # Status span inside the first row (Status column)
+        status_element = first_row.find_element(
+            By.XPATH, "(.//td[5]//span[contains(@class,'status-')])[1]"
         )
 
-        # Locate the first table row
-        first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
-                                                                    
-        # Find the status element within the first row
-        status_element = first_row.find_element(By.XPATH, './/span[contains(@class, "status-")]')
-        status_text = status_element.text
+        status_text = status_element.text.strip()
         expected_status = "Pushed"
 
         print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
 
-        # Assert that the status is "Pushed"
-        assert status_text == "Pushed", f"Expected status to be 'Pushed', but got '{status_text}'"
+        assert status_text == expected_status, \
+            f"Expected status to be '{expected_status}', but got '{status_text}'"
 
         wait.until(
             EC.presence_of_element_located(

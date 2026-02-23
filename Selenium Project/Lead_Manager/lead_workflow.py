@@ -925,8 +925,6 @@ def test_fill_questionnaire(open_browser):
         raise e
     
 
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Reject the lead and reconfirm the lead")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])

@@ -421,20 +421,17 @@ def test_signup():
             print("Snack bar message:", message)
 
         time.sleep(5)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@class='edit-txt custId-cursor']")
-            )
-        ).click()
+        wait_and_locate_click(
+            login, By.XPATH, "(//span[@class='edit-txt custId-cursor'])[1]"
+        )
 
         time.sleep(3)
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//div[@class='mdc-switch__icons'])[1]")
-            )
-        ).click()
+        wait_and_locate_click(
+            login, By.XPATH, "//button[@role='switch']"
+        )
 
+        time.sleep(2)
         # time.sleep(6)
         # WebDriverWait(login, 10).until(
         #     EC.presence_of_element_located(
@@ -552,21 +549,9 @@ def test_signup():
             EC.presence_of_element_located((By.XPATH, "//span[@class='mdc-button__label']"))
         ).click()
 
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        msg = get_snack_bar_message(login)
+        print("Sanck Bar Message :", msg)
+        time.sleep(2)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -594,40 +579,33 @@ def test_signup():
         time.sleep(3)
 
         mdc_switch = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__ripple']"))
+            EC.presence_of_element_located((By.XPATH, "//button[@role='switch']"))
         )
 
         login.execute_script("arguments[0].click();", mdc_switch)
 
-        # time.sleep(2)
-        # login.find_element(
-        #     By.XPATH, "//label[normalize-space()='Allow online appointments for today']"
-        # ).click()
-
-        # time.sleep(2)
-        # login.find_element(
-        #     By.XPATH, "//label[normalize-space()='Allow online appointments for future']"
-        # ).click()
-
+        login.refresh()
+        
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']")
             )
         ).click()
 
-        # time.sleep(2)
-        # wait_and_locate_click(login,By.XPATH, "(//img)[12]")
+        time.sleep(2)
+        wait_and_locate_click(login,By.XPATH, "(//span[@ptooltip='Home'])[1]")
 
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//img[@src='./assets/images/menu/home-color.png']")
-            )
-        ).click()
+        # time.sleep(3)
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//img[@src='./assets/images/menu/home-color.png']")
+        #     )
+        # ).click()
 
         time.sleep(5)
         print("New patient created")
-        WebDriverWait(login, 20).until(
+        WebDriverWait(login, 30).until(
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
@@ -649,11 +627,11 @@ def test_signup():
         wait = WebDriverWait(login, 10)
         element_appoint = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//b[normalize-space()='Create New Patient']")
+                (By.XPATH, "//span[@id='btnCreateCust_BUS_appt']")
             )
         )
         element_appoint.click()
-        login.implicitly_wait(3)
+        time.sleep(2)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
@@ -691,21 +669,8 @@ def test_signup():
             EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
         ).click()
 
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        msg = get_toast_message(login)
+        print("Snack Bar Message :", msg)
 
         time.sleep(3)
 

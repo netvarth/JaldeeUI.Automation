@@ -18,6 +18,8 @@ from datetime import datetime, timedelta
 from selenium.webdriver.common.keys import Keys
 import allure
 from allure_commons.types import AttachmentType
+from selenium.webdriver.support.ui import Select
+
 
 import os
 from selenium.webdriver.firefox.service import Service
@@ -431,3 +433,77 @@ def generate_blood_pressure():
     systolic = random.randint(90, 140)
     diastolic = random.randint(60, 90)
     return systolic, diastolic
+
+
+def create_room_and_bed(driver, wait, room_name):
+
+    # Click Create Room
+    wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCreate_IP_RO_RO']")
+
+    # Select Building
+    wait_and_locate_click(driver, By.XPATH, "//*[@formcontrolname='building']")
+    wait_and_locate_click(driver, By.XPATH, "//*[normalize-space()='Block D']")
+
+    # Select Type
+    wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Select Type']")
+    wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Private']")
+
+    # Select Category
+    wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Select Category']")
+    wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Private'])[1]")
+
+    # Enter Room Name
+    room_input = wait.until(EC.visibility_of_element_located(
+        (By.XPATH, "//input[@placeholder='Room Name']")
+    ))
+    room_input.clear()
+    room_input.send_keys(room_name)
+
+    print(f"🏨 Room Created: {room_name}")
+
+    # Select Nature
+    wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@formcontrolname='roomNature']")
+    wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Room']")
+
+    # Create Room
+    wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Create']")
+    get_toast_message(driver)
+
+    # Open Room Details
+    wait_and_locate_click(driver, By.XPATH, "(//*[contains(@class,'btnView_IP_RmGrd')])[last()]")
+
+    # =========================
+    # CREATE BED
+    # =========================
+    wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCreateBed_IP_RmDet']")
+
+    wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='selectResrv_IP_BedCrt']")
+    wait_and_locate_click(driver, By.XPATH, "//li[@aria-label='Yes']")
+
+    wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='selectBed_IP_BedCrt']")
+    wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Normal']")
+
+    wait_and_locate_click(driver, By.XPATH, "//*[@id='selectBedCat_IP_BedCrt']")
+    wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Observation']")
+
+    wait_and_locate_click(driver, By.XPATH, "//*[@id='selectBedPrice_IP_BedCrt']")
+    wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Normal Bed']")
+
+    bed_name = f"Bed{room_name}"
+
+    bed_input = wait.until(EC.visibility_of_element_located(
+        (By.XPATH, "//input[@id='inputBed_IP_BedCrt']")
+    ))
+    bed_input.send_keys(bed_name)
+
+    wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCrt_IP_BedCrt']")
+    get_toast_message(driver)
+
+    print(f"🛏️ Bed Created: {bed_name}")
+
+    # Go back to dashboard
+    for _ in range(4):
+        wait_and_locate_click(driver, By.XPATH, "//i[@class='pi pi-arrow-left']")
+
+    return bed_name
+

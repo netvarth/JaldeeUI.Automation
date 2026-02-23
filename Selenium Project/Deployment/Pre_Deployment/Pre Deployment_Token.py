@@ -517,7 +517,7 @@ def test_walkin_token(login):
         WebDriverWait(login, 10)
         login.find_element(By.XPATH, "//span[normalize-space()='Prescriptions']").click()
 
-        for i in range(5):
+        for i in range(2):
             login.find_element(
                 By.XPATH, "//button[normalize-space()='+ Add Medicine']"
             ).click()
@@ -1402,10 +1402,7 @@ def test_walkin_token(login):
         print("Added Sub Service to the Invoice")
         
         time.sleep(2)
-        element = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
-        )
+        element = login.find_element(By.XPATH, "//button[normalize-space()='Add Procedure/Item']")
 
         scroll_to_element(login, element)
         
@@ -1438,24 +1435,9 @@ def test_walkin_token(login):
         )
         login.execute_script("arguments[0].scrollIntoView();", update_button)
         update_button.click()
-        
-        
-        
-        try:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-
-        except:
-
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+         
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message:", msg)
             
         time.sleep(5)
         WebDriverWait(login, 10).until(

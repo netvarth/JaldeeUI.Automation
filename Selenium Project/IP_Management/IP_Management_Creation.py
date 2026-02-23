@@ -11,7 +11,7 @@ from faker import Faker
 def test_IP_Management_1(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -134,7 +134,7 @@ def test_IP_Management_1(login):
 def test_IP_Management_2(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -255,7 +255,7 @@ def test_IP_Management_2(login):
 def test_IP_Management_3(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -409,7 +409,7 @@ def test_IP_Management_3(login):
 def test_IP_Management_4(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -523,7 +523,7 @@ def test_IP_Management_4(login):
 def test_IP_Management_5(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -622,7 +622,7 @@ def test_IP_Management_5(login):
 def test_IP_Management_6(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -842,7 +842,7 @@ def test_IP_Management_6(login):
 def test_IP_Management_7(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -967,7 +967,7 @@ def test_IP_Management_7(login):
 def test_IP_Management_8(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -1074,7 +1074,7 @@ def test_IP_Management_8(login):
 def test_IP_Management_9(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -1174,7 +1174,7 @@ def test_IP_Management_9(login):
 def test_IP_Management_10(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -1262,7 +1262,7 @@ def test_IP_Management_10(login):
 def test_IP_Management_11(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -1420,7 +1420,7 @@ def test_IP_Management_11(login):
 def test_IP_Management_12(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -1508,7 +1508,7 @@ def test_IP_Management_12(login):
 def test_IP_Management_13(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -1590,7 +1590,7 @@ def test_IP_Management_13(login):
 def test_IP_Management_14(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -1793,7 +1793,7 @@ def test_IP_Management_14(login):
 def test_IP_Management_15(login):
 
     try:
-        wait = WebDriverWait(driver, 30)
+        wait = WebDriverWait(login, 30)
         driver = driver
         time.sleep(3)
 
@@ -2247,3 +2247,486 @@ def test_IP_Management_15(login):
                             attachment_type=AttachmentType.PNG,
                         )
                         raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Diet Item Creation, updation, Status")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_16(login):
+    try:
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(5)
+        
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(3)         
+        wait_and_locate_click(
+               driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[9]"
+        )
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//div[contains(text(),'Diet Items')])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnCrtItem_ORD_Items']"
+        )
+
+        diet_item_name = "DietItem_" + str(uuid.uuid4())[:4]
+        print("DietItem Name", diet_item_name)
+        wait_and_send_keys(
+               driver, By.XPATH, "//input[@id='inpItemName_ORD_INV_ItemCreate']", diet_item_name
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+              driver, By.XPATH, "//p-dropdown[@id='ddCategory_ORD_INV_ItemCreate']"
+        )
+
+        # Wait and fetch all options in the dropdown
+        dropdown_options = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//ul[@role='listbox' and contains(@class, 'p-dropdown-items')]/p-dropdownitem/li")
+            )
+        )
+
+        # Randomly choose and click one option
+        random_option = random.choice(dropdown_options)
+        random_option_text = random_option.text.strip()
+        random_option.click()
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[normalize-space()='Actions'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnEdtItem_ORD_ItemList']"
+        )
+
+        time.sleep(1)
+        diet_item_rename = "DietItem_Rename_" + str(uuid.uuid4())[:4]
+        print("DietItem Rename", diet_item_rename)
+
+        itemname_element = driver.find_element(By.XPATH, "//input[@id='inpItemName_ORD_INV_ItemCreate']")
+
+        itemname_element.click()
+        time.sleep(1)
+        itemname_element.clear()
+
+        time.sleep(1)
+        itemname_element.send_keys(diet_item_rename)
+
+        time.sleep(2)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[normalize-space()='Actions'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnStsCng_ORD_ItemList']"
+        ) 
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.sleep(2) 
+
+
+        time.sleep(2)
+        status_element = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//tbody//tr[1]//span[contains(@class,'status-Disable')]")
+            )
+        )
+
+        status_text = status_element.text.strip()
+
+        assert status_text == "Disable", f"Expected 'Disable' but got '{status_text}'"
+
+        print("Status verified:", status_text)
+
+        time.sleep(2)
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[normalize-space()='Actions'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnStsCng_ORD_ItemList']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.sleep(2) 
+
+        status_element = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//tbody/tr)[1]//span[contains(@class,'status')]")
+            )
+        )
+
+        status_text = status_element.text.strip()
+
+        assert status_text == "Enable", f"Expected 'Enable' but got '{status_text}'"
+
+        print("✅ First row status:", status_text)
+
+        time.sleep(2)
+
+    except Exception as e:
+                    allure.attach(  # use Allure package, .attach() method, pass 3 params
+                        driver.get_screenshot_as_png(),  # param1
+                        # driver.screenshot()
+                        name="full_page",  # param2
+                        attachment_type=AttachmentType.PNG,
+                    )
+                    raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Diet Plan Creation, updation, Status")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_17(login):
+    try:
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(5)
+        
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(3)         
+        wait_and_locate_click(
+               driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[9]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+              driver, By.XPATH, "//div[@id='actionNav_IP_ktcAnlDshBrd']"
+        )
+
+        time.sleep(2)
+
+        diet_plan_name = "DietPlan_" + str(uuid.uuid4())[:4]
+        print("DietPlan Name", diet_plan_name)
+
+        wait_and_send_keys(
+              driver, By.XPATH, "//input[@id='inputTName_IP_ktcAnlDietCrt']", diet_plan_name
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+              driver, By.XPATH, "//p-dropdown[@id='selectUser_IP_ktcAnlDietCrt']"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//span[normalize-space()='Venu Gopal']"
+        )
+
+        time.sleep(1)
+        wait_and_send_keys(
+              driver, By.XPATH, "//input[@id='inputPps_IP_ktcAnlDietCrt']", "WL"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSave_IP_ktcAnlDietCrt']"
+        )
+        # msg = get_toast_message(driver)
+        # print("Toast Message :", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnAddDay_IP_ktcAnlDietDet']"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnAdMeal_IP_ktcAnlDietDet']"
+        )
+
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//*[@id='selectMeal_IP_ktcAnlAdMeal']"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "(//span[normalize-space()='Breakfast'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSave_IP_ktcAnlAdMeal']"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnAddItem_IP_ktcAnlDietDet']"
+        )
+
+        diet_item_name = "DietItem_" + str(uuid.uuid4())[:4]
+        print("DietItem Name", diet_item_name)
+        wait_and_send_keys(
+              driver, By.XPATH, "(//input[@role='searchbox'])[1]", diet_item_name
+        )
+        
+        calorie = random.randint(100, 500)   
+        protein = random.randint(5, 50)      
+        carbs = random.randint(10, 100)     
+        fat = random.randint(1, 40)
+
+
+        print("Calories:", calorie)
+        print("Protein:", protein)
+        print("Carbs:", carbs)
+        print("Fat:", fat)
+
+        calorie_element = driver.find_element(By.XPATH, "//input[@i='inputCal_IP_ktcAnlDietDet']")
+        calorie_element.click()
+        time.sleep(1)
+        calorie_element.clear()
+        calorie_element.send_keys(calorie)
+
+        time.sleep(2)
+
+        carbs_element = driver.find_element(By.XPATH, "(//input[@id='inputCarb_IP_ktcAnlDietDet'])[1]")
+        carbs_element.click()
+        time.sleep(1)
+        carbs_element.clear()
+        carbs_element.send_keys(carbs)
+
+        time.sleep(2)
+
+        protein_element = driver.find_element(By.XPATH, "(//input[@id='inputProt_IP_ktcAnlDietDet'])[1]")
+        protein_element.click()
+        time.sleep(1)
+        protein_element.clear()
+        protein_element.send_keys(protein)
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnAdMeal_IP_ktcAnlDietDet']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//*[@id='selectMeal_IP_ktcAnlAdMeal']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "(//span[normalize-space()='Lunch'])[1]"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSave_IP_ktcAnlAdMeal']"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[@id='btnAddItem_IP_ktcAnlDietDet'])[2]"
+        )
+
+        time.sleep(1)
+
+        diet_item_name = "DietItem_" + str(uuid.uuid4())[:4]
+        print("DietItem Name", diet_item_name)
+
+        wait_and_send_keys(
+              driver, By.XPATH, "(//input[@role='searchbox'])[1]", diet_item_name
+        )
+
+        time.sleep(2)
+
+        calorie_element = driver.find_element(By.XPATH, "(//input[@i='inputCal_IP_ktcAnlDietDet'])[last()]")
+        calorie_element.click()
+        time.sleep(1)
+        calorie_element.clear()
+        calorie_element.send_keys(calorie)
+
+        time.sleep(2)
+
+        carbs_element = driver.find_element(By.XPATH, "(//input[@id='inputCarb_IP_ktcAnlDietDet'])[last()]")
+        carbs_element.click()
+        time.sleep(1)
+        carbs_element.clear()
+        carbs_element.send_keys(carbs)
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnAdMeal_IP_ktcAnlDietDet']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//*[@id='selectMeal_IP_ktcAnlAdMeal']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "(//span[normalize-space()='Dinner'])[1]"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSave_IP_ktcAnlAdMeal']"
+        )
+
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[@id='btnAddItem_IP_ktcAnlDietDet'])[3]"
+        )
+
+        time.sleep(1)
+
+        diet_item_name = "DietItem_" + str(uuid.uuid4())[:4]
+        print("DietItem Name", diet_item_name)
+
+        wait_and_send_keys(
+              driver, By.XPATH, "(//input[@role='searchbox'])[1]", diet_item_name
+        )
+
+        time.sleep(2)
+        calorie_element = driver.find_element(By.XPATH, "(//input[@i='inputCal_IP_ktcAnlDietDet'])[last()]")
+        calorie_element.click()
+        time.sleep(1)
+        calorie_element.clear()
+        calorie_element.send_keys(calorie)
+
+        time.sleep(2)
+
+        carbs_element = driver.find_element(By.XPATH, "(//input[@id='inputCarb_IP_ktcAnlDietDet'])[last()]")
+        carbs_element.click()
+        time.sleep(1)
+        carbs_element.clear()
+        carbs_element.send_keys(carbs)
+
+        time.sleep(2)
+
+        protein_element = driver.find_element(By.XPATH, "(//input[@id='inputProt_IP_ktcAnlDietDet'])[last()]")
+        protein_element.click()
+        time.sleep(1)
+        protein_element.clear()
+        protein_element.send_keys(protein)
+
+        time.sleep(2)
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSave_IP_ktcAnlDietCrt']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[@id='btnActMenu_IP_ktcAnlDietTmplt'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnMngEdt_IP_ktcAnlDietTmplt']"
+        )
+
+        diet_plan_rename = "DietPlan_rename" + str(uuid.uuid4())[:4]
+        print("DietPlan Name", diet_plan_rename)
+
+        planname_text = driver.find_element(By.XPATH, "//input[@id='inputTName_IP_ktcAnlDietCrt']")
+        planname_text.click()
+        time.sleep(1)
+        planname_text.clear()
+        planname_text.send_keys(diet_plan_rename)
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSave_IP_ktcAnlDietCrt']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnSave_IP_ktcAnlDietCrt']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[@id='btnActMenu_IP_ktcAnlDietTmplt'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnCngSts_IP_ktcAnlDietTmplt']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.slepe(2)
+
+        inactive_xpath = (
+            "(//tr[contains(@class,'ng-star-inserted')]//td[5]//span[contains(normalize-space(.),'Inactive')])[1]"
+        ) 
+
+        try:
+            is_inactive = driver.find_element(By.XPATH, inactive_xpath).is_displayed()
+        except Exception:
+            is_inactive = False
+
+        print("ASSERT Inactive status :", is_inactive)
+        assert is_inactive, "Inactive status not displayed"
+
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "(//button[@id='btnActMenu_IP_ktcAnlDietTmplt'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "//button[@id='btnCngSts_IP_ktcAnlDietTmplt']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message:", msg)
+        time.slepe(2)
+
+        active_xpath = (
+            "(//tr[contains(@class,'ng-star-inserted')]//td[5]//span[contains(normalize-space(.),'Active')])[1]"
+        )
+
+        try:
+            is_active = driver.find_element(By.XPATH, active_xpath).is_displayed()
+        except Exception:
+            is_active = False
+
+        print("ASSERT Active status :", is_active)
+        assert is_active, "Active status not displayed"
+        
+        time.sleep(2)
+
+    except Exception as e:
+                    allure.attach(  # use Allure package, .attach() method, pass 3 params
+                        driver.get_screenshot_as_png(),  # param1
+                        # driver.screenshot()
+                        name="full_page",  # param2
+                        attachment_type=AttachmentType.PNG,
+                    )
+                    raise e

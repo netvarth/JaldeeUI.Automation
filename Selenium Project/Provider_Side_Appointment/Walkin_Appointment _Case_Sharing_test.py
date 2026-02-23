@@ -1886,6 +1886,7 @@ def test_treatment_plan_1(login):
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']"))
         ).send_keys("Fever")
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Save')]"))
         ).click()

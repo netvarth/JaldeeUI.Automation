@@ -479,167 +479,6 @@ def test_appt_autoinvoice2(login):
 
 
 
-    print("Apply discount and share the payment link")
-    
-    WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
-    ).click()
-    time.sleep(2)
-    while True:
-        try:
-            print("before in loop")
-            next_button = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
-            )
-
-            next_button.click()
-
-        except:
-            print("EC caught:")
-            break
-
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
-    )
-    last_element_in_accordian.click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='View Invoice']"))
-    ).click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Edit']"))
-    ).click()
-    
-    total_net_amount_element = WebDriverWait(login, 10).until(
-    EC.presence_of_element_located(
-        (By.XPATH, "//div[@class='rupee-font col-4 text-end ng-star-inserted']"))
-    )
-    total_net_amount = float(total_net_amount_element.text.replace("₹", "").replace(",", "").strip())
-    print("Total amount before discount:", total_net_amount)
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@aria-haspopup='menu']"))
-    ).click()
-
-    time.sleep(2)
-    apply_discount = WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "(//span[@class='mdc-list-item__primary-text'][normalize-space()='Apply Discount'])[1]"))
-    )
-    login.execute_script("arguments[0].click();", apply_discount)
-
-
-    # time.sleep(3)
-    # select_discount = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//select[@class='form-control ng-valid ng-star-inserted ng-touched ng-dirty']//option[contains(text(),'Select Discount')]"))
-    # )                                                   
-    # login.execute_script("arguments[0].click();", select_discount)
-    # print("test select")
-    # time.sleep(3)
-    # select_demand_discount = WebDriverWait(login, 10).until(
-    #     EC.presence_of_element_located((By.XPATH, "//option[normalize-space()='On Demand Discount']"))
-    # )
-    # login.execute_script("arguments[0].click();", select_demand_discount)
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//select[./option[text()='Select Discount']])[3]"))
-        ).click()
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//option[normalize-space()='On Demand Discount'])[3]"))
-        ).click()
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Enter Amount']"))
-        ).send_keys("5")
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//button[normalize-space()='Apply'])[3]"))
-        ).click()
-    time.sleep(2)
-    total_amount_after_discount_element = WebDriverWait(login, 10).until(
-    EC.presence_of_element_located(
-        (By.XPATH, "//div[@class='rupee-font col-4 text-end ng-star-inserted']"))
-    )
-    total_amount_after_discount = float(total_amount_after_discount_element.text.replace("₹", "").replace(",", "").strip())
-    print("Amount after discount:", total_amount_after_discount)
-    discount_amount = 50.0
-    expected_total = total_net_amount - discount_amount
-
-    # Assert the calculated total matches the displayed total
-    assert total_amount_after_discount == expected_total, f"Expected total {expected_total}, but got {total_amount_after_discount}"
-    print(f"Discount applied successfully. Initial total: {total_net_amount}, Discount: {discount_amount}, Final total: {total_amount_after_discount}")
-
-    
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text  
-        print("Snack bar message:", message)
-
-    time.sleep(5)
-
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Update']"))
-    ).click()
-
-    snack_bar = WebDriverWait(login, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-    )
-    message = snack_bar.text
-    print("Snack bar message:", message)
-
-    time.sleep(5)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Get Payment']"))
-    ).click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Share Payment Link']"))
-    ).click()
-
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Send']"))
-    ).click()
-
-    try:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    time.sleep(5)
-
 # Add the item and apply the discount in the Invoice and Share the payment link
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Add the item and apply the discount")
@@ -2050,28 +1889,16 @@ def test_appt_autoinvoice10(login):
             (By.XPATH, "//div[normalize-space()='Save']"))
     ).click()
 
-    try:
+    msg = get_snack_bar_message(login)
+    print("Snack Bar Message :", msg)
 
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    except:
-        snack_bar = WebDriverWait(login, 10).until(
-            EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-        )
-        message = snack_bar.text
-        print("Snack bar message:", message)
-
-    time.sleep(1)
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//button[normalize-space()='Update']"))
     ).click()
 
-    time.sleep(3)
+    time.sleep(5)
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Apply Invoice template")

@@ -7689,7 +7689,6 @@ def test_IP_Management_30(login):
         raise e
 
 
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])

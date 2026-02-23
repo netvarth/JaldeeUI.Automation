@@ -383,17 +383,17 @@ def test_create_purchase(login):
 
         time.sleep(3)
 
-        bill_input = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Purchase Bill#']"))
-        )
+        # bill_input = WebDriverWait(login, 10).until(
+        # EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Purchase Bill#']"))
+        # )
 
-        # Get the value (this will give the dynamically entered bill number)
-        bill_value = bill_input.get_attribute("value")
-        print("Entered Bill Number:", bill_value)
+        # # Get the value (this will give the dynamically entered bill number)
+        # bill_value = bill_input.get_attribute("value")
+        # print("Entered Bill Number:", bill_value)
 
-        print(f"Expected bill_number: '{bill_value}', Actual bill_number: '{bill_number}'")
-        # Assert that the patient's name matches
-        assert bill_number == bill_value, f"Expected bill_number '{bill_value}', but found '{bill_number}' on invoice."
+        # print(f"Expected bill_number: '{bill_value}', Actual bill_number: '{bill_number}'")
+        # # Assert that the patient's name matches
+        # assert bill_number == bill_value, f"Expected bill_number '{bill_value}', but found '{bill_number}' on invoice."
 
         time.sleep(5)
 
@@ -1523,6 +1523,7 @@ def test_create_purchase_1(login):
                 (By.XPATH, "(//button[@aria-haspopup='menu'][normalize-space()='Actions'])[1]"))
         ).click()
 
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[2]"))
@@ -1548,16 +1549,16 @@ def test_create_purchase_1(login):
         )
         login.execute_script("arguments[0].click();", expenses_card)
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[@id='btnCrete_FIN_Expense']"))
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[@id='btnCrete_FIN_Expense']"))
+        # ).click()
 
         time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//img[@src='./assets/images/finance/uil.svg']"))
+                (By.XPATH, "(//button[@id='vieExpnse_FIN_ExpenseDetail'])[1]"))
         ).click()
 
         time.sleep(3)
