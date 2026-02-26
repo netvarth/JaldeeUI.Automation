@@ -286,7 +286,7 @@ def test_invoice_type_5(login):
 
         first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
 
-        time.sleep(1)
+        time.sleep(2)
         wait_and_locate_click(driver, By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]")
 
         consumer_name = f"{first_name} {last_name}"

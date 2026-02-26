@@ -86,8 +86,6 @@ def test_create_sales_order_1(login):
                 (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
-        
-
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
 
@@ -152,19 +150,23 @@ def test_create_sales_order_1(login):
         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
-        # Locate the first row of the orders table
-        first_row = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//tbody/tr[1]"))
+       # Wait for rows properly (avoid time.sleep)
+        rows = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//tbody/tr")
+            )
         )
 
-        # Get consumer name from the first row
+        first_row = rows[0]
+
+        # Consumer name (td[2])
         first_row_consumer = first_row.find_element(
-            By.XPATH, "./td[1]//span[@class='fw-bold text-capitalize']"
+            By.XPATH, "./td[2]//span[contains(@class,'text-capitalize')]"
         ).text.strip()
 
-        # Get order status from the first row
+        # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[4]//span"
+            By.XPATH, "./td[5]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -333,19 +335,23 @@ def test_create_sales_order_2(login):
         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
-        # Locate the first row of the orders table
-        first_row = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//tbody/tr[1]"))
+       # Wait for rows properly (avoid time.sleep)
+        rows = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//tbody/tr")
+            )
         )
 
-        # Get consumer name from the first row
+        first_row = rows[0]
+
+        # Consumer name (td[2])
         first_row_consumer = first_row.find_element(
-            By.XPATH, "./td[1]//span[@class='fw-bold text-capitalize']"
+            By.XPATH, "./td[2]//span[contains(@class,'text-capitalize')]"
         ).text.strip()
 
-        # Get order status from the first row
+        # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[4]//span"
+            By.XPATH, "./td[5]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -353,6 +359,7 @@ def test_create_sales_order_2(login):
         # Assertions
         assert first_row_consumer == consumer_name, f"Expected consumer {consumer_name}, but found {first_row_consumer}"
         assert first_row_status == "Completed", f"Expected status Completed, but found {first_row_status}"
+
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),
@@ -513,19 +520,23 @@ def test_create_sales_order_3(login):
         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
-        # Locate the first row of the orders table
-        first_row = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//tbody/tr[1]"))
+       # Wait for rows properly (avoid time.sleep)
+        rows = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//tbody/tr")
+            )
         )
 
-        # Get consumer name from the first row
+        first_row = rows[0]
+
+        # Consumer name (td[2])
         first_row_consumer = first_row.find_element(
-            By.XPATH, "./td[1]//span[@class='fw-bold text-capitalize']"
+            By.XPATH, "./td[2]//span[contains(@class,'text-capitalize')]"
         ).text.strip()
 
-        # Get order status from the first row
+        # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[4]//span"
+            By.XPATH, "./td[5]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -689,19 +700,23 @@ def test_create_sales_order_4(login):
         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]")
 
         time.sleep(2)
-        # Locate the first row of the orders table
-        first_row = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//tbody/tr[1]"))
+       # Wait for rows properly (avoid time.sleep)
+        rows = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//tbody/tr")
+            )
         )
 
-        # Get consumer name from the first row
+        first_row = rows[0]
+
+        # Consumer name (td[2])
         first_row_consumer = first_row.find_element(
-            By.XPATH, "./td[1]//span[@class='fw-bold text-capitalize']"
+            By.XPATH, "./td[2]//span[contains(@class,'text-capitalize')]"
         ).text.strip()
 
-        # Get order status from the first row
+        # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[4]//span"
+            By.XPATH, "./td[5]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -782,6 +797,7 @@ def test_create_sales_order_5(consumer_login):
 
         print("Selected option:", random_option.text.strip())
 
+        time.sleep(2)
         wait_and_send_keys(consumer_login, By.XPATH, "(//input[@id='first_name'])[1]", first_name)
 
         wait_and_send_keys(consumer_login, By.XPATH, "(//input[@id='first_name'])[2]", last_name)

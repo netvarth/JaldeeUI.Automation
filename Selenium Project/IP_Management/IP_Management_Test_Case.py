@@ -9837,34 +9837,6 @@ def test_IP_Management_44(login):
                driver, By.XPATH, "(//button[@id='btnViewIp_IP_IpGrd'])[1]"
         )
 
-
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "//*[@id='btnAddService_IP_AD_DE_New']"
-        )
-
-        time.sleep(1)
-        wait_and_send_keys(
-               driver, By.XPATH, "//input[@placeholder='Search Service']", "Doc"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-               driver, By.XPATH, "//li[@role='option']"
-        )
-
-        wait_and_locate_click(
-               driver, By.XPATH, "//p-multiselect[@placeholder='Select Doctors']"
-        )
-
-        wait_and_locate_click(
-               driver, By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Venu Gopal']"
-        )
-
-        wait_and_locate_click(
-               driver, By.XPATH, "//*[normalize-space()='Add Service']"
-        )
-
         time.sleep(2)
         wait_and_locate_click(
                driver, By.XPATH, "(//span[normalize-space()='Invoices'])[1]"
@@ -9880,8 +9852,32 @@ def test_IP_Management_44(login):
                driver, By.XPATH, "(//button[@role='menuitem'])[1]"
         )
 
+        time.sleep(2)
         wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnGenerate_IP_Invoice']"
+            driver, By.XPATH, "//button[@id='btnAddMore_IP_Invoice']"
+        )
+
+        time.sleep(1)
+        wait_and_send_keys(
+               driver, By.XPATH, "//input[@id='inptService_IP_Invoice']", "Item1"
+        )
+
+        wait_and_send_keys(
+               driver, By.XPATH, "//input[@id='inptQty_IP_Invoice']", "4"
+        )
+
+        price_element = driver.find_element(By.XPATH, "//input[@id='inptPrice_IP_Invoice']")
+
+        price_element.click()
+        time.sleep(2)
+        price_element.clear()
+        time.sleep(1)
+        price_element.send_keys("670")
+
+
+        time.sleep(1)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//button[@id='btnAddUpdate_IP_Invoice'])[1]"
         )
 
         time.sleep(2)
@@ -9901,42 +9897,6 @@ def test_IP_Management_44(login):
             driver, By.XPATH, "(//i[@class='pi pi-arrow-left'])[1]"
         )
 
-        time.sleep(2) 
-        wait_and_locate_click(
-            driver, By.XPATH, "(//span[normalize-space()='Services'])[1]"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnAddService_IP_AD_DE_New']"
-        )
-
-        time.sleep(1)
-        wait_and_send_keys(
-               driver, By.XPATH, "//input[@placeholder='Search Service']", "Doc"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-               driver, By.XPATH, "//li[@role='option']"
-        )
-
-        wait_and_locate_click(
-               driver, By.XPATH, "//p-multiselect[@placeholder='Select Doctors']"
-        )
-
-        wait_and_locate_click(
-               driver, By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Venu Gopal']"
-        )
-
-        wait_and_locate_click(
-               driver, By.XPATH, "//*[normalize-space()='Add Service']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Invoices'])[1]"
-        )
 
         time.sleep(1)
         wait_and_locate_click(
@@ -9950,9 +9910,39 @@ def test_IP_Management_44(login):
 
         time.sleep(2)
         wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnGenerate_IP_Invoice']"
+            driver, By.XPATH, "//button[@id='btnAddMore_IP_Invoice']"
         )
 
+        time.sleep(1)
+        wait_and_send_keys(
+               driver, By.XPATH, "//input[@id='inptService_IP_Invoice']", "Item2"
+        )
+
+        wait_and_send_keys(
+               driver, By.XPATH, "//input[@id='inptQty_IP_Invoice']", "2"
+        )
+
+        price_element = driver.find_element(By.XPATH, "//input[@id='inptPrice_IP_Invoice']")
+
+        price_element.click()
+        time.sleep(2)
+        price_element.clear()
+        time.sleep(1)
+        price_element.send_keys("1257")
+
+
+        time.sleep(1)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//button[@id='btnAddUpdate_IP_Invoice'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "//button[@id='btnGenerateInvoice_IP_Invoice']"
+        )
+
+
+        time.sleep(1)
         wait_and_locate_click(
                driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
         )
@@ -9964,6 +9954,11 @@ def test_IP_Management_44(login):
         
         time.sleep(1)
         wait_and_locate_click(
+            driver, By.XPATH, "(//button[contains(@class, 'btnEnterMasterMode_IP_AD_INV')])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
             driver, By.XPATH, "(//div[@class='mdc-checkbox'])[2]"
         )
 
@@ -9972,14 +9967,15 @@ def test_IP_Management_44(login):
             driver, By.XPATH, "(//div[@class='mdc-checkbox'])[3]"
         )
 
+        
+
         time.sleep(1)
         wait_and_locate_click(
             driver, By.XPATH, "//button[@id='btnMasterInvoice_IP_AD_INV']"
         )
 
-        time.sleep(1)
         wait_and_locate_click(
-            driver, By.XPATH, "(//button[normalize-space()='Yes'])[1]"
+            driver, By.XPATH, "//button[normalize-space()='Yes']"
         )
 
         msg = get_toast_message(driver)
@@ -10008,8 +10004,308 @@ def test_IP_Management_44(login):
                     raise e
 
 
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Update the Master Invoice")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_45(login):
+
+    try:
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//button[@id='btnViewIp_IP_IpGrd'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//span[normalize-space()='Invoices'])[1]"
+        )
+
+        time.sleep(1)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[contains(@class, 'btnEdit_IP_AD_INV')])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//mat-icon[@role='img'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+               driver, By.XPATH, "//button[@id='btnEdit_Adhoc_IP_Invoice']"
+        )
+
+        price_element_1 = driver.find_element(By.XPATH, "//input[@id='inptPrice_IP_Invoice']")
+        price_element_1.click()
+        time.sleep(2)
+        price_element_1.clear()
+        time.sleep(1)
+        price_element_1.send_keys("450")
+
+        time.sleep(2)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[@id='btnAddUpdate_IP_Invoice'])[1]"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
+        )
+
+        time.sleep(3)
+
+    except Exception as e:
+                    allure.attach(  # use Allure package, .attach() method, pass 3 params
+                        driver.get_screenshot_as_png(),  # param1
+                        # driver.screenshot()
+                        name="full_page",  # param2
+                        attachment_type=AttachmentType.PNG,
+                    )
+                    raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Update the Master Invoice")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_46(login):
+
+    try:
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//button[@id='btnViewIp_IP_IpGrd'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//span[normalize-space()='Invoices'])[1]"
+        )
+
+        time.sleep(1)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[contains(@class, 'btnEdit_IP_AD_INV')])[1]"
+        )
+
+        
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "//button[@id='btnAddMore_IP_Invoice']"
+        )
+
+        wait_and_send_keys(
+            driver, By.XPATH, "//input[@id='inptService_IP_Invoice']", "Item3"
+        )
+
+        time.sleep(1)
+        qty_element = driver.find_element(By.XPATH, "//input[@id='inptQty_IP_Invoice']")
+        qty_element.click()
+        time.sleep(2)
+        qty_element.clear()
+        time.sleep(1)
+        qty_element.send_keys("7")
+
+        time.sleep(1)
 
 
 
+        price_element_1 = driver.find_element(By.XPATH, "//input[@id='inptPrice_IP_Invoice']")
+        price_element_1.click()
+        time.sleep(2)
+        price_element_1.clear()
+        time.sleep(1)
+        price_element_1.send_keys("190")
+
+        time.sleep(2)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnAddUpdate_IP_Invoice']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
+        )
+
+        time.sleep(3)
+
+    except Exception as e:
+                    allure.attach(  # use Allure package, .attach() method, pass 3 params
+                        driver.get_screenshot_as_png(),  # param1
+                        # driver.screenshot()
+                        name="full_page",  # param2
+                        attachment_type=AttachmentType.PNG,
+                    )
+                    raise e
 
 
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Apply discount to Master Invoice")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_47(login):
+
+    try:
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//button[@id='btnViewIp_IP_IpGrd'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//span[normalize-space()='Invoices'])[1]"
+        )
+
+        time.sleep(1)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[contains(@class, 'btnEdit_IP_AD_INV')])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "//a[@id='aApplyDiscount_IP_Invoice']"
+        )
+        
+        time.sleep(1)
+
+        dropdown = Select(driver.find_element(By.ID, "slctOrderDiscount_IP_Invoice"))
+        dropdown.select_by_visible_text("On Demand Discount")
+
+
+        time.sleep(2)
+        discount_amount = random.randint(20, 100)
+        wait_and_send_keys(login, By.XPATH, "(//input[@id='inptDiscAmt_IP_Invoice'])[1]", discount_amount)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnApplyDiscount_IP_Invoice']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
+        )
+
+        time.sleep(2)
+
+    except Exception as e:
+                        allure.attach(  # use Allure package, .attach() method, pass 3 params
+                            driver.get_screenshot_as_png(),  # param1
+                            # driver.screenshot()
+                            name="full_page",  # param2
+                            attachment_type=AttachmentType.PNG,
+                        )
+                        raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Remove discount from Master Invoice")
+@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+def test_IP_Management_48(login):
+
+    try:
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//button[@id='btnViewIp_IP_IpGrd'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//span[normalize-space()='Invoices'])[1]"
+        )
+
+        time.sleep(1)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[contains(@class, 'btnEdit_IP_AD_INV')])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "(//i[@class='fa fa-window-close p-0 pointer-cursor ng-star-inserted'])[1]"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(2)
+
+
+
+        wait_and_locate_click(
+               driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
+        )
+
+        time.sleep(3)
+
+    except Exception as e:
+                        allure.attach(  # use Allure package, .attach() method, pass 3 params
+                            driver.get_screenshot_as_png(),  # param1
+                            # driver.screenshot()
+                            name="full_page",  # param2
+                            attachment_type=AttachmentType.PNG,
+                        )
+                        raise e

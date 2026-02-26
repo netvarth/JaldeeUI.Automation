@@ -87,6 +87,55 @@ def create_user_data():
     return [first_name, last_name, cons_manual_id, phonenumber, email]
 
 
+
+
+
+
+# @pytest.fixture()
+# def login(request, url, username, password):
+#     chrome_options = webdriver.ChromeOptions()
+
+#     # ✅ ADD THIS FOR HEADLESS
+#     chrome_options.add_argument("--headless=new")
+#     chrome_options.add_argument("--window-size=1920,1080")
+#     chrome_options.add_argument("--disable-gpu")
+#     chrome_options.add_argument("--no-sandbox")
+
+#     chrome_options.add_experimental_option("prefs", {
+#         "credentials_enable_service": False,
+#         "profile.password_manager_enabled": False
+#     })
+
+#     prefs = {
+#         "credentials_enable_service": False,
+#         "profile.password_manager_enabled": False,
+#         "profile.password_manager_leak_detection_enabled": False,
+#         "password_manager_enabled": False,
+#     }
+
+#     chrome_options.add_experimental_option("prefs", prefs)
+
+#     chrome_options.add_argument("--disable-notifications")
+#     chrome_options.add_argument("--disable-infobars")
+#     chrome_options.add_argument("--disable-save-password-bubble")
+#     chrome_options.add_argument("--disable-password-manager-reauthentication")
+#     chrome_options.add_argument("--no-first-run")
+#     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
+#     chrome_options.add_argument("--incognito")
+
+#     driver = webdriver.Chrome(
+#         service=ChromeService(executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"),
+#         options=chrome_options
+#     )
+
+
+
+
+
+
+
+
+
 @pytest.fixture()
 def login(url, username, password):
     chrome_options = webdriver.ChromeOptions()
@@ -148,6 +197,7 @@ def login(url, username, password):
 
     finally:
         driver.quit()
+
 
 # @pytest.fixture()
 # def login(url, username, password):
@@ -287,6 +337,10 @@ def wait_and_send_keys(login, by, value, keys, timeout=30):
 def wait_for_text(login, by, value, timeout=30):
     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
     return element.text
+
+
+
+
 
 # def get_snack_bar_message(login, timeout=30):
 #     try:

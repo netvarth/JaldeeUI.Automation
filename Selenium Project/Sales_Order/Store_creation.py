@@ -22,7 +22,7 @@ from selenium.common.exceptions import TimeoutException
 def test_store_creation(login):
     try:
         time.sleep(3)
-        WebDriverWait(login, 10).until(
+        WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//img)[2]"))
         ).click()
