@@ -822,3 +822,929 @@ def test_create_sales_order_5(consumer_login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Creating a walk-in sales order and create a new label complete the order")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_6(login):
+    try:
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+        
+        
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+
+        option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
+        option1.click()
+    
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
+        ).click()
+        
+        first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        
+        consumer_name = f"{first_name} {last_name}"
+        print(f"Creating consumer: {consumer_name}")
+        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
+        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
+        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
+        ).click()
+    
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
+        time.sleep(3)
+        element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
+        click_to_element(login, element)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
+        ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[normalize-space()='Add Label'])[1]"
+        )
+
+        label_name = "Label_" + str(uuid.uuid4())[:4]
+        print("Label Name", label_name)
+
+        wait_and_locate_click(
+            login, By.XPATH, "//span[normalize-space()='Add New']"
+        )
+
+        wait_and_send_keys(
+            login, By.XPATH, "//input[@id='displayName']", label_name
+        )
+
+        wait_and_locate_click(
+            login, By.XPATH, "//span[@class='mdc-button__label']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//input[@type='checkbox'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            login, By.XPATH, "//span[normalize-space()='Done']"
+        )
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+        create_element = login.find_element(By.XPATH, "//button[@id='btnOdCng_ORD_CrtItem']")
+        scroll_to_element(login, create_element)
+        time.sleep(2)
+        create_element.click()
+        
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e 
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Creating a walk-in sales order with Label ")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_7(login):
+    try:
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+        
+        
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+
+        option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
+        option1.click()
+    
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
+        ).click()
+        
+        first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        
+        consumer_name = f"{first_name} {last_name}"
+        print(f"Creating consumer: {consumer_name}")
+        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
+        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
+        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
+        ).click()
+    
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
+        time.sleep(3)
+        element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
+        click_to_element(login, element)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
+        ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[normalize-space()='Add Label'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            login, By.XPATH, "(//input[@type='checkbox'])[2]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            login, By.XPATH, "//span[normalize-space()='Done']"
+        )
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+        create_element = login.find_element(By.XPATH, "//button[@id='btnOdCng_ORD_CrtItem']")
+        scroll_to_element(login, create_element)
+        time.sleep(2)
+        create_element.click()
+        
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+
+    
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Remove the Label from the order")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_8(login):
+    try:
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+    
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"
+        )
+
+        time.sleep(1)
+        element_store = login.find_element(By.XPATH, "//span[normalize-space()='B&B Stores']")
+
+        scroll_to_element(login, element_store)
+        time.sleep(1)
+        element_store.click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@id='btnViewOrdr_ORD_OrdsList'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "//i[@class='pi pi-times remove-label']"
+        )
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Assign user to the order")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_9(login):
+    try:
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+        
+        
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+
+        option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
+        option1.click()
+    
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
+        ).click()
+        
+        first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        
+        consumer_name = f"{first_name} {last_name}"
+        print(f"Creating consumer: {consumer_name}")
+        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
+        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
+        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
+        ).click()
+    
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
+        time.sleep(3)
+        element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
+        click_to_element(login, element)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
+        ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[normalize-space()='Add Label'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            login, By.XPATH, "(//input[@type='checkbox'])[2]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            login, By.XPATH, "//span[normalize-space()='Done']"
+        )
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(
+            login, By.XPATH, "(//i[@class='fa fa-user-plus'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "//div[@role='button']"
+        )
+
+        wait_and_locate_click(
+            login, By.XPATH, "//button[@id='btnAssignUser_FIN_finAction']"
+        )
+
+        msg = get_snack_bar_message(login)
+        print("Snac Bar Message: ", msg)
+        time.sleep(2)
+        
+
+        create_element = login.find_element(By.XPATH, "//button[@id='btnOdCng_ORD_CrtItem']")
+        scroll_to_element(login, create_element)
+        time.sleep(2)
+        create_element.click()
+        
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+
+    
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Remove the Label from the order")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_10(login):
+    try:
+        time.sleep(5)
+        wait = WebDriverWait(login, 30)
+    
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"
+        )
+
+        time.sleep(1)
+        element_store = login.find_element(By.XPATH, "//span[normalize-space()='B&B Stores']")
+
+        scroll_to_element(login, element_store)
+        time.sleep(1)
+        element_store.click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@id='btnViewOrdr_ORD_OrdsList'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//i[@class='fa fa-times'])[1]"
+        )
+
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[normalize-space()='Unassign'])[1]"
+        )
+
+        msg = get_snack_bar_message(login)
+        print("Sanck Bar Message :", msg)
+        time.sleep(3)
+
+        
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create invoice for a walk-in order assert user")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_11(login):
+    try:
+        time.sleep(3)
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(2)
+
+
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+
+        option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
+        option1.click()
+
+
+        time.sleep(2)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
+        ).click()
+        
+        first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
+        
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        
+        consumer_name = f"{first_name} {last_name}"
+        print(f"Creating consumer: {consumer_name}")
+        login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(str(first_name))
+        login.find_element(By.XPATH, "//input[@id='last_name']").send_keys(str(last_name))
+        login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
+        login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
+
+        time.sleep(3)
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
+        ).click()
+    
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
+        time.sleep(3)
+        element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
+        click_to_element(login, element)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[2]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
+        ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnCrtInv_ORD_CrtItem'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnViewInv_ORD_CrtItem'])[1]")
+
+        time.sleep(2)
+        created_by_element = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//div[contains(@class,'fw-bold') and contains(.,'Created By')]")
+            )
+        )
+
+        actual_text = created_by_element.text.strip()
+        print("Actual:", actual_text)
+
+        assert "Vijay Kumar" in actual_text
+
+
+
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create Order without customer")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_12(login):
+    try:
+        time.sleep(3)
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(2)
+
+
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
+        option1.click()
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//img[@src='./assets/images/menu/settings.png']"
+        )
+
+
+        time.sleep(2)
+        pos_option_element = driver.find_element(By.XPATH, "//div[normalize-space()='POS Ordering']")
+        scroll_to_element(driver, pos_option_element)
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//a[.//p[normalize-space()='Draft Order Creation With customer']]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[1]"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+
+        wait_and_locate_click(
+                    driver, By.XPATH, "(//img)[2]"
+                )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"
+        )
+
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
+        ).click()
+    
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+        ).click()
+
+        time.sleep(1)
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_CrtItemPop'])[1]"))
+        ).click()
+
+        time.sleep(3)
+
+        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
+        
+        time.sleep(3)
+        element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
+        click_to_element(login, element)
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSltVal_ORD_Vitem'])[2]"))
+        ).click()
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
+
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//button[@id='btnConf_ORD_CrtItem'])[1]"))
+        ).click()
+
+        message = get_toast_message(login)
+        print("Toast message:", message)
+
+        time.sleep(3)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]"
+        )
+
+        time.sleep(2)
+        pos_option_element = driver.find_element(By.XPATH, "//div[normalize-space()='POS Ordering']")
+        scroll_to_element(driver, pos_option_element)
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//a[.//p[normalize-space()='Draft Order Creation With customer']]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[1]"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create Order without customer")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_create_sales_order_13(login):
+    try:
+        time.sleep(3)
+        wait = WebDriverWait(login, 30)
+        driver = login
+        time.sleep(2)
+
+
+        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
+        option1.click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//img)[3]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[5]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            
+        )
+    except Exception as e:
+        allure.attach(
+            login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e

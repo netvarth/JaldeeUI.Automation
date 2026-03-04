@@ -492,14 +492,23 @@ def test_create_patient(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Create Case']"))
         ).click()
+        
+        time.sleep(3)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Add any initial observations or background information...']", "test case for case")
+        
+
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Case Description']"))
-        ).send_keys("test case for case")
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@type='button'][normalize-space()='Create Case'])[1]"
+        )
+
+        time.sleep(3)
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
-        ).click()
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']")
+            )
+        ).send_keys("Fever",Keys.RETURN)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']"))
