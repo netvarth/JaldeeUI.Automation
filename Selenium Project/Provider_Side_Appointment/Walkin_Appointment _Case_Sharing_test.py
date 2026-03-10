@@ -116,7 +116,7 @@ def test_without_prescription(login):
                 try:
                     next_button = WebDriverWait(login, 10).until(
                         EC.presence_of_element_located(
-                            (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                            (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
                     )
 
                     next_button.click()
@@ -142,15 +142,14 @@ def test_without_prescription(login):
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Create Case']")
     
         time.sleep(3)
-        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Case Description']", "test case for case")
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Add any initial observations or background information...']", "test case for case")
         
 
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Save']")
-            )
-        ).click()
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@type='button'][normalize-space()='Create Case'])[1]"
+        )
+        
 
         time.sleep(3)
 
@@ -592,7 +591,7 @@ def test_with_prescription(login):
                 try:
                     next_button = WebDriverWait(login, 10).until(
                         EC.presence_of_element_located(
-                            (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                            (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
                     )
 
                     next_button.click()
@@ -611,22 +610,21 @@ def test_with_prescription(login):
         )
         View_Detail_button.click()
 
-        time.sleep(3)
+        time.sleep(2)
+
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Patient Record']")
         
         login.implicitly_wait(5)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Create Case']")
     
         time.sleep(3)
-        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Case Description']", "test case for case")
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Add any initial observations or background information...']", "test case for case")
         
 
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Save']")
-            )
-        ).click()
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@type='button'][normalize-space()='Create Case'])[1]"
+        )
 
         time.sleep(3)
 
@@ -1085,7 +1083,7 @@ def test_Case_Status(login):
                 try:
                     next_button = WebDriverWait(login, 10).until(
                         EC.presence_of_element_located(
-                            (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                            (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
                     )
 
                     next_button.click()
@@ -1105,21 +1103,19 @@ def test_Case_Status(login):
         View_Detail_button.click()
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[contains(text(),'Patient Record')]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Patient Record']")
+        
+        login.implicitly_wait(5)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Create Case']")
+    
+        time.sleep(3)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Add any initial observations or background information...']", "test case for case")
+        
 
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Create Case']"))
-            ).click()
-
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Case Description']"))
-            ).send_keys("test case for case")
-
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
-            ).click()
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@type='button'][normalize-space()='Create Case'])[1]"
+        )
         
         time.sleep(2)
 
@@ -1371,7 +1367,7 @@ def test_treatment_plan(login):
                 try:
                     next_button = WebDriverWait(login, 10).until(
                         EC.presence_of_element_located(
-                            (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                            (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
                     )
 
                     next_button.click()
@@ -1391,21 +1387,19 @@ def test_treatment_plan(login):
         View_Detail_button.click()
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[contains(text(),'Patient Record')]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Patient Record']")
+        
+        login.implicitly_wait(5)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Create Case']")
+    
+        time.sleep(3)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Add any initial observations or background information...']", "test case for case")
+        
 
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Create Case']"))
-            ).click()
-
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Case Description']"))
-            ).send_keys("test case for case")
-
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
-            ).click()
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@type='button'][normalize-space()='Create Case'])[1]"
+        )
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
@@ -1841,7 +1835,7 @@ def test_treatment_plan_1(login):
                 try:
                     next_button = WebDriverWait(login, 10).until(
                         EC.presence_of_element_located(
-                            (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                            (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
                     )
 
                     next_button.click()
@@ -1861,21 +1855,19 @@ def test_treatment_plan_1(login):
         View_Detail_button.click()
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[contains(text(),'Patient Record')]"))
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Patient Record']")
+        
+        login.implicitly_wait(5)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Create Case']")
+    
+        time.sleep(3)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Add any initial observations or background information...']", "test case for case")
+        
 
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='+ Create Case']"))
-            ).click()
-
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Case Description']"))
-            ).send_keys("test case for case")
-
-        WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
-            ).click()
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@type='button'][normalize-space()='Create Case'])[1]"
+        )
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)

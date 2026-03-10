@@ -4584,7 +4584,7 @@ def test_confirmation_label_message_attachment(login):
                 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -4897,7 +4897,7 @@ def test_prescription_rxpush_predeployment(login):
                 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -5043,7 +5043,7 @@ def test_prescription_rxpush_predeployment(login):
                 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -5305,7 +5305,7 @@ def test_case_creation_treatplan_prescription_predeployment(login):
                 
                 next_button = WebDriverWait(login, 30).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -6057,7 +6057,7 @@ def test_auto_manual_invoice_adhoc_predeployment(login):
                 
                 next_button = WebDriverWait(login, 30).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -6287,7 +6287,7 @@ def test_auto_manual_invoice_adhoc_predeployment(login):
                 # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -6546,7 +6546,7 @@ def test_reschedule_cancel_predeployment(login):
                 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -6848,7 +6848,7 @@ def test_appointment_family_confirmation_attachment_predeployment(login):
                 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 

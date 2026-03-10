@@ -189,7 +189,7 @@ def test_Prescription(login):
                     EC.presence_of_element_located(
                         (
                             By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                            "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']",
                         )
                     )
                 )
@@ -522,7 +522,7 @@ def test_Prescription_1(login):
                     EC.presence_of_element_located(
                         (
                             By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                            "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']",
                         )
                     )
                 )
@@ -799,7 +799,7 @@ def test_Prescription_2(login):
                     EC.presence_of_element_located(
                         (
                             By.XPATH,
-                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                            "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']",
                         )
                     )
                 )
@@ -976,7 +976,7 @@ def test_Prescription_3(login):
                 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -1430,7 +1430,7 @@ def test_Prescription_4(login):
                 # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 
@@ -1775,7 +1775,7 @@ def test_Prescription_5(login):
                 # Attempt to locate the "Next" button using the button's class
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']")
                     )
                 )
 

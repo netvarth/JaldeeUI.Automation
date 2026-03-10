@@ -7692,7 +7692,7 @@ def test_IP_Management_30(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: ")
 @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management, password)])
-def test_IP_Management_(login):
+def test_IP_Management_31(login):
 
     try:
         driver = login
