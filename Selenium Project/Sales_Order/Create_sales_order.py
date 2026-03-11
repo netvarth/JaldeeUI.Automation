@@ -101,10 +101,7 @@ def test_create_sales_order_1(login):
 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
-
+ 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -284,8 +281,7 @@ def test_create_sales_order_2(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//i[@class='pi pi-check'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -655,8 +651,7 @@ def test_create_sales_order_4(login):
                 (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
         ).click()
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -828,8 +823,7 @@ def test_create_sales_order_5(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -991,8 +985,7 @@ def test_create_sales_order_6(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -1192,8 +1185,7 @@ def test_create_sales_order_8(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -1419,8 +1411,7 @@ def test_create_sales_order_10(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -1571,8 +1562,7 @@ def test_create_sales_order_11(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -2172,8 +2162,7 @@ def test_create_sales_order_14(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
@@ -2328,8 +2317,7 @@ def test_create_sales_order_15(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait_and_locate_click(
@@ -2482,8 +2470,7 @@ def test_create_sales_order_16(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(1)
         wait_and_locate_click(
@@ -2674,8 +2661,7 @@ def test_create_sales_order_17(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(1)
         wait_and_locate_click(
@@ -2864,8 +2850,7 @@ def test_create_sales_order_18(login):
                 (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
         ).click()
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        
 
         time.sleep(2)
         wait.until(
