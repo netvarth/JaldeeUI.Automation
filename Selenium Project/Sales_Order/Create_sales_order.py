@@ -731,7 +731,7 @@ def test_create_sales_order_5(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
-        
+        driver = login
         
         wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
 
@@ -834,7 +834,17 @@ def test_create_sales_order_5(login):
         message = get_toast_message(login)
         print("Toast message:", message)
 
-        time.sleep(3)
+        # time.sleep(3)
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "//button[@id='btnEdt_ORD_CrtItem']"
+        # )
+
+        # time.sleep(2)
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "(//button[normalize-space()='Yes'])[1]"
+        # )
+
+        time.sleep(2)
         wait_and_locate_click(
             login, By.XPATH, "(//button[normalize-space()='Add Label'])[1]"
         )
@@ -868,7 +878,7 @@ def test_create_sales_order_5(login):
         print("Snack Bar Message :", msg)
         time.sleep(3)
 
-        create_element = login.find_element(By.XPATH, "//button[@id='btnOdCng_ORD_CrtItem']")
+        create_element = login.find_element(By.XPATH, "//button[@id='btnUpdOrd_ORD_CrtItem']")
         scroll_to_element(login, create_element)
         time.sleep(2)
         create_element.click()
@@ -1294,8 +1304,6 @@ def test_create_sales_order_9(login):
             login, By.XPATH, "(//button[normalize-space()='Unassign'])[1]"
         )
 
-        msg = get_snack_bar_message(login)
-        print("Sanck Bar Message :", msg)
         time.sleep(3)
 
         
@@ -2280,9 +2288,9 @@ def test_create_sales_order_15(login):
         ).click()
 
         time.sleep(3)
-
-        wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
-        time.sleep(1)
+                                                            
+        # wait_and_locate_click(login,By.XPATH, "(//p-autocomplete[@id='inputSearch_ORD_ItemSrch'])[1]")
+        # time.sleep(1)
         wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Search items'])[1]", "item")
         
         time.sleep(3)
