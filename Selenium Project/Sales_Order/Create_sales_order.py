@@ -2964,4 +2964,243 @@ def test_create_sales_order_18(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Add Item from Wishlist to Cart after adding it to Wishlist.")
+@pytest.mark.parametrize("url", [sales_order_consumer_scale_url])
+def test_create_sales_order_19(consumer_login):
+   
+   
+    try:
+        time.sleep(3)
+        wait = WebDriverWait(consumer_login, 30)
+        driver = consumer_login
+        time.sleep(2)
+
+
+        item_element = driver.find_element(By.XPATH, "//h2[normalize-space()='Categories']")
+        scroll_to_element(driver, item_element)
+        time.sleep(2)
+        
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[contains(text(),'Item_1')]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnAddToCart']"
+        )
+
+        time.sleep(2)
+        item_element_1 = driver.find_element(By.XPATH, "//div[normalize-space()='Item_2']")
+        scroll_to_element(driver, item_element_1)
+        time.sleep(2)
+        item_element_1.click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnAddToCart']"
+        )
+
+        time.sleep(2)
+        item_element_2 = driver.find_element(By.XPATH, "//div[normalize-space()='Item_2']")
+        scroll_to_element(driver, item_element_1)
+        time.sleep(2)
+        item_element_2.click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnAddToCart']"
+        )
+
+
+
+
+        time.sleep(2)
+        wait_and_send_keys(
+            driver, By.XPATH, "(//input[@placeholder='81234 56789'])[1]", "9207206005"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//input[@type='checkbox'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSendOTP']"
+        )
+
+        time.sleep(2)
+
+        otp_digits = "5555"
+        # otp_digits = "55555"
+        # Wait for the OTP input fields to be present
+        otp_inputs = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//input[contains(@id, 'otp_')]")
+            )
+        )
+
+        # print("Number of OTP input fields:", len(otp_inputs))
+        # print(otp_inputs)
+
+        for i, otp_input in enumerate(otp_inputs):
+
+            # print(i)
+            # print(otp_input)
+            otp_input.send_keys(otp_digits[i])
+
+        consumer_login.find_element(By.XPATH, "//button[@id='btnVerifyOTP']").click()
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        
+        time.sleep(2)
+        element_item = driver.find_element(By.XPATH, "//div[normalize-space()='Item_8']")
+        scroll_to_element(driver, element_item)
+        time.sleep(2)
+        element_item.click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[normalize-space()='Add to Wishlist']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//i[@class='fa fa-heart-o wishlist-icon'])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//h3[normalize-space()='Item_8']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnAddToCart']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//img[@class='ms-1'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnCheckout']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//div[contains(text(),'Net Banking')])[1]"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
+        )
+
+        time.sleep(3)
+        # Store main window
+        main_window = driver.current_window_handle
+
+        # Wait for Razorpay iframe and switch
+        wait.until(
+            EC.frame_to_be_available_and_switch_to_it(
+                (By.CSS_SELECTOR, "iframe.razorpay-checkout-frame")
+            )
+        )
+
+        print("Switched to Razorpay iframe")
+
+        # Click Netbanking option
+        netbanking = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//div[@data-testid='netbanking']")
+            )
+        )
+        netbanking.click()
+
+        print("Netbanking selected")
+
+        # Select bank (Example: State Bank of India)
+        bank = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//span[contains(text(),'Kotak Mahindra Bank')]")
+            )
+        )
+        bank.click()
+
+        print("Bank selected")
+
+        # Exit iframe
+        driver.switch_to.default_content()
+
+        time.sleep(2)
+       # Store main window
+        main_window = driver.current_window_handle
+
+        print("Main window:", main_window)
+
+        # Wait for Razorpay simulator window
+        wait.until(lambda d: len(d.window_handles) > 1)
+
+        # Switch to Razorpay window
+        for window in driver.window_handles:
+            driver.switch_to.window(window)
+            if "mocksharp/payment" in driver.current_url:
+                print("Switched to Razorpay simulator:", driver.current_url)
+                break
+
+        # Wait for Success button
+        success_btn = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@data-val='S']"))
+        )
+
+        # Click success
+        driver.execute_script("arguments[0].click();", success_btn)
+
+        print("Success button clicked")
+
+        # Switch back to main window
+        driver.switch_to.window(main_window)
+
+        print("Returned to main window")
+
+
+        driver.implicitly_wait(30)
+        element_invoice = driver.find_element(By.XPATH, "//button[@id='btnInvoice']")
+        scroll_to_element(driver, element_invoice)
+        time.sleep(1)
+        element_invoice.click()
+
+
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(
+            consumer_login.get_screenshot_as_png(),
+            name="full_page_error",
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
     

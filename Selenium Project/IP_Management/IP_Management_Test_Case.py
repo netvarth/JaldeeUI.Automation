@@ -764,7 +764,7 @@ def test_IP_Management_3(login):
 
         time.sleep(2)
         wait_and_locate_click(
-            driver, By.XPATH, "(//img)[7]"
+            driver, By.XPATH, "(//img)[8]"
         )
 
         time.sleep(2)
@@ -3585,6 +3585,28 @@ def test_IP_Management_18(login):
 
 
         time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//img[@src='./assets/images/menu/settings.png']"
+        )
+
+        time.sleep(2)
+        pos_element = driver.find_element(By.XPATH, "//div[normalize-space()='POS Ordering']")
+        scroll_to_element(driver, pos_element)
+
+        time.sleep(2)
+        wait_and_locate_click(
+               driver, By.XPATH, "//li[.//span[contains(@class,'lnk') and contains(text(),'RX Push')]]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@role='switch']"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -3782,12 +3804,12 @@ def test_IP_Management_20(login):
             driver, By.XPATH, "//*[@id='btnQuickAction_IP_AD_DE_New_medical-record']"
         )
 
-        time.sleep(1)
+        time.sleep(2)
         wait_and_locate_click(
                driver, By.XPATH, "(//*[contains(@class,'btnSelectSection_IP_VL_VL')])[10]"
         )
 
-        time.sleep(1)
+        time.sleep(2)
         wait_and_locate_click(
                driver, By.XPATH, "(//button[normalize-space()='Choose RX Template'])[1]"
         )
@@ -7981,7 +8003,7 @@ def test_IP_Management_37(login):
 
         time.sleep(2)
         wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Diet Plans'])[1]"
+               driver, By.XPATH, "//span[normalize-space()='Diet Profile']"
         )
 
         time.sleep(1)
@@ -9305,10 +9327,17 @@ def test_IP_Management_41(login):
                driver, By.XPATH, "//li[@role='option']"
         )
 
+        time.sleep(3)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[name()='svg'][@class='p-dropdown-clear-icon p-icon'])[1]"
+        )
+
+        option = driver.find_element(By.XPATH, "(//li[contains(@class,'p-dropdown-item')])[last()-3]")
+        scroll_to_element(driver, option)
+        option.click()
+
         time.sleep(2)
-        duration_element = driver.find_element(By.XPATH, "//input[@placeholder='Duration (mins)']")
-        duration_element.click()
-        time.sleep(1)
+        duration_element = driver.find_element(By.XPATH, "(//input[@placeholder='Duration (mins)'])[1]")
         duration_element.clear()
         time.sleep(1)
         duration_element.send_keys("2")
@@ -10630,15 +10659,32 @@ def test_IP_Management_49(login):
                driver, By.XPATH, "//*[@id='btnAddService_IP_AD_DE_New']"
         )
 
-        time.sleep(1)
+        time.sleep(2)
         wait_and_send_keys(
-               driver, By.XPATH, "//input[@placeholder='Search Service']", "Doc"
+            driver, By.XPATH, "(//input[@placeholder='Search Service'])[1]", "Doc"
         )
 
-        time.sleep(2)
+        time.sleep(1)
         wait_and_locate_click(
-               driver, By.XPATH, "//li[@role='option']"
+               driver, By.XPATH, "(//li[@role='option'])[1]"
         )
+
+        time.sleep(3)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[name()='svg'][@class='p-dropdown-clear-icon p-icon'])[1]"
+        )
+
+        option = driver.find_element(By.XPATH, "(//li[contains(@class,'p-dropdown-item')])[last()-3]")
+        scroll_to_element(driver, option)
+        option.click()
+
+        time.sleep(2)
+        duration_element = driver.find_element(By.XPATH, "(//input[@placeholder='Duration (mins)'])[1]")
+        duration_element.clear()
+        time.sleep(1)
+        duration_element.send_keys("2")
+
+        time.sleep(2)
 
         wait_and_locate_click(
                driver, By.XPATH, "//p-multiselect[@placeholder='Select Doctors']"
@@ -10713,21 +10759,24 @@ def test_IP_Management_49(login):
                driver, By.XPATH, "(//mat-icon[@role='img'])[1]"
         )
 
+
         time.sleep(1)
         wait_and_locate_click(
-               driver, By.XPATH, "//button[@id='btnApplyDisc_Room_IP_Invoice']"
+               driver, By.XPATH, "//button[@id='btnApplyDisc_Service_IP_Invoice']"
         )
 
-        time.sleep(2)
-        dropdown = Select(driver.find_element(By.ID, "slctOrderDiscount_IP_Invoice"))
-        dropdown.select_by_visible_text("On Demand Discount")
-
 
         time.sleep(2)
-        discount_amount = random.randint(50, 100)
-        wait_and_send_keys(login, By.XPATH, "(//input[@id='inptDiscAmt_IP_Invoice'])[1]", discount_amount)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//option[normalize-space()='On Demand Discount'])[2]"))
+            ).click()
 
-        wait_and_locate_click(login, By.XPATH, "//button[@id='btnApplyDiscount_IP_Invoice']")
+        time.sleep(2)
+        discount_amount = random.randint(20, 100)
+        wait_and_send_keys(login, By.XPATH, "//input[@id='inptItemDiscAmt_IP_Invoice']", discount_amount)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnApplyItemDiscount_IP_Invoice']")
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
@@ -11875,3 +11924,4 @@ def test_IP_Management_51(login):
                         attachment_type=AttachmentType.PNG,
                     )
                     raise e
+
