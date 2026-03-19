@@ -2,6 +2,7 @@
 from Framework.common_utils import *
 from Framework.consumer_common_utils import *
 
+driver = login
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Creating a walk-in sales order and invoice, and Share payment link")
@@ -10,9 +11,9 @@ def test_create_sales_order_1(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
+        driver = login
         
-        
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
@@ -43,19 +44,15 @@ def test_create_sales_order_1(login):
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"
+        )            
     
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
-        ).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -162,7 +159,7 @@ def test_create_sales_order_1(login):
 
         # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[7]//span"
+            By.XPATH, "./td[6]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -187,7 +184,7 @@ def test_create_sales_order_2(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
-
+        driver = login
 
         wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
@@ -232,7 +229,7 @@ def test_create_sales_order_2(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -346,7 +343,7 @@ def test_create_sales_order_2(login):
 
         # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[7]//span"
+            By.XPATH, "./td[6]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -371,7 +368,7 @@ def test_create_sales_order_3(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
-
+        driver = login
 
         
         wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
@@ -401,23 +398,22 @@ def test_create_sales_order_3(login):
         login.find_element(By.XPATH, "//*[@id='phone']").send_keys(phonenumber)
         login.find_element(By.XPATH, "//ngx-intl-tel-input[@name='whatsApp']//input[@id='phone']").send_keys(phonenumber)
         login.find_element(By.XPATH, "//input[@id='email_id']").send_keys(email)
+        time.sleep(1)
         login.find_element(By.XPATH, "//span[contains(text(),'Save')]").click()
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"
+        )
     
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"
+        )
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -531,7 +527,7 @@ def test_create_sales_order_3(login):
 
         # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[7]//span"
+            By.XPATH, "./td[6]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -552,7 +548,7 @@ def test_create_sales_order_4(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
-
+        driver = login
 
         
         wait_and_locate_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
@@ -598,7 +594,7 @@ def test_create_sales_order_4(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -710,7 +706,7 @@ def test_create_sales_order_4(login):
 
         # Status (td[5])
         first_row_status = first_row.find_element(
-            By.XPATH, "./td[7]//span"
+            By.XPATH, "./td[6]//span"
         ).text.strip()
 
         print(f"First row -> Consumer: {first_row_consumer}, Status: {first_row_status}")
@@ -733,7 +729,7 @@ def test_create_sales_order_5(login):
         wait = WebDriverWait(login, 30)
         driver = login
         
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
@@ -776,7 +772,7 @@ def test_create_sales_order_5(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -878,13 +874,11 @@ def test_create_sales_order_5(login):
         print("Snack Bar Message :", msg)
         time.sleep(3)
 
-        create_element = login.find_element(By.XPATH, "//button[@id='btnUpdOrd_ORD_CrtItem']")
+        create_element = login.find_element(By.XPATH, "//button[@id='btnOdCng_ORD_CrtItem']")
         scroll_to_element(login, create_element)
         time.sleep(2)
         create_element.click()
         
-        msg = get_toast_message(login)
-        print("Toast Message :", msg)
         time.sleep(3)
 
     except Exception as e:
@@ -903,9 +897,9 @@ def test_create_sales_order_6(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
+        driver = login
         
-        
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
@@ -948,7 +942,7 @@ def test_create_sales_order_6(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -1103,9 +1097,9 @@ def test_create_sales_order_8(login):
     try:
         time.sleep(5)
         wait = WebDriverWait(login, 30)
+        driver = login
         
-        
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
@@ -1136,19 +1130,16 @@ def test_create_sales_order_8(login):
 
         time.sleep(3)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"
+        )            
     
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
-        ).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -1328,7 +1319,7 @@ def test_create_sales_order_10(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
 
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
@@ -1372,7 +1363,7 @@ def test_create_sales_order_10(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -1471,7 +1462,7 @@ def test_create_sales_order_11(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
 
@@ -1523,7 +1514,7 @@ def test_create_sales_order_11(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -1625,7 +1616,7 @@ def test_create_sales_order_12(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
 
@@ -2044,7 +2035,7 @@ def test_create_sales_order_14(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
         
@@ -2123,7 +2114,7 @@ def test_create_sales_order_14(login):
         ).click()
 
         time.sleep(2)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -2220,7 +2211,7 @@ def test_create_sales_order_15(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
         
@@ -2278,7 +2269,7 @@ def test_create_sales_order_15(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -2373,7 +2364,7 @@ def test_create_sales_order_16(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
         
@@ -2431,7 +2422,7 @@ def test_create_sales_order_16(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -2564,7 +2555,7 @@ def test_create_sales_order_17(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
         
@@ -2622,7 +2613,7 @@ def test_create_sales_order_17(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -2806,7 +2797,7 @@ def test_create_sales_order_18(login):
         ).click()
 
         time.sleep(1)
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
 
         time.sleep(2)
@@ -2979,7 +2970,7 @@ def test_create_sales_order_19(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
 
@@ -3316,7 +3307,7 @@ def test_create_sales_order_21(login):
         time.sleep(2)
 
 
-        wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))).click()
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         option1 = wait.until(EC.presence_of_element_located((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")))
         option1.click()
 

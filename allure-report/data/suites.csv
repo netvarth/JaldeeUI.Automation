@@ -1,0 +1,2 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","25234","Verify Invoice Adjustment and Refund When Order Quantity Is Reduced After Payment","Selenium Project.Sales_Order","Tue Mar 17 17:09:58 IST 2026","broken","Tue Mar 17 17:10:23 IST 2026","","Create_sales_order","",""
