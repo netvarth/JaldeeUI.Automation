@@ -21,13 +21,13 @@ from selenium.common.exceptions import TimeoutException
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_delivery_profile(login):
     try:
-        time.sleep(2)
+        time.sleep(3)
         wait_and_locate_click(login, By.XPATH, 
                               "(//img)[2]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH,  
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[11]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
@@ -110,7 +110,6 @@ def test_create_delivery_profile(login):
             attachment_type=AttachmentType.PNG,
         ) 
         raise e
-    
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create the Delivery Profile with Empty Fields")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
@@ -122,7 +121,7 @@ def test_create_delivery_profile_with_empty_fields(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[11]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
@@ -154,7 +153,7 @@ def test_create_delivery_profile_with_empty_price_range(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[11]")
+                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 

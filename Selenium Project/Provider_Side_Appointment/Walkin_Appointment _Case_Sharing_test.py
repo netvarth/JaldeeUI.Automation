@@ -117,7 +117,7 @@ def test_without_prescription(login):
                     next_button = WebDriverWait(login, 10).until(
                         EC.presence_of_element_located(
                             (By.XPATH, "//button[@class='p-ripple p-element p-paginator-last p-paginator-element p-link ng-star-inserted']"))
-                    )
+                    )                   
 
                     next_button.click()
 

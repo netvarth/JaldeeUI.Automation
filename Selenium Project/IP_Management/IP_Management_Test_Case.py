@@ -5329,15 +5329,15 @@ def test_IP_Management_31(login):
                driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]"
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
+        # )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
+        # )
 
         time.sleep(2)
 
@@ -5837,15 +5837,15 @@ def test_IP_Management_32(login):
                driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]"
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
+        # )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
+        # )
 
         time.sleep(2)
 
@@ -6350,15 +6350,15 @@ def test_IP_Management_33(login):
                driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]"
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
+        # )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
+        # )
 
         time.sleep(2)
 
@@ -6858,15 +6858,15 @@ def test_IP_Management_34(login):
                driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]"
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
+        # )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
+        # )
 
         time.sleep(2)
 
@@ -7369,15 +7369,15 @@ def test_IP_Management_35(login):
                driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]"
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
+        # )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
+        # )
 
         time.sleep(2)
 
@@ -7901,15 +7901,15 @@ def test_IP_Management_36(login):
                driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]"
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[normalize-space()='Select Floor'])[1]"
+        # )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #        driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='1st floor'])[1]"
+        # )
 
         time.sleep(2)
 
@@ -8463,6 +8463,22 @@ def test_IP_Management_38(login):
         wait_and_locate_click(
                driver, By.XPATH, "//li[@role='option']"
         )
+
+        time.sleep(3)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[name()='svg'][@class='p-dropdown-clear-icon p-icon'])[1]"
+        )
+
+        option = driver.find_element(By.XPATH, "(//li[contains(@class,'p-dropdown-item')])[last()-3]")
+        scroll_to_element(driver, option)
+        option.click()
+
+        time.sleep(2)
+        duration_element = driver.find_element(By.XPATH, "(//input[@placeholder='Duration (mins)'])[1]")
+        duration_element.clear()
+        time.sleep(1)
+        duration_element.send_keys("2")
+
 
         wait_and_locate_click(
                driver, By.XPATH, "//p-multiselect[@placeholder='Select Doctors']"

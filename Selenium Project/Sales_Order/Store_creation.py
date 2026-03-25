@@ -567,13 +567,15 @@ def test_store_filter_storestatus(login):
         # Get all rows in the table
         table_rows = table_body.find_elements(By.XPATH, ".//tr")
 
-        # Check if all store status
-        for row in table_rows:
-            # Locate the cell containing the store location (adjust column index based on actual table structure)
-            store_status = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only'][3]").text
+        for index, row in enumerate(table_rows, start=1):
+            store_status = row.find_element(By.XPATH, ".//td[@class='desktop-only'][3]").text
+
+            if store_status == "Active":
+                print(f"Row {index}: PASS ✅ - Status is Active")
+            else:
+                print(f"Row {index}: FAIL ❌ - Found '{store_status}' instead of 'Active'")
             
-            # Assert that the store status
-            assert store_status == "Active", f"Store Status '{store_status}' does not match the filter 'Active'"
+            assert store_status == "Active", f"Row {index}: Store Status '{store_status}' does not match 'Active'"
 
         
 
@@ -615,14 +617,18 @@ def test_store_filter_storestatus(login):
         table_rows = table_body.find_elements(By.XPATH, ".//tr")
 
         # Check if all store status
-        for row in table_rows:
-            # Locate the cell containing the store location (adjust column index based on actual table structure)
-            store_status = row.find_element(By.XPATH, "//tbody/tr/td[@class='desktop-only'][3]").text
-            
-            # Assert that the store status
-            assert store_status == "Inactive", f"Store Status '{store_status}' does not match the filter 'Inactive'"
+        for index, row in enumerate(table_rows, start=1):
+            store_status = row.find_element(By.XPATH, ".//td[@class='desktop-only'][3]").text
 
-        print ("test result")
+            if store_status == "Inactive":
+                print(f"Row {index}: PASS ✅ - Status is Inactive")
+            else:
+                print(f"Row {index}: FAIL ❌ - Found '{store_status}' instead of 'Inactive'")
+            
+            assert store_status == "Inactive", f"Row {index}: Store Status '{store_status}' does not match 'Inactive'"
+        
+
+        time.sleep(3)
     except Exception as e: 
         allure.attach(  
             login.get_screenshot_as_png(),  
@@ -630,6 +636,12 @@ def test_store_filter_storestatus(login):
             attachment_type=AttachmentType.PNG,
         ) 
         raise e 
+    
+
+
+
+
+
     
 
 

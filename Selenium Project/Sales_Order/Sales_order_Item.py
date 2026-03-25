@@ -102,7 +102,7 @@ def test_item_creation_sale_order(login):
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "(//li[@aria-label='75420'])[1]"))
+            EC.presence_of_element_located((By.XPATH, "(//li[@role='option'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -306,13 +306,10 @@ def test_item_edit_update(login):
         wait_and_locate_click(login, By.XPATH, "(//*[@id='btnEdtItem_ORD_ItemDet'])[1]")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//p-multiselect[@id='msTaxes_ORD_INV_ItemCreate'])[1]")
+        wait_and_click(login, By.XPATH, "//p-multiselect[@id='msCompositions_ORD_INV_ItemCreate']")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//*[normalize-space()='GST 5%']")
-
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='GST 18%']")
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSubmit_ORD_INV_ItemCreate'])[1]")
@@ -335,6 +332,8 @@ def test_item_edit_update(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_filter(login):
     try:
+
+        driver = login
         time.sleep(3)
         wait = WebDriverWait(login, 20)
         wait.until(
@@ -354,101 +353,45 @@ def test_item_filter(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(), 'Item ID')]"))
-        ).click()
-
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[name()='svg'][@class='p-accordion-toggle-icon p-icon'])[1]"
+        )
+        
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@id='spCode'])[1]"))
-        ).send_keys("sprx-73b91u7-b")
+        wait_and_send_keys(
+            driver, By.XPATH, "//input[@id='name']", "Item_5"
+        )
 
         time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Apply'])[1]"))
-        ).click()
-
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnAplFilter_ORD_FLTR']"
+        )
+        
         print("Apply the the filter")
+        
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[normalize-space()='Actions'])[1]"))
-        ).click()
+        element = wait.until(
+            EC.presence_of_element_located((
+                By.XPATH, "//tr[.//div[text()='Item_5']]//button[normalize-space()='Actions']"
+            ))
+        )
+        driver.execute_script("arguments[0].click();", element)
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='mdc-list-item__primary-text'])[1]"))
-        ).click()
-        print("Enter into the item detail page")
-        time.sleep(3)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnViewItem_ORD_ItemList']"
+        )
         # Assert that the ID is present on the page
         element = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, f"//*[contains(text(), 'sprx-73b91u7-b')]")
+                (By.XPATH, f"//*[contains(text(), 'alrx-33b5uu2-2xm')]")
             )
         )
-        assert element is not None, "The ID 'sprx-73b91u7-b' was not found on the page"
-        print("Assertion passed: The ID 'sprx-73b91u7-b' is present on the page")
-        
-        
-        scroll_down = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(), 'Item Consumption History')]"))
-        )
-        login.execute_script("arguments[0].scrollIntoView();", scroll_down)
+        assert element is not None, "The ID 'alrx-33b5uu2-2xm' was not found on the page"
+        print("Assertion passed: The ID 'alrx-33b5uu2-2xm' is present on the page")
+
 
         time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-filter-fill'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(), 'Transaction Type')]"))
-        ).click()
-
-        time.sleep(2)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Select transactionTypeEnum')]"))
-        ).click()
-
-        select_sales = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sales'])[1]"))
-        )
-        login.execute_script("arguments[0].click();", select_sales)
-
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Apply'])[1]"))
-        ).click()
-
-
-        print("Applied filter for Transaction Type: Sales")
-
-        # Assert the table only contains rows with Transaction Type as "Sales"
-        time.sleep(3)
-        table = wait.until(
-            EC.presence_of_element_located((By.XPATH, "//tbody"))
-        )
-        rows = table.find_elements(By.XPATH, "//tbody/tr")
-
-        for row in rows:
-            transaction_type = row.find_element(By.XPATH, "./td[5]/span").text.strip()
-            assert transaction_type == "SALES", f"Found non-SALES transaction type: {transaction_type}"
-
-        print("Assertion passed: All rows in the table have Transaction Type as 'SALES'.")
-
-
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),

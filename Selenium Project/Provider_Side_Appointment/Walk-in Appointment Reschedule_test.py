@@ -523,15 +523,17 @@ def test_prepaymentbooking_reschedule(con_login):
         WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
         ).send_keys("9207206005")
+ 
 
-        con_login.find_element(
-            By.XPATH, "//span[@class='continue ng-star-inserted']"
-        ).click()
+        time.sleep(1)
+        wait_and_locate_click(
+            con_login, By.XPATH, "//button[@id='btnSendOTP']"
+        )
 
-        time.sleep(5)
+        time.sleep(2)
 
         otp_digits = "5555"
-
+        # otp_digits = "55555"
         # Wait for the OTP input fields to be present
         otp_inputs = WebDriverWait(con_login, 10).until(
             EC.presence_of_all_elements_located(
@@ -548,85 +550,89 @@ def test_prepaymentbooking_reschedule(con_login):
             # print(otp_input)
             otp_input.send_keys(otp_digits[i])
 
-        con_login.find_element(
-            By.XPATH,
-            "//div[@class='form-group otp text-center']//button[@type='button']",
-        ).click()
+        con_login.find_element(By.XPATH, "//button[@id='btnVerifyOTP']").click()
 
-        WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'NET BANKING')]")
-            )
-        ).click()
+        msg = get_toast_message(con_login)
+        print("Toast Message :", msg)
+
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            con_login, By.XPATH, "//mat-radio-button//div[contains(text(),'NET BANKING')]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            con_login, By.XPATH, "//button[@id='btnConfirm']"
+        )
 
         time.sleep(3)
-        makepayment = WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//span[@class='mdc-button__label']",
-                )
-            ) 
-        )
+        # Store main window
+        main_window = con_login.current_window_handle
 
-        con_login.execute_script("window.scrollTo(0, document.body.scrollHeight);") 
-         
-        con_login.execute_script("arguments[0].click();", makepayment)
-
-        time.sleep(5)
-
-        # Switch to the iframe containing the Razorpay modal
-        razorpay_iframe = WebDriverWait(con_login, 10).until(
-            EC.presence_of_element_located((By.CLASS_NAME, "razorpay-checkout-frame"))
-        )
-        con_login.switch_to.frame(razorpay_iframe)
-        print("Switched to Razorpay iframe")
-
-        # Select bank option (e.g., State Bank of India)
-        bank_option = WebDriverWait(con_login, 20).until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//span[contains(@class, 'font-medium text-on-surface') and text()='State Bank of India']")
+        # Wait for Razorpay iframe and switch
+        wait.until(
+            EC.frame_to_be_available_and_switch_to_it(
+                (By.CSS_SELECTOR, "iframe.razorpay-checkout-frame")
             )
         )
-        con_login.execute_script("arguments[0].click();", bank_option)
-        print("Selected bank option")
 
+        print("Switched to Razorpay iframe")
 
-        main_window_handle = con_login.current_window_handle
-        WebDriverWait(con_login, 10).until(EC.new_window_is_opened)
-        all_window_handles = con_login.window_handles
+        # Click Netbanking option
+        netbanking = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//div[@data-testid='netbanking']")
+            )
+        )
+        netbanking.click()
 
-        new_window_handle = None
-        for handle in all_window_handles:
-            if handle != main_window_handle:
-                new_window_handle = handle
+        print("Netbanking selected")
+
+        # Select bank (Example: State Bank of India)
+        bank = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//span[contains(text(),'Kotak Mahindra Bank')]")
+            )
+        )
+        bank.click()
+
+        print("Bank selected")
+
+        # Exit iframe
+        con_login.switch_to.default_content()
+
+        time.sleep(2)
+       # Store main window
+        main_window = con_login.current_window_handle
+
+        print("Main window:", main_window)
+
+        # Wait for Razorpay simulator window
+        wait.until(lambda d: len(d.window_handles) > 1)
+
+        # Switch to Razorpay window
+        for window in con_login.window_handles:
+            con_login.switch_to.window(window)
+            if "mocksharp/payment" in con_login.current_url:
+                print("Switched to Razorpay simulator:", con_login.current_url)
                 break
 
-        if new_window_handle:
-            con_login.switch_to.window(new_window_handle)
+        # Wait for Success button
+        success_btn = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@data-val='S']"))
+        )
 
-            time.sleep(3)
-            WebDriverWait(con_login, 10).until(
-                EC.presence_of_element_located((By.XPATH, "//button[@data-val='S' and contains(@class, 'success')]"))
-            ).click()
+        # Click success
+        con_login.execute_script("arguments[0].click();", success_btn)
 
-            con_login.switch_to.window(main_window_handle)
-        
-        print("success")
-        time.sleep(5)
+        print("Success button clicked")
 
-        try:
-                snack_bar = WebDriverWait(con_login, 10).until(
-                    EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-                )
-                message = snack_bar.text
-                print("Snack bar message:", message)
-        except:
-                snack_bar = WebDriverWait(con_login, 10).until(
-                    EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-                )
-                message = snack_bar.text
-                print("Snack bar message:", message)
+        # Switch back to main window
+        con_login.switch_to.window(main_window)
+
+        print("Returned to main window")
 
 
         time.sleep(3)

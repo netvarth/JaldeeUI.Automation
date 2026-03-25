@@ -89,7 +89,7 @@ def test_create_purchase(login):
         time.sleep(3)
 
         item_list = ["Item_1"]
-        random_batch_number = str(random.randint(100, 1000))
+        random_batch_number = str(random.randint(500, 1000))
         time.sleep(3)
         
         for item in item_list:
@@ -187,7 +187,7 @@ def test_create_purchase(login):
             qty.click()
             qty.clear()
 
-            qty_random_number = str(random.randint(15, 50))
+            qty_random_number = str(random.randint(40, 80))
             qty.send_keys(qty_random_number)
             print("Qty Of Item:", qty_random_number)
 
@@ -209,7 +209,7 @@ def test_create_purchase(login):
             )
             mrpprice.click()
             mrpprice.clear()
-            mrpprice_random_number = str(random.randint(100, 200))
+            mrpprice_random_number = str(random.randint(400, 500))
             mrpprice.send_keys(mrpprice_random_number)
             print("MRP of the item:", mrpprice_random_number)
 
@@ -221,7 +221,7 @@ def test_create_purchase(login):
             )
             price.click()
             price.clear()
-            price_random_number = str(random.randint(40, 90))
+            price_random_number = str(random.randint(300, 399))
             price.send_keys(price_random_number)
             print("Price of the item:", price_random_number)
 

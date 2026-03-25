@@ -301,7 +301,7 @@ def test_invoice_type_5(login):
 
 
 
-        time.sleep(1)
+        time.sleep(3)
         wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
@@ -351,8 +351,8 @@ def test_invoice_type_5(login):
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "(//span[@id='actionSltBatch_ORD_CrtItem'])[1]")
 
         time.sleep(2)
         wait.until(
