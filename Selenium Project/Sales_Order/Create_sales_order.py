@@ -49,7 +49,7 @@ def test_create_sales_order_1(login):
         )            
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -226,7 +226,7 @@ def test_create_sales_order_2(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -410,7 +410,7 @@ def test_create_sales_order_3(login):
     
         time.sleep(2)
         wait_and_locate_click(
-            driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"
+            driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"
         )
 
         time.sleep(1)
@@ -591,7 +591,7 @@ def test_create_sales_order_4(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -769,7 +769,7 @@ def test_create_sales_order_5(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -939,7 +939,7 @@ def test_create_sales_order_6(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -1136,7 +1136,7 @@ def test_create_sales_order_8(login):
         )            
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
 
         time.sleep(1)
@@ -1360,7 +1360,7 @@ def test_create_sales_order_10(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -1511,7 +1511,7 @@ def test_create_sales_order_11(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -2111,7 +2111,7 @@ def test_create_sales_order_14(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -2266,7 +2266,7 @@ def test_create_sales_order_15(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -2419,7 +2419,7 @@ def test_create_sales_order_16(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -2610,7 +2610,7 @@ def test_create_sales_order_17(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -2794,7 +2794,7 @@ def test_create_sales_order_18(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
+                (By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"))
         ).click()
 
         time.sleep(1)
@@ -3849,7 +3849,7 @@ def test_create_sales_order_24(login):
     
         time.sleep(2)
         wait_and_locate_click(
-            driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"
+            driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]"
         )
 
         time.sleep(1)
@@ -4118,7 +4118,7 @@ def test_create_sales_order_25(login):
         )            
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -4304,7 +4304,7 @@ def test_create_sales_order_26(login):
         )            
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -4439,7 +4439,7 @@ def test_create_sales_order_27(login):
         )            
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -4566,7 +4566,7 @@ def test_create_sales_order_28(login):
         )            
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -4687,7 +4687,7 @@ def test_create_sales_order_29(login):
         )           
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -4809,7 +4809,7 @@ def test_create_sales_order_30(login):
         )            
     
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -5551,7 +5551,7 @@ def test_invoice_type_5(login):
         time.sleep(3)
         wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
-        wait_and_locate_click(driver, By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -6006,6 +6006,7 @@ def test_inventory_catalog_enable_disable_with_toggle(login):
 
             time.sleep(3)
             login.refresh()
+            
             time.sleep(5)
 
             new_switch = wait.until(EC.presence_of_element_located(
