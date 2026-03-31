@@ -14,7 +14,7 @@ from selenium.common.exceptions import TimeoutException
 @allure.title("Creating the item")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_creation_1(login):
-
+    driver = login
     wait = WebDriverWait(login, 30)
     try:
         time.sleep(5)
@@ -126,8 +126,15 @@ def test_item_creation_1(login):
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='GST 5%']"))
         ).click()
-
+        
         time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[@id='selTaxPref_ORD_INV_ItemCreate'])[1]"
+        )
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[normalize-space()='Taxable'])[1]"
+        )
 
         scroll_to_window(login)
         time.sleep(1)
@@ -152,7 +159,7 @@ def test_item_creation_1(login):
 @allure.title("Creating the item with item option")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_creation_2(login):
-
+    driver = login
     wait = WebDriverWait(login, 30)
     try:
         time.sleep(5)
@@ -274,6 +281,13 @@ def test_item_creation_2(login):
         ).click()
 
         time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[@id='selTaxPref_ORD_INV_ItemCreate'])[1]"
+        )
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[normalize-space()='Taxable'])[1]"
+        )
 
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
@@ -335,7 +349,7 @@ def test_item_creation_2(login):
 @allure.title("Creating the item wit Batch Enabled")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_creation_3(login):
-
+    driver = login
     wait = WebDriverWait(login, 30)
     try:
         time.sleep(5)
@@ -457,6 +471,13 @@ def test_item_creation_3(login):
         ).click()
 
         time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[@id='selTaxPref_ORD_INV_ItemCreate'])[1]"
+        )
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[normalize-space()='Taxable'])[1]"
+        )
 
         scroll_to_window(login)
         time.sleep(1)
@@ -482,13 +503,16 @@ def test_item_creation_3(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_disable_and_enabled(login):
     try:
+        driver = login
+        time.sleep(5)
         # ---- Navigate to Items ----
-        WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[3]"))
-        ).click()
+        wait_and_locate_click(
+            driver, By.XPATH, "(//img)[3]"
+        )
 
+        time.sleep(2)
         WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[3]"))
+            EC.presence_of_element_located((By.XPATH, "(//*[@id='actionNav_ORD_Inventory'])[3]"))
         ).click()
 
         # ---- Row 1 locators ----
@@ -497,6 +521,7 @@ def test_item_disable_and_enabled(login):
         actions_btn_xpath = "(//table[@role='table']//tbody/tr[1]//button[@aria-haspopup='menu' and normalize-space()='Actions'])[1]"
         overlay_xpath = "//div[contains(@class,'cdk-overlay-pane')]"
 
+        time.sleep(3)
         # ================== DISABLE ==================
         # Open Actions (scroll into view + retry)
         btn = WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, actions_btn_xpath)))

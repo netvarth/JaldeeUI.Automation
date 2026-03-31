@@ -3420,11 +3420,11 @@ def test_IP_Management_18(login):
     try:
         wait = WebDriverWait(login, 30)
         driver = login
-        time.sleep(3)
+        time.sleep(5)
 
 
         wait_and_locate_click(
-               driver, By.XPATH, "(//a[@class='menu-link menu-toggle'])[10]"
+               driver, By.XPATH, "(//a[@class='menu-link menu-toggle'])[11]"
         )
 
         time.sleep(2)
@@ -4781,7 +4781,7 @@ def test_IP_Management_30(login):
     try:
         wait = WebDriverWait(login, 30)
         driver = login
-        time.sleep(3)
+        time.sleep(5)
 
         wait_and_locate_click(
                driver, By.XPATH, "(//img)[5]"
@@ -6538,7 +6538,7 @@ def test_IP_Management_34(login):
     try:
         wait = WebDriverWait(login, 30)
         driver = login
-        time.sleep(3)
+        time.sleep(5)
 
         wait_and_locate_click(
                driver, By.XPATH, "(//img)[5]"
@@ -7054,7 +7054,7 @@ def test_IP_Management_35(login):
     try:
         wait = WebDriverWait(login, 30)
         driver = login
-        time.sleep(3)
+        time.sleep(5)
 
         wait_and_locate_click(
                driver, By.XPATH, "(//img)[5]"

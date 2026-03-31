@@ -14,7 +14,7 @@ from Framework.common_dates_utils import *
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_stock_adjustment(login):
     try:
-
+        driver = login
         time.sleep(3)
         wait = WebDriverWait(login, 20)
         wait.until(EC.presence_of_element_located((By.XPATH, "(//img)[3]"))).click()
@@ -72,10 +72,47 @@ def test_stock_adjustment(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@type='checkbox'])[7]"))
-        ).click()
+        item_name = "Item_6 White"
+        item_found = False
+
+        while True:
+            # Wait for table rows
+            rows = wait.until(EC.presence_of_all_elements_located(
+                (By.XPATH, "//table[@role='table']//tbody/tr")
+            ))
+
+            for row in rows:
+                try:
+                    name = row.find_element(By.XPATH, ".//td[2]//span").text.strip()
+
+                    if name == item_name:
+                        checkbox = row.find_element(By.XPATH, ".//td[1]//input[@type='checkbox']")
+                        driver.execute_script("arguments[0].click();", checkbox)
+                        print(f"{item_name} found and selected")
+                        item_found = True
+                        break
+                except:
+                    continue
+
+            if item_found:
+                break
+
+            # Check if NEXT button is enabled
+            try:
+                next_btn = driver.find_element(By.XPATH, "//button[contains(@class,'p-paginator-next')]")
+
+                if "p-disabled" in next_btn.get_attribute("class"):
+                    print("Item not found in any page")
+                    break
+                else:
+                    driver.execute_script("arguments[0].click();", next_btn)
+
+                    # wait for table refresh
+                    wait.until(EC.staleness_of(rows[0]))
+
+            except Exception as e:
+                print("Pagination ended or error:", e)
+                break
 
 
         wait.until(

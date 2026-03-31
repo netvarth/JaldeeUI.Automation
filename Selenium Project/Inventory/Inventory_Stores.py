@@ -882,7 +882,7 @@ def test_Expense_Conversion(login):
         assert status_text == "APPROVED", f"Expected status to be 'APPROVED', but got '{status_text}'"
         
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
         wait_and_locate_click(
             login, By.XPATH, "(//div[@id='actionRoute_FIN_Dashbord'])[8]"
         )
