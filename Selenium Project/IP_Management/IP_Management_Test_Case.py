@@ -814,6 +814,7 @@ def test_IP_Management_3(login):
              driver, By.XPATH, "(//p-button[contains(@class,'more-btn')])[1]"
         )
 
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "//span[normalize-space()='Create IP Admission']"
         )
@@ -1552,33 +1553,49 @@ def test_IP_Management_7(login):
         future_month = future_date.strftime("%B")
         future_year = str(future_date.year)
 
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
+        found = False
+        max_tries = 12
 
-        # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
         for _ in range(max_tries):
+            # Get current month/year
             month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                ))
             )
             year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                ))
             )
 
             current_month = month_elem.text.strip()
             current_year = year_elem.text.strip()
 
+            print(f"📅 Current: {current_month}-{current_year}")
+
             if current_month == future_month and current_year == future_year:
+                found = True
                 break
 
-            next_month_arrow.click()
-            time.sleep(1)
-            raise Exception("❌ Could not navigate to the target date in calendar.")
+            # 🔥 Re-locate next button EVERY TIME
+            next_btn = wait.until(
+                EC.element_to_be_clickable((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                ))
+            )
+            next_btn.click()
 
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        # ❗ Raise AFTER loop
+        if not found:
+            raise Exception("❌ Could not navigate to target month/year")
+
+        # ✅ Select ONLY enabled date
+        date_xpath = f"""
+        //td[not(contains(@class,'p-datepicker-other-month'))]
+        //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+        """
+
         target_date = wait.until(
             EC.element_to_be_clickable((By.XPATH, date_xpath))
         )
@@ -1832,33 +1849,49 @@ def test_IP_Management_8(login):
         future_month = future_date.strftime("%B")
         future_year = str(future_date.year)
 
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
+        found = False
+        max_tries = 12
 
-        # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
         for _ in range(max_tries):
+            # Get current month/year
             month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                ))
             )
             year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                ))
             )
 
             current_month = month_elem.text.strip()
             current_year = year_elem.text.strip()
 
+            print(f"📅 Current: {current_month}-{current_year}")
+
             if current_month == future_month and current_year == future_year:
+                found = True
                 break
 
-            next_month_arrow.click()
-            time.sleep(1)
-            raise Exception("❌ Could not navigate to the target date in calendar.")
+            # 🔥 Re-locate next button EVERY TIME
+            next_btn = wait.until(
+                EC.element_to_be_clickable((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                ))
+            )
+            next_btn.click()
 
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        # ❗ Raise AFTER loop
+        if not found:
+            raise Exception("❌ Could not navigate to target month/year")
+
+        # ✅ Select ONLY enabled date
+        date_xpath = f"""
+        //td[not(contains(@class,'p-datepicker-other-month'))]
+        //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+        """
+
         target_date = wait.until(
             EC.element_to_be_clickable((By.XPATH, date_xpath))
         )
@@ -2162,33 +2195,49 @@ def test_IP_Management_9(login):
         future_month = future_date.strftime("%B")
         future_year = str(future_date.year)
 
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
+        found = False
+        max_tries = 12
 
-        # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
         for _ in range(max_tries):
+            # Get current month/year
             month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                ))
             )
             year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                ))
             )
 
             current_month = month_elem.text.strip()
             current_year = year_elem.text.strip()
 
+            print(f"📅 Current: {current_month}-{current_year}")
+
             if current_month == future_month and current_year == future_year:
+                found = True
                 break
 
-            next_month_arrow.click()
-            time.sleep(1)
-            raise Exception("❌ Could not navigate to the target date in calendar.")
+            # 🔥 Re-locate next button EVERY TIME
+            next_btn = wait.until(
+                EC.element_to_be_clickable((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                ))
+            )
+            next_btn.click()
 
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        # ❗ Raise AFTER loop
+        if not found:
+            raise Exception("❌ Could not navigate to target month/year")
+
+        # ✅ Select ONLY enabled date
+        date_xpath = f"""
+        //td[not(contains(@class,'p-datepicker-other-month'))]
+        //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+        """
+
         target_date = wait.until(
             EC.element_to_be_clickable((By.XPATH, date_xpath))
         )
@@ -2476,33 +2525,49 @@ def test_IP_Management_10(login):
         future_month = future_date.strftime("%B")
         future_year = str(future_date.year)
 
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
+        found = False
+        max_tries = 12
 
-        # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
         for _ in range(max_tries):
+            # Get current month/year
             month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                ))
             )
             year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                ))
             )
 
             current_month = month_elem.text.strip()
             current_year = year_elem.text.strip()
 
+            print(f"📅 Current: {current_month}-{current_year}")
+
             if current_month == future_month and current_year == future_year:
+                found = True
                 break
 
-            next_month_arrow.click()
-            time.sleep(1)
-            raise Exception("❌ Could not navigate to the target date in calendar.")
+            # 🔥 Re-locate next button EVERY TIME
+            next_btn = wait.until(
+                EC.element_to_be_clickable((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                ))
+            )
+            next_btn.click()
 
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        # ❗ Raise AFTER loop
+        if not found:
+            raise Exception("❌ Could not navigate to target month/year")
+
+        # ✅ Select ONLY enabled date
+        date_xpath = f"""
+        //td[not(contains(@class,'p-datepicker-other-month'))]
+        //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+        """
+
         target_date = wait.until(
             EC.element_to_be_clickable((By.XPATH, date_xpath))
         )
@@ -4327,33 +4392,49 @@ def test_IP_Management_26(login):
         future_month = future_date.strftime("%B")
         future_year = str(future_date.year)
 
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
+        found = False
+        max_tries = 12
 
-        # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
         for _ in range(max_tries):
+            # Get current month/year
             month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                ))
             )
             year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                ))
             )
 
             current_month = month_elem.text.strip()
             current_year = year_elem.text.strip()
 
+            print(f"📅 Current: {current_month}-{current_year}")
+
             if current_month == future_month and current_year == future_year:
+                found = True
                 break
 
-            next_month_arrow.click()
-            time.sleep(1)
-            raise Exception("❌ Could not navigate to the target date in calendar.")
+            # 🔥 Re-locate next button EVERY TIME
+            next_btn = wait.until(
+                EC.element_to_be_clickable((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                ))
+            )
+            next_btn.click()
 
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        # ❗ Raise AFTER loop
+        if not found:
+            raise Exception("❌ Could not navigate to target month/year")
+
+        # ✅ Select ONLY enabled date
+        date_xpath = f"""
+        //td[not(contains(@class,'p-datepicker-other-month'))]
+        //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+        """
+
         target_date = wait.until(
             EC.element_to_be_clickable((By.XPATH, date_xpath))
         )
@@ -4369,33 +4450,49 @@ def test_IP_Management_26(login):
         future_month = future_date.strftime("%B")
         future_year = str(future_date.year)
 
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
+        found = False
+        max_tries = 12
 
-        # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
         for _ in range(max_tries):
+            # Get current month/year
             month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                ))
             )
             year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                EC.visibility_of_element_located((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                ))
             )
 
             current_month = month_elem.text.strip()
             current_year = year_elem.text.strip()
 
+            print(f"📅 Current: {current_month}-{current_year}")
+
             if current_month == future_month and current_year == future_year:
+                found = True
                 break
 
-            next_month_arrow.click()
-            time.sleep(1)
-            raise Exception("❌ Could not navigate to the target date in calendar.")
+            # 🔥 Re-locate next button EVERY TIME
+            next_btn = wait.until(
+                EC.element_to_be_clickable((
+                    By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                ))
+            )
+            next_btn.click()
 
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+        # ❗ Raise AFTER loop
+        if not found:
+            raise Exception("❌ Could not navigate to target month/year")
+
+        # ✅ Select ONLY enabled date
+        date_xpath = f"""
+        //td[not(contains(@class,'p-datepicker-other-month'))]
+        //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+        """
+
         target_date = wait.until(
             EC.element_to_be_clickable((By.XPATH, date_xpath))
         )
@@ -4737,33 +4834,49 @@ def test_IP_Management_30(login):
             future_month = future_date.strftime("%B")
             future_year = str(future_date.year)
 
-            # Get the "next month" arrow
-            next_month_arrow = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-            )
+            found = False
+            max_tries = 12
 
-            # Loop until the correct month and year is visible
-            max_tries = 12  # Prevent infinite loop
             for _ in range(max_tries):
+                # Get current month/year
                 month_elem = wait.until(
-                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                    EC.visibility_of_element_located((
+                        By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                    ))
                 )
                 year_elem = wait.until(
-                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                    EC.visibility_of_element_located((
+                        By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                    ))
                 )
 
                 current_month = month_elem.text.strip()
                 current_year = year_elem.text.strip()
 
+                print(f"📅 Current: {current_month}-{current_year}")
+
                 if current_month == future_month and current_year == future_year:
+                    found = True
                     break
 
-                next_month_arrow.click()
-                time.sleep(1)
-                raise Exception("❌ Could not navigate to the target date in calendar.")
+                # 🔥 Re-locate next button EVERY TIME
+                next_btn = wait.until(
+                    EC.element_to_be_clickable((
+                        By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                    ))
+                )
+                next_btn.click()
 
-            # Click the future day
-            date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+            # ❗ Raise AFTER loop
+            if not found:
+                raise Exception("❌ Could not navigate to target month/year")
+
+            # ✅ Select ONLY enabled date
+            date_xpath = f"""
+            //td[not(contains(@class,'p-datepicker-other-month'))]
+            //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+            """
+
             target_date = wait.until(
                 EC.element_to_be_clickable((By.XPATH, date_xpath))
             )
@@ -4779,33 +4892,49 @@ def test_IP_Management_30(login):
             future_month = future_date.strftime("%B")
             future_year = str(future_date.year)
 
-            # Get the "next month" arrow
-            next_month_arrow = wait.until(
-                EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-            )
+            found = False
+            max_tries = 12
 
-            # Loop until the correct month and year is visible
-            max_tries = 12  # Prevent infinite loop
             for _ in range(max_tries):
+                # Get current month/year
                 month_elem = wait.until(
-                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+                    EC.visibility_of_element_located((
+                        By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                    ))
                 )
                 year_elem = wait.until(
-                    EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+                    EC.visibility_of_element_located((
+                        By.XPATH, "//button[contains(@class,'p-datepicker-year')]"
+                    ))
                 )
 
                 current_month = month_elem.text.strip()
                 current_year = year_elem.text.strip()
 
+                print(f"📅 Current: {current_month}-{current_year}")
+
                 if current_month == future_month and current_year == future_year:
+                    found = True
                     break
 
-                next_month_arrow.click()
-                time.sleep(1)
-                raise Exception("❌ Could not navigate to the target date in calendar.")
+                # 🔥 Re-locate next button EVERY TIME
+                next_btn = wait.until(
+                    EC.element_to_be_clickable((
+                        By.XPATH, "//button[contains(@class,'p-datepicker-next')]"
+                    ))
+                )
+                next_btn.click()
 
-            # Click the future day
-            date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
+            # ❗ Raise AFTER loop
+            if not found:
+                raise Exception("❌ Could not navigate to target month/year")
+
+            # ✅ Select ONLY enabled date
+            date_xpath = f"""
+            //td[not(contains(@class,'p-datepicker-other-month'))]
+            //span[not(contains(@class,'p-disabled')) and normalize-space()='{future_day}']
+            """
+
             target_date = wait.until(
                 EC.element_to_be_clickable((By.XPATH, date_xpath))
             )

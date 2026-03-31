@@ -223,10 +223,11 @@ def test_create_sales_order_2(login):
         Drop_element = driver.find_element(By.XPATH, "//p-multiselect[@id='selectCat_ORD_CrtItemPop']")                          
         time.sleep(1)
         Drop_element.click()
-    
+
         time.sleep(2)
+        
         select_element = driver.find_element(By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
-        login.execute_script("arguments[0].click();", select_element)
+        driver.execute_script("arguments[0].click();", select_element)
 
         time.sleep(2)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -1489,14 +1490,15 @@ def test_create_sales_order_11(login):
             driver, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"
         )
 
-        time.sleep(1)
+        time.sleep(2)
         Drop_element = driver.find_element(By.XPATH, "//p-multiselect[@id='selectCat_ORD_CrtItemPop']")                          
         time.sleep(1)
         Drop_element.click()
-    
+
         time.sleep(2)
-        element = wait.until(EC.presence_of_element_located((By.XPATH, "(//div[contains(text(),'Item_1')])[1]")))
-        click_to_element(login, element)
+        # wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
+        select_element = driver.find_element(By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        driver.execute_script("arguments[0].click();", select_element)
 
         time.sleep(2)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
@@ -1635,7 +1637,7 @@ def test_create_sales_order_12(login):
         time.sleep(2)
         catalog_element.click()
 
-        price = random.randint(20000, 21000)
+        price = random.randint(2000, 6000)
         print(price)
 
         time.sleep(1)
@@ -1812,7 +1814,7 @@ def test_create_sales_order_13(consumer_login):
             driver, By.XPATH, "//div[contains(text(),'Item_1')]"
         )
 
-        time.sleep(2)
+        time.sleep(3)
         wait_and_locate_click(
             driver, By.XPATH, "(//h3[normalize-space()='Item_1'])[1]"
         )
@@ -4081,13 +4083,15 @@ def test_create_sales_order_25(login):
             driver, By.XPATH, "//input[@placeholder='Enter name']", full_name
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//p-multiselect[@id='selectCat_ORD_CrtItemPop']"
-        )            
-    
         time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
+        Drop_element = driver.find_element(By.XPATH, "//p-multiselect[@id='selectCat_ORD_CrtItemPop']")                          
+        time.sleep(1)
+        Drop_element.click()
+
+        time.sleep(2)
+        # wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
+        select_element = driver.find_element(By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+        driver.execute_script("arguments[0].click();", select_element)
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
