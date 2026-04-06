@@ -176,10 +176,10 @@ def test_signup_myaccount_familymember(consumer_login):
         selectbtn = consumer_login.find_element(By.XPATH, "//span[@aria-label='Select']")
         consumer_login.execute_script("arguments[0].click();", selectbtn)   
       
-        time.sleep(2)
-        salutation = generate_random_salutation()
-        salutation_option_xpath = f"//div[normalize-space()='{salutation}']"
-        wait_and_locate_click(consumer_login, By.XPATH, salutation_option_xpath, 15)
+        # time.sleep(2)
+        # salutation = generate_random_salutation()
+        # salutation_option_xpath = f"//div[normalize-space()='{salutation}']"
+        # wait_and_locate_click(consumer_login, By.XPATH, salutation_option_xpath, 15)
 
         time.sleep(5)
         wait_and_send_keys(consumer_login, By.XPATH, "//input[@id='first_name']", first_name)
@@ -202,14 +202,14 @@ def test_signup_myaccount_familymember(consumer_login):
         print("Family member Email:", email)
         time.sleep(2)
         wait_and_locate_click(consumer_login, By.XPATH, "//button[@id='btnSave']")
-        msg = get_snack_bar_message(consumer_login)
-        print("Snack bar message:", msg)
+        # msg = get_snack_bar_message(consumer_login)
+        # print("Snack bar message:", msg)
         time.sleep(3)
-        wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-window-close hoverCross']")
+        wait_and_locate_click(consumer_login, By.XPATH, "//i[@class='fa fa-arrow-left clrChangeHeader']")
         time.sleep(2)
-        wait_and_locate_click(consumer_login, By.XPATH, "//div[@class='btnClrTextRemove ng-star-inserted']")
+        wait_and_locate_click(consumer_login, By.XPATH, "//span[@class='deleteac']")
         time.sleep(2)
-        wait_and_locate_click(consumer_login, By.XPATH, "//button[normalize-space()='Confirm']")
+        wait_and_locate_click(consumer_login, By.XPATH, "//button[@id='btnYes']")
         time.sleep(2)
         
     except Exception as e:

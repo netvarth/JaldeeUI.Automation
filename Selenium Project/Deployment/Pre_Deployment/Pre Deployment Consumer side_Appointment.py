@@ -1,18 +1,9 @@
-import time
+
 from datetime import datetime, timedelta
 from Framework.consumer_common_utils import *
 
-import pyautogui
-import pytest
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
-import os
-import allure
-from allure_commons.types import AttachmentType
+
+
 
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -86,25 +77,81 @@ def test_consumer_side(consumer_login):
             )
         ).click()
         time.sleep(3)
-        Today_Date = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+        # Today_Date = WebDriverWait(consumer_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+        #     )
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
+        # time.sleep(3) 
+        # Today_Date.click()
+        # time.sleep(3)  
+        # print("Today Date:", Today_Date.text)
+        # wait = WebDriverWait(consumer_login, 10)
+        # time_slot = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView();", time_slot)
+        # time.sleep(2)
+        # time_slot.click()
+        
+        # print("Time Slot:", time_slot.text)
+
+
+        # =========================
+        # ✅ SELECT TODAY DATE (NEW UI)
+        # =========================
+
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        Today_Date = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, f"//button[@data-iso='{today}' and not(@disabled)]")
             )
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
-        time.sleep(3) 
+
+        consumer_login.execute_script("arguments[0].scrollIntoView({block:'center'});", Today_Date)
         Today_Date.click()
-        time.sleep(3)  
-        print("Today Date:", Today_Date.text)
-        wait = WebDriverWait(consumer_login, 10)
-        time_slot = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
+
+        print("Selected Date:", Today_Date.text)
+
+
+        # =========================
+        # ✅ WAIT FOR TIME SLOTS
+        # =========================
+        wait.until(
+            EC.presence_of_all_elements_located((By.XPATH, "//mat-chip"))
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView();", time_slot)
-        time.sleep(2)
-        time_slot.click()
-        
-        print("Time Slot:", time_slot.text)
+
+
+        # =========================
+        # ✅ SELECT FIRST AVAILABLE SLOT
+        # =========================
+        slots = consumer_login.find_elements(By.XPATH, "//mat-chip")
+
+        selected_slot = None
+
+        for slot in slots:
+            if "selected" in slot.get_attribute("class"):
+                continue
+
+            try:
+                consumer_login.execute_script(
+                    "arguments[0].scrollIntoView({block:'center'});", slot
+                )
+
+                wait.until(EC.element_to_be_clickable(slot))
+                slot.click()
+
+                selected_slot = slot.text
+                print("Selected Time Slot:", selected_slot)
+                break
+
+            except Exception:
+                continue
+
+        if not selected_slot:
+            raise Exception("No available time slots found!")
         
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)
