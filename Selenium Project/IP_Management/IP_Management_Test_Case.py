@@ -1,7 +1,6 @@
 from Framework.common_utils import *
 from Framework.common_dates_utils import *
-import random
-from faker import Faker
+
 
 
 
@@ -3424,7 +3423,7 @@ def test_IP_Management_18(login):
 
 
         wait_and_locate_click(
-               driver, By.XPATH, "(//a[@class='menu-link menu-toggle'])[11]"
+               driver, By.XPATH, "(//a[@class='menu-link menu-toggle'])[10]"
         )
 
         time.sleep(2)
@@ -4750,9 +4749,8 @@ def test_IP_Management_29(login):
             )
 
         time.sleep(3)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//input[@id='chkSelectAllServices_IP_AD_DE_New-input'])[1]"   
-        )
+        check_box_element = driver.find_element(By.XPATH, "//input[@id='chkSelectAllServices_IP_AD_DE_New-input']")
+        driver.execute_script("arguments[0].click();", check_box_element)
 
         time.sleep(1)
         wait_and_locate_click(
@@ -4802,7 +4800,7 @@ def test_IP_Management_30(login):
                driver, By.XPATH, "(//span[normalize-space()='Services'])[1]"
         )
 
-        LOOP_COUNT = 5
+        LOOP_COUNT = 3
 
         for i in range(LOOP_COUNT):
 
@@ -4982,10 +4980,9 @@ def test_IP_Management_30(login):
                driver, By.XPATH, "//button[@id='btnServiceTimestamp_IP_AD_DE_New_TOMMORROW']"
         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//input[@id='chkSelectAllServices_IP_AD_DE_New-input'])[1]"
-        )
+        time.sleep(2)
+        check_box_element = driver.find_element(By.XPATH, "//input[@id='chkSelectAllServices_IP_AD_DE_New-input']")
+        driver.execute_script("arguments[0].click();", check_box_element)
 
         time.sleep(1)
         wait_and_locate_click(

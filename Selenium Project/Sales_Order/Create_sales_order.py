@@ -20,17 +20,15 @@ def test_create_sales_order_1(login):
     
         time.sleep(2)
 
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            driver, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[1]"
+        )
         
         first_name, last_name, cons_manual_id, phonenumber,  email = create_user_data()
         
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"))
-        ).click()
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[@id='btnCrtCs_ORD_CrtItemPop'])[1]"
+        )
 
         
         consumer_name = f"{first_name} {last_name}"

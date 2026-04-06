@@ -18,6 +18,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
 def test_account_signup():
+    driver = login
     current_date = datetime.now().strftime("%Y-%m-%d")
     print("Pre-Deployment Provider Signup",current_date)
     login = webdriver.Chrome(
@@ -303,17 +304,15 @@ def test_account_signup():
     ).click()
 
     time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[normalize-space()='Location'])[1]")
-        )
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//button[normalize-space()='Choose your location in the MAP'])[1]")
-        )
-    ).click()
+    wait_and_locate_click(
+        login, By.XPATH, "(//span[normalize-space()='Location'])[1]"
+    )
+    
+    time.sleep(2)
+    
+    wait_and_locate_click(
+        login, By.XPATH, "(//button[normalize-space()='Choose your location in the MAP'])[1]"
+    )
 
     time.sleep(2)
 
@@ -368,11 +367,9 @@ def test_account_signup():
     # ).click()
 
     time.sleep(5)
-    WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//span[normalize-space()='Specializations']")
-        )
-    ).click()
+    wait_and_locate_click(
+        login, By.XPATH, "//span[normalize-space()='Specializations']"
+    )
 
     specializations_list = ["Cardiology", "Ophthalmology", "Neurology"]
 
@@ -430,7 +427,7 @@ def test_account_signup():
     ).click()
     time.sleep(3)
 
-    wait_and_click(login, By.XPATH, "//app-sidebar-menu[@id='sidebar_BUS_business']//li[8]")
+    wait_and_click(login, By.XPATH, "(//a[@class='menu-link menu-toggle'])[4]")
     
     time.sleep(2)
     wait_and_click(login, By.XPATH, "(//div[normalize-space()='Finance manager'])[1]")
@@ -859,7 +856,7 @@ def test_confirmation_label_message_attachment(login):
     current_date = datetime.now().strftime("%Y-%m-%d")
     print("Pre-Deployment predeployment_confirmation_label_message_attachment : ",current_date)
     try:
-
+        driver = login
         time.sleep(5)
         
         wait_and_click(login, By.XPATH, "(//div[@class='p-card p-component'])[5]")
