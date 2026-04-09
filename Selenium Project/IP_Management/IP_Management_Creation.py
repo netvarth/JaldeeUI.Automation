@@ -12,8 +12,14 @@ def test_IP_Management_1(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[4]"
@@ -25,6 +31,7 @@ def test_IP_Management_1(login):
 
         building_name = "Block" + str(uuid.uuid4().int)[:4]
 
+        time.sleep(2)
         wait_and_send_keys(
             driver, By.XPATH, "//input[@id='inputBdng_IP_CrtBdng']", building_name
         )
@@ -135,8 +142,14 @@ def test_IP_Management_2(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[5]"
@@ -256,8 +269,14 @@ def test_IP_Management_3(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait.until(
             EC.presence_of_element_located((By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[6]"))
@@ -410,8 +429,14 @@ def test_IP_Management_4(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait_and_locate_click(
             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[6]"
@@ -524,8 +549,14 @@ def test_IP_Management_5(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait_and_locate_click(
             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[6]"
@@ -623,8 +654,15 @@ def test_IP_Management_6(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
+
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait_and_locate_click(
             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[7]"
@@ -644,14 +682,29 @@ def test_IP_Management_6(login):
              driver, By.XPATH, "//*[normalize-space()='Block D']"
         )
 
+        time.sleep(3)
+
+        wait_and_locate_click(
+              driver, By.XPATH, "//p-dropdown[@id='selectRoom_IP_BedCrt']"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(
+              driver, By.XPATH, "(//li[contains(@class,'p-dropdown-item')])[1]"
+        )
+
+
         wait_and_locate_click(
              driver, By.XPATH, "//*[@id='selectResrv_IP_BedCrt']"
         )
 
+        
         wait_and_locate_click(
              driver, By.XPATH, "//*[normalize-space()='Yes']"
         )
 
+
+        time.sleep(2)
         wait_and_locate_click(
              driver, By.XPATH, "//*[@id='selectBed_IP_BedCrt']"
         )
@@ -843,8 +896,14 @@ def test_IP_Management_7(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait_and_locate_click(
             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[7]"
@@ -968,8 +1027,14 @@ def test_IP_Management_8(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
+
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
 
         wait_and_locate_click(
             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[7]"
@@ -1075,9 +1140,14 @@ def test_IP_Management_9(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
 
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[7]"
         )
@@ -1175,9 +1245,14 @@ def test_IP_Management_10(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
 
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[11]"
         )
@@ -1263,9 +1338,14 @@ def test_IP_Management_11(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
 
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[10]"
         )
@@ -1421,9 +1501,14 @@ def test_IP_Management_12(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
 
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[10]"
         )
@@ -1509,9 +1594,14 @@ def test_IP_Management_13(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
 
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[10]"
         )
@@ -1591,9 +1681,14 @@ def test_IP_Management_14(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
 
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[13]"
         )
@@ -1794,9 +1889,14 @@ def test_IP_Management_15(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        driver = driver
+        driver = login
         time.sleep(3)
 
+        wait_and_locate_click(
+               driver, By.XPATH, "(//img)[5]"
+        )
+
+        time.sleep(2)
         wait_and_locate_click(
             driver, By.XPATH, "(//*[@id='actionNav_IP_DBoard'])[13]"
         )
@@ -1829,7 +1929,7 @@ def test_IP_Management_15(login):
 
         wait_and_locate_click(
              driver, By.XPATH, "//*[@id='btnCrtFld_IP_CsFlds']"
-        )
+        )                        
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
@@ -1837,10 +1937,10 @@ def test_IP_Management_15(login):
         time.sleep(2)
 
         wait_and_locate_click(
-             driver, By.XPATH, "(//*[@alt='add'])[1]"
+             driver, By.XPATH, "(//img[@alt='add'])[1]"
         )
 
-        time.sleep(1)
+        time.sleep(2)
         wait_and_locate_click(
              driver, By.XPATH, "//*[@id='btnEdtFld_IP_CsFld']"
         )
@@ -1872,10 +1972,12 @@ def test_IP_Management_15(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
 
+        time.sleep(3)
+        driver.refresh()
         time.sleep(2)
         inactive_xpath = (
             "//tbody[contains(@class,'p-datatable-tbody')]"
-            "//tr[1]//td[3]//span[contains(normalize-space(.), 'Inactive')]"
+            "//tr[1]//td[2]//span[contains(normalize-space(.), 'Inactive')]"
         )
 
         try:
@@ -1890,6 +1992,7 @@ def test_IP_Management_15(login):
              driver, By.XPATH, "(//*[@alt='add'])[1]"
         )
 
+        time.sleep(2)
         wait_and_locate_click(
              driver, By.XPATH, "//*[@id='btnSts_IP_CsFld']"
         )
@@ -1900,7 +2003,7 @@ def test_IP_Management_15(login):
 
         active_xpath = (
             "//tbody[contains(@class,'p-datatable-tbody')]"
-            "//tr[1]//td[3]//span[contains(normalize-space(.), 'Active')]"
+            "//tr[1]//td[2]//span[contains(normalize-space(.), 'Active')]"
         )
 
         try:
@@ -1921,332 +2024,6 @@ def test_IP_Management_15(login):
                 )
                 raise e
 
-
-        
-    try:
-        wait = WebDriverWait(login, 30)
-        driver = login
-        time.sleep(3)
-
-        wait_and_locate_click(
-             driver, By.XPATH, "(//img)[5]"
-        )
-        
-        time.sleep(2)
-        wait_and_locate_click(
-             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[6]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCreate_IP_RO_RO']")
-
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//*[@formcontrolname='building']")
-
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//*[normalize-space()='Block D']")
-
-        time.sleep(1)
-        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Select Type']")
-
-        room_type = driver.find_element(By.XPATH, "//span[normalize-space()='Private']")
-        scroll_to_element(driver, room_type)
-        room_type.click()
-
-        time.sleep(1)
-        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Select Category']")
-
-        time.sleep(1)
-        wait_and_locate_click(driver, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Private'])[1]")
-        
-        time.sleep(1)
-        room_name = get_next_room_name()
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Room Name'])[1]")
-            )
-        ).send_keys(room_name)
-
-        print(f"🏨 Room created: {room_name}")
-
-        time.sleep(1)
-        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@formcontrolname='roomNature']")
-
-        time.sleep(1)
-        wait_and_locate_click(driver, By.XPATH, "//span[normalize-space()='Room']")
-
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "(//button[normalize-space()='Create'])[1]")
-    
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-        time.sleep(3)
-
-        wait_and_locate_click(driver, By.XPATH, "(//*[contains(@class,'btnView_IP_RmGrd')])[1]")
-
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//*[@id='btnCreateBed_IP_RmDet']")
-
-        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='selectResrv_IP_BedCrt']")
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//li[@aria-label='Yes']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@id='selectBed_IP_BedCrt']")
-
-
-        bed_type = driver.find_element(By.XPATH, "//span[normalize-space()='Normal']")
-        scroll_to_element(driver, bed_type)
-        bed_type.click()
-
-        time.sleep(1)
-        wait_and_locate_click(
-             driver, By.XPATH, "//*[@id='selectBedCat_IP_BedCrt']"
-        )
-
-        bed_cat = driver.find_element(By.XPATH, "//span[normalize-space()='Observation']")
-        scroll_to_element(driver, bed_cat)
-        bed_cat.click()
-        
-        time.sleep(1)
-        wait_and_locate_click(
-             driver, By.XPATH, "//*[@id='selectBedPrice_IP_BedCrt']"
-        )
-
-        bed_price = driver.find_element(By.XPATH, "//span[normalize-space()='Normal Bed']")
-        scroll_to_element(driver, bed_price)
-        bed_price.click()
-
-        bed_name = f"Bed{room_name}"
-
-        bed_input = wait.until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//input[@id='inputBed_IP_BedCrt']")
-            )
-        )
-        bed_input.clear()
-        bed_input.send_keys(bed_name)
-
-        print(f"🛏️ Bed created: {bed_name}")
-
-        wait_and_locate_click(
-             driver, By.XPATH, "//*[@id='btnCrt_IP_BedCrt']"
-        )
-        
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-        time.sleep(3)
-
-        wait_and_locate_click(
-             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
-        )
-
-
-        time.sleep(2)
-        wait_and_locate_click(
-             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-             driver, By.XPATH, "//i[@class='pi pi-arrow-left']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-             driver, By.XPATH, "(//img)[5]"
-        )
-        
-        time.sleep(2)
-        wait_and_locate_click(
-             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[3]"
-        )
-        
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[.//span[normalize-space()='New Reservation']]"
-        )
-
-        wait_and_locate_click(
-            driver, By.XPATH, "//*[@id='btnCreatePatient_IP_NA_NA']"
-        )
-
-        time.sleep(1)
-
-        first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter First Name'])[1]"))
-        ).send_keys(first_name)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Last Name'])[1]"))
-        ).send_keys(last_name)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@placeholder='Enter Email Id'])[1]"))
-        ).send_keys(email)
-
-        time.sleep(1)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//input[@id='phone'])[1]"))
-        ).send_keys(phonenumber)
-
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@placeholder='Select Gender'])[1]")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Male'])[1]")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Save & Next'])[1]")
-
-        time.sleep(2)
-        admission_dropdown = wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "(//p-dropdown[@placeholder='Select Admission Type'])[1]")
-            )
-        )
-        admission_dropdown.click()
-
-        # Wait and fetch all options in the dropdown
-        dropdown_options = wait.until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, "//ul[@role='listbox' and contains(@class, 'p-dropdown-items')]/p-dropdownitem/li")
-            )
-        )
-
-        # Randomly choose and click one option
-        random_option = random.choice(dropdown_options)
-        random_option_text = random_option.text.strip()
-        random_option.click()
-
-        print(f"✅ Randomly selected admission type: {random_option_text}")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//p-dropdown[@placeholder='Select Admitted Doctor'])[1]")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Venu Gopal']")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
-
-        time.sleep(2)
-        time.sleep(2)
-
-        today_element = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-        (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
-                )
-        )          
-
-        # Click using JavaScript in case normal click doesn't work
-        login.execute_script("arguments[0].click();", today_element)
-
-        print("Clicked today's date:", today_element.text)
-
-        time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
-
-        time.sleep(2)
-        future_date = datetime.now() + timedelta(days=3)
-        future_day = str(future_date.day)
-        future_month = future_date.strftime("%B")
-        future_year = str(future_date.year)
-
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
-
-        # Loop until the correct month and year is visible
-        max_tries = 12  # Prevent infinite loop
-        for _ in range(max_tries):
-            month_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
-            )
-            year_elem = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
-            )
-
-            current_month = month_elem.text.strip()
-            current_year = year_elem.text.strip()
-
-            if current_month == future_month and current_year == future_year:
-                break
-
-            next_month_arrow.click()
-            time.sleep(1)
-            raise Exception("❌ Could not navigate to the target date in calendar.")
-
-        # Click the future day
-        date_xpath = f"//td[not(contains(@class, 'p-disabled'))]//span[normalize-space()='{future_day}']"
-        target_date = wait.until(
-            EC.element_to_be_clickable((By.XPATH, date_xpath))
-        )
-        target_date.click()
-
-        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='p-checkbox-box'])[2]")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
-
-        time.sleep(1)
-        wait_and_locate_click(
-             driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"
-        )
-
-        time.sleep(2)
-        room_xpath = f"//div[contains(text(),'Room : {room_name}')]"
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, room_xpath))
-             
-        ).click()
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//*[@id='btnReserveNow_IP_NA_NA']")
-
-        msg = get_toast_message(login)
-        print("Toast Message :", msg)
-
-        time.sleep(3)
-
-
-
-    except Exception as e:
-                        allure.attach(  # use Allure package, .attach() method, pass 3 params
-                            driver.get_screenshot_as_png(),  # param1
-                            # driver.screenshot()
-                            name="full_page",  # param2
-                            attachment_type=AttachmentType.PNG,
-                        )
-                        raise e
     
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -2258,6 +2035,7 @@ def test_IP_Management_16(login):
         driver = login
         time.sleep(5)
         
+
         wait_and_locate_click(
                driver, By.XPATH, "(//img)[5]"
         )
@@ -2679,7 +2457,7 @@ def test_IP_Management_17(login):
 
         msg = get_toast_message(driver)
         print("Toast Message:", msg)
-        time.slepe(2)
+        time.sleep(2)
 
         inactive_xpath = (
             "(//tr[contains(@class,'ng-star-inserted')]//td[5]//span[contains(normalize-space(.),'Inactive')])[1]"
@@ -2706,7 +2484,7 @@ def test_IP_Management_17(login):
 
         msg = get_toast_message(driver)
         print("Toast Message:", msg)
-        time.slepe(2)
+        time.sleep(2)
 
         active_xpath = (
             "(//tr[contains(@class,'ng-star-inserted')]//td[5]//span[contains(normalize-space(.),'Active')])[1]"
