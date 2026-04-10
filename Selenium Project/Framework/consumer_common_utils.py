@@ -17,6 +17,8 @@ from selenium.common import TimeoutException
 import allure
 from allure_commons.types import AttachmentType
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import StaleElementReferenceException
+
 
 sales_order_consumer_scale_url = "https://scale.jaldee.com/orison"
 consumer_login_url = "https://scale.jaldee.com/RangSweets"

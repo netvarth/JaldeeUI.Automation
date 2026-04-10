@@ -4,10 +4,6 @@ from Framework.consumer_common_utils import *
 
 
 
-
-
-
-
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Send Message and Attachment from Consumer Side")
 @pytest.mark.parametrize("url", [consumer_login_url_1])
@@ -115,39 +111,46 @@ def test_consumer_side(consumer_login):
 
 
         # =========================
-        # ✅ WAIT FOR TIME SLOTS
-        # =========================
-        wait.until(
-            EC.presence_of_all_elements_located((By.XPATH, "//mat-chip"))
-        )
-
-
-        # =========================
-        # ✅ SELECT FIRST AVAILABLE SLOT
+        # ✅ GET ALL SLOTS
         # =========================
         slots = consumer_login.find_elements(By.XPATH, "//mat-chip")
 
         selected_slot = None
 
+        # =========================
+        # ✅ STEP 1: CHECK IF ANY SLOT ALREADY SELECTED
+        # =========================
         for slot in slots:
             if "selected" in slot.get_attribute("class"):
-                continue
-
-            try:
-                consumer_login.execute_script(
-                    "arguments[0].scrollIntoView({block:'center'});", slot
-                )
-
-                wait.until(EC.element_to_be_clickable(slot))
-                slot.click()
-
                 selected_slot = slot.text
-                print("Selected Time Slot:", selected_slot)
+                print("Already Selected Time Slot:", selected_slot)
                 break
 
-            except Exception:
-                continue
+        # =========================
+        # ✅ STEP 2: IF NOT SELECTED → PICK ONE
+        # =========================
+        if not selected_slot:
+            for slot in slots:
+                try:
+                    consumer_login.execute_script(
+                        "arguments[0].scrollIntoView({block:'center'});", slot
+                    )
 
+                    WebDriverWait(consumer_login, 10).until(
+                        EC.element_to_be_clickable(slot)
+                    )
+
+                    slot.click()
+                    selected_slot = slot.text
+                    print("Newly Selected Time Slot:", selected_slot)
+                    break
+
+                except Exception:
+                    continue
+
+        # =========================
+        # ✅ FINAL CHECK
+        # =========================
         if not selected_slot:
             raise Exception("No available time slots found!")
         
