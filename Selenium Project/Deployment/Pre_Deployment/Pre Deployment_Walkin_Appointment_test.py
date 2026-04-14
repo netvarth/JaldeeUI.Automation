@@ -18,7 +18,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
 def test_account_signup():
-    driver = login
+
     current_date = datetime.now().strftime("%Y-%m-%d")
     print("Pre-Deployment Provider Signup",current_date)
     login = webdriver.Chrome(
@@ -856,7 +856,7 @@ def test_confirmation_label_message_attachment(login):
     current_date = datetime.now().strftime("%Y-%m-%d")
     print("Pre-Deployment predeployment_confirmation_label_message_attachment : ",current_date)
     try:
-        driver = login
+        
         time.sleep(5)
         
         wait_and_click(login, By.XPATH, "(//div[@class='p-card p-component'])[5]")
@@ -3052,7 +3052,7 @@ def test_reschedule_cancel_predeployment(login):
     current_date = datetime.now().strftime("%Y-%m-%d")
     print("Pre-Deployment Reschedule and Cancel :",current_date)
     try:
-
+        driver = login
         wait = WebDriverWait(login, 30)
         time.sleep(3)
 
@@ -3098,78 +3098,176 @@ def test_reschedule_cancel_predeployment(login):
 
         login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
         time.sleep(2)
-        WebDriverWait(login, 20).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[@class='reschedule-date-picker']")
-            )
+
+
+
+#         WebDriverWait(login, 20).until(
+#             EC.presence_of_element_located(
+#                 (By.XPATH, "//div[@class='reschedule-date-picker']")
+#             )
+#         ).click()
+
+#         today_date = datetime.now()
+#         print(today_date.day)
+#         today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
+#             today_date.day
+#         )
+#         print("Today Date : ", today_date.day)
+
+#         # print(today_xpath_expression)
+#         tomorrow_date = today_date + timedelta(days=1)
+#         print(tomorrow_date.day)
+# ===============================================================
+#         current_month = WebDriverWait(login, 10).until(
+#         EC.presence_of_element_located(
+#             (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
+#         )
+
+#         current_year = WebDriverWait(login, 10).until(
+#         EC.presence_of_element_located(
+#             (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
+#         )
+
+#         if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
+
+#             login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
+# ===============================================================
+#         tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
+#             tomorrow_date.day
+#         )
+#         # print(tomorrow_xpath_expression)
+
+#         Tomorrow_Date = WebDriverWait(login, 10).until(
+#             EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
+#         )
+#         Tomorrow_Date.click()
+#         print("Tomorrow Date:", Tomorrow_Date.text)
+
+#         wait = WebDriverWait(login, 10)
+#         time_slot = wait.until(
+#             EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected= 'false']"))
+#         )
+#         time_slot.click()
+#         print("Time Slot:", time_slot.text)
+
+#         reschedule_button = WebDriverWait(login, 30).until(
+#             EC.visibility_of_element_located(
+#                 (By.XPATH, "//button[@class='btn btn-primary reschedule-btn']")
+#             )
+#         )
+#         reschedule_button.click()
+
+#         try:
+
+#             snack_bar = WebDriverWait(login, 10).until(
+#                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+#             )
+#             message = snack_bar.text
+#             print("Snack bar message:", message)
+
+#         except:
+
+#             snack_bar = WebDriverWait(login, 10).until(
+#                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
+#             )
+#             message = snack_bar.text
+#             print("Snack bar message:", message)
+#         # print("Reschedule Successfully")
+
+
+
+
+        # New calendar start
+
+
+        wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//div[@class='reschedule-date-picker']"))
         ).click()
 
-        today_date = datetime.now()
-        print(today_date.day)
-        today_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
-            today_date.day
+        # =========================
+        # ✅ TARGET DATE (TOMORROW)
+        # =========================
+        tomorrow_date = datetime.now() + timedelta(days=1)
+
+        # =========================
+        # ✅ AUTO HANDLE MONTH + YEAR
+        # =========================
+        while True:
+            current_month = wait.until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//button[contains(@class,'p-datepicker-month')]")
+                )
+            ).text.strip()
+
+            current_year = wait.until(
+                EC.visibility_of_element_located(
+                    (By.XPATH, "//button[contains(@class,'p-datepicker-year')]")
+                )
+            ).text.strip()
+
+            target_month = tomorrow_date.strftime("%B")
+            target_year = tomorrow_date.strftime("%Y")
+
+            if current_month.lower() == target_month.lower() and current_year == target_year:
+                break
+
+            next_btn = wait.until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//button[contains(@class,'p-datepicker-next')]")
+                )
+            )
+            login.execute_script("arguments[0].click();", next_btn)
+
+            # wait for month change
+            WebDriverWait(login, 10).until(
+                lambda d: d.find_element(
+                    By.XPATH, "//button[contains(@class,'p-datepicker-month')]"
+                ).text.strip() != current_month
+            )
+
+        # =========================
+        # ✅ SELECT DATE
+        # =========================
+        date_xpath = f"//td[not(contains(@class,'p-disabled'))]//span[text()='{tomorrow_date.day}']"
+
+        date_element = wait.until(
+            EC.element_to_be_clickable((By.XPATH, date_xpath))
         )
-        print("Today Date : ", today_date.day)
 
-        # print(today_xpath_expression)
-        tomorrow_date = today_date + timedelta(days=1)
-        print(tomorrow_date.day)
-#===============================================================
-        # current_month = WebDriverWait(login, 10).until(
-        # EC.presence_of_element_located(
-        #     (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
-        # )
+        login.execute_script("arguments[0].click();", date_element)
 
-        # current_year = WebDriverWait(login, 10).until(
-        # EC.presence_of_element_located(
-        #     (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
-        # )
+        print("Selected Date:", tomorrow_date.day)
 
-        # if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
-
-        #     login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
-#===============================================================
-        tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
-            tomorrow_date.day
-        )
-        # print(tomorrow_xpath_expression)
-
-        Tomorrow_Date = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, tomorrow_xpath_expression))
-        )
-        Tomorrow_Date.click()
-        print("Tomorrow Date:", Tomorrow_Date.text)
-
-        wait = WebDriverWait(login, 10)
+        # =========================
+        # ✅ SELECT TIME SLOT
+        # =========================
         time_slot = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected= 'false']"))
+            EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='false']"))
         )
+
         time_slot.click()
-        print("Time Slot:", time_slot.text)
+        print("Selected Slot:", time_slot.text)
 
-        reschedule_button = WebDriverWait(login, 30).until(
-            EC.visibility_of_element_located(
-                (By.XPATH, "//button[@class='btn btn-primary reschedule-btn']")
+        # =========================
+        # ✅ CLICK RESCHEDULE
+        # =========================
+        reschedule_btn = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[contains(@class,'reschedule-btn')]")
             )
         )
-        reschedule_button.click()
 
-        try:
+        reschedule_btn.click()
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
+        # =========================
+        # ✅ VALIDATE MESSAGE
+        # =========================
+        msg  = get_snack_bar_message(driver)
+        print("Snack bar message:", msg)
 
-        except:
 
-            snack_bar = WebDriverWait(login, 10).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-            )
-            message = snack_bar.text
-            print("Snack bar message:", message)
-        # print("Reschedule Successfully")
+        # New Calendar end
+
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
