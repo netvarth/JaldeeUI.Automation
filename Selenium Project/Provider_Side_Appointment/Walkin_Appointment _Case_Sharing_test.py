@@ -2437,7 +2437,7 @@ def test_without_prescription_NewMR(login):
         wait_and_locate_click(driver, By.XPATH, "(//a[@role='menuitem'])[2]")
 
         time.sleep(1)
-        wait_and_send_keys(driver,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever")
+        wait_and_send_keys(driver,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever" + Keys.ENTER)
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Save']")
@@ -2452,8 +2452,8 @@ def test_without_prescription_NewMR(login):
         wait_and_locate_click(driver, By.XPATH, "(//a[@role='menuitem'])[3]")
         time.sleep(1)
 
-        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Enter History']", "viral fever")
-
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Enter History']", "viral fever" + Keys.ENTER)
+       
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Save']")
 
@@ -2467,7 +2467,7 @@ def test_without_prescription_NewMR(login):
         wait_and_locate_click(driver, By.XPATH, "(//a[@role='menuitem'])[4]")
         time.sleep(1)
 
-        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Enter Medication']", "no medication")
+        wait_and_send_keys(driver, By.XPATH, "//input[@placeholder='Enter Medication']", "no medication" + Keys.ENTER)
 
         time.sleep(1)
         wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Save']")
@@ -2498,21 +2498,27 @@ def test_without_prescription_NewMR(login):
         wait_and_locate_click(driver, By.XPATH, "//button[normalize-space()='Add Section']")
         time.sleep(2)
 
-        wait_and_locate_click(driver, By.XPATH, "(//a[@role='menuitem'])[6]")
+        wait_and_locate_click(driver, By.XPATH, "(//a[@role='menuitem'])[9]")
         time.sleep(1)   
 
-        wait_and_send_keys(driver, By.XPATH, "//input[@role='searchbox']", "Treatment" )
-        time.sleep(2)
-        wait_and_locate_click(driver, By.XPATH, "//div[contains(@class,'p-multiselect')"
-        " and .//div[contains(@class,'p-multiselect-label') and contains(text(),'Select User')]]")
+        treat_name = "Treatment" + str(uuid.uuid4())[:4]
+        treat_namebox = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@role='searchbox']"))
+        )
+        treat_namebox.clear()
+        treat_namebox.send_keys(treat_name)
 
         time.sleep(2)
-        dropdown_xpath = "//span[normalize-space()='Naveen KP']"
-        element = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        wait_and_locate_click(driver, By.XPATH, "//div[@class='p-multiselect-label p-placeholder']")
 
-        element.click()
+        time.sleep(2)
+        dropdown_xpath = wait.until(
+             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Naveen KP']")
+        ))
+        driver.execute_script("arguments[0].scrollIntoView();", dropdown_xpath)
+        time.sleep(1)
+        dropdown_xpath.click()
+
         time.sleep(2)
 
         wait_and_locate_click(driver, By.XPATH, "//button[@class='btn btn-white shadow fw-bold']")
@@ -2524,39 +2530,37 @@ def test_without_prescription_NewMR(login):
         step_namebox.clear()
         step_namebox.send_keys(step_name)
 
-        WebDriverWait(login, 10).until(
-           EC.presence_of_element_located(
-               (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
-       ).click()
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")   
         
         time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
+        element1 = login.find_element(By.XPATH, "//span[normalize-space()='Naveen KP']")
         login.execute_script("arguments[0].scrollIntoView();", element1)
+        time.sleep(1)
         element1.click()
-        
+    
+        time.sleep(1)
+        wait_and_locate_click(
+             driver, By.XPATH, "//button[@class='p-ripple p-element p-multiselect-close p-link p-button-icon-only ng-star-inserted']"
+        )
         time.sleep(3)
         
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//div[@class='d-flex']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']")
-            )
-        ).click()
-        
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='In Progress']"))
-        ).click()
-
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//textarea[@placeholder='Enter Step Notes']"))
-        ).send_keys("Steps for notes")
-
-        WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable(
-            (By.XPATH, "//label[@for='treatmentPlanAattachments']")
+        wait_and_locate_click(
+             driver, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"
         )
-        ).click()
+        
+        time.sleep(2)
+
+        wait_and_locate_click(
+             driver, By.XPATH, "//li[@aria-label='In Progress']"
+        )
+
+
+        time.sleep(2)
+        upload_element = wait.until(
+             EC.presence_of_element_located(((By. XPATH, "//label[@for='treatmentPlanAattachments']"))
+        ))
+        driver.execute_script("arguments[0].click();", upload_element)
 
         time.sleep(3)
         # Get the current working directory
@@ -2570,19 +2574,22 @@ def test_without_prescription_NewMR(login):
         pyautogui.press("enter")
         
         time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//textarea[@placeholder='Enter Treatment Notes']"))
-        ).send_keys("Note for the treatment")
-        
+
+        wait_and_send_keys(
+             driver, By.XPATH, "//textarea[@placeholder='Enter Treatment Notes']", "Note for the treatment"
+        )
+         
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Save']"))
-        ).click()
+        wait_and_locate_click(
+             driver, By.XPATH, "//button[normalize-space()='Save']"
+        )
+
+        msg = get_toast_message(driver)
+        print("Toast Message :", msg)
+        time.sleep(5)
 
         upload_element = wait.until(
-             EC.presence_of_element_located(((By. XPATH, "//span[normalize-space()='Upload File']"))
+             EC.presence_of_element_located(((By. XPATH, "//button[@class='btn btn--outline']"))
         ))
         driver.execute_script("arguments[0].scrollIntoView();", upload_element)
         time.sleep(2)
@@ -2600,23 +2607,26 @@ def test_without_prescription_NewMR(login):
         time.sleep(1)
         pyautogui.press("enter")
 
-        wait_and_locate_click(
-             By.XPATH, "//i[@class='pi pi-share-alt']"
+        time.sleep(3)
+        share_element = wait.until(
+             EC.element_to_be_clickable((By.XPATH, "//button[@ptooltip='Share Case']"))
         )
+        driver.execute_script("arguments[0].click();", share_element)
 
+        time.sleep(2)
         wait_and_send_keys(
-                By.XPATH, "//textarea[@placeholder='Enter message description']", "Case sharing without prescription in new MR"
+                driver, By.XPATH, "//textarea[@placeholder='Enter message description']", "Case sharing without prescription in new MR"
         )
 
         time.sleep(2)
 
         wait_and_locate_click(
-             By.XPATH, "//span[contains(text(),'Email')]"   
+             driver, By.XPATH, "//span[contains(text(),'Email')]"   
         )
 
         time.sleep(1)
         wait_and_locate_click(
-             By.XPATH, "//button[normalize-space()='Share']"
+             driver, By.XPATH, "//button[normalize-space()='Share']"
         )
 
         msg = get_toast_message(driver)
