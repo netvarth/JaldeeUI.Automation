@@ -6,7 +6,7 @@ from selenium.webdriver.support.ui import Select
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Case Creation , Preview , Download , Log , CaseSharing")
-@pytest.mark.parametrize("url", ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_casesharing_create_patient(login):
     try:
         time.sleep(5)
