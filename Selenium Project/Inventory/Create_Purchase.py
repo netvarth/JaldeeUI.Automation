@@ -17,6 +17,7 @@ def add_date(years_to_add):
 def test_create_purchase(login):
         
     try:
+        driver = login
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -89,7 +90,7 @@ def test_create_purchase(login):
         time.sleep(3)
 
         item_list = ["Item_1"]
-        random_batch_number = str(random.randint(100, 1000))
+        random_batch_number = str(random.randint(500, 1000))
         time.sleep(3)
         
         for item in item_list:
@@ -187,7 +188,7 @@ def test_create_purchase(login):
             qty.click()
             qty.clear()
 
-            qty_random_number = str(random.randint(15, 50))
+            qty_random_number = str(random.randint(40, 80))
             qty.send_keys(qty_random_number)
             print("Qty Of Item:", qty_random_number)
 
@@ -209,7 +210,7 @@ def test_create_purchase(login):
             )
             mrpprice.click()
             mrpprice.clear()
-            mrpprice_random_number = str(random.randint(100, 200))
+            mrpprice_random_number = str(random.randint(400, 500))
             mrpprice.send_keys(mrpprice_random_number)
             print("MRP of the item:", mrpprice_random_number)
 
@@ -221,7 +222,7 @@ def test_create_purchase(login):
             )
             price.click()
             price.clear()
-            price_random_number = str(random.randint(40, 90))
+            price_random_number = str(random.randint(300, 399))
             price.send_keys(price_random_number)
             print("Price of the item:", price_random_number)
 
@@ -369,31 +370,36 @@ def test_create_purchase(login):
         )
         login.execute_script("arguments[0].click();", expenses_card)
             
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='table-column-data customer-badge status-New'][normalize-space()='New'])[1]"))
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[@class='table-column-data customer-badge status-New'][normalize-space()='New'])[1]"))
+        # ).click()
 
         time.sleep(2)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-button-label'][normalize-space()='View'])[1]"))
+                (By.XPATH, "(//*[@class='p-button-label'][normalize-space()='View'])[1]"))
         ).click()
 
         time.sleep(3)
 
-        # bill_input = WebDriverWait(login, 10).until(
-        # EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Purchase Bill#']"))
-        # )
+        wait_and_locate_click(
+            driver, By.XPATH, "(//button[@id='vieExpnse_FIN_ExpenseDetail'])[1]"
+        )
 
-        # # Get the value (this will give the dynamically entered bill number)
-        # bill_value = bill_input.get_attribute("value")
-        # print("Entered Bill Number:", bill_value)
+        time.sleep(3)
+        bill_input = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Purchase Bill#']"))
+        )
 
-        # print(f"Expected bill_number: '{bill_value}', Actual bill_number: '{bill_number}'")
-        # # Assert that the patient's name matches
-        # assert bill_number == bill_value, f"Expected bill_number '{bill_value}', but found '{bill_number}' on invoice."
+        # Get the value (this will give the dynamically entered bill number)
+        bill_value = bill_input.get_attribute("value")
+        print("Entered Bill Number:", bill_value)
+
+        print(f"Expected bill_number: '{bill_value}', Actual bill_number: '{bill_number}'")
+        # Assert that the patient's name matches
+        assert bill_number == bill_value, f"Expected bill_number '{bill_value}', but found '{bill_number}' on invoice."
 
         time.sleep(5)
 
@@ -1187,6 +1193,7 @@ def test_discount_in_amount(login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_purchase_1(login):
     try:
+        driver = login
         time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -1262,7 +1269,7 @@ def test_create_purchase_1(login):
 
         random_batch_number = str(random.randint(100, 1000))
         
-        for i in range(3):  # Get the last 5 rows
+        for i in range(2):  # Get the last 5 rows
             WebDriverWait(login, 10).until(
                 EC.presence_of_element_located(
                     (By.XPATH, "(//span[normalize-space()='Add Items'])[1]"))
@@ -1555,10 +1562,14 @@ def test_create_purchase_1(login):
         # ).click()
 
         time.sleep(3)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//*[@class='p-button-label'][normalize-space()='View'])[1]"
+        )
 
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='vieExpnse_FIN_ExpenseDetail'])[1]"))
+                (By.XPATH, "(//*[@id='vieExpnse_FIN_ExpenseDetail'])[1]"))
         ).click()
 
         time.sleep(3)

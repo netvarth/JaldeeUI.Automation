@@ -17,6 +17,8 @@ from selenium.common import TimeoutException
 import allure
 from allure_commons.types import AttachmentType
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import StaleElementReferenceException
+
 
 sales_order_consumer_scale_url = "https://scale.jaldee.com/orison"
 consumer_login_url = "https://scale.jaldee.com/RangSweets"
@@ -63,7 +65,7 @@ def generate_random_salutation():
 #     }
 
 
-def create_consumer_data():
+def create_consumer_data(Role="consumer"):
     fake = Faker()
     first_name = fake.first_name().lower()
     last_name = fake.last_name().lower()
@@ -73,10 +75,20 @@ def create_consumer_data():
     # Email format -> first.last@jaldee.com
     email = f"{first_name}.{last_name}@jaldee.com"
 
-    # OTP (fixed or random)
-    otp = "".join([str(random.randint(0, 9)) for _ in range(5)])  # e.g., 48291
+    return [first_name, last_name, phonenumber, email]
 
-    return [first_name, last_name, phonenumber, email, otp]
+
+def create_consumer_data(Role="family"):
+    fake = Faker()
+    first_name = fake.first_name().lower()
+    last_name = fake.last_name().lower()
+    random_digits = fake.numerify(text="#######")
+    phonenumber = f"555{random_digits}"
+    
+    # Email format -> first.last@jaldee.com
+    email = f"{first_name}.{last_name}@jaldee.com"
+
+    return [first_name, last_name, phonenumber, email]
 
 def scroll_to_window(consumer_login):
     consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")

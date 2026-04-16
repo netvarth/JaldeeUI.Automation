@@ -623,30 +623,16 @@ def test_walkin_token(login):
 
 
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='+ Create Case']")
-            )
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Create Case']")
+    
+        time.sleep(3)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Add any initial observations or background information...']", "test case for case")
+        
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@placeholder='Enter Case Description']")
-            )
-        ).send_keys("test case for case")
-
-        WebDriverWait(login, 10).until(
-
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Save']")
-            )
-        ).click()
-        # time.sleep(1)
-        # toast_message = WebDriverWait(login, 10).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        # )
-        # message = toast_message.text
-        # print("Toast Message:", message)
+        time.sleep(2)
+        wait_and_locate_click(
+            login, By.XPATH, "(//button[@type='button'][normalize-space()='Create Case'])[1]"
+        )
 
         time.sleep(2)
 

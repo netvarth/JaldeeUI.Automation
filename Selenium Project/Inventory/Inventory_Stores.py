@@ -15,6 +15,9 @@ from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
 
+# Global variable to store invoice type
+invoice_type_name_global = None
+
 
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Store Creation")
@@ -105,6 +108,7 @@ def test_store_creation(login):
         ) 
         raise e  
 
+
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Rename Store")
 def test_rename_store(login):
@@ -160,6 +164,7 @@ def test_rename_store(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
 
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Disable and Re-enable Store")
@@ -242,6 +247,7 @@ def test_disable_and_enable_store(login):
         )
         raise e
 
+
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @pytest.mark.xfail(reason="Create button incorrectly enabled without selecting Type")
 @allure.title("Store Creation")
@@ -323,6 +329,7 @@ def test_store_creation_exculded_type(login):
         ) 
         raise e
 
+
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Store Filter Location")
 def test_store_filter_location(login):
@@ -403,6 +410,7 @@ def test_store_filter_location(login):
         )
         raise e
  
+
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Store Filter_Status")
 def test_store_filter_storestatus(login):
@@ -513,7 +521,6 @@ def test_store_filter_storestatus(login):
         )
         raise e
 
-    
 
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 @allure.title("Disable the Expense_Conversion")
@@ -875,7 +882,7 @@ def test_Expense_Conversion(login):
         assert status_text == "APPROVED", f"Expected status to be 'APPROVED', but got '{status_text}'"
         
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
         wait_and_locate_click(
             login, By.XPATH, "(//div[@id='actionRoute_FIN_Dashbord'])[8]"
         )
@@ -953,3 +960,865 @@ def test_Expense_Conversion(login):
             attachment_type=AttachmentType.PNG,
         )
         raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Enable Invoice type and Apply the Invoice type in Store")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_store_invoive_type(login):
+    global invoice_type_name_global
+    driver = login
+    wait = WebDriverWait(driver, 30)
+
+    # if not invoice_type_name_global:
+    #     raise Exception("Invoice type not created yet! Run test_invoice_type_1 first.")
+
+    try:
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//img)[3]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//div[@id='actionNav_ORD_Inventory'])[2]"
+        )
+
+        store_name = "B&B Stores"
+        page = 1
+        found = False
+        time.sleep(3)
+        while True:
+            print(f"Searching for store '{store_name}' on page {page}")
+            try:
+                driver.find_element(
+                    By.XPATH,
+                    f"//div[normalize-space()='{store_name}']/ancestor::tr//span[normalize-space()='Edit']"
+                ).click()
+                found = True
+                break
+            except:
+                next_btn = driver.find_element(By.XPATH, "//button[contains(@class,'p-paginator-next')]")
+                if "p-disabled" in next_btn.get_attribute("class"):
+                    break
+                next_btn.click()
+                time.sleep(1)
+                page += 1
+
+        assert found, f"Store '{store_name}' not found in any page"
+
+        time.sleep(2)
+        # Locate the switch input
+        switch_input = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//p-inputswitch[@id='typeStatus_ORD_storeCre']//input[@role='switch']")
+            )
+        )
+
+        status = switch_input.get_attribute("aria-checked")
+        print("Invoice Type Toggle Status:", status)
+
+        # Enable only if disabled
+        if status == "false":
+            print("Toggle is OFF. Turning it ON...")
+            
+            wait_and_locate_click(
+                driver,
+                By.XPATH,
+                "//p-inputswitch[@id='typeStatus_ORD_storeCre']//span[contains(@class,'p-inputswitch-slider')]"
+            )
+
+            # Wait until it becomes enabled
+            WebDriverWait(driver, 10).until(
+                lambda d: d.find_element(
+                    By.XPATH, "//p-inputswitch[@id='typeStatus_ORD_storeCre']//input"
+                ).get_attribute("aria-checked") == "true"
+            )
+
+        else:
+            print("Toggle already ON. No action needed.")
+
+        time.sleep(2)
+        # wait_and_locate_click(driver, By.XPATH, "//p-inputswitch[@id='typeStatus_ORD_storeCre']")
+        wait_and_locate_click(driver, By.XPATH, "//p-multiselect[@id='invTypes_ORD_CrtItemPop']")
+
+        wait_and_locate_click(driver, By.XPATH, "(//div[@class='p-checkbox-box'])[2]")
+        # print("Selected invoice type:", invoice_type_name_global)
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver,
+            By.XPATH,
+            "//button[contains(@class,'p-multiselect-close')]"
+        )
+
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='create_ORD_storeCre']")
+        print("Snack Bar Message:", get_snack_bar_message(driver))
+
+        time.sleep(3)
+    except Exception as e:
+        allure.attach(driver.get_screenshot_as_png(), name="Failure Screenshot", attachment_type=AttachmentType.PNG)
+        raise e
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Adding logo at the time of store creation")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Store Creation")
+def test_store_creation_with_logo(login):
+    try:
+        driver = login
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(5)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='Stores']"))
+        ).click()
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Create Store']"))
+        ).click()                                   
+
+
+        dropdown = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//*[normalize-space()='Type']"))  
+        )
+        dropdown.click() 
+
+        time.sleep(2)
+        dropdown_item = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='OTHERS']"))
+        )
+
+        dropdown_item.click()
+
+        store_name = "Store_" + str(uuid.uuid4())[:6]
+        print("Store Nmae : ", store_name)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='storeName']"))
+        ).send_keys(store_name)
+
+        email = f"{store_name}{test_mail}"
+        random_number = str(random.randint(1111111, 9999999))
+        phonenumber = f"{555}{random_number}"
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys(phonenumber)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='email']"))
+        ).send_keys(email)
+
+
+        invoice_prefix = "KT_" + str(uuid.uuid4())[:6]
+        print(invoice_prefix)
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Invoice prefix']"))  
+        ).send_keys(invoice_prefix)
+        
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Location']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "(//span[normalize-space()='West Nada'])[1]"))
+        ).click()
+
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+
+
+        create_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='create_ORD_storeCre']"))
+        )
+        login.execute_script("arguments[0].click();", create_button)
+
+        msg = get_snack_bar_message(driver)
+        print("Snak Bar_meesage:", msg)
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: After creating store update with logo")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Store Creation")
+def test_store_creation_and_update_with_logo(login):
+    try:
+        driver = login
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(5)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='Stores']"))
+        ).click()
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Create Store']"))
+        ).click()                                   
+
+
+        dropdown = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//*[normalize-space()='Type']"))  
+        )
+        dropdown.click() 
+
+        time.sleep(2)
+        dropdown_item = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='OTHERS']"))
+        )
+
+        dropdown_item.click()
+
+        store_name = "Store_" + str(uuid.uuid4())[:6]
+        print("Store Nmae : ", store_name)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='storeName']"))
+        ).send_keys(store_name)
+
+        email = f"{store_name}{test_mail}"
+        random_number = str(random.randint(1111111, 9999999))
+        phonenumber = f"{555}{random_number}"
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys(phonenumber)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='email']"))
+        ).send_keys(email)
+
+
+        invoice_prefix = "K_" + str(uuid.uuid4())[:6]
+        print(invoice_prefix)
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Invoice prefix']"))  
+        ).send_keys(invoice_prefix)
+        
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Location']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "(//span[normalize-space()='West Nada'])[1]"))
+        ).click()
+
+
+        create_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='create_ORD_storeCre']"))
+        )
+        login.execute_script("arguments[0].click();", create_button)
+
+        msg = get_snack_bar_message(driver)
+        print("Snak Bar_meesage:", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[@class='p-button-label ng-star-inserted'][normalize-space()='Edit'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[contains(@class,'edit-icon')]//i[contains(@class,'fa-pencil')]"
+        )
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='create_ORD_storeCre']"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Updating the existing logo")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Store Creation")
+def test_update_existing_logo(login):
+    try:
+        driver = login
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(5)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='Stores']"))
+        ).click()
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[@class='p-button-label ng-star-inserted'][normalize-space()='Edit'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//i[@class='fw-normal fa fa-trash'])[1]"
+        )
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[contains(@class,'edit-icon')]//i[contains(@class,'fa-pencil')]"
+        )
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='create_ORD_storeCre']"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Deleting the logo")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Store Creation")
+def test_delete_logo(login):
+    try:
+        driver = login
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(5)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='Stores']"))
+        ).click()
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[@class='p-button-label ng-star-inserted'][normalize-space()='Edit'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//i[@class='fw-normal fa fa-trash'])[1]"
+        )
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='create_ORD_storeCre']"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Adding images to gallery at the time of store creation ")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Store Creation")
+def test_add_image_gallery(login):
+    try:
+        driver = login
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(5)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='Stores']"))
+        ).click()
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Create Store']"))
+        ).click()                                   
+
+
+        dropdown = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//*[normalize-space()='Type']"))  
+        )
+        dropdown.click() 
+
+        time.sleep(2)
+        dropdown_item = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='OTHERS']"))
+        )
+
+        dropdown_item.click()
+
+        store_name = "Store_" + str(uuid.uuid4())[:6]
+        print("Store Nmae : ", store_name)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='storeName']"))
+        ).send_keys(store_name)
+
+        email = f"{store_name}{test_mail}"
+        random_number = str(random.randint(1111111, 9999999))
+        phonenumber = f"{555}{random_number}"
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys(phonenumber)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='email']"))
+        ).send_keys(email)
+
+
+        invoice_prefix = "T_" + str(uuid.uuid4())[:6]
+        print(invoice_prefix)
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Invoice prefix']"))  
+        ).send_keys(invoice_prefix)
+        
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Location']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "(//span[normalize-space()='West Nada'])[1]"))
+        ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[contains(@class,'edit-icon')]//i[contains(@class,'fa-pencil')]"
+        )
+
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[contains(@class,'edit-icon')]//i[contains(@class,'fa-plus')]"
+        )
+
+        time.sleep(2)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+        time.sleep(3)
+
+        create_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='create_ORD_storeCre']"))
+        )
+        login.execute_script("arguments[0].click();", create_button)
+
+        msg = get_snack_bar_message(driver)
+        print("Snak Bar_meesage:", msg)
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: After creating store update the gallery")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Store Creation")
+def test_store_creation_and_update__gallery(login):
+    try:
+        driver = login
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(5)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='Stores']"))
+        ).click()
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Create Store']"))
+        ).click()                                   
+
+
+        dropdown = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//*[normalize-space()='Type']"))  
+        )
+        dropdown.click() 
+
+        time.sleep(2)
+        dropdown_item = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='OTHERS']"))
+        )
+
+        dropdown_item.click()
+
+        store_name = "Store_" + str(uuid.uuid4())[:6]
+        print("Store Nmae : ", store_name)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@name='storeName']"))
+        ).send_keys(store_name)
+
+        email = f"{store_name}{test_mail}"
+        random_number = str(random.randint(1111111, 9999999))
+        phonenumber = f"{555}{random_number}"
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='phone']"))
+        ).send_keys(phonenumber)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='email']"))
+        ).send_keys(email)
+
+
+        invoice_prefix = "Ki_" + str(uuid.uuid4())[:6]
+        print(invoice_prefix)
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Invoice prefix']"))  
+        ).send_keys(invoice_prefix)
+        
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Location']"))
+        ).click()
+
+        WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "(//span[normalize-space()='West Nada'])[1]"))
+        ).click()
+
+
+        create_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='create_ORD_storeCre']"))
+        )
+        login.execute_script("arguments[0].click();", create_button)
+
+        msg = get_snack_bar_message(driver)
+        print("Snak Bar_meesage:", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[@class='p-button-label ng-star-inserted'][normalize-space()='Edit'])[1]"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//div[contains(@class,'edit-icon')]//i[contains(@class,'fa-pencil')]"
+        )
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//img[@class='pointer-cursor']"
+        )
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+        
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//img[@class='pointer-cursor']"
+        )
+        
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\sea.jpg")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//img[@class='pointer-cursor']"
+        )
+        
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+        time.sleep(2)
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\flower.jpg")
+        )
+        time.sleep(1)
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='btnSave_ORD_CropImg']"
+        )
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='create_ORD_storeCre']"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(5)
+
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+    
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Test Case: Deleting images added to the gallery")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+@allure.title("Store Creation")
+def test_delete_gallery_image(login):
+    try:
+        driver = login
+        time.sleep(3)
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[3]"))
+        ).click()
+
+        time.sleep(5)
+
+        WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//*[normalize-space()='Stores']"))
+        ).click()
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[@class='p-button-label ng-star-inserted'][normalize-space()='Edit'])[1]"
+        )
+
+        time.sleep(2)
+        dot_element = driver.find_element(By.XPATH, "(//button[@aria-haspopup='menu']//mat-icon[text()='more_vert'])[1]")
+        driver.execute_script("arguments[0].click();", dot_element)
+
+        time.sleep(1)
+        wait_and_locate_click(
+            driver, By.XPATH, "(//span[contains(text(),'Delete')])[1]"
+        )
+
+
+        time.sleep(2)
+        wait_and_locate_click(
+            driver, By.XPATH, "//button[@id='create_ORD_storeCre']"
+        )
+
+        msg = get_snack_bar_message(driver)
+        print("Snack Bar Message :", msg)
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
+    
+
+
+
+
+

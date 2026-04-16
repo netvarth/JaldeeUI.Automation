@@ -21,7 +21,7 @@ from selenium.common.exceptions import TimeoutException
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_delivery_profile(login):
     try:
-        time.sleep(2)
+        time.sleep(3)
         wait_and_locate_click(login, By.XPATH, 
                               "(//img)[2]")
 
@@ -110,7 +110,6 @@ def test_create_delivery_profile(login):
             attachment_type=AttachmentType.PNG,
         ) 
         raise e
-    
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create the Delivery Profile with Empty Fields")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])

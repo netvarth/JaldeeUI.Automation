@@ -439,7 +439,7 @@ def test_sales_order_catalog_disable_active_order(login):
         # Step 3: Navigate to order.Catalogs
         time.sleep(3)
         wait.until(EC.presence_of_element_located(
-            (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[3] "))).click()
+            (By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4] "))).click()
         
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH,

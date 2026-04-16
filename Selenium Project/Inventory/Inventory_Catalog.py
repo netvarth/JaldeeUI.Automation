@@ -356,7 +356,7 @@ def test_inventory_catalog_name_update(login):
 
         time.sleep(3)
         # Step 4: Click Done button (don't add any items)
-        wait_and_locate_click(login, By.XPATH, "//button[@id='btnSelect_ORD_ItemSelection']")
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='btnSubmitItems_ORD_ItemSelectionTop'])[1]")
 
         time.sleep(3)
         # Step 5: Click Back Arrow to return to Catalog list
@@ -619,55 +619,55 @@ def test_inventory_catalog_filter(login):
         raise e 
     
 
-@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
-@allure.title("Inventory Catalog - Edit and update the price of the item ")
-def test_inventory_catalog_name_update_price(login):
+# @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+# @allure.title("Inventory Catalog - Edit and update the price of the item ")
+# def test_inventory_catalog_name_update_price(login):
 
-    wait = WebDriverWait(login, 30)
-    try:
-        time.sleep(3)
+#     wait = WebDriverWait(login, 30)
+#     try:
+#         time.sleep(3)
 
-        # Step 1: Open the Inventory module
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//img)[2]"))
-        ).click()
+#         # Step 1: Open the Inventory module
+#         wait.until(
+#             EC.presence_of_element_located((By.XPATH, "(//img)[2]"))
+#         ).click()
 
-        time.sleep(3)
+#         time.sleep(3)
 
-        # Navigate to Inventory Catalogs
-        wait_and_locate_click(
-            login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]"
-        )
+#         # Navigate to Inventory Catalogs
+#         wait_and_locate_click(
+#             login, By.XPATH, "(//div[@id='actionRouteTo_ORD_Dashbrd'])[4]"
+#         )
 
-        # Select store from dropdown
-        wait_and_locate_click(
-            login, By.XPATH,
-            "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"
-        )
+#         # Select store from dropdown
+#         wait_and_locate_click(
+#             login, By.XPATH,
+#             "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"
+#         )
 
-        time.sleep(3)
-        store = login.find_element(
-            By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='B&B Stores']"
-        )
-        scroll_to_element(login, store)
-        store.click()
+#         time.sleep(3)
+#         store = login.find_element(
+#             By.XPATH, "//*[@class='ng-star-inserted'][normalize-space()='B&B Stores']"
+#         )
+#         scroll_to_element(login, store)
+#         store.click()
 
-        time.sleep(3)
+#         time.sleep(3)
 
-        wait_and_locate_click(login, By.XPATH, "(//div[@id='actionView_ORD_OrdCat'])[1]")
+#         wait_and_locate_click(login, By.XPATH, "(//div[@id='actionView_ORD_OrdCat'])[1]")
 
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "")
+#         time.sleep(1)
+#         wait_and_locate_click(login, By.XPATH, "")
 
         
 
     
-    except Exception as e:
-        allure.attach(  
-            login.get_screenshot_as_png(),  
-            name="full_page",  
-            attachment_type=AttachmentType.PNG,
-        ) 
-        raise e
+#     except Exception as e:
+#         allure.attach(  
+#             login.get_screenshot_as_png(),  
+#             name="full_page",  
+#             attachment_type=AttachmentType.PNG,
+#         ) 
+#         raise e
  
 

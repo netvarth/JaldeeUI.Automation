@@ -149,7 +149,7 @@ def test_appt_manualinvoice(login):
                 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
+                        (By.XPATH, "test_confirmation_label_message_attachment")
                     )
                 )
 

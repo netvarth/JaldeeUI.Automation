@@ -4,6 +4,7 @@ import string
 import uuid
 import pyautogui
 import time
+import os
 import datetime
 from faker import Faker
 from selenium import webdriver
@@ -313,33 +314,111 @@ def wait_and_click(login, by, value, timeout=30):
 #     if last_err:
 #         raise last_err
 
-def wait_and_locate_click(login, by, value, timeout=30):
-    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
-    element.click()
+# def wait_and_locate_click(login, by, value, timeout=30):
+#     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+#     element.click()
+#     return element
+
+# def wait_and_locate_all_click(login, by, value, timeout=30):
+#     elements = WebDriverWait(login, timeout).until(EC.presence_of_all_elements_located((by, value)))
+#     for element in elements:
+#         element.click()
+#     return elements
+
+# def wait_and_visible_click(login, by, value, timeout=30):
+#     element = WebDriverWait(login, timeout).until(EC.visibility_of_element_located((by, value)))
+#     element.click()
+#     return element
+
+# def wait_and_send_keys(login, by, value, keys, timeout=30):
+#     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+#     element.send_keys(keys)
+#     return element
+
+# def wait_for_text(login, by, value, timeout=30):
+#     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
+#     return element.text
+
+def wait_and_locate_click(driver, by, value, timeout=30, retries=3):
+    wait = WebDriverWait(driver, timeout)
+
+    for attempt in range(retries):
+        try:
+            element = wait.until(EC.presence_of_element_located((by, value)))
+            wait.until(EC.visibility_of(element))
+            wait.until(EC.element_to_be_clickable((by, value)))
+
+            driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center'});", element
+            )
+
+            try:
+                element.click()
+            except:
+                driver.execute_script("arguments[0].click();", element)
+
+            return element
+
+        except StaleElementReferenceException:
+            if attempt == retries - 1:
+                raise
+
+def wait_and_send_keys(driver, by, value, keys, timeout=30):
+    wait = WebDriverWait(driver, timeout)
+
+    element = wait.until(EC.visibility_of_element_located((by, value)))
+
+    element.clear()
+    element.send_keys(keys)
+
     return element
 
-def wait_and_locate_all_click(login, by, value, timeout=30):
-    elements = WebDriverWait(login, timeout).until(EC.presence_of_all_elements_located((by, value)))
-    for element in elements:
+
+def wait_and_visible_click(driver, by, value, timeout=30):
+    wait = WebDriverWait(driver, timeout)
+
+    element = wait.until(EC.visibility_of_element_located((by, value)))
+    wait.until(EC.element_to_be_clickable((by, value)))
+
+    try:
         element.click()
+    except:
+        driver.execute_script("arguments[0].click();", element)
+
+    return element
+
+
+def wait_and_locate_all_click(driver, by, value, timeout=30):
+    wait = WebDriverWait(driver, timeout)
+
+    elements = wait.until(EC.presence_of_all_elements_located((by, value)))
+
+    for element in elements:
+        try:
+            wait.until(EC.visibility_of(element))
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+
+            element.click()
+        except:
+            driver.execute_script("arguments[0].click();", element)
+
     return elements
 
-def wait_and_visible_click(login, by, value, timeout=30):
-    element = WebDriverWait(login, timeout).until(EC.visibility_of_element_located((by, value)))
-    element.click()
-    return element
 
-def wait_and_send_keys(login, by, value, keys, timeout=30):
-    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
-    element.send_keys(keys)
-    return element
+def wait_for_text(driver, by, value, timeout=30):
+    wait = WebDriverWait(driver, timeout)
 
-def wait_for_text(login, by, value, timeout=30):
-    element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
-    return element.text
+    element = wait.until(EC.visibility_of_element_located((by, value)))
+
+    return element.text.strip()
 
 
+def wait_for_loader_to_disappear(driver, timeout=30):
+    wait = WebDriverWait(driver, timeout)
 
+    wait.until(
+        EC.invisibility_of_element_located((By.CLASS_NAME, "p-progress-spinner"))
+    )
 
 
 # def get_snack_bar_message(login, timeout=30):

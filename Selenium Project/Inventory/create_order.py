@@ -16,7 +16,8 @@ from selenium.common.exceptions import TimeoutException
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_order(login):
 
- 
+    driver =  login
+    
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -47,23 +48,17 @@ def test_create_order(login):
             (By.XPATH, "//span[normalize-space()='Id : 10']"))
     ).click()
 
-    wait_and_locate_click(
-        login, By.XPATH, "//p-dropdown[@id='selectStore_ORD_CrtItemPop']")            
-
+    Drop_element = driver.find_element(By.XPATH, "//p-multiselect[@id='selectCat_ORD_CrtItemPop']")                          
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='B&B Stores'])[1]")
-
-    time.sleep(2)       
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-multiselect[@id='selectCat_ORD_CrtItemPop']"))
-    ).click()
+    Drop_element.click()
 
     time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]"))
-    ).click()
+    # wait_and_locate_click(driver, By.XPATH, "(//p-multiselect[@id='selectCat_ORD_CrtItemPop'])[1]")
+    select_element = driver.find_element(By.XPATH, "(//span[normalize-space()='Sale_catalog'])[1]")
+    driver.execute_script("arguments[0].click();", select_element)
+
+    time.sleep(2)
+    wait_and_locate_click(driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-multiselect-close-icon'])[1]")
 
     time.sleep(2)
     WebDriverWait(login, 10).until(

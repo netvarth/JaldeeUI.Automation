@@ -1,192 +1,391 @@
-import random
-import string
-import time
-import os
-import pyautogui
-import pytest
-from faker import Faker
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
+from datetime import datetime, timedelta
+from Framework.consumer_common_utils import *
 
 
-def create_user_data():
-    fake = Faker()
-    first_name = fake.first_name()
-    print(first_name)
-    last_name = fake.last_name()
-    print(last_name)
-    cons_manual_id = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
-    print(cons_manual_id)
-    random_digits = ''.join(random.choices(string.digits, k=7))
-    phonenumber = f"{555}{random_digits}"
-    print(phonenumber)
-    return [first_name, last_name, cons_manual_id, phonenumber]
 
 
-@pytest.fixture()
-def login():
-    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
-    driver.get("https://scale.jaldee.com/visionhospital/")
-    driver.maximize_window()
-    yield driver
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Send Message and Attachment from Consumer Side")
+@pytest.mark.parametrize("url", [consumer_login_url_1])
+def test_consumer_side(consumer_login):
+    try:    
+        time.sleep(5)
+        # Scroll to the element
+        consultation = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//h3[normalize-space()='GET YOUR CONSULTATION TODAY'])[1]")
+            )
+        )
+        consumer_login.execute_script("arguments[0].scrollIntoView(true);", consultation)
+        
+        time.sleep(3)
+        wait = WebDriverWait(consumer_login, 30)
+
+        book_now_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "(//button[@id='btnBookNow'])[3]")
+            )
+        )
+        scroll_to_element(consumer_login, book_now_button)
+
+        time.sleep(2)
+        book_now_button.click()
 
 
-def test_booking(login):
-    # login.find_element(By.XPATH, "//span[contains(text(),'Book Now')]").click()
-    time.sleep(5)
-    book_now_button = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "(//span[normalize-space(.)='Book Now'])[1]")))
-    login.execute_script("arguments[0].click();", book_now_button)
-    
-    time.sleep(2)
-    location_button = WebDriverWait(login, 10).until(
+        time.sleep(3)
+        
+        location_button = wait.until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]",
+                )
+            )
+        )
+        location_button.click()
+
+        wait = WebDriverWait(consumer_login, 10)
+        depart_button = wait.until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[@class='deptName ng-star-inserted'][normalize-space()='ENT']",
+                )
+            )
+        )
+        depart_button.click()
+
+        wait = WebDriverWait(consumer_login, 10)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]")
+            )
+        ).click()
+
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][contains(text(),'service')]",
+                )
+            )
+        ).click()
+        time.sleep(3)
+        # Today_Date = WebDriverWait(consumer_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+        #     )
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
+        # time.sleep(3) 
+        # Today_Date.click()
+        # time.sleep(3)  
+        # print("Today Date:", Today_Date.text)
+        # wait = WebDriverWait(consumer_login, 10)
+        # time_slot = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView();", time_slot)
+        # time.sleep(2)
+        # time_slot.click()
+        
+        # print("Time Slot:", time_slot.text)
+
+
+        # =========================
+        # ✅ SELECT TODAY DATE (NEW UI)
+        # =========================
+
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        Today_Date = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, f"//button[@data-iso='{today}' and not(@disabled)]")
+            )
+        )
+
+        consumer_login.execute_script("arguments[0].scrollIntoView({block:'center'});", Today_Date)
+        Today_Date.click()
+
+        print("Selected Date:", Today_Date.text)
+
+
+        # =========================
+        # ✅ GET ALL SLOTS
+        # =========================
+        slots = consumer_login.find_elements(By.XPATH, "//mat-chip")
+
+        selected_slot = None
+
+        # =========================
+        # ✅ STEP 1: CHECK IF ANY SLOT ALREADY SELECTED
+        # =========================
+        for slot in slots:
+            if "selected" in slot.get_attribute("class"):
+                selected_slot = slot.text
+                print("Already Selected Time Slot:", selected_slot)
+                break
+
+        # =========================
+        # ✅ STEP 2: IF NOT SELECTED → PICK ONE
+        # =========================
+        if not selected_slot:
+            for slot in slots:
+                try:
+                    consumer_login.execute_script(
+                        "arguments[0].scrollIntoView({block:'center'});", slot
+                    )
+
+                    WebDriverWait(consumer_login, 10).until(
+                        EC.element_to_be_clickable(slot)
+                    )
+
+                    slot.click()
+                    selected_slot = slot.text
+                    print("Newly Selected Time Slot:", selected_slot)
+                    break
+
+                except Exception:
+                    continue
+
+        # =========================
+        # ✅ FINAL CHECK
+        # =========================
+        if not selected_slot:
+            raise Exception("No available time slots found!")
+        
+        consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Next']")
+            )
+        ).click()
+        time.sleep(3)
+        WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
+        ).send_keys("9207206005")
+        
+        consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+
+        time.sleep(5)
+
+        otp_digits = "5555"
+        # otp_digits = "55555"
+        # Wait for the OTP input fields to be present
+        otp_inputs = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//input[contains(@id, 'otp_')]")
+            )
+        )
+
+        # print("Number of OTP input fields:", len(otp_inputs))
+        # print(otp_inputs)
+
+        for i, otp_input in enumerate(otp_inputs):
+
+            # print(i)
+            # print(otp_input)
+            otp_input.send_keys(otp_digits[i])
+
+        consumer_login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+
+        # time.sleep(3)
+
+        time.sleep(3)
+        consumer_notes = WebDriverWait(consumer_login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//div[@class='deptName ng-star-inserted'][contains(text(),'Chavakkad')]"))
-    )
-    location_button.click()
+            (By.XPATH, "//textarea[@placeholder='Add Notes you may have...']")
+        )
+        )
+        consumer_notes.send_keys("Notes added from consumer side")
+        time.sleep(5)
+        consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(3)
+        WebDriverWait(consumer_login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Upload Files']"))
+        ).click()
+        time.sleep(2)
+        
+        current_working_directory = os.getcwd()
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        time.sleep(2)
+        pyautogui.write(absolute_path)
+        time.sleep(2)
+        pyautogui.press("enter")
 
-    time.sleep(2)
-    depart_button = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@class='deptName ng-star-inserted'][normalize-space()='ENT']"))
-    )
-    depart_button.click()
+        consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(3)
+        confirmbutton = WebDriverWait(consumer_login, 15).until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//button[@id='btnConfirm']")
+            )
+        )
+        confirmbutton.click()
 
-    time.sleep(2)
+        print("Clicked Confirm button")
+        time.sleep(5)
+        # Step 1: Extract Booking ID
+        booking_id_element = WebDriverWait(consumer_login, 10).until(
+            EC.presence_of_all_elements_located((By.XPATH, "//div[@class='bookingIdFlex']/div"))
+        )
+        booking_id = booking_id_element[1].text.strip()
+        print(f"Booking ID: {booking_id}")
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Dr.Naveen KP')]"))
-    ).click()
+        # Step 2: Click OK
+        WebDriverWait(consumer_login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Ok']"))
+        ).click()
 
-    login.find_element(By.XPATH,
-                       "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][contains(text(),'service zero')]").click()
+        print("Clicked OK button")
 
-    Today_Date = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']"))
-    )
+        time.sleep(3)
 
-    Today_Date.click()
+        # Step 3: Go to My Bookings
+        bookings = WebDriverWait(consumer_login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//div[contains(text(),'My Bookings')]"))
+        )
+        bookings.click()
+        time.sleep(3)
 
-    print("Today Date:", Today_Date.text)
+        # Step 1: Click "Show more" once (if present)
+        try:
+            show_more = WebDriverWait(consumer_login, 5).until(
+                EC.element_to_be_clickable((By.XPATH, "//a[normalize-space()='Show more']"))
+            )
+            consumer_login.execute_script("arguments[0].scrollIntoView(true);", show_more)
+            time.sleep(1)
+            show_more.click()
+            print("Clicked 'Show more'")
+            time.sleep(2)  # Wait for new content to begin loading
 
-    wait = WebDriverWait(login, 10)
-    time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//mat-chip[@aria-selected='true']")))
-    time_slot.click()
-    print("Time Slot:", time_slot.text)
+            # Scroll to bottom to ensure all lazy-loaded cards are loaded
+            last_height = consumer_login.execute_script("return document.body.scrollHeight")
+            while True:
+                consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(1)
+                new_height = consumer_login.execute_script("return document.body.scrollHeight")
+                if new_height == last_height:
+                    break
+                last_height = new_height
+            print("Scrolled to bottom to load all cards.")
+        except:
+            print("No 'Show more' button found or it's already fully expanded.")
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Next')]"))
-    ).click()
+        # Step 2: Loop through all loaded cards to find the booking ID
+        found = False
+        cards = consumer_login.find_elements(By.XPATH, "//app-appt-card")
+        print(f"Total cards found: {len(cards)}")
 
-    user_data = create_user_data()
+        for card in cards:
+            try:
+                # card_booking_id_elem = card.find_element(By.XPATH, ".//div[@class='cstmTxt field-head' and text()='Booking Id']/following-sibling::div")
+                card_booking_id_elem = card.find_element(
+                    By.XPATH,
+                    ".//div[normalize-space(text())='Booking Id']/following-sibling::div"
+                )
 
-    login.find_element(By.XPATH, "//input[@id='phone']").send_keys(user_data[3])
-    login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+                card_booking_id = card_booking_id_elem.text.strip()
+                print(f"Found booking ID in card: '{card_booking_id}'")  # <--- Debug print
 
-    time.sleep(3)
+                if card_booking_id == booking_id:
+                    consumer_login.execute_script("arguments[0].scrollIntoView(true);", card)
+                    print(f"Found matching booking ID card: {card_booking_id}")
 
-    otp_digits = "55555"
+                    # Click the 3-dot menu inside this card
+                    three_dot = card.find_element(By.XPATH, ".//button[contains(@class, 'menu') and i[contains(@class, 'fa-ellipsis-h')]]")
+                    WebDriverWait(consumer_login, 5).until(EC.element_to_be_clickable(three_dot))
+                    consumer_login.execute_script("arguments[0].scrollIntoView(true);", three_dot)
+                    time.sleep(2)
+                    three_dot.click()
+                    print("Clicked 3-dot menu.")
+                    found = True
+                    break
+            except Exception as e:
+                print(f"Error processing a card: {e}")
 
-    # Wait for the OTP input fields to be present
-    otp_inputs = WebDriverWait(login, 10).until(
-        EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@id, 'otp_')]"))
-    )
+        if not found:
+            print("Booking card not found.")
 
-    print("Number of OTP input fields:", len(otp_inputs))
-    print(otp_inputs)
-    # Wait for each OTP input field to be clickable and then fill the digit
-    for i, otp_input in enumerate(otp_inputs):
-        print(i)
-        print(otp_input)
-        otp_input.send_keys(otp_digits[i])
+        time.sleep(3)
 
-    login.find_element(By.XPATH, "//span[@class='continue ng-star-inserted']").click()
+        wait.until(
+            EC.visibility_of_element_located((By.XPATH, "(//span[contains(text(),'Send Message')])[1]"))
+        ).click()
 
-    time.sleep(3)
+        time.sleep(1)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//textarea[@id='message'])[1]")
+            )
+        ).send_keys("Test message from consumer side")
 
-    first_name_field = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//*[@id='first_name']"))
-    )
-    first_name_field.clear()  # Clear the field to ensure it's empty before sending keys
-    print(user_data[0])
-    first_name_field.send_keys(user_data[0])
-    print(user_data[1])
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "(//input[@id='first_name'])[2]"))
-    ).send_keys(user_data[1])
+        wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//i[@class='material-icons'])[1]"))
+        ).click()
 
-    # Explicit wait for the "Next" button after entering the first and last names
-    next_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Next'][1]")))
-    next_button.click()
+        time.sleep(3)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Add Notes you may have...']"))
-    ).send_keys("Note from the consumer side")
+        current_working_directory = os.getcwd()
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(3)
+        pyautogui.press("enter")
 
-    time.sleep(3)
-    print("before")
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Confirm')]"))
-    ).click()
-    print("After")
+        time.sleep(3)
+        wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Send'])[1]"))
+        ).click()
 
-    time.sleep(5)
-    WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Ok')]"))
-    ).click()
+        toast_message = WebDriverWait(consumer_login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
 
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'My Bookings')]"))
-    ).click()
+        time.sleep(3)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@class='more_opt']"))
-    ).click()
+        wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//span[contains(text(),'Send Attachments')])[1]"))
+        ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[contains(text(),'Send Message')]"))
-    ).click()
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//span[@class='select-wrapper'])[1]")
+            )
+        ).click()
+        time.sleep(2)
+        current_working_directory = os.getcwd()
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        time.sleep(3)
+        pyautogui.press("enter")
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//textarea[@id='message']"))
-    ).send_keys("Send message from consumer side")
+        time.sleep(2)
+        wait.until(
+            EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-button__label'])[1]"))
+        ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][contains(text(),'Send')]"))
-    ).click()
+        toast_message = WebDriverWait(consumer_login, 10).until(
+            EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+        )
+        message = toast_message.text
+        print("Toast Message:", message)
 
-    print("Successfully send the message")
+        time.sleep(3)
 
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Send Attachments')]"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[contains(text(),'Click here to select the files')]"))
-    ).click()
-    time.sleep(3)
-    # Get the current working directory
-    current_working_directory = os.getcwd()
-
-    # Construct the absolute path
-    absolute_path = os.path.abspath(os.path.join(current_working_directory, r'Extras\test.png'))
-    pyautogui.write(absolute_path)
-    pyautogui.press('enter')
-
-    time.sleep(3)
-    WebDriverWait(login, 20).until(
-        EC.visibility_of_element_located((By.XPATH, "//span[contains(text(),'send')]"))
-    ).click()
-
-    print("Successfully send Attachment")
-
-
-
-
-
-
+    except Exception as e:
+            allure.attach(  # use Allure package, .attach() method, pass 3 params
+            consumer_login.get_screenshot_as_png(),  # param1
+            # consumer_login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+            )
+            raise e

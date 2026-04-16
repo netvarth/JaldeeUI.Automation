@@ -12,6 +12,7 @@ def test_signup():
     current_date = datetime.now().strftime("%d-%m-%Y")
     print("Post-Deployment Signup",current_date)
     try:
+        driver = login
         login = webdriver.Chrome(
             service=ChromeService(
                 executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"

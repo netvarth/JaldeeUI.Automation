@@ -1,17 +1,6 @@
-import time
 from datetime import datetime, timedelta
 from Framework.consumer_common_utils import *
-import pyautogui
-import pytest
-import allure
-from allure_commons.types import AttachmentType
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
-import os
+
 
 
 
@@ -86,24 +75,57 @@ def test_consumer_side_token(consumer_login):
             )
         ).click()
         time.sleep(3)
-        Today_Date = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[@aria-pressed='true'][@aria-current='date']")
+
+        target_day = datetime.now().day
+
+        # =========================
+        # ✅ DATE SELECTION
+        # =========================
+
+        dates = wait.until(
+            EC.presence_of_all_elements_located(
+                (By.XPATH, "//button[@data-iso and not(@disabled)]")
             )
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
-        time.sleep(2)
-        Today_Date.click()
-        time.sleep(2)
-        print("Today Date:", Today_Date.text)
-        wait = WebDriverWait(consumer_login, 10)
-        queue = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary']"))
-        )
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", queue)
-        time.sleep(2)
-        queue.click()
-        print("Queue:", queue.text)
+
+        selected_date = None
+        already_selected = None
+
+        for date in dates:
+            class_attr = date.get_attribute("class")
+
+            # ✅ Check already selected date
+            if "selected" in class_attr or "active" in class_attr:
+                already_selected = date
+                print("Already selected date:", date.text)
+                continue
+
+        # 👉 If already selected exists → USE IT (no click)
+        if already_selected:
+            selected_date = already_selected.text
+
+        # 👉 Else → select first available date
+        else:
+            for date in dates:
+                try:
+                    consumer_login.execute_script(
+                        "arguments[0].scrollIntoView({block:'center'});", date
+                    )
+
+                    wait.until(EC.element_to_be_clickable(date))
+                    date.click()
+
+                    selected_date = date.text
+                    print("Selected new date:", selected_date)
+                    break
+
+                except Exception:
+                    continue
+
+        if not selected_date:
+            raise Exception("No selectable date found!")
+
+        
         time.sleep(2)
         next_button = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(
@@ -143,7 +165,7 @@ def test_consumer_side_token(consumer_login):
         time.sleep(3)
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
+            EC.element_to_be_clickable((By.XPATH, "//button[@class='booking-upload__trigger']"))
         ).click()
         time.sleep(2)
 
@@ -159,7 +181,7 @@ def test_consumer_side_token(consumer_login):
         time.sleep(3)
         confirmbutton = WebDriverWait(consumer_login, 15).until(
             EC.visibility_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Confirm']")
+                (By.XPATH, "//button[@id='btnConfirm']")
             )
         )
         consumer_login.execute_script("arguments[0].scrollIntoView(true);", confirmbutton)
@@ -336,61 +358,75 @@ def test_consumer_side_token(consumer_login):
         time.sleep(3)
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)
-        # Calculate tomorrow's date
-        tomorrow_date = datetime.now() + timedelta(days=2)
-        # Get the day as an integer to avoid leading zeros
-        day = tomorrow_date.day  # e.g., 1 for October 1
-        # Format for the XPath
-        tomorrow_xpath_expression = f"//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{day}']"
 
-        print("Tomorrow's XPath Expression:", tomorrow_xpath_expression)
+        target_date = datetime.now() + timedelta(days=1)
+        target_iso = target_date.strftime("%Y-%m-%d")
 
-        # Get current month/year element
-        current_month_year = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//button[@aria-label='Choose month and year']//span[@class='mat-mdc-button-persistent-ripple mdc-button__ripple']",
-                )
+        print("Target Date ISO:", target_iso)
+
+
+
+        # =========================
+        # ✅ GET CURRENT MONTH TEXT
+        # =========================
+        current_month = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//button[contains(@class,'date-compact-card__month')]")
             )
         )
 
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", current_month_year)
+        current_month_text = current_month.text.strip()
+        target_month_text = target_date.strftime("%B %Y")
 
-        # Click next month if needed
-        if current_month_year.text.lower() != tomorrow_date.strftime('%B %Y').lower():
-            consumer_login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
-        time.sleep(3)
+        print("Current Month:", current_month_text)
+        print("Target Month:", target_month_text)
 
-        # Wait for tomorrow's date element to be clickable
-        Tomorrow_Date = WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
-        )
-        # Click on tomorrow's date
-        Tomorrow_Date.click()
-        print("Clicked on Tomorrow Date:", day)
-        time.sleep(2)
-        wait = WebDriverWait(consumer_login, 20)
-        time_slot = wait.until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "(//span[@class='mdc-evolution-chip__action mat-mdc-chip-action mdc-evolution-chip__action--primary mdc-evolution-chip__action--presentational'])[1]"
+
+        # =========================
+        # ✅ CHANGE MONTH IF REQUIRED
+        # =========================
+        if current_month_text.lower() != target_month_text.lower():
+            print("Switching month...")
+
+            current_month.click()
+
+            wait.until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, f"//button[contains(.,'{target_month_text}')]")
                 )
-            )
+            ).click()
+
+
+        # =========================
+        # ✅ SELECT TARGET DATE
+        # =========================
+        date_xpath = f"//button[@data-iso='{target_iso}' and not(@disabled)]"
+
+        target_btn = wait.until(
+            EC.presence_of_element_located((By.XPATH, date_xpath))
         )
-        time_slot.click()
-        print("Time Slot:", time_slot.text)
+
+
+        # scroll to element
+        consumer_login.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});", target_btn
+        )
+
+        # avoid clicking if already selected
+        if "is-selected" in target_btn.get_attribute("class"):
+            print("Date already selected:", target_btn.text)
+        else:
+            wait.until(EC.element_to_be_clickable((By.XPATH, date_xpath)))
+            target_btn.click()
+            print("Selected Date:", target_btn.text)
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Next']"))
         ).click()
         time.sleep(2)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Reschedule']")
-            )
-        ).click()
+        wait_and_locate_click(
+            consumer_login, By.XPATH, "//button[@id='btnConfirm']"
+        )
         time.sleep(3)
 
         # Step 1: Extract Booking ID

@@ -1,6 +1,7 @@
-import time
+
 from datetime import datetime, timedelta
 from Framework.consumer_common_utils import *
+
 
 
 
@@ -76,25 +77,87 @@ def test_consumer_side(consumer_login):
             )
         ).click()
         time.sleep(3)
-        Today_Date = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+        # Today_Date = WebDriverWait(consumer_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+        #     )
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
+        # time.sleep(3) 
+        # Today_Date.click()
+        # time.sleep(3)  
+        # print("Today Date:", Today_Date.text)
+        # wait = WebDriverWait(consumer_login, 10)
+        # time_slot = wait.until(
+        #     EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView();", time_slot)
+        # time.sleep(2)
+        # time_slot.click()
+        
+        # print("Time Slot:", time_slot.text)
+
+
+        # =========================
+        # ✅ SELECT TODAY DATE (NEW UI)
+        # =========================
+
+        today = datetime.now().strftime("%Y-%m-%d")
+
+        Today_Date = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, f"//button[@data-iso='{today}' and not(@disabled)]")
             )
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", Today_Date)
-        time.sleep(3) 
+
+        consumer_login.execute_script("arguments[0].scrollIntoView({block:'center'});", Today_Date)
         Today_Date.click()
-        time.sleep(3)  
-        print("Today Date:", Today_Date.text)
-        wait = WebDriverWait(consumer_login, 10)
-        time_slot = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//span[@class='mdc-evolution-chip__cell mdc-evolution-chip__cell--primary'])[1]"))
-        )
-        consumer_login.execute_script("arguments[0].scrollIntoView();", time_slot)
-        time.sleep(2)
-        time_slot.click()
-        
-        print("Time Slot:", time_slot.text)
+
+        print("Selected Date:", Today_Date.text)
+
+        # =========================
+        # ✅ GET ALL SLOTS
+        # =========================
+        slots = consumer_login.find_elements(By.XPATH, "//mat-chip")
+
+        selected_slot = None
+
+        # =========================
+        # ✅ STEP 1: CHECK IF ANY SLOT ALREADY SELECTED
+        # =========================
+        for slot in slots:
+            if "selected" in slot.get_attribute("class"):
+                selected_slot = slot.text
+                print("Already Selected Time Slot:", selected_slot)
+                break
+
+        # =========================
+        # ✅ STEP 2: IF NOT SELECTED → PICK ONE
+        # =========================
+        if not selected_slot:
+            for slot in slots:
+                try:
+                    consumer_login.execute_script(
+                        "arguments[0].scrollIntoView({block:'center'});", slot
+                    )
+
+                    WebDriverWait(consumer_login, 10).until(
+                        EC.element_to_be_clickable(slot)
+                    )
+
+                    slot.click()
+                    selected_slot = slot.text
+                    print("Newly Selected Time Slot:", selected_slot)
+                    break
+
+                except Exception:
+                    continue
+
+        # =========================
+        # ✅ FINAL CHECK
+        # =========================
+        if not selected_slot:
+            raise Exception("No available time slots found!")
         
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)
@@ -145,7 +208,7 @@ def test_consumer_side(consumer_login):
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//span[@class='uploadFileTxt']"))
+            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Upload Files']"))
         ).click()
         time.sleep(2)
         
@@ -158,11 +221,12 @@ def test_consumer_side(consumer_login):
         time.sleep(2)
         pyautogui.press("enter")
 
+        time.sleep(2)
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(3)
         confirmbutton = WebDriverWait(consumer_login, 15).until(
             EC.visibility_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Confirm']")
+                (By.XPATH, "//button[@id='btnConfirm']")
             )
         )
         confirmbutton.click()
@@ -342,61 +406,137 @@ def test_consumer_side(consumer_login):
         time.sleep(3)
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(2)
-        # Calculate tomorrow's date
-        tomorrow_date = datetime.now() + timedelta(days=2)
-        # Get the day as an integer to avoid leading zeros
-        day = tomorrow_date.day  # e.g., 1 for October 1
-        # Format for the XPath
-        tomorrow_xpath_expression = f"//span[@class='mat-calendar-body-cell-content mat-focus-indicator'][normalize-space()='{day}']"
+        # =========================
+        # ✅ TARGET DATE (TOMORROW)
+        # =========================
+        target_dt = datetime.now() + timedelta(days=1)
+        target_date = target_dt.strftime("%Y-%m-%d")
+        target_month = target_dt.strftime("%B %Y")
 
-        print("Tomorrow's XPath Expression:", tomorrow_xpath_expression)
+        print("Target Date:", target_date)
 
-        # Get current month/year element
-        current_month_year = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (
-                    By.XPATH,
-                    "//button[@aria-label='Choose month and year']//span[@class='mat-mdc-button-persistent-ripple mdc-button__ripple']",
-                )
+        # =========================
+        # ✅ GET CURRENT MONTH FROM UI
+        # =========================
+        current_month_el = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//button[contains(@class,'date-compact-card__month')]")
             )
         )
 
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", current_month_year)
+        current_month_text = current_month_el.text.strip()
 
-        # Click next month if needed
-        if current_month_year.text.lower() != tomorrow_date.strftime('%B %Y').lower():
-            consumer_login.find_element(By.XPATH, "//button[@aria-label='Next month']").click()
-        time.sleep(3)
+        print("Current Month:", current_month_text)
+        print("Target Month:", target_month)
 
-        # Wait for tomorrow's date element to be clickable
-        Tomorrow_Date = WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, tomorrow_xpath_expression))
-        )
-        # Click on tomorrow's date
-        Tomorrow_Date.click()
-        print("Clicked on Tomorrow Date:", day)
-        time.sleep(2)
-        wait = WebDriverWait(consumer_login, 20)
-        time_slot = wait.until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "(//span[@class='mdc-evolution-chip__action mat-mdc-chip-action mdc-evolution-chip__action--primary mdc-evolution-chip__action--presentational'])[1]"
+        # =========================
+        # ✅ SWITCH MONTH IF REQUIRED
+        # =========================
+        if current_month_text.lower() != target_month.lower():
+            print("Switching month...")
+
+            current_month_el.click()
+
+            wait.until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, f"//button[contains(.,'{target_month}')]")
                 )
-            )
+            ).click()
+
+        # =========================
+        # ✅ SELECT TARGET DATE
+        # =========================
+        date_xpath = f"//button[@data-iso='{target_date}' and not(@disabled)]"
+
+        date_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, date_xpath))
         )
-        time_slot.click()
-        print("Time Slot:", time_slot.text)
-        time.sleep(3)
+
+        # =========================
+        # ✅ CHECK IF ALREADY SELECTED
+        # =========================
+        if "is-selected" in date_element.get_attribute("class"):
+            print("Date already selected:", target_date)
+
+        else:
+            consumer_login.execute_script(
+                "arguments[0].scrollIntoView({block:'center'});", date_element
+            )
+
+            wait.until(EC.element_to_be_clickable((By.XPATH, date_xpath)))
+            date_element.click()
+
+            print("Selected Date:", target_date)
+
+            # =========================
+            # ✅ WAIT FOR SLOTS TO LOAD
+            # =========================
+            wait.until(
+                EC.presence_of_all_elements_located((By.XPATH, "//mat-chip"))
+            )
+
+            slots = consumer_login.find_elements(By.XPATH, "//mat-chip")
+
+            selected_slot = None
+
+            # =========================
+            # ✅ STEP 1: CHECK ALREADY SELECTED
+            # =========================
+            for i in range(len(slots)):
+                try:
+                    slots = consumer_login.find_elements(By.XPATH, "//mat-chip")
+                    slot = slots[i]
+
+                    if "selected" in slot.get_attribute("class"):
+                        selected_slot = slot.text
+                        print("Already Selected Slot:", selected_slot)
+                        break
+
+                except StaleElementReferenceException:
+                    continue
+
+            # =========================
+            # ✅ STEP 2: SELECT IF NONE SELECTED
+            # =========================
+            if not selected_slot:
+                for i in range(len(slots)):
+                    try:
+                        slots = consumer_login.find_elements(By.XPATH, "//mat-chip")
+                        slot = slots[i]
+
+                        consumer_login.execute_script(
+                            "arguments[0].scrollIntoView({block:'center'});", slot
+                        )
+
+                        wait.until(EC.element_to_be_clickable(slot))
+                        slot.click()
+
+                        selected_slot = slot.text
+                        print("Newly Selected Slot:", selected_slot)
+                        break
+
+                    except StaleElementReferenceException:
+                        continue
+                    except Exception:
+                        continue
+
+            # =========================
+            # ✅ FINAL VALIDATION
+            # =========================
+            if not selected_slot:
+                raise Exception("No available slots found!")
+
+
+        # =========================
+        # ✅ CLICK NEXT
+        # =========================
         WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Next']"))
+            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Next']"))
         ).click()
         time.sleep(2)
-        WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Reschedule']")
-            )
-        ).click()
+        wait_and_locate_click(
+            consumer_login, By.XPATH, "//button[@id='btnConfirm']"
+        )
         time.sleep(3)
 
         # Step 1: Extract Booking ID
