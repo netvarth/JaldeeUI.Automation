@@ -206,7 +206,7 @@ def test_NewMR_without_prescription(login):
         wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[2]")
 
         time.sleep(1)
-        wait_and_send_keys(login,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever")
+        wait_and_send_keys(login,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever" + Keys.ENTER)
 
         time.sleep(1)
         wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
