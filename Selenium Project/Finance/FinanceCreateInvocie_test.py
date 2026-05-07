@@ -14,7 +14,7 @@ def test_createinvoice(login):
         time.sleep(2)
         wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Name or Phone or Email or Id']", 9207206005) 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 105']")
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 2']")
         time.sleep(2)
         WebDriverWait(login, 15).until(
             EC.presence_of_element_located(
@@ -53,7 +53,7 @@ def test_createinvoice(login):
         time.sleep(2)
         wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Terms and condition']", "T&C")
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Update']")
         time.sleep(2)
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)

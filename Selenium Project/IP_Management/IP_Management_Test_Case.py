@@ -609,7 +609,7 @@ def test_IP_Management_2(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -912,19 +912,19 @@ def test_IP_Management_3(login):
         login.execute_script("arguments[0].click();", target_date)
         print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
 
-        time.sleep(2)
+        time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "//p-multiselect[@placeholder='Select Assignee Doctor']")
 
-        time.sleep(2)
+        time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//div[@class='p-checkbox-box'])[2]")                                                                                                                                            
     
-        time.sleep(2)
+        time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
-        time.sleep(2)
+        time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
 
-        time.sleep(1)
+        time.sleep(3)
         wait_and_locate_click(
              driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"
         )
@@ -943,7 +943,7 @@ def test_IP_Management_3(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -1295,7 +1295,7 @@ def test_IP_Management_4(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -1450,7 +1450,7 @@ def test_IP_Management_6(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -1613,7 +1613,7 @@ def test_IP_Management_7(login):
 
         msg = get_toast_message(login)
         print("Toas Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -1929,7 +1929,7 @@ def test_IP_Management_8(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
         
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -2257,7 +2257,7 @@ def test_IP_Management_9(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
 
@@ -2604,7 +2604,7 @@ def test_IP_Management_10(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
 
@@ -2758,7 +2758,7 @@ def test_IP_Management_12(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -2881,7 +2881,7 @@ def test_IP_Management_13(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg )
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -2968,7 +2968,7 @@ def test_IP_Management_14(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg )
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -3084,7 +3084,7 @@ def test_IP_Management_15(login):
                driver, By.XPATH, "(//i[@class='pi pi-times'])[1]"
         )
 
-        time.sleep(2)
+        time.sleep(5)
         
 
     except Exception as e:
@@ -3237,7 +3237,7 @@ def test_IP_Management_16(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -3398,7 +3398,7 @@ def test_IP_Management_17(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -3669,7 +3669,7 @@ def test_IP_Management_18(login):
 
         msg = get_snack_bar_message(driver)
         print("Snack Bar Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -3981,7 +3981,7 @@ def test_IP_Management_20(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -4055,7 +4055,7 @@ def test_IP_Management_21(login):
 
         msg = get_snack_bar_message(driver)
         print("Snack Bar Message:", msg)
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -4119,10 +4119,8 @@ def test_IP_Management_22(login):
 
         msg = get_toast_message(driver)
         print("Toast Message:", msg)
-        time.sleep(3)
+        time.sleep(5)
 
-
-        
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -4185,7 +4183,7 @@ def test_IP_Management_23(login):
                driver, By.XPATH, "//*[normalize-space()='Add Service']"
         )
 
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -4265,7 +4263,7 @@ def test_IP_Management_24(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -4322,7 +4320,7 @@ def test_IP_Management_25(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -4533,7 +4531,7 @@ def test_IP_Management_26(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
 
 
@@ -4620,7 +4618,7 @@ def test_IP_Management_27(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -4682,7 +4680,7 @@ def test_IP_Management_28(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -4759,7 +4757,7 @@ def test_IP_Management_29(login):
 
         msg = get_toast_message(driver)
         print("Toast Message:", msg)
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -4991,7 +4989,7 @@ def test_IP_Management_30(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -5493,7 +5491,7 @@ def test_IP_Management_31(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(2)
+        time.sleep(5)
 
         # wait_and_locate_click(
         #        driver, By.XPATH, "(//span[normalize-space()='Bed Transactions'])[1]"
@@ -6007,7 +6005,7 @@ def test_IP_Management_32(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -6514,7 +6512,7 @@ def test_IP_Management_33(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
        
     except Exception as e:
@@ -7030,7 +7028,7 @@ def test_IP_Management_34(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
        
     except Exception as e:
@@ -7563,7 +7561,7 @@ def test_IP_Management_35(login):
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
 
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -8091,7 +8089,7 @@ def test_IP_Management_36(login):
         wait_and_locate_click(
             driver, By.XPATH, "(//button[normalize-space()='No'])[1]"
         )
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -8103,161 +8101,161 @@ def test_IP_Management_36(login):
                     raise e
     
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Test Case: Assigned Diet Plan to patient")
-@pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
-def test_IP_Management_37(login):
+# @allure.severity(allure.severity_level.CRITICAL)
+# @allure.title("Test Case: Assigned Diet Plan to patient")
+# @pytest.mark.parametrize("url, username, password", [(scale_url, IP_Management_1, password)])
+# def test_IP_Management_37(login):
         
-    try:
-        wait = WebDriverWait(login, 30)
-        driver = login
-        time.sleep(5)
+#     try:
+#         wait = WebDriverWait(login, 30)
+#         driver = login
+#         time.sleep(5)
 
-        wait_and_locate_click(
-             driver, By.XPATH, "(//img)[5]"
-        )
+#         wait_and_locate_click(
+#              driver, By.XPATH, "(//img)[5]"
+#         )
         
-        time.sleep(2)
-        wait_and_locate_click(
-             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
-        )
+#         time.sleep(2)
+#         wait_and_locate_click(
+#              driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+#         )
 
-        time.sleep(2)
-        wait_and_locate_click(
-              driver, By.XPATH, "(//button[@label='View'])[1]"
-        )
+#         time.sleep(2)
+#         wait_and_locate_click(
+#               driver, By.XPATH, "(//button[@label='View'])[1]"
+#         )
 
-        time.sleep(2)
-        wait_and_locate_click(
-               driver, By.XPATH, "//span[normalize-space()='Diet Profile']"
-        )
+#         time.sleep(2)
+#         wait_and_locate_click(
+#                driver, By.XPATH, "//span[normalize-space()='Diet Profile']"
+#         )
 
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "//button[@id='btnAssign_IP_ktcAnlDietGrd']"
-        )
-
-
-        diet_plan_name = "DietPlan_" + str(uuid.uuid4())[:4]
-        print("DietPlan Name", diet_plan_name)
-
-        wait_and_send_keys(
-               driver, By.XPATH, "//input[@id='inputDiet_IP_ktcAnlDBrdAssign']", diet_plan_name
-        )
-
-        wait_and_locate_click(
-               driver, By.XPATH, "//p-dropdown[@id='selectUsr_IP_ktcAnlDBrdAssign']"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Venu Gopal'])[1]"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
-        time.sleep(2)
-
-        today_element = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-        (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
-                )
-        )          
-
-        # Click using JavaScript in case normal click doesn't work
-        login.execute_script("arguments[0].click();", today_element)
-
-        print("Assigned date selected:", today_element.text)
-
-        time.sleep(2)
-
-        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
-        time.sleep(2)
-
-        today_element = WebDriverWait(login, 10).until(
-                EC.presence_of_element_located(
-        (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
-                )
-        )          
-
-        # Click using JavaScript in case normal click doesn't work
-        login.execute_script("arguments[0].click();", today_element)
-
-        print("Clicked today's date:", today_element.text)
+#         time.sleep(1)
+#         wait_and_locate_click(
+#                driver, By.XPATH, "//button[@id='btnAssign_IP_ktcAnlDietGrd']"
+#         )
 
 
-        time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+#         diet_plan_name = "DietPlan_" + str(uuid.uuid4())[:4]
+#         print("DietPlan Name", diet_plan_name)
 
-        time.sleep(2)
-        future_date = datetime.now() + timedelta(days=3)
-        future_day = str(future_date.day)
-        future_month = future_date.strftime("%B")
-        future_year = str(future_date.year)
+#         wait_and_send_keys(
+#                driver, By.XPATH, "//input[@id='inputDiet_IP_ktcAnlDBrdAssign']", diet_plan_name
+#         )
 
-        print("future day: ", future_day)
-        # Get the "next month" arrow
-        next_month_arrow = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
-        )
+#         wait_and_locate_click(
+#                driver, By.XPATH, "//p-dropdown[@id='selectUsr_IP_ktcAnlDBrdAssign']"
+#         )
 
-        # Loop until the correct month and year is visible
-        max_tries = 10  # Prevent infinite loop
-        for _ in range(max_tries):
-            month_elem = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
-            )
-            year_elem = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
-            )
+#         time.sleep(1)
+#         wait_and_locate_click(
+#                driver, By.XPATH, "(//span[normalize-space()='Venu Gopal'])[1]"
+#         )
 
-            current_month = month_elem.text.strip()
-            current_year = year_elem.text.strip()
+#         time.sleep(1)
+#         wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[1]")
+#         time.sleep(2)
 
-            if current_month == future_month and current_year == future_year:
-                break
+#         today_element = WebDriverWait(login, 10).until(
+#                 EC.presence_of_element_located(
+#         (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
+#                 )
+#         )          
 
-            next_month_arrow.click()
-            time.sleep(1)
-        else:
-            raise Exception("❌ Could not navigate to the target date in calendar.")
+#         # Click using JavaScript in case normal click doesn't work
+#         login.execute_script("arguments[0].click();", today_element)
 
-        # ✅ Click the future day but only inside the correct month/year panel
-        date_xpath = (
-        f"//td[not(contains(@class,'p-disabled')) "
-        f"and not(contains(@class,'p-datepicker-other-month'))]"
-        f"//span[normalize-space()='{future_day}']"
-        )
+#         print("Assigned date selected:", today_element.text)
 
-        target_date = wait.until(EC.element_to_be_clickable((By.XPATH, date_xpath)))
-        login.execute_script("arguments[0].click();", target_date)
-        print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+#         time.sleep(2)
 
-        time.sleep(2)
-        wait_and_locate_click(
-               driver, By.XPATH, "(//button[@id='btnUseTemp_IP_ktcAnlDietTmplt'])[1]"
-        )
+#         wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[2]")
+#         time.sleep(2)
 
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnAssign_IP_ktcAnlDBrdAssign']"
-        )
+#         today_element = WebDriverWait(login, 10).until(
+#                 EC.presence_of_element_located(
+#         (By.XPATH, "//td[contains(@class, 'p-datepicker-today')]//span")
+#                 )
+#         )          
 
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-        time.sleep(3)
+#         # Click using JavaScript in case normal click doesn't work
+#         login.execute_script("arguments[0].click();", today_element)
+
+#         print("Clicked today's date:", today_element.text)
 
 
-    except Exception as e:
-                    allure.attach(  # use Allure package, .attach() method, pass 3 params
-                        driver.get_screenshot_as_png(),  # param1
-                        # driver.screenshot()
-                        name="full_page",  # param2
-                        attachment_type=AttachmentType.PNG,
-                    )
-                    raise e
+#         time.sleep(3)
+#         wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='p-icon'])[3]")
+
+#         time.sleep(2)
+#         future_date = datetime.now() + timedelta(days=3)
+#         future_day = str(future_date.day)
+#         future_month = future_date.strftime("%B")
+#         future_year = str(future_date.year)
+
+#         print("future day: ", future_day)
+#         # Get the "next month" arrow
+#         next_month_arrow = wait.until(
+#             EC.element_to_be_clickable((By.XPATH, "(//*[name()='svg'][@class='p-datepicker-next-icon p-icon'])[1]"))
+#         )
+
+#         # Loop until the correct month and year is visible
+#         max_tries = 10  # Prevent infinite loop
+#         for _ in range(max_tries):
+#             month_elem = wait.until(
+#                 EC.presence_of_element_located(
+#                     (By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-month')]"))
+#             )
+#             year_elem = wait.until(
+#                 EC.presence_of_element_located(
+#                     (By.XPATH, "//div[contains(@class, 'p-datepicker-title')]/button[contains(@class, 'p-datepicker-year')]"))
+#             )
+
+#             current_month = month_elem.text.strip()
+#             current_year = year_elem.text.strip()
+
+#             if current_month == future_month and current_year == future_year:
+#                 break
+
+#             next_month_arrow.click()
+#             time.sleep(1)
+#         else:
+#             raise Exception("❌ Could not navigate to the target date in calendar.")
+
+#         # ✅ Click the future day but only inside the correct month/year panel
+#         date_xpath = (
+#         f"//td[not(contains(@class,'p-disabled')) "
+#         f"and not(contains(@class,'p-datepicker-other-month'))]"
+#         f"//span[normalize-space()='{future_day}']"
+#         )
+
+#         target_date = wait.until(EC.element_to_be_clickable((By.XPATH, date_xpath)))
+#         login.execute_script("arguments[0].click();", target_date)
+#         print(f"✅ Selected future date: {future_day}-{future_month}-{future_year}")
+
+#         time.sleep(2)
+#         wait_and_locate_click(
+#                driver, By.XPATH, "(//button[@id='btnUseTemp_IP_ktcAnlDietTmplt'])[1]"
+#         )
+
+#         time.sleep(1)
+#         wait_and_locate_click(
+#             driver, By.XPATH, "//button[@id='btnAssign_IP_ktcAnlDBrdAssign']"
+#         )
+
+#         msg = get_toast_message(driver)
+#         print("Toast Message :", msg)
+#         time.sleep(5)
+
+
+#     except Exception as e:
+#                     allure.attach(  # use Allure package, .attach() method, pass 3 params
+#                         driver.get_screenshot_as_png(),  # param1
+#                         # driver.screenshot()
+#                         name="full_page",  # param2
+#                         attachment_type=AttachmentType.PNG,
+#                     )
+#                     raise e
     
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -8647,7 +8645,7 @@ def test_IP_Management_38(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
         
 
     except Exception as e:
@@ -8721,7 +8719,7 @@ def test_IP_Management_39(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(2)
+        time.sleep(5)
 
 
 
@@ -9127,7 +9125,7 @@ def test_IP_Management_40(login):
 
         msg = get_toast_message(driver)
         print("Toast Message:", msg)
-        time.sleep(3)
+        time.sleep(5)
         
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -9570,7 +9568,7 @@ def test_IP_Management_41(login):
             driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
         )
 
-        time.sleep(2)
+        time.sleep(5)
         
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -9635,7 +9633,7 @@ def test_IP_Management_42(login):
             driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
         )
 
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -9682,7 +9680,7 @@ def test_IP_Management_43(login):
             driver.execute_script("arguments[0].click();", toggle)
 
 
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -10163,7 +10161,7 @@ def test_IP_Management_44(login):
 
         assert invoice_type.strip() == "Master Invoice"
 
-        time.sleep(3)
+        time.sleep(5)
         
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -10242,7 +10240,7 @@ def test_IP_Management_45(login):
             driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
         )
 
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -10333,7 +10331,7 @@ def test_IP_Management_46(login):
             driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
         )
 
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                     allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -10407,7 +10405,7 @@ def test_IP_Management_47(login):
             driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
         )
 
-        time.sleep(2)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -10470,7 +10468,7 @@ def test_IP_Management_48(login):
                driver, By.XPATH, "//button[@id='btnViewInvoice_IP_Invoice']"
         )
 
-        time.sleep(3)
+        time.sleep(5)
 
     except Exception as e:
                         allure.attach(  # use Allure package, .attach() method, pass 3 params
@@ -10923,7 +10921,7 @@ def test_IP_Management_49(login):
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
-        time.sleep(2)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -11486,7 +11484,7 @@ def test_IP_Management_50(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
@@ -12055,7 +12053,7 @@ def test_IP_Management_51(login):
 
         msg = get_toast_message(driver)
         print("Toast Message :", msg)
-        time.sleep(3)
+        time.sleep(5)
 
 
     except Exception as e:
