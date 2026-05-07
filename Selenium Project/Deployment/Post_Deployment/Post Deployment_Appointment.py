@@ -884,21 +884,16 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("9207206005")
+        ).send_keys("8281276241")
 
         time.sleep(3)
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Id : temp#87']")
+                (By.XPATH, "//span[normalize-space()='Id : 12']")
             )
         ).click()
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//span[contains(text(),'Id : 456547')]")
-        #     )
-        # ).click()
-
+        
         service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
         element = login.find_element(By.XPATH, service_dropdown_xpath)
         login.execute_script("arguments[0].scrollIntoView();", element)
