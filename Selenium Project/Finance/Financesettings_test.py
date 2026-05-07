@@ -7,7 +7,7 @@ from Framework.common_utils import *
 def test_finance_settings(login):
     try:
         time.sleep(5)
-        wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Settings')]") 
+        wait_and_locate_click(login, By.XPATH, "//img[@src='./assets/images/menu/settings.png']") 
         time.sleep(2)
         Financemanager = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Finance manager']"))
