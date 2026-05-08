@@ -3634,14 +3634,56 @@ def test_create_sales_order_23(login):
         )
 
         time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//p-dropdown[@placeholder='Get Payment']//div[contains(@class,'p-dropdown')]")
+
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//li[contains(@class,'p-dropdown-item') and @aria-label='Pay by Cash']")
+
+        # Wait until first payment popup appears
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//app-pay-bill-invoice")
+            )
+        )
+
+        # Click Pay button in first popup
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='btnMkPay_ORD_PayBill']")
+
+        # Wait until confirmation popup appears
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located((By.XPATH, "//app-confirm-paymentbox")
+        )
+    )
+
+        # Click Yes button in confirmation popup
+        time.sleep(2)
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='btnSltYes_ORD_ConfPay']")
+
+        # Scroll down the page
+        driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(1)
+
+        # Click Refund button
+        time.sleep(3)
         wait_and_locate_click(
             driver, By.XPATH, "//button[normalize-space()='Refund']"
         )
 
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//button[normalize-space()='Refund'])[2]"
+        # Wait for refund popup/modal content to appear
+        WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(
+        (
+            By.XPATH,
+            "//div[contains(@class,'modal-content') and .//th[normalize-space()='Status'] and .//button[normalize-space()='Refund']]"
         )
+    )
+)
+
+        # Click Refund button inside the popup
+        wait_and_locate_click(driver, By.XPATH,
+        "//button[contains(@class,'btn-square') and normalize-space()='Refund']"
+    )
 
         time.sleep(2)
         input_number = driver.find_element(By.XPATH, "//input[@id='example-number-input']")
@@ -3653,7 +3695,7 @@ def test_create_sales_order_23(login):
 
         time.sleep(1)
         wait_and_locate_click(
-            driver, By.XPATH, "//button[normalize-space()='Pay Online']"
+            driver, By.XPATH, "//button[normalize-space()='Pay by Cash']"
         )
 
         time.sleep(1)
@@ -4927,7 +4969,7 @@ def test_create_delivery_profile(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH,  
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
+                              "//div[normalize-space()='Delivery Profile']")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
@@ -5023,7 +5065,7 @@ def test_create_delivery_profile_with_empty_fields(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
+                              "//div[normalize-space()='Delivery Profile']")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
@@ -5056,7 +5098,7 @@ def test_create_delivery_profile_with_empty_price_range(login):
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
-                              "(//div[@id='actionRouteTo_ORD_Dashbrd'])[10]")
+                              "//div[normalize-space()='Delivery Profile']")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, 
