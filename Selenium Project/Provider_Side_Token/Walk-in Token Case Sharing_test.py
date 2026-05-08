@@ -6,6 +6,7 @@ from selenium.common import TimeoutException , JavascriptException
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
 
+####### CREATE CASE FROM PATIENT RECORD IN THE TOKEN DETAILS PAGE #######
 
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Enabling MR setting")   
@@ -1747,7 +1748,7 @@ def test_NewMR_with_caseandprescriptions(login):
     
 
 @allure.severity(allure.severity_level.NORMAL)
-@allure.title("Disabling MR setting")   
+@allure.title("Disabling MR settings")   
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_MR_setting_disable(login):
 

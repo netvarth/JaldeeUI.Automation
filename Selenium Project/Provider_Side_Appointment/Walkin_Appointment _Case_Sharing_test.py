@@ -3932,47 +3932,60 @@ def test_with_caseandprescriptions_NewMR(login):
         raise e
     
 
-# @allure.severity(allure.severity_level.NORMAL)
-# @allure.title("Disabling MR setting")   
-# @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-# def test_MR_setting_disable(login):
+@allure.severity(allure.severity_level.NORMAL)
+@allure.title("Disabling MR setting")   
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+def test_MR_setting_disable(login):
 
-#     try:
-#         driver = login
-#         time.sleep(3)
-#         wait = WebDriverWait(login, 30)
+    try:
+        driver = login
+        time.sleep(3)
+        wait = WebDriverWait(login, 30)
         
-#         wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
 
-#         time.sleep(2)
-#         setting_element = wait.until(
-#             EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Features and Customization']"))
-#         )
+        time.sleep(2)
+        setting_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Features and Customization']"))
+        )
 
-#         driver.execute_script("arguments[0].scrollIntoView();", setting_element)
+        driver.execute_script("arguments[0].scrollIntoView();", setting_element)
 
-#         time.sleep(1)
-#         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='MR and Diet Settings'] ")
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='MR and Diet Settings'] ")
 
-#         # Wait until MR Settings page is loaded
-#         wait.until(
-#         EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='MR Settings']")))
+        time.sleep(2)
 
-#         # XPath for MR Settings toggle only when it is currently ON
-#         mr_settings_toggle_on_xpath = ("//mat-slide-toggle[.//*[normalize-space()='MR Settings']]"
-#         "//button[@role='switch' and @aria-checked='true']")
+        # Wait until MR Settings page opens
+        wait.until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(normalize-space(), 'MR Settings')]")))
 
-#     try:
-#         wait_and_locate_click(login, By.XPATH, mr_settings_toggle_on_xpath)
-#         print("MR Settings disabled successfully")
-#     except TimeoutException:
-#         print("MR Settings is already disabled")
-#         time.sleep(3)
+        # Locate the toggle button
+        toggle_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@role='switch']")
+            )
+        )
 
-#     except Exception as e:
-#             allure.attach(      # use Allure package, .attach() method, pass 3 params
-#             login.get_screenshot_as_png(),    # param1
-#             # login.screenshot()
-#             name="full_page",                 # param2
-#             attachment_type=AttachmentType.PNG)
-#             raise e
+        # Get current state
+        toggle_state = toggle_button.get_attribute("aria-checked")
+
+        print("Current Toggle State :", toggle_state)
+
+        # If toggle is ON (true), click and make it OFF
+        if toggle_state == "true":
+            toggle_button.click()
+            print("Toggle turned OFF")
+
+        # If already OFF
+        else:
+            print("Toggle is already OFF")
+        time.sleep(3)
+
+    except Exception as e:
+            allure.attach(      # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),    # param1
+            # login.screenshot()
+            name="full_page",                 # param2
+            attachment_type=AttachmentType.PNG)
+            raise e
