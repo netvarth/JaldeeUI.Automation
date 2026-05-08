@@ -710,7 +710,7 @@ def test_account_signup():
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                "//div[@id='actionCreate_BUS_bookList']",
             )
         )
     )
@@ -1983,8 +1983,8 @@ def test_case_creation_treatplan_prescription_predeployment(login):
                 (By.XPATH, "//div[@class='p-multiselect-label p-placeholder']"))
         ).click()
         
-        
-        dropdown_xpath = "//span[normalize-space()='Naveen KP']"
+        # Select user from the drop down in the treatment plan
+        dropdown_xpath = "//li[contains(@class,'p-multiselect-item')]//span[normalize-space()='Naveen KP']"
         element = login.find_element(By.XPATH, dropdown_xpath)
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -2005,10 +2005,10 @@ def test_case_creation_treatplan_prescription_predeployment(login):
         step_namebox.send_keys(step_name)
         
         
-        WebDriverWait(login, 10).until(
-           EC.presence_of_element_located(
-               (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
-       ).click()
+    #     WebDriverWait(login, 10).until(
+    #        EC.presence_of_element_located(
+    #            (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
+    #    ).click()
         
         time.sleep(2)
         element1 = login.find_element(By.XPATH, dropdown_xpath)
@@ -3355,10 +3355,10 @@ def test_appointment_family_confirmation_attachment_predeployment(login):
         time.sleep(5)
         print("New patient create")
         
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]")
+        wait_and_click(login, By.XPATH, "//img[contains(@src,'appointments.png')]/ancestor::div[@routerlinkactive='active-menu']")
         
         time.sleep(3)
-        wait_and_click(login, By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]")
+        wait_and_click(login, By.XPATH, "//div[@id='actionCreate_BUS_bookList']")
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
