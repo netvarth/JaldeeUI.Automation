@@ -2004,16 +2004,13 @@ def test_case_creation_treatplan_prescription_predeployment(login):
         step_namebox.clear()
         step_namebox.send_keys(step_name)
         
-        
-    #     WebDriverWait(login, 10).until(
-    #        EC.presence_of_element_located(
-    #            (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
-    #    ).click()
-        
+        # Select user from the drop down in the step creation
         time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element1)
-        element1.click()
+        wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'p-multiselect') and contains(@class,'p-component') "
+        "and .//div[normalize-space()='Select User']]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[contains(@class,'p-multiselect-item') and .//span[normalize-space()='Naveen KP']]")  
         
         time.sleep(3)
         
@@ -2307,8 +2304,6 @@ def test_case_creation_treatplan_prescription_predeployment(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        # login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
-
         msg = get_toast_message(login)
         print("Toast Message :", msg)
 
@@ -2333,15 +2328,12 @@ def test_case_creation_treatplan_prescription_predeployment(login):
                 (By.XPATH, "//div[@class='p-multiselect-label p-placeholder']"))
         ).click()
         
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[contains(@class,'p-multiselect-item') and @aria-label='Naveen KP']")
         
-        dropdown_xpath = "//span[normalize-space()='Naveen KP']"
-        element = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
         
         time.sleep(3)
-        
-        
         WebDriverWait(login, 15).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//button[@class='btn btn-white shadow fw-bold']"))
@@ -2353,17 +2345,14 @@ def test_case_creation_treatplan_prescription_predeployment(login):
         )
         step_namebox.clear()
         step_namebox.send_keys(step_name)
-        
-        
-        WebDriverWait(login, 10).until(
-           EC.presence_of_element_located(
-               (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
-       ).click()
-        
+
         time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element1)
-        element1.click()
+        wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'p-multiselect') and contains(@class,'p-component') "
+        "and .//div[normalize-space()='Select User']]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[contains(@class,'p-multiselect-item') "
+        "and .//span[normalize-space()='Naveen KP']]")
         
         time.sleep(3)
         
