@@ -770,6 +770,7 @@ def test_create_patient(login):
 
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
+
         login.find_element(By.XPATH, "//input[@id='first_name']").send_keys(
             str(first_name)
         )
@@ -1564,11 +1565,15 @@ def test_create_patient(login):
         ).click()
         
         
-        dropdown_xpath = "//span[normalize-space()='Swaraj K']"
-        element = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        # dropdown_xpath = "//span[normalize-space()='Swaraj K']"
+        # element = login.find_element(By.XPATH, dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
         
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[.//span[normalize-space()='Swaraj K']]")
+
+
         time.sleep(3)
         # WebDriverWait(login, 15).until(
         #     EC.presence_of_element_located(
@@ -1591,13 +1596,14 @@ def test_create_patient(login):
         
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
+                (By.XPATH, "//div[contains(@class,'p-multiselect')][.//div[normalize-space()='Select User']]"))
         ).click()
         
         time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element1)
-        element1.click()
+        # element1 = login.find_element(By.XPATH, dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element1)
+        # element1.click()
+        wait_and_visible_click(login, By.XPATH, "//li[@aria-label='Swaraj K']//div[contains(@class,'p-checkbox-box')]")
         
         time.sleep(3)
         
