@@ -60,24 +60,23 @@ def test_walkin_token(login):
         # ).click()
 
         time.sleep(3)
-        element = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space(.)='Tokens']"))
-        )
-        element.click()
-
-        time.sleep(3)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[normalize-space()='Token'])[1]")
-            )   
-        ).click()
+        wait_and_locate_click(login, By.XPATH, "(//span[contains(text(),'Tokens')])[1]")
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[@id='actionCreate_BUS_bookList']")
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//span[normalize-space()='Token'])[1]")
+        #     )   
+        # ).click()
+        
 
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("9207206005")
+        ).send_keys("8281276241")
 
         time.sleep(3)
         
@@ -85,7 +84,7 @@ def test_walkin_token(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Id : 2']")
+                (By.XPATH, "//span[normalize-space()='Id : 456547']")
             )
         ).click()
 
@@ -790,10 +789,14 @@ def test_walkin_token(login):
         ).click()
         
         
-        dropdown_xpath = "//span[normalize-space()='Naveen KP']"
-        element = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        # dropdown_xpath = "//span[normalize-space()='Naveen KP']"
+        # element = login.find_element(By.XPATH, dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[contains(@class,'p-multiselect-item') "
+        "and @aria-label='Naveen KP']")
         
         time.sleep(3)
         
@@ -811,15 +814,21 @@ def test_walkin_token(login):
         step_namebox.send_keys(step_name)
         
         
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
-        ).click()
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
+        # ).click()
         
+        # time.sleep(2)
+        # element1 = login.find_element(By.XPATH, dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element1)
+        # element1.click()
+
         time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element1)
-        element1.click()
+        wait_and_locate_click(login, By.XPATH, "//p-multiselect[.//div[contains(@class,'p-multiselect-label') and normalize-space()='Select User']]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[contains(@class,'p-multiselect-item') and @aria-label='Naveen KP']")
         
         time.sleep(3)
         
@@ -1375,6 +1384,7 @@ def test_walkin_token(login):
                 (By.XPATH, "//button[normalize-space()='Add Procedure/Item']"))
         ).click()
         
+        # Adding subservice into the invoice
         time.sleep(3)    
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -1392,12 +1402,16 @@ def test_walkin_token(login):
 
         scroll_to_element(login, element)
         
-        item_button = WebDriverWait(login, 30).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
-        )
-        item_button.click()
-        item_button.send_keys("item1234")
+        # Adding ADHOC item into the invoice
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Choose Procedure/Item']", "item1234")
+
+        # item_button = WebDriverWait(login, 30).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
+        # )
+        # item_button.click()
+        # item_button.send_keys("item1234")
         
         time.sleep(3)
         price = WebDriverWait(login, 10).until(

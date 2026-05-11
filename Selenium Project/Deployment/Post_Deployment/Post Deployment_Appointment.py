@@ -12,14 +12,13 @@ def test_signup():
     current_date = datetime.now().strftime("%d-%m-%Y")
     print("Post-Deployment Signup",current_date)
     try:
-        driver = login
+        # driver = login
         login = webdriver.Chrome(
             service=ChromeService(
                 executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
             )
         )
         login.get("https://www.jaldee.com/business/signup")
-        # login.get("https://scale.jaldee.com/business/signup")
         login.maximize_window()
 
         # time.sleep(3)
@@ -597,13 +596,6 @@ def test_signup():
         time.sleep(2)
         wait_and_locate_click(login,By.XPATH, "(//span[@ptooltip='Home'])[1]")
 
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//img[@src='./assets/images/menu/home-color.png']")
-        #     )
-        # ).click()
-
         time.sleep(5)
         print("New patient created")
         WebDriverWait(login, 30).until(
@@ -614,24 +606,14 @@ def test_signup():
                 )
             )
         ).click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[@id='actionCreate_BUS_bookList']")
+
         time.sleep(3)
-        element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
-                )
-            )
-        )
-        element.click()
-        time.sleep(3)
-        wait = WebDriverWait(login, 10)
-        element_appoint = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[@id='btnCreateCust_BUS_appt']")
-            )
-        )
-        element_appoint.click()
+        wait_and_locate_click(login, By.XPATH, "//span[@id='btnCreateCust_BUS_appt']")
+
+
         time.sleep(2)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
@@ -777,24 +759,14 @@ def test_create_patient(login):
                 )
             )
         ).click()
+
+        # Click +Appointment button in the appointment dashboard
         time.sleep(3)
-        element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
-                )
-            )
-        )
-        element.click()
+        wait_and_locate_click(login, By.XPATH, "//div[@id='actionCreate_BUS_bookList']")
         
-        wait = WebDriverWait(login, 10)
-        element_appoint = wait.until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "//b[normalize-space()='Create New Patient']")
-                )
-            )
-        element_appoint.click()
+        # Click on + Create New Patient button in the appointment creation page
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[@id='btnCreateCust_BUS_appt']")
 
         login.implicitly_wait(3)
         first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
@@ -863,17 +835,20 @@ def test_create_patient(login):
         #         (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[2]/a[1]/div[1]/span[1]/span[1]/img[1]"))
         # ).click()
         
-        time.sleep(2)
-        element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
-                )
-            )
-        )
-        element.click()
+        # time.sleep(2)
+        # element = WebDriverWait(login, 10).until(
+        #     EC.element_to_be_clickable(
+        #         (
+        #             By.XPATH,
+        #             "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+        #         )
+        #     )
+        # )
+        # element.click()
         
+        # Click +Appointment button in the appointment dashboard
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//div[@id='actionCreate_BUS_bookList']")
 
         # WebDriverWait(login, 10).until(
         #     EC.presence_of_element_located(
