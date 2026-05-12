@@ -601,19 +601,15 @@ def test_create_patient(login):
         ).click()
         
         
-        dropdown_xpath = "//span[normalize-space()='Swaraj K']"
-        element = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element)
-        element.click()
+        # dropdown_xpath = "//span[normalize-space()='Swaraj K']"
+        # element = login.find_element(By.XPATH, dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element)
+        # element.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[.//span[normalize-space()='Swaraj K']]")
         
         time.sleep(3)
-        
-        
-        # WebDriverWait(login, 15).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[@class='btn btn-white shadow fw-bold']"))
-        # ).click()
-
         add_step = WebDriverWait(login, 15).until(
             EC.presence_of_element_located(
             (By.XPATH, "//button[@class='btn btn-white shadow fw-bold']"))
@@ -627,16 +623,26 @@ def test_create_patient(login):
         step_namebox.clear()
         step_namebox.send_keys(step_name)
         
-        
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
+                (By.XPATH, "//div[contains(@class,'p-multiselect')][.//div[normalize-space()='Select User']]"))
         ).click()
         
         time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element1)
-        element1.click()
+        wait_and_visible_click(login, By.XPATH, "//li[@aria-label='Swaraj K']//div[contains(@class,'p-checkbox-box')]")
+
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
+        # ).click()
+        
+        # time.sleep(2)
+        # element1 = login.find_element(By.XPATH, dropdown_xpath)
+        # login.execute_script("arguments[0].scrollIntoView();", element1)
+        # element1.click()
+
+
         
         time.sleep(3)
         
