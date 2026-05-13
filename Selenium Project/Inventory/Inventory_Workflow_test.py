@@ -38,34 +38,38 @@ def test_enable_inventory_setting(login):
         EC.presence_of_element_located((By.XPATH, "//p[normalize-space()='Sales Order Management System']"))
     ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//label[normalize-space()='Sales Order  Off']"))
-    ).click()
+    time.sleep(2)
 
-    msg = get_snack_bar_message(login)
-    print("Snack Bar Message :", msg)
+    # Locate the Sales Order toggle button
+    sales_order_toggle = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located(
+        (By.XPATH, "(//button[@role='switch'])[1]")
+    )
+)
+
+    # Get current state
+    sales_order_state = sales_order_toggle.get_attribute("aria-checked")
+
+    print("Current Sales Order Toggle State :", sales_order_state)
+
+    # If Sales Order is OFF, click and make it ON
+    if sales_order_state == "false":
+        wait_and_locate_click(login,By.XPATH, "(//button[@role='switch'])[1]")
+
+        print("Sales Order turned ON")
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+
+    elif sales_order_state == "true":
+        print("Sales Order is already ON")
+
+    else:
+        print("Unable to read Sales Order toggle state")
+
+    time.sleep(3)
     
-    login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
-
-    # Find the element you want to scroll to
-    element = login.find_element(By.XPATH, "//div[normalize-space()='POS Ordering']")
-
-    # Scroll to the element
-    login.execute_script("arguments[0].scrollIntoView();", element)
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//p[normalize-space()='RX Push Management System']"))
-    ).click()
-
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__icons']"))
-    ).click()
-
-    msg = get_snack_bar_message(login)
-    print("Snack Bar Message :", msg)
-
+    
     login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
 
     # Find the element you want to scroll to
@@ -77,34 +81,55 @@ def test_enable_inventory_setting(login):
         EC.presence_of_element_located((By.XPATH, "//p[normalize-space()='Inventory Management System']"))
     ).click()
 
+    time.sleep(2)
+
+    # Locate the Inventory toggle button
+    inventory_toggle = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+        (By.XPATH, "//button[@role='switch']")
+    )
+)
+
+    # Get current state
+    inventory_state = inventory_toggle.get_attribute("aria-checked")
+
+    print("Current Inventory Toggle State :", inventory_state)
+
+    # If Inventory is OFF, click and make it ON
+    if inventory_state == "false":
+        wait_and_locate_click(
+        login,
+        By.XPATH,
+        "//button[@role='switch']"
+    )
+
+        print("Inventory turned ON")
+
+        msg = get_snack_bar_message(login)
+        print("Snack Bar Message :", msg)
+
+    elif inventory_state == "true":
+        print("Inventory is already ON")
+
+    else:
+        print("Unable to read Inventory toggle state")
+
     time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[@class='mdc-switch__icons']"))
-    ).click()
-
-    msg = get_snack_bar_message(login)
-    print("Snack Bar Message :", msg)
-
-    login.find_element(By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']").click()
-
-    element = login.find_element(By.XPATH, "//div[normalize-space()='POS Ordering']")
-    login.execute_script("arguments[0].scrollIntoView();", element)
-
-    print("Inventory setting Enabled Successfully")
-
-    time.sleep(5)
 
 
 ##################   New Store creation   #############################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Store Creation")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_store_creation(login):
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
-    ).click()
+    
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//img[contains(@src,'rx-orders.png')]")
+
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//div[@routerlinkactive='active-menu'][.//img[contains(@src,'rx-orders.png')]]"))
+    # ).click()
 
     time.sleep(5)
 
@@ -163,7 +188,7 @@ def test_store_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Chavakkad']"))
+        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='West Nada']"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -177,13 +202,16 @@ def test_store_creation(login):
 
 
 ###############################   Item Creation   ################################
+
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Item Creation")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_item_creation(login):
+
     time.sleep(3)
     WebDriverWait(login, 20).until(
-        EC.presence_of_element_located((By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+        EC.presence_of_element_located((By.XPATH, "//img[contains(@src,'rx-orders.png')]"))
     ).click()
 
     WebDriverWait(login, 20).until(
@@ -202,14 +230,19 @@ def test_item_creation(login):
         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Item Name']"))
     ).send_keys(item_name)
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Select Item Source']"))
-    ).click()
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//input[@placeholder='Select Item Property']/ancestor::div[contains(@class,'p-dropdown')]")
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//li[@role='option' and @aria-label='Tablet']")
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//input[@placeholder='Select Item Source']/ancestor::div[contains(@class,'p-dropdown')]")
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='General']"))
+            (By.XPATH, "//li[@role='option' and @aria-label='General']"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -221,15 +254,15 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Antibacterials']"))
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='Stationary']"))
     ).click()
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Group')]"))
     ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Medicine']"))
+    WebDriverWait(login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//li[contains(@class,'p-multiselect-item') and @aria-label='Stationary_Item']"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -237,7 +270,7 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Tablet']"))
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='Office_Item']"))
     ).click()
 
     login.implicitly_wait(5)
@@ -246,7 +279,7 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='ALPHA DRUGS']"))
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='SC.PVT.Limited']"))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -255,7 +288,7 @@ def test_item_creation(login):
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Box of 10'] "))
+        EC.presence_of_element_located((By.XPATH, "//li[contains(@class,'p-multiselect-item') and @aria-label='Box of 10'] "))
     ).click()
 
     WebDriverWait(login, 10).until(
@@ -272,17 +305,11 @@ def test_item_creation(login):
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='33215478']"))
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='5554644']"))
     ).click()
 
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Item Compositions')]"))
-    ).click()
-
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'starch, hydroxypropyl methylcellulose, propylene g')]"))
-    ).click()
+    time.sleep(2)
+    wait_and_send_keys(login, By.XPATH, "//input[@id='inpReorderQty_ORD_INV_ItemCreate']", "10")
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Item Tax')]"))
@@ -290,11 +317,193 @@ def test_item_creation(login):
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='GST 12%']"))
+        EC.presence_of_element_located((By.XPATH, "//li[contains(@class,'p-multiselect-item') and @aria-label='GST 5%']"))
+    ).click()
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Select tax preference']")
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//li[@role='option' and @aria-label='Taxable']")
+
+    # Click Create Item button
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']"))
+    ).click()
+
+    toast_detail = WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
+    )
+    message = toast_detail.text
+    print("toast_Message:", message)
+
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-arrow-left']"))
+    ).click()
+
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Item Creation with attributes")
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
+def test_item_creation_with_attributes(login):
+
+    time.sleep(3)
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located((By.XPATH, "//img[contains(@src,'rx-orders.png')]"))
+    ).click()
+
+    WebDriverWait(login, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[@class='my-1 font-small ng-star-inserted'][normalize-space()='Items']"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create']"))
+    ).click()
+
+    item_name = "Item_" + str(uuid.uuid4())[:4]
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Item Name']"))
+    ).send_keys(item_name)
+
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//input[@placeholder='Select Item Property']/ancestor::div[contains(@class,'p-dropdown')]")
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//li[@role='option' and @aria-label='Tablet']")
+
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//input[@placeholder='Select Item Source']/ancestor::div[contains(@class,'p-dropdown')"))
+    # ).click()
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//input[@placeholder='Select Item Source']/ancestor::div[contains(@class,'p-dropdown')]")
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//li[@role='option' and @aria-label='General']"))
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Create Item']"))
+        EC.presence_of_element_located((By.XPATH, "//textarea[@placeholder='Enter Item Description']"))
+    ).send_keys("A Item name is required and recommended to be unique.")
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Select Category']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='Stationary']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Group')]"))
+    ).click()
+
+    WebDriverWait(login, 15).until(
+        EC.presence_of_element_located((By.XPATH, "//li[contains(@class,'p-multiselect-item') and @aria-label='Stationary_Item']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Select Type']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='Office_Item']"))
+    ).click()
+
+    login.implicitly_wait(5)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Select Manufacturer']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='SC.PVT.Limited']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Unit')]"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//li[contains(@class,'p-multiselect-item') and @aria-label='Box of 10'] "))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//p-dropdown[@placeholder='Track Inventory or Not']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Yes']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Select HSN Code']"))
+    ).click()
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='5554644']"))
+    ).click()
+
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Item Compositions')]"))
+    # ).click()
+
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[contains(text(),'starch, hydroxypropyl methylcellulose, propylene g')]"))
+    # ).click()
+
+    time.sleep(2)
+    wait_and_send_keys(login, By.XPATH, "//input[@id='inpReorderQty_ORD_INV_ItemCreate']", "10")
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'Select Item Tax')]"))
+    ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//li[contains(@class,'p-multiselect-item') and @aria-label='GST 5%']"))
+    ).click()
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Select tax preference']")
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//li[@role='option' and @aria-label='Taxable']")
+
+    # Click on Add Options in the Item Attribute
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnAddOption_ORD_ItemOpt']")
+
+    # Adding option name
+    time.sleep(2)
+    wait_and_send_keys(login, By.XPATH, "//input[@id='inputOptName_ORD_ItemOpt']", "Options")
+
+    # Add item attributes
+    time.sleep(2)
+    wait_and_send_keys(login, By.XPATH, "//input[@id='inputOptVal_ORD_ItemOpt']", "opt1" + Keys.ENTER)
+
+    time.sleep(2)
+    wait_and_send_keys(login, By.XPATH, "//input[@id='inputOptVal_ORD_ItemOpt']", "opt2" + Keys.ENTER)
+
+
+   # Click Done button
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnAddItem_ORD_ItemOpt']")
+
+    time.sleep(2)
+
+    # Click Create Item button
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//button[@id='btnSubmit_ORD_INV_ItemCreate']"))
     ).click()
 
     toast_detail = WebDriverWait(login, 10).until(
@@ -312,12 +521,13 @@ def test_item_creation(login):
 ###############################  Inventory Catalogue Creation  #########################################
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Inventory Catalog")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_inventory_catalog(login):
+
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[@class='menu-item menu-item-submenu mt-2 ng-star-inserted'][7]"))
+            (By.XPATH, "//img[contains(@src,'inventory.png')]"))
     ).click()
 
     time.sleep(5)
@@ -339,17 +549,21 @@ def test_inventory_catalog(login):
     login.find_element(By.XPATH, "//span[normalize-space()='Store Name']").click()
 
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Geetha']"))
+        EC.presence_of_element_located((By.XPATH, "//li[@role='option' and @aria-label='B&B Stores']"))
     ).click()
 
     WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Create Catalog']"))
+        EC.element_to_be_clickable((By.XPATH, "//button[@id='btnCrtCat_ORD_CatlgCreate']"))
     ).click()
 
     time.sleep(5)
 
+    # checkboxes = WebDriverWait(login, 10).until(
+    #     EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@id, 'mat-mdc-checkbox')]"))
+    # )
+
     checkboxes = WebDriverWait(login, 10).until(
-        EC.presence_of_all_elements_located((By.XPATH, "//input[contains(@id, 'mat-mdc-checkbox')]"))
+        EC.presence_of_all_elements_located((By.XPATH, "//div[contains(.,'Select Items')]//input[@type='checkbox']"))
     )
 
     # Click the first three checkboxes
@@ -358,8 +572,26 @@ def test_inventory_catalog(login):
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//button[@class='p-element p-button-primary p-button p-component']"))
+        EC.presence_of_element_located((By.XPATH, "//button[@id='btnSubmitItems_ORD_ItemSelectionTop']"))
     ).click()
+
+    time.sleep(2)
+
+    # Wait until confirmation popup appears
+    WebDriverWait(login, 10).until(
+        EC.visibility_of_element_located(
+        (
+            By.XPATH,
+            "//div[contains(@class,'mdc-dialog__container')]//p[contains(normalize-space(),'Once added to the catalog')]"
+        )
+    )
+)
+
+    # Click YES button in popup
+    wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'mdc-dialog__container')]//button[normalize-space()='Yes']")
+
+    print("Clicked YES on confirmation popup")
+
 
     time.sleep(3)
     toast_detail = WebDriverWait(login, 10).until(
@@ -377,14 +609,16 @@ def add_date(years_to_add):
 
 def title_to_item(title_case_string):
     return title_case_string.title()
+
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Purchase")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_purchase(login):
+
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//li[6]//a[1]//div[1]//span[1]//span[1]//img[1]"))
+            (By.XPATH, "//img[contains(@src,'inventory.png')]"))
     ).click()
 
     time.sleep(5)
@@ -406,7 +640,7 @@ def test_create_purchase(login):
 
     time.sleep(3)
     store = WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Geetha']"))
+        EC.element_to_be_clickable((By.XPATH, "//li[@role='option' and @aria-label='B&B Stores']"))
     )
     store.click()
 
@@ -701,14 +935,14 @@ def test_create_purchase(login):
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Order")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_order(login):
 
  
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//body[1]/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[5]/a[1]/div[1]/span[1]/span[1]/img[1]"))
+            (By.XPATH, "//img[contains(@src,'rx-orders.png')]"))
     ).click()
 
     time.sleep(3)
