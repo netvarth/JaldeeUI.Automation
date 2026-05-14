@@ -2251,6 +2251,9 @@ def test_multiple_share_case(login):
             raise e
 
 
+
+####### ENABLE NEW MR SETTING #######
+
 @allure.severity(allure.severity_level.NORMAL)
 @allure.title("Enabling MR setting")   
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
@@ -2294,7 +2297,7 @@ def test_MR_setting_enable(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create case from patient record in new MR with only case")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_withonly_case_NewMR_from_PR(login):
+def test_withonly_case_NewMR_from_patient_record(login):
     try:
         driver = login
         wait= WebDriverWait(login, 30)
@@ -2453,7 +2456,7 @@ def test_withonly_case_NewMR_from_PR(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(driver, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -2686,7 +2689,7 @@ def test_withonly_case_NewMR_from_PR(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create case from patient record in new MR with only prescription")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_withonly_prescription_NewMR_from_PR(login):
+def test_withonly_prescription_NewMR_from_patient_record(login):
     try:
 
         wait= WebDriverWait(login, 30)
@@ -2844,7 +2847,7 @@ def test_withonly_prescription_NewMR_from_PR(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -3142,7 +3145,7 @@ def test_withonly_prescription_NewMR_from_PR(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create case from patient record in new MR with only uploaded prescription")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_withonly_uploadprescription_NewMR_from_PR(login):
+def test_withonly_uploadprescription_NewMR_from_patient_record(login):
 
     try:
 
@@ -3301,7 +3304,7 @@ def test_withonly_uploadprescription_NewMR_from_PR(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -3438,7 +3441,7 @@ def test_withonly_uploadprescription_NewMR_from_PR(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create case from patient record in new MR with case and prescription")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_with_caseandprescriptions_NewMR_from_PR(login):
+def test_with_caseandprescriptions_NewMR_from_patient_record(login):
     try:
 
         wait= WebDriverWait(login, 30)
@@ -3596,7 +3599,7 @@ def test_with_caseandprescriptions_NewMR_from_PR(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -3942,7 +3945,7 @@ def test_with_caseandprescriptions_NewMR_from_PR(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create Case from appointment details page in new MR with only case")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_withonly_case_NewMR_from_AD(login):
+def test_withonly_case_NewMR_from_appointment_details(login):
     try:
         driver = login
         wait= WebDriverWait(login, 30)
@@ -4100,7 +4103,7 @@ def test_withonly_case_NewMR_from_AD(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(driver, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -4332,7 +4335,7 @@ def test_withonly_case_NewMR_from_AD(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create case from appointment details page in new MR with only prescription")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_withonly_prescription_NewMR_from_AD(login):
+def test_withonly_prescription_NewMR_from_appointment_details(login):
     try:
 
         wait= WebDriverWait(login, 30)
@@ -4488,7 +4491,7 @@ def test_withonly_prescription_NewMR_from_AD(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -4794,7 +4797,7 @@ def test_withonly_prescription_NewMR_from_AD(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create case from appointment details page in new MR with only uploaded prescription")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_withonly_uploadprescription_NewMR_from_AD(login):
+def test_withonly_uploadprescription_NewMR_from_appointment_details(login):
 
     try:
 
@@ -4952,7 +4955,7 @@ def test_withonly_uploadprescription_NewMR_from_AD(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -5093,7 +5096,7 @@ def test_withonly_uploadprescription_NewMR_from_AD(login):
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Create case from appointment details page in new MR with case and prescription")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-def test_with_caseandprescriptions_NewMR_from_AD(login):
+def test_with_caseandprescriptions_NewMR_from_appointment_details(login):
     try:
 
         wait= WebDriverWait(login, 30)
@@ -5249,7 +5252,7 @@ def test_with_caseandprescriptions_NewMR_from_AD(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -5658,7 +5661,7 @@ def test_withonly_case_NewMR_from_patient_tab(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(driver, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(driver, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -5936,7 +5939,7 @@ def test_withonly_prescription_NewMR_from_patient_tab(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -6309,7 +6312,7 @@ def test_withonly_uploadprescription_NewMR_from_patient_tab(login):
 
         assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
 
-        wait_and_locate_click(login, By.XPATH, "//button[@class='new-visit-doc-card new-visit-doc-card--blue']")
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
         time.sleep(2)
 
         time.sleep(2)
@@ -6446,6 +6449,411 @@ def test_withonly_uploadprescription_NewMR_from_patient_tab(login):
         raise e
 
 
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Create case from appointment details page in new MR with case and prescription")
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+def test_with_caseandprescriptions_NewMR_from_patient_tab(login):
+    try:
+
+        wait= WebDriverWait(login, 30)
+
+        # Click the patient tab in the left panel
+        time.sleep(5)
+        wait_and_locate_click(login, By.XPATH, "//div[@routerlinkactive='active-menu'][.//img[contains(@src,'menu/customers.png')]]")
+        
+        
+        # Click on 3 dot against the patient
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//img[contains(@src,'cust-Icon.svg')]/ancestor::button[contains(@class,'p-button')]")
+
+        # Click on Create Case button from the menu
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@role='menuitem'][.//span[contains(normalize-space(),'Create Case')]]")
+        
+        # Click on Create Case button in the pop up
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@type='button'][normalize-space()='Create Case']")
+
+        # Adding case description
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_description_edit_btn']")
+
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, 
+        "//textarea[@placeholder='Add description...']", "Case description added for testing")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_upload_file_btn']")
+
+        # Uploading case files
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_upload_file_btn']")
+
+        time.sleep(2)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        print("Successfully upload the file")
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_new_visit_btn']")
+
+        time.sleep(2)
+
+        # Assert vt-card appears
+        vt_card = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//div[contains(@class,'vt-card')]")
+            )
+        )
+
+        assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
+        time.sleep(2)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-edit pointer-cursor ng-star-inserted'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Naveen KP'])")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//textarea[@placeholder='Add visit summary...'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//textarea[@placeholder='Add visit summary...'])[1]", "visit summary of the patient")
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[2]")
+
+        time.sleep(1)
+        wait_and_send_keys(login,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever" + Keys.ENTER)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[3]")
+        time.sleep(1)
+
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter History']", "viral fever" + Keys.ENTER)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[4]")
+        time.sleep(1)
+
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Medication']", "no medication" + Keys.ENTER)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[5]")
+        time.sleep(1)
+
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Pulse Rate , Max : 999']", "560")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Respiration , Max : 90']", "62")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Temperature in °F , Max : 200']", "123")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Systolic , Max : 500']", "264")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Diastolic , Max : 500']", "287")
+        
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save'] ")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)   
+        time.sleep(3)   
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[9]")
+        time.sleep(1)   
+
+        treat_name = "Treatment" + str(uuid.uuid4())[:4]
+        treat_namebox = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@role='searchbox']"))
+        )
+        treat_namebox.clear()
+        treat_namebox.send_keys(treat_name)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[@class='p-multiselect-label p-placeholder']")
+
+        time.sleep(2)
+        dropdown_xpath = wait.until(
+             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Naveen KP']")
+        ))
+        login.execute_script("arguments[0].scrollIntoView();", dropdown_xpath)
+        time.sleep(1)
+        dropdown_xpath.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@class='btn btn-white shadow fw-bold']")
+        
+        step_name = "Step" + str(uuid.uuid1())[:1]
+        step_namebox = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Name']"))
+        )
+        step_namebox.clear()
+        step_namebox.send_keys(step_name)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        
+        time.sleep(2)
+        element1 = login.find_element(By.XPATH, "//span[normalize-space()='Naveen KP']")
+        login.execute_script("arguments[0].scrollIntoView();", element1)
+        time.sleep(1)
+        element1.click()
+        
+        time.sleep(1)
+        wait_and_locate_click(
+             login, By.XPATH, "//button[@class='p-ripple p-element p-multiselect-close p-link p-button-icon-only ng-star-inserted']"
+        )
+        
+        time.sleep(3)
+        wait_and_locate_click(
+             login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"
+        )
+        
+        time.sleep(2)
+        wait_and_locate_click(
+             login, By.XPATH, "//li[@aria-label='In Progress']"
+        )
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "(//textarea[@placeholder='Enter Step Notes'])[1]", "Notes for the steps")
+
+        WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//label[@for='treatmentPlanAattachments']")
+        )
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Enter Treatment Notes']", "Note for the treatment")
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        # Wait for the section/treatment plan to save
+        time.sleep(3)
+
+        # Scroll back to top because Create Rx button is at the top of the page
+        login.execute_script("window.scrollTo(0, 0);")
+        time.sleep(1)
+
+        # Click Create Rx button
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_create_rx_btn']")
+
+        # Add medicine section
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//div[@id='mat-select-value-1'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//mat-option[contains(@class,'mat-mdc-option') "
+        "and contains(normalize-space(.),'Naveen KP')]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Add Medicine'])[1]")
+
+        medicines = [
+            ["Dolo", "500MG", "1-1-1", "5 DAYS", "AFTER FOOD"],
+            ["Azithromycin", "250MG", "1-0-1", "3 DAYS", "AFTER FOOD"],
+            ["Pantop", "40MG", "1-0-0", "5 DAYS", "BEFORE FOOD"]
+        ]
+
+        for i in range(len(medicines)):
+
+            # Add medicine details in Add Medicine section
+            time.sleep(2)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Select Medicine']/following::input[1]",
+                medicines[i][0]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Strength/Dosage']/following::input[1]",
+                medicines[i][1]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Frequency']/following::input[1]",
+                medicines[i][2]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Duration']/following::input[1]",
+                medicines[i][3]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Instructions']/following::input[1]",
+                medicines[i][4]
+            )
+
+            # Click purple Add button to add medicine into prescription table
+            time.sleep(2)
+            wait_and_locate_click(login, By.XPATH, "//section[contains(@class,'rx-composer-card')]//button[contains(@class,'rx-primary-btn') "
+            "and not(contains(@class,'disabled')) and contains(., 'Add')]")
+
+            time.sleep(2)
+
+            # After 1st and 2nd medicine, click top-right + Add button to open Add Medicine section again
+            if i < len(medicines) - 1:
+                wait_and_locate_click(
+                    login,
+                    By.XPATH,
+                    "//button[contains(@class,'rx-link-btn') and .//i[contains(@class,'pi-plus')] and contains(., 'Add')]"
+                )
+                
+                time.sleep(2)
+        wait_and_locate_click(login, By.XPATH,
+            "//*[normalize-space()='Prescription Notes']/following::div[@role='textbox' and @contenteditable='true'][1]")
+
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH,
+            "//*[normalize-space()='Prescription Notes']/following::div[@role='textbox' and @contenteditable='true'][1]",
+            "Prescription notes for the patient")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[contains(@class,'rx-primary-btn') and contains(normalize-space(), 'Save')]")
+
+        # Upload prescription section
+
+        # Scroll back to top because Create Rx button is at the top of the page
+        login.execute_script("window.scrollTo(0, 0);")
+        time.sleep(1)
+
+        # Click Create Rx button
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_create_rx_btn']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, 
+        "//div[contains(@class,'mat-mdc-select-trigger')]//div[contains(@class,'mat-mdc-select-arrow-wrapper')]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//mat-option[contains(@class,'mat-mdc-option') "
+        "and contains(normalize-space(.),'Naveen KP')]")   
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[contains(@class,'rx-ghost-btn') "
+        "and contains(normalize-space(.),'Upload Prescription')]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//a[contains(@class,'cursor-pointer') and normalize-space()='Upload']")   
+
+        time.sleep(4)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        print("Successfully upload the file")
+        time.sleep(3)
+
+        # Click SAVE button to save the prescription
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[contains(@class,'rx-primary-btn') and contains(normalize-space(), 'Save')]")
+        
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+
+        # Click on Share case
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_share_btn']")
+
+        wait_and_send_keys(login, By.XPATH, 
+        "//textarea[@placeholder='Enter message description']", "New MR sharing with case and prescription")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[contains(text(),'Email')]")
+
+        time.sleep(1)
+        wait_and_locate_click(
+             login, By.XPATH, "//button[normalize-space()='Share']"
+        )
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(  
+            login.get_screenshot_as_png(),  
+            name="full_page",  
+            attachment_type=AttachmentType.PNG,
+        ) 
+        raise e
 
 
 
