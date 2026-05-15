@@ -492,6 +492,7 @@ def test_prepaymentbooking_reschedule(con_login):
                 )
             )
         ).click()
+        
         time.sleep(4)
         Today_Date = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(

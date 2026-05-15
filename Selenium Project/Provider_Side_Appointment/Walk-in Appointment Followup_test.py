@@ -790,7 +790,7 @@ def test_followup_nextmonth(login):
         EC.element_to_be_clickable(
             (
                 By.XPATH,
-                "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
+                "//div[@id='actionCreate_BUS_bookList']//p-card[@class='p-element']",
             )
         )
     )

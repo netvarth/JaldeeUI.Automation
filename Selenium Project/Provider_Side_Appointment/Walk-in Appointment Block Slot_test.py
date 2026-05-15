@@ -9,7 +9,7 @@ from selenium.webdriver.support import expected_conditions as EC
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Block the four slot")
-@pytest.mark.parametrize('url', ["https://scale.jaldee.com/business/"])
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_patient(login):
     
     time.sleep(5)
@@ -20,7 +20,7 @@ def test_create_patient(login):
     time.sleep(3)
     
     WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Block Slots']"))
+        EC.presence_of_element_located((By.XPATH, "//div[@id='blockSlot_BUS_bookList']//p-card[@class='p-element']"))
     ).click()
     time.sleep(3)
     
@@ -39,25 +39,21 @@ def test_create_patient(login):
     print("Department : ENT")
     
     # Select user
-    user_dropdown_xpath = ("(//p-dropdown[@class='p-element p-inputwrapper p-inputwrapper-filled ng-untouched ng-valid "
-                           "ng-dirty'])[1]")
-    WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_dropdown_xpath))).click()
-    user_option_xpath = "(//li[@aria-label='Naveen KP'])[1]"
-    WebDriverWait(login, 10).until(EC.element_to_be_clickable((By.XPATH, user_option_xpath))).click()
-    print("Select user : Naveen")
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//p-dropdown[@id='selectUser_BUS_blockSlot']")
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//li[@role='option' and @aria-label='Naveen KP']")
+
     
     # Select service
-    service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-    element = login.find_element(By.XPATH, service_dropdown_xpath)
-    login.execute_script("arguments[0].scrollIntoView();", element)
-    element.click()
-    
-    service_option_xpath = "//span[@class='ng-star-inserted'][normalize-space()='Naveen Consultation']"
-    WebDriverWait(login, 10).until(
-        EC.element_to_be_clickable((By.XPATH, service_option_xpath))).click()
-    print("Select Service : Naveen Consultation")
-    time.sleep(3)
-    
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//p-dropdown[@id='selectServce_BUS_blockSlot']")
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//li[@role='option' and @aria-label='Naveen Consultation']")
+
+     
     # Select today's date
     today_date = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
     today_date.click()
