@@ -1522,7 +1522,7 @@ def test_prescription_rxpush_predeployment(login):
         login.find_element(
             By.XPATH, "(//input[@class='mdc-checkbox__native-control'])[1]"
         ).click()
-        login.find_element(By.XPATH, "//span[normalize-space()='Whatsapp']").click()
+        login.find_element(By.XPATH, "//input[@type='checkbox' and @id='mat-mdc-checkbox-2-input']").click()
         login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
         
         msg = get_toast_message(login)

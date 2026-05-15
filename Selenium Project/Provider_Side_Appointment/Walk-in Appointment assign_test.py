@@ -11,20 +11,15 @@ first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 def test_appt_assgin_doc(login):
     try:
         
+        wait= WebDriverWait(login, 30)
         time.sleep(5)
 
         wait_and_locate_click(login, By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]")
 
         time.sleep(3)
-        element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable(
-                (
-                    By.XPATH,
-                    "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]",
-                )
-            )
-        )
-        element.click()
+        wait_and_locate_click(login, By.XPATH, "//div[@id='actionCreate_BUS_bookList']//p-card[@class='p-element']")
+
+
         time.sleep(3)
         wait = WebDriverWait(login, 10)
         element_appoint = wait.until(

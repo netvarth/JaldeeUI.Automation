@@ -6,15 +6,18 @@ from Framework.consumer_common_utils import *
 @allure.title("")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_sales_order_1(login):
+
     try:
+
+        wait= WebDriverWait(login, 30)
         driver = login
         wait_and_locate_click(
-            login, By.XPATH, "(//img)[3]"
+            login, By.XPATH, "//img[contains(@src,'appointments.png')]"
         )
 
         time.sleep(3)
         wait_and_locate_click(
-            driver, By.XPATH, "//span[normalize-space()='Appointment']"
+            driver, By.XPATH, "//div[@id='actionCreate_BUS_bookList']//p-card[@class='p-element']"
         )
 
         
