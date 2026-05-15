@@ -6,6 +6,9 @@ from Framework.common_dates_utils import *
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime 
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
  
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Reschedules it to a later time in the same day")
@@ -492,16 +495,16 @@ def test_prepaymentbooking_reschedule(con_login):
                 )
             )
         ).click()
+
         time.sleep(4)
         Today_Date = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+                (By.XPATH, "//button[contains(concat(' ', normalize-space(@class), ' '), ' is-selected ')]")
             )
         )
-
+        print("Today Date:", Today_Date.text)
         con_login.execute_script("arguments[0].click();", Today_Date)
 
-        print("Today Date:", Today_Date.text)
 
         wait = WebDriverWait(con_login, 10)
         time_slot = wait.until(
@@ -522,7 +525,7 @@ def test_prepaymentbooking_reschedule(con_login):
         time.sleep(2)
         WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
-        ).send_keys("9207206005")
+        ).send_keys("8281276241")
  
 
         time.sleep(1)
@@ -571,77 +574,191 @@ def test_prepaymentbooking_reschedule(con_login):
         # Store main window
         main_window = con_login.current_window_handle
 
-        # Wait for Razorpay iframe and switch
-        wait.until(
-            EC.frame_to_be_available_and_switch_to_it(
-                (By.CSS_SELECTOR, "iframe.razorpay-checkout-frame")
-            )
-        )
+        # Razor pay flow
 
-        print("Switched to Razorpay iframe")
+        # # Wait for Razorpay iframe and switch
+        # wait.until(
+        #     EC.frame_to_be_available_and_switch_to_it(
+        #         (By.CSS_SELECTOR, "iframe.razorpay-checkout-frame")
+        #     )
+        # )
 
-        # Click Netbanking option
+        # print("Switched to Razorpay iframe")
+
+        # # Click Netbanking option
+        # netbanking = wait.until(
+        #     EC.element_to_be_clickable(
+        #         (By.XPATH, "//div[@data-testid='netbanking']")
+        #     )
+        # )
+        # netbanking.click()
+
+        # # Select bank (Example: State Bank of India)
+        # bank = wait.until(
+        #     EC.element_to_be_clickable(
+        #         (By.XPATH, "//span[contains(text(),'Kotak Mahindra Bank')]")
+        #     )
+        # )
+        # bank.click()
+
+    #     # Exit iframe
+    #     con_login.switch_to.default_content()
+
+    #     time.sleep(2)
+    #    # Store main window
+    #     main_window = con_login.current_window_handle
+
+    #     print("Main window:", main_window)
+
+    #     # Wait for Razorpay simulator window
+    #     wait.until(lambda d: len(d.window_handles) > 1)
+
+    #     # Switch to Razorpay window
+    #     for window in con_login.window_handles:
+    #         con_login.switch_to.window(window)
+    #         if "mocksharp/payment" in con_login.current_url:
+    #             print("Switched to Razorpay simulator:", con_login.current_url)
+    #             break
+
+    #     # Wait for Success button
+    #     success_btn = wait.until(
+    #         EC.element_to_be_clickable((By.XPATH, "//button[@data-val='S']"))
+    #     )
+
+    #     # Click success
+    #     con_login.execute_script("arguments[0].click();", success_btn)
+
+    #     print("Success button clicked")
+
+    #     # Switch back to main window
+    #     con_login.switch_to.window(main_window)
+
+    #     print("Returned to main window")
+
+
+    #     time.sleep(3)
+    #     ok_button = WebDriverWait(con_login, 10).until(
+    #             EC.presence_of_element_located(
+    #                 (By.XPATH, "(//button[normalize-space()='Ok'])[1]")
+    #             )
+    #         )
+    #     con_login.execute_script("arguments[0].click();", ok_button)
+
+        
+        # Paytm checkout is rendered in the main page DOM.
+        # The iframe with id="dummy-iframe" is hidden and should not be used.
+        con_login.switch_to.default_content()
+
+        print("Using Paytm checkout DOM")
+
+        # Click Net Banking option
         netbanking = wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//div[@data-testid='netbanking']")
+                (By.CSS_SELECTOR, "#checkout-nb label.ptm-lbl")
             )
         )
-        netbanking.click()
+
+        con_login.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            netbanking
+        )
+
+        try:
+            netbanking.click()
+        except Exception:
+            con_login.execute_script("arguments[0].click();", netbanking)
 
         print("Netbanking selected")
 
-        # Select bank (Example: State Bank of India)
+        bank_name = "Kotak"  # Options visible in HTML: HDFC, SBI, ICICI, AXIS, Kotak, Canara, PNB, IOB
+
         bank = wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "//span[contains(text(),'Kotak Mahindra Bank')]")
+                (
+                    By.XPATH,
+                    f"//div[@id='ptm-nb-inner']//p[contains(@class,'ptm-bank-name') and normalize-space()='{bank_name}']"
+                    "/ancestor::div[contains(@class,'ptm-nb-list-item')][1]"
+                )
             )
         )
-        bank.click()
+
+        con_login.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            bank
+        )
+
+        try:
+            bank.click()
+        except Exception:
+            con_login.execute_script("arguments[0].click();", bank)
 
         print("Bank selected")
-
-        # Exit iframe
+        
+        # Stay in main page DOM for Paytm checkout
         con_login.switch_to.default_content()
 
         time.sleep(2)
-       # Store main window
+
+        # Store main window before clicking Pay
         main_window = con_login.current_window_handle
+        existing_windows = set(con_login.window_handles)
 
         print("Main window:", main_window)
 
-        # Wait for Razorpay simulator window
-        wait.until(lambda d: len(d.window_handles) > 1)
-
-        # Switch to Razorpay window
-        for window in con_login.window_handles:
-            con_login.switch_to.window(window)
-            if "mocksharp/payment" in con_login.current_url:
-                print("Switched to Razorpay simulator:", con_login.current_url)
-                break
-
-        # Wait for Success button
-        success_btn = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@data-val='S']"))
-        )
-
-        # Click success
-        con_login.execute_script("arguments[0].click();", success_btn)
-
-        print("Success button clicked")
-
-        # Switch back to main window
-        con_login.switch_to.window(main_window)
-
-        print("Returned to main window")
-
-
-        time.sleep(3)
-        ok_button = WebDriverWait(con_login, 10).until(
-                EC.presence_of_element_located(
-                    (By.XPATH, "(//button[normalize-space()='Ok'])[1]")
+        # Click Pay / Make Payment button
+        pay_btn = wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//button[contains(@class,'ptm-custom-btn') and .//img[contains(@class,'ptm-lock-img')]]"
                 )
             )
-        con_login.execute_script("arguments[0].click();", ok_button)
+        )
+
+        con_login.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});",
+            pay_btn
+        )
+
+        try:
+            pay_btn.click()
+        except Exception:
+            con_login.execute_script("arguments[0].click();", pay_btn)
+
+        print("Pay button clicked")
+
+        # Paytm may open mock bank either in same window or new window.
+        # First check if a new window opens.
+        try:
+            wait.until(lambda d: len(d.window_handles) > len(existing_windows))
+
+            new_window = list(set(con_login.window_handles) - existing_windows)[0]
+            con_login.switch_to.window(new_window)
+
+            print("Switched to Paytm mock bank window:", con_login.current_url)
+
+        except Exception:
+            # If no new window opens, Paytm likely navigated in the same window
+            print("Paytm mock bank opened in same window:", con_login.current_url)
+
+        # Wait for Successful button on Paytm demo bank page
+        success_btn = wait.until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//button[contains(@class,'btn') and .//span[normalize-space()='Successful']]"
+                )
+            )
+        )
+
+        con_login.execute_script("arguments[0].click();", success_btn)
+        time.sleep(2)
+        print("Successful button clicked")
+
+        # If Paytm opened a separate window, switch back to main window
+        if main_window in con_login.window_handles:
+            con_login.switch_to.window(main_window)
+            print("Returned to main window")
 
         # try:
         #     snack_bar = WebDriverWait(con_login, 10).until(
@@ -677,8 +794,30 @@ def test_prepaymentbooking_reschedule(con_login):
         con_login.quit()
         time.sleep(5)
         
-         # Provider Login
-        pro_driver = webdriver.Chrome()
+        # Provider Login
+        chrome_options = Options()
+
+        prefs = {
+            "credentials_enable_service": False,
+            "profile.password_manager_enabled": False,
+            "profile.password_manager_leak_detection": False,
+            "autofill.profile_enabled": False,
+            "autofill.credit_card_enabled": False,
+        }
+
+        chrome_options.add_experimental_option("prefs", prefs)
+
+        # Disable Chrome password breach warning / password manager popups
+        chrome_options.add_argument("--disable-features=PasswordLeakDetection")
+        chrome_options.add_argument("--disable-save-password-bubble")
+
+        # Optional stability options
+        chrome_options.add_argument("--disable-notifications")
+        chrome_options.add_argument("--disable-popup-blocking")
+
+        pro_driver = webdriver.Chrome(options=chrome_options)
+        # pro_driver = webdriver.Chrome()
+        pro_driver.maximize_window()
         pro_driver.get("https://scale.jaldee.com/business/")
         login_id = pro_driver.find_element(By.XPATH, "//input[@id='loginId']")
         login_id.clear()
@@ -1089,20 +1228,22 @@ def test_nextmonth_reschedule(con_login):
             EC.presence_of_element_located(
                 (
                     By.XPATH,
-                    "//app-appointment-card[@class='ng-star-inserted']//div//div[@class='serviceName ng-star-inserted'][normalize-space()='service']",
+                    "//app-appointment-card[.//div[contains(@class,'serviceName') and normalize-space()='service']]",
                 )
             )
         ).click()
+
+
         time.sleep(4)
         Today_Date = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//button[@aria-pressed='true'] [@aria-current='date']")
+                (By.XPATH, "//button[contains(concat(' ', normalize-space(@class), ' '), ' is-selected ')]")
             )
         )
+        print("Today Date:", Today_Date.text)
 
         con_login.execute_script("arguments[0].click();", Today_Date)
 
-        print("Today Date:", Today_Date.text)
 
         wait = WebDriverWait(con_login, 10)
         time_slot = wait.until(
@@ -1123,7 +1264,7 @@ def test_nextmonth_reschedule(con_login):
         time.sleep(2)
         WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='81234 56789'])[1]"))
-        ).send_keys("9207206005")
+        ).send_keys("8281276241")
 
         con_login.find_element(
             By.XPATH, "//span[@class='continue ng-star-inserted']"
@@ -1156,9 +1297,10 @@ def test_nextmonth_reschedule(con_login):
 
 
         time.sleep(3)
+        
         confirm_button = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[contains(text(),'Confirm')]")
+                (By.XPATH, "//button[@id='btnConfirm']")
             )
         )
         con_login.execute_script("arguments[0].click();", confirm_button)
@@ -1175,7 +1317,7 @@ def test_nextmonth_reschedule(con_login):
         time.sleep(3)
         bookings = WebDriverWait(con_login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[contains(text(),'My Bookings')]")
+                (By.XPATH, "//div[contains(@class,'dashboard_card')][.//div[contains(@class,'title') and normalize-space()='My Bookings']]")
             )
         )
         bookings.click()
