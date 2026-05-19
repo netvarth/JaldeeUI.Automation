@@ -1398,25 +1398,20 @@ def test_walkin_token(login):
         print("Added Sub Service to the Invoice")
         
         time.sleep(2)
-        element = login.find_element(By.XPATH, "//button[normalize-space()='Add Procedure/Item']")
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Add Procedure/Item']")
+        # element = login.find_element(By.XPATH, "//button[normalize-space()='Add Procedure/Item']")
 
-        scroll_to_element(login, element)
+        # scroll_to_element(login, element)
         
         # Adding ADHOC item into the invoice
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Choose Procedure/Item']", "item1234")
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Choose Procedure/Item']", "Item1234")
 
-        # item_button = WebDriverWait(login, 30).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//input[@placeholder='Choose Procedure/Item']"))
-        # )
-        # item_button.click()
-        # item_button.send_keys("item1234")
         
         time.sleep(3)
         price = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[@id='mat-input-4'])[2]"))
+                (By.XPATH, "//input[contains(@class,'item-price') and @placeholder='Price']"))
         )
         price.clear()
         price.click()

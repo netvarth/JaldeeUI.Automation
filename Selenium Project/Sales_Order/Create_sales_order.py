@@ -1824,7 +1824,7 @@ def test_create_sales_order_13(consumer_login):
 
         time.sleep(2)
         wait_and_send_keys(
-            driver, By.XPATH, "(//input[@placeholder='81234 56789'])[1]", "9207206005"
+            driver, By.XPATH, "(//input[@placeholder='81234 56789'])[1]", "8281276241"
         )
 
         time.sleep(1)
