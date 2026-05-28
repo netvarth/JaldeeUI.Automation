@@ -4656,11 +4656,6 @@ def test_IP_Management_28(login):
 
         time.sleep(2)
         wait_and_locate_click(
-               driver, By.XPATH, "(//span[normalize-space()='Services'])[1]"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
                driver, By.XPATH, "//button[@id='btnServiceTimestamp_IP_AD_DE_New_TOMMORROW']"
         )
 
@@ -4669,10 +4664,12 @@ def test_IP_Management_28(login):
                driver, By.XPATH, "(//span[@class='service-action-dots'])[1]"
         )
 
+        time.sleep(1)
         wait_and_locate_click(
                driver, By.XPATH, "(//i[@class='pi pi-trash'])[1]"
         )
 
+        time.sleep(1)
         wait_and_locate_click(
                driver, By.XPATH, "(//button[normalize-space()='Yes'])[1]"
         )

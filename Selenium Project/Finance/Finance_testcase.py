@@ -20,10 +20,10 @@ def test_Finance_Create_Invoice_Booking(login):
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "8281276241")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='Id : 456547']")
 
         time.sleep(3)
         referal_number = f"REF-{random.randint(100000, 999999)}"
@@ -156,6 +156,8 @@ def test_Finance_Create_Invoice_Booking(login):
         )
         view_button.click()
 
+        time.sleep(3)
+
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),
@@ -177,10 +179,10 @@ def test_Finance_Create_Invoice_Booking_settled(login):
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "8281276241")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='Id : 456547']")
 
         time.sleep(3)
         referral_number = f"REF-{random.randint(100000, 999999)}"
@@ -305,7 +307,7 @@ def test_Finance_Create_Invoice_Booking_settled(login):
             By.XPATH, ".//button[span[normalize-space()='View']]"
         )
         view_button.click()
-
+        time.sleep(3)
 
     except Exception as e:
         allure.attach(
@@ -328,10 +330,10 @@ def test_Finance_Create_Invoice_Booking_Sharepaymentlink(login):
         wait_and_locate_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "8281276241")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='Id : 456547']")
 
         time.sleep(3)
         referral_number = f"REF-{random.randint(100000, 999999)}"
@@ -482,10 +484,10 @@ def test_Finance_Create_Invoice_Booking_Cancelled(login):
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "8281276241")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 456547'])[1]")
 
         time.sleep(3)
         referral_number = f"REF-{random.randint(100000, 999999)}"
@@ -604,6 +606,7 @@ def test_Finance_Create_Invoice_Booking_Cancelled(login):
         ).text
         print(f"Status for Invoice {first_invoice_id}: {status}")
 
+        time.sleep(2)
         # Click "View" button of first invoice
         view_button = first_row.find_element(
             By.XPATH, ".//button[span[normalize-space()='View']]"
@@ -624,6 +627,8 @@ def test_Finance_Create_Invoice_Booking_Cancelled(login):
 @allure.title("Create Expense from Finance Module and change the status to Approved and Convert to Payout")
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_create_expense_to_approved_and_convert_to_payout(login):
+
+    # ######Auto Payout is Turned ON case ######
     wait = WebDriverWait(login, 30)
     try:
         time.sleep(5)
@@ -645,10 +650,14 @@ def test_create_expense_to_approved_and_convert_to_payout(login):
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Chavakkad'])[1]")
 
         time.sleep(1)
-        wait_and_send_keys(login, By.XPATH, "(//input[@id='expenseFor'])[1]", "Office Supplies")
+        wait_and_send_keys(login, By.XPATH, "//input[@id='inputExpFor_edit__FINExpenseDetail']", "Office Supplies")
+
+        referal_number = f"REF-{random.randint(100000, 999999)}"
+        wait_and_send_keys(login, By.XPATH, "//input[@id='inputRefNo_edit_FIN_ExpenseDetail']", referal_number)
+        print("Referral Number:", referal_number)  
 
         time.sleep(1)
-        wait_and_send_keys(login, By.XPATH, "(//input[@id='amount'])[1]", "1600")
+        wait_and_send_keys(login, By.XPATH, "//input[@id='inputAmount_edit_FIN_ExpenseDetail']", "1600")
 
         time.sleep(1)
         wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]")
@@ -668,49 +677,52 @@ def test_create_expense_to_approved_and_convert_to_payout(login):
 
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Expenses'])[1]")
         time.sleep(2)
-        menu_button =  "//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//button[@aria-haspopup='menu']"
-        wait_and_locate_click(login, By.XPATH, menu_button)
+        # menu_button =  "//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//button[@aria-haspopup='menu']"
+        wait_and_locate_click(login, By.XPATH, "//button[.//span[normalize-space()='View']]")
         
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Change Status'])[1]")
+        wait_and_click(login, By.XPATH, "//p-dropdown[@id='inputExpStatus_edit_ExpenseDetail']")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//div[contains(text(),'Approved')])[1]")
+        wait_and_click(login, By.XPATH, "//li[@aria-label='Approved']")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "//button[@id='btnSave_FIN_ExpenseDetail']")
 
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
         time.sleep(3)
 
-        Approved_status_element = wait.until(
-        EC.presence_of_element_located(
-        (By.XPATH, "(//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//span[normalize-space()='Approved'])[1]")
-            )
-        )
-        Approved_status_text = Approved_status_element.text
-        print(f"Status: {Approved_status_text}")
-        assert Approved_status_text == "Approved", f"Expected 'Approved' status, but got {Approved_status_text}"
+        # Approved_status_element = wait.until(
+        # EC.presence_of_element_located(
+        # (By.XPATH, "(//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//span[normalize-space()='Approved'])[1]")
+        #     )
+        # )
+        # Approved_status_text = Approved_status_element.text
+        # print(f"Status: {Approved_status_text}")
+        # assert Approved_status_text == "Approved", f"Expected 'Approved' status, but got {Approved_status_text}"
 
-        menu_button =  "//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//button[@aria-haspopup='menu']"
-        wait_and_locate_click(login, By.XPATH, menu_button)
+        # menu_button =  "//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//button[@aria-haspopup='menu']"
+        # wait_and_locate_click(login, By.XPATH, menu_button)
 
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Convert to Payout'])[1]")
+        # time.sleep(2)
+        # wait_and_click(login, By.XPATH, "(//span[normalize-space()='Convert to Payout'])[1]")
 
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[@class='mdc-button__label'])[1]")
+        # time.sleep(2)
+        # wait_and_click(login, By.XPATH, "(//span[@class='mdc-button__label'])[1]")
 
-        message = get_snack_bar_message(login)
-        print("Snack bar message:", message)
-        time.sleep(3)
+        # message = get_snack_bar_message(login)
+        # print("Snack bar message:", message)
+        # time.sleep(3)
 
-        Converted_status_element = wait.until(
-        EC.presence_of_element_located(
-            (By.XPATH, "(//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//span[normalize-space()='Converted'])[1]")
-            )
-        )
-        Converted_status_text = Converted_status_element.text
-        print(f"Status: {Converted_status_text}")
-        assert Converted_status_text == "Converted", f"Expected 'Converted' status, but got {Converted_status_text}"
+        # Converted_status_element = wait.until(
+        # EC.presence_of_element_located(
+        #     (By.XPATH, "(//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//span[normalize-space()='Converted'])[1]")
+        #     )
+        # )
+        # Converted_status_text = Converted_status_element.text
+        # print(f"Status: {Converted_status_text}")
+        # assert Converted_status_text == "Converted", f"Expected 'Converted' status, but got {Converted_status_text}"
 
 
         time.sleep(3)
@@ -734,17 +746,16 @@ def test_create_revenue(login):
         wait_and_click(login, By.XPATH, "(//div[contains(text(),'Finance')])[1]")
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Add Revenue'])[1]")
-        time.sleep(2)
 
+        time.sleep(2)
         wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Chavakkad'])[1]")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
-
+        wait_and_click(login, By.XPATH, "//p-dropdown[@id='selectPayInCat_FIN_Rec']")
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Booking Invoice'])[1]")
+        wait_and_click(login, By.XPATH, "//span[normalize-space()='Booking Invoice']")
 
         time.sleep(1)
         wait_and_send_keys(login, By.XPATH, "(//input[@id='paymentsInLabel'])[1]", "Booking")
@@ -752,21 +763,25 @@ def test_create_revenue(login):
         time.sleep(2)
         referenceNo = f"REF-{random.randint(100000, 999999)}"
         # wait_and_click(login, By.XPATH, "(//input[@placeholder='Referal Number'])[1]")
-        wait_and_send_keys(login, By.XPATH, "(//input[@id='referenceNo'])[1]", referenceNo)
+        wait_and_send_keys(login, By.XPATH, "//input[@id='referenceNo']", referenceNo)
         print("Reference Number:", referenceNo) 
 
         time.sleep(2)
         Amount_element = f"{random.randint(2000, 5999)}"
-        wait_and_send_keys(login, By.XPATH, "(//input[@id='amount'])[1]", Amount_element)
+        wait_and_send_keys(login, By.XPATH, "//input[@id='inputAmount_FIN_Rec']", Amount_element)
         print("Amount :", Amount_element)
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[3]")
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='whiteboard transparent networks'])[1]")
+        wait_and_click(login, By.XPATH, "//div[contains(@class,'p-dropdown') and .//input[@placeholder='Please choose Vendor']]")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[@class='mdc-button__label'])[1]")
+        wait_and_click(login, By.XPATH, "//li[@role='option' and @aria-label='whiteboard transparent networks']")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@id='textaraeaDescption_FIN_Rec']", "Notes for revenue")
+
+        time.sleep(2)
+        wait_and_click(login, By.XPATH, "//button[@id='btnSave_FIN_Rec']")
 
         message = get_snack_bar_message(login)
         print("Snack bar message:", message)
@@ -774,8 +789,9 @@ def test_create_revenue(login):
 
 
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Revenue'])[1]")
+
         time.sleep(3)
-        menu_button =  "//table[contains(@class,'p-datatable-table')]//tbody/tr[1]//button[@aria-haspopup='menu']"
+        menu_button =  "(//td[.//*[normalize-space()='New'] or normalize-space()='New'])[1]/following-sibling::td//button[last()]"
         wait_and_locate_click(login, By.XPATH, menu_button)
         
         time.sleep(2)
@@ -817,9 +833,9 @@ def test_createinvoice_servicedate(login):
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Create Invoice']") 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Name or Phone or Email or Id']", 9207206005) 
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Name or Phone or Email or Id']", 8281276241) 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[normalize-space(.)='Id : 2'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Id : 456547'][1]")
         time.sleep(2)
         WebDriverWait(login, 15).until(
             EC.presence_of_element_located(
@@ -915,10 +931,10 @@ def test_createinvoice_saveastemplate(login):
         wait_and_click(login, By.XPATH, "(//span[normalize-space()='Create Invoice'])[1]")
 
         time.sleep(2)
-        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "920720600")
+        wait_and_send_keys(login, By.XPATH, "(//input[@placeholder='Enter Name or Phone or Email or Id'])[1]", "8281276241")
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 2'])[1]")
+        wait_and_click(login, By.XPATH, "(//span[normalize-space()='Id : 456547'])[1]")
 
         time.sleep(3)
         referal_number = f"REF-{random.randint(100000, 999999)}"

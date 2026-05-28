@@ -574,8 +574,8 @@ def test_prepaymentbooking_reschedule(con_login):
         # Store main window
         main_window = con_login.current_window_handle
 
-        # Razor pay flow
-
+        # ##### RAZORPAY WORKFLOW ######
+ 
         # # Wait for Razorpay iframe and switch
         # wait.until(
         #     EC.frame_to_be_available_and_switch_to_it(
