@@ -46,7 +46,7 @@ def test_enable_inventory_setting(login):
     EC.presence_of_element_located(
         (By.XPATH, "(//button[@role='switch'])[1]")
     )
-)
+    )
 
     # Get current state
     sales_order_state = sales_order_toggle.get_attribute("aria-checked")
@@ -87,9 +87,9 @@ def test_enable_inventory_setting(login):
     # Locate the Inventory toggle button
     inventory_toggle = WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-        (By.XPATH, "//button[@role='switch']")
+            (By.XPATH, "//button[@role='switch']")
+        )
     )
-)
 
     # Get current state
     inventory_state = inventory_toggle.get_attribute("aria-checked")
@@ -675,61 +675,65 @@ def test_create_purchase(login):
 
     login.find_element(By.XPATH, "//textarea[@placeholder='Notes to Vendor']").send_keys("Medcc  Supplied item ")
 
-    # Click Add Items button
-    time.sleep(2)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnBrowse_ORD_PurchsCrt']")
+    # Adding Item_1 with batch and attribute
 
-#     # 2. Wait for popup and click the first radio button
-#     first_radio = wait.until(
-#     EC.presence_of_element_located(
-#         (By.XPATH, "(//input[@type='radio' and contains(@class,'mdc-radio__native-control')])[1]")
-#     )
-# )
-
-#     # Normal click may fail for Angular Material radio, so JS click is safer
-#     login.execute_script("arguments[0].click();", first_radio)
-
-    first_radio = wait.until(
-    EC.presence_of_element_located(
-        (By.XPATH, "(//input[@type='radio' and contains(@class,'mdc-radio__native-control')])[1]")
+    # Item Name field - first row in Add Items section
+    item_name_field = WebDriverWait(login, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "(//input[@placeholder='Search items'])[1]"))
     )
-)
 
-    login.execute_script("arguments[0].click();", first_radio)
+    item_name_field.click()
+    item_name_field.clear()
+    item_name_field.send_keys("it")   # type item letters to open popup
 
-    login.execute_script(
-    "arguments[0].scrollIntoView({block: 'center'});",
-        done_btn
-)
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Item_1')]")
+
+    # Wait for Select Items popup
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Items']"))
+    )
+
+    # Row containing Item_1 Green inside popup
+    item_row_xpath = "//tr[.//*[normalize-space()='Item_1 Green']]"
+
+    item_row = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, item_row_xpath))
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", item_row)
+    time.sleep(1)
+
+    # Click the first cell/radio area of Item_1 Green row
+    radio_button = WebDriverWait(login, 10).until(
+    EC.presence_of_element_located((
+        By.XPATH,
+        "//tr[.//*[normalize-space()='Item_1 Green']]//input[@type='radio']"))
+    )
+
+    login.execute_script("arguments[0].click();", radio_button)
+    time.sleep(1)
 
     # Click Done button
-    wait.until(
-    EC.element_to_be_clickable(
-        (By.ID, "btnSubmitItems_ORD_ItemSelection")
+    wait_and_locate_click(login, By.XPATH,
+        "//button[@id='btnSubmitItems_ORD_ItemSelection']"
     )
-)
 
-    login.execute_script("arguments[0].click();", done_btn)
+    # Wait until popup closes
+    WebDriverWait(login, 10).until(
+        EC.invisibility_of_element_located((By.XPATH, "//*[normalize-space()='Select Items']"))
+    )
 
-    # element1 = login.find_element(By.XPATH, "//button[@id='btnBrowse_ORD_PurchsCrt']")
-    # login.execute_script("arguments[0].scrollIntoView();", element1)
+    # Verify selected item appears in Add Items -> Item Name field
+    selected_item_field = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "(//input[@placeholder='Search items'])[1]"))
+    )
 
-    # item_list = ["Item_2", "Item_3"]
-    # random_batch_number = str(random.randint(5, 99))
+    print("Selected Item:", selected_item_field.get_attribute("value"))
 
-    # for i in range(len(item_list)):
-    #     print(item_list[i])
-    #     item_xpath = item_xpath = f"//div[@class='d-flex justify-content-between fw-bold']//div[@class='ng-star-inserted'][normalize-space()='{title_to_item(item_list[i])}']"
-                                            
-    #     WebDriverWait(login, 10).until(
-    #         EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Search items']"))
-    #     ).send_keys("item")
 
-    #     time.sleep(2)
-    #     WebDriverWait(login, 10).until(
-    #         EC.presence_of_element_located((By.XPATH, item_xpath))
-    #     ).click()
-
+    # Enter batch number for the item
     time.sleep(5)
     batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable((By.XPATH,
@@ -741,6 +745,7 @@ def test_create_purchase(login):
     batch_number.send_keys(random_batch_number)
     print("Batch_Number:", random_batch_number)
 
+    # Enering item unit for the item
     WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH,
             "//p-dropdown[@placeholder='Item Units']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
@@ -751,7 +756,9 @@ def test_create_purchase(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Box of 10']"))
         ).click()
+    
 
+    # Enter expiry date for the item
     time.sleep(2)
     item_exp = f"//p-calendar[contains(@class, 'exp-date') and contains(@class, 'ng-tns-c')]"
     WebDriverWait(login, 20).until(
@@ -788,19 +795,12 @@ def test_create_purchase(login):
     WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH, day_xpath))
         ).click()
-
-
-        # pr_date = WebDriverWait(login, 15).until(
-        # EC.presence_of_element_located(
-        # (By.XPATH, "//button[normalize-space()='Send Message']"))
-        # )        
-        # login.execute_script("arguments[0].click();", pr_date)
-
-        # time.sleep(3)
         
+
+    # Entering quantity for the item
     qty = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//input[@min='1']"))
+                (By.XPATH, "//input[@id='inputNumber_ORD_PurchsCrt']"))
         )
     qty.click()
     qty.clear()
@@ -809,9 +809,11 @@ def test_create_purchase(login):
     qty.send_keys(qty_random_number)
     print("Qty Of Item:", qty_random_number)
 
+
+    # Entering free quantity for the item
     free_qty = WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//input[contains(@class,'free-quantity')]"))
+                (By.XPATH, "//input[@id='inputQty_ORD_PurchsCrt']"))
         )
     free_qty.click()
     free_qty.clear()
@@ -820,21 +822,21 @@ def test_create_purchase(login):
     free_qty.send_keys(free_qty_random_number)
     print("Free Qty:", free_qty_random_number)
 
-        
+    # Entering MRP for the item
     mrpprice = WebDriverWait(login, 20).until(
             EC.presence_of_element_located((By.XPATH,
-                                            "(//input[contains(@class,'item-price')])[1]"))
+            "//input[@id='inputMrp_ORD_PurchsCrt']"))
         )
     mrpprice.click()
     mrpprice_random_number = str(random.randint(60, 200))
     mrpprice.send_keys(mrpprice_random_number)
     print("MRP of the item:", mrpprice_random_number)
 
-
+    # Entering purchase price for the item
     time.sleep(2)
     price = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//input[contains(@class,'item-price')])[2]"))
+                (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']"))
         )
     price.click()
     price_random_number = str(random.randint(40, 100))
@@ -842,6 +844,7 @@ def test_create_purchase(login):
     print("Price of the item:", price_random_number)
 
 
+    # Entering discount for the item
     time.sleep(1)
     WebDriverWait(login,10).until(
             EC.presence_of_element_located((By.XPATH, "//p-dropdown[@optionlabel= 'displayName']"))
@@ -853,21 +856,116 @@ def test_create_purchase(login):
 
     time.sleep(1)
     WebDriverWait(login ,10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[contains(@class,'discount')]"))
+            EC.presence_of_element_located((By.XPATH, "//input[@id='inputDiscount_ORD_PurchsCrt']"))
         ).send_keys("5")
         
     time.sleep(3)
     WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Add']"))
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnAddItem_ORD_PurchsCrt']"))
         ).click()
     time.sleep(3)
 
-    # element2 = login.find_element(By.XPATH, "//div[contains(text(),'Add Items')]")
-    # login.execute_script("arguments[0].scrollIntoView();", element2)
+    # Adding Item_4 without batch and attribute
 
+    # Item Name field - first row in Add Items section
+    item_name_field = WebDriverWait(login, 10).until(
+    EC.element_to_be_clickable((By.XPATH, "(//input[@placeholder='Search items'])[1]"))
+    )
+
+    item_name_field.click()
+    item_name_field.clear()
+    item_name_field.send_keys("it")   # type item letters to open popup
+
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//div[contains(text(),'Item_4')]")
+
+    # Enering item unit for the item
+    WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH,
+            "//p-dropdown[@id='selectunit_ORD_PurchsCrt']//div[@class='p-dropdown p-component']"))
+        ).click()
+
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Box of 12']"))
+        ).click()
+    
+
+     # Entering quantity for the item
+    qty = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='inputNumber_ORD_PurchsCrt']"))
+        )
+    qty.click()
+    qty.clear()
+
+    qty_random_number = str(random.randint(10, 50))
+    qty.send_keys(qty_random_number)
+    print("Qty Of Item:", qty_random_number)
+
+
+    # Entering free quantity for the item
+    free_qty = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='inputQty_ORD_PurchsCrt']"))
+        )
+    free_qty.click()
+    free_qty.clear()
+
+    free_qty_random_number = str(random.randint(1, 5))
+    free_qty.send_keys(free_qty_random_number)
+    print("Free Qty:", free_qty_random_number)
+
+    # Entering MRP for the item
+    mrpprice = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH,
+            "//input[@id='inputMrp_ORD_PurchsCrt']"))
+        )
+    mrpprice.click()
+    mrpprice_random_number = str(random.randint(60, 200))
+    mrpprice.send_keys(mrpprice_random_number)
+    print("MRP of the item:", mrpprice_random_number)
+
+    # Entering purchase price for the item
+    time.sleep(2)
+    price = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']"))
+        )
+    price.click()
+    price_random_number = str(random.randint(40, 100))
+    price.send_keys(price_random_number)
+    print("Price of the item:", price_random_number)
+
+
+    # Entering discount for the item
+    time.sleep(1)
+    WebDriverWait(login,10).until(
+            EC.presence_of_element_located((By.XPATH, "//p-dropdown[@optionlabel= 'displayName']"))
+        ).click()
+
+    WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//span[@class='ng-star-inserted'][contains(text(),'₹')]"))
+        ).click()
+
+    time.sleep(1)
+    WebDriverWait(login ,10).until(
+            EC.presence_of_element_located((By.XPATH, "//input[@id='inputDiscount_ORD_PurchsCrt']"))
+        ).send_keys("20")
+        
+    time.sleep(3)
+    WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnAddItem_ORD_PurchsCrt']"))
+        ).click()
+    time.sleep(3)
+
+
+    # Click on Create Purchase button
     element3= WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Create Purchase']"))
+            (By.XPATH, "//button[@id='btnSubmit_ORD_PurchsCrt']"))
     )
 
     login.execute_script("arguments[0].scrollIntoView();", element3)
@@ -877,13 +975,15 @@ def test_create_purchase(login):
     element4 = login.find_element(By.XPATH, "//th[contains(text(),'Bill Amount')]")
     login.execute_script("arguments[0].scrollIntoView();", element4)
     
-
+    # Click on Send to Review button
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Send to Review']"))
+            (By.XPATH, "//button[@id='btnCngReview_ORD_PurchsCrt']"))
     ).click()
 
+
+    # Select B&B Stores from the dropdown to filter the purchase orders based on store
     time.sleep(2)
     drop_button_loc= WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -894,12 +994,12 @@ def test_create_purchase(login):
 
     time.sleep(2)
 
-    element = login.find_element(By.XPATH, "//span[contains(text(),'Geetha')]")
+    element = login.find_element(By.XPATH, "//span[normalize-space()='B&B Stores']")
     login.execute_script("arguments[0].scrollIntoView();", element)
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'Geetha')]"))
+            (By.XPATH, "//span[normalize-space()='B&B Stores']"))
     ).click()
     
     time.sleep(3)
@@ -921,18 +1021,18 @@ def test_create_purchase(login):
     # Assert that the status is "IN REVIEW"
     assert status_text == "IN REVIEW", f"Expected status to be 'IN REVIEW', but got '{status_text}'"
 
-
+    # Click Approve button for the purchase order which one's status is IN REVIEW
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//tbody/tr[1]/td[8]/div[1]/div[1]/button[1]"))
     ).click()
 
+    # Click on Approve button to approve the purchase order
     time.sleep(2)
-
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[contains(text(),'Approve')]"))
+            (By.XPATH, "//button[@id='btnApprove_ORD_PurchsCrt']"))
     ).click()
 
     time.sleep(3)
@@ -972,6 +1072,7 @@ def test_create_order(login):
             (By.XPATH, "//img[contains(@src,'rx-orders.png')]"))
     ).click()
 
+    # Change the store to B&B Stores to create order for that store
     time.sleep(3)
     WebDriverWait(login, 20).until(
         EC.element_to_be_clickable(
@@ -980,66 +1081,76 @@ def test_create_order(login):
 
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Geetha']"))
+            (By.XPATH, "//span[normalize-space()='B&B Stores']"))
     ).click()
 
+    # Click on Create order card from the order dashboard
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[contains(text(),'Create Order')]"))
     ).click()
 
 
+    # Select customer by searching with phone number and selecting from the dropdown
     time.sleep(3)
-
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//input[@placeholder='Search patients']"))
-    ).send_keys("5558210996")
+            (By.XPATH, "//input[@placeholder='Select customer']"))
+    ).send_keys("8281276241")
 
     WebDriverWait(login, 20).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Id : etf']"))
+            (By.XPATH, "//span[normalize-space()='Id : 649']"))
     ).click()
 
+    # Select the store from the dropdown in create order pop up
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[4]"))
+            (By.XPATH, "//p-dropdown[@id='selectStore_ORD_CrtItemPop']//div[@class='p-dropdown p-component']"))
     ).click()              
 
     time.sleep(1)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='Geetha']"))
+            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='B&B Stores']"))
+    ).click()
+
+    # Select catalog from the dropdown in create order pop up
+    time.sleep(2)
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//div[@class='p-multiselect p-component']"))
     ).click()
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
+            (By.XPATH, "//li[@aria-label='Sale_catalog']"))
     ).click()
 
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Geetha_order_catalog']"))
-    ).click()
 
+    # Close the catalog dropdown by clicking outside the dropdown area
+    time.sleep(1)
+    wait_and_locate_click(login, By.XPATH, "//timesicon[@class='p-element p-icon-wrapper ng-star-inserted']")
+
+
+    # Click NEXT button in the create order pop up
+    time.sleep(1)
     WebDriverWait(login, 10).until(
         EC.element_to_be_clickable(
-            (By.XPATH, "(//span[normalize-space()='Next'])[1]"))
+            (By.XPATH, "//button[@id='btnSave_ORD_CrtItemPop']"))
     ).click()
-
+    print("Create order pop up details filled and NEXT button clicked successfully")
 
 
     # Add items
-    item_names_to_select = ['Item3']
-    item_prices = [95]
+    item_names_to_select = ['Item_1']
+    # item_prices = []
     sum = 0
     items_data_before_confirm = []
 
     for i in range(len(item_names_to_select)):
         item_name = item_names_to_select[i]
-        item_price = item_prices[i]
         print(item_name)
 
         # Search and select item
@@ -1054,7 +1165,51 @@ def test_create_order(login):
                 (By.XPATH, item_xpath))
         ).click()
 
-        qty_xpath = f"(//input[@min='1'])[{i + 1}]"
+
+        # Wait for Select Item popup
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//*[normalize-space()='Select Item']"))
+        )
+
+        # Click Green attribute button
+        green_btn = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH,
+                "//button[@id='btnSltVal_ORD_Vitem' and normalize-space()='Green']"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView({block:'center'});", green_btn)
+        time.sleep(1)
+        green_btn.click()
+
+        time.sleep(1)
+
+        # Click Select Item button
+        select_item_btn = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable((By.XPATH, "//button[@id='btnSave_ORD_Vitem']"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView({block:'center'});", select_item_btn)
+        select_item_btn.click()
+
+        # Wait until popup closes
+        WebDriverWait(login, 10).until(
+            EC.invisibility_of_element_located((By.XPATH, "//*[normalize-space()='Select Item']"))
+        )
+
+        # Verify item is added in the table
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH,
+                "//table//*[normalize-space()='Item_1']"))
+        )
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH,
+                "//*[normalize-space()='Green']"))
+        )
+        print("Item_1 Green added successfully")
+
+        # Enter quantity for the item
+        qty_xpath = f"//input[@id='inputQty_ORD_CrtItem'][{i + 1}]"
         qty = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, qty_xpath))
@@ -1066,10 +1221,38 @@ def test_create_order(login):
         qty.send_keys(qty_random_number)
         print("Qty Of Item:", qty_random_number)
 
+
+        item_row_xpath = f"//tr[.//*[normalize-space()='{item_name}']]"
+
+        # Rate
+        rate_value = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH,
+            item_row_xpath + "//td[3]//input"))
+        ).get_attribute("value")
+
+        # Quantity
+        qty_value = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH,
+            item_row_xpath + "//td[4]//input"))
+        ).get_attribute("value")
+
+        # Total
+        total_text = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH,
+            item_row_xpath + "//td[5]"))
+        ).text
+
+        rate_float = float(rate_value.replace(",", "").strip())
+        qty_float = float(qty_value.replace(",", "").strip())
+        total_float = float(total_text.replace(",", "").strip())
+
+        print("Item:", item_name)
+        print("Rate:", rate_float)
+        print("Quantity:", qty_float)
+        print("Total:", total_float)
+        
         # Calculate total for each item
-        total = item_price * float(qty_random_number)
-        print("total:", total)
-        sum += total
+        sum += total_float
         print("sum: ", sum)
 
         # Capture row data
@@ -1079,13 +1262,13 @@ def test_create_order(login):
         columns = row.find_elements(By.TAG_NAME, "td")
         item_total_text = columns[4].text.strip()
 
-        # Save item data before confirmation
-        items_data_before_confirm.append({
-            'item_name': item_name,
-            'qty': qty_random_number,
-            'price': item_price,
-            'total': item_total_text
-        })
+
+        # items_data_before_confirm.append({
+        #     'item_name': item_names_to_select[i],
+        #     'qty': qty_value,
+        #     'price': rate_value,
+        #     'total': item_total_text
+        # })
 
     time.sleep(5)
 
@@ -1125,7 +1308,7 @@ def test_create_order(login):
         items_data_after_confirm.append({
             'item_name': item_names_to_select[i],
             'qty': qty_confirmed,
-            'price': item_prices[i],
+            'price': sum,
             'total': item_total_text
         })
 
@@ -1136,9 +1319,195 @@ def test_create_order(login):
     print("Order confirmation data matches successfully.")
 
 
+    # Click on Create Invoice button
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnCrtInv_ORD_CrtItem']")
+
+    # Click on Add Discount button
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//th[@id='actionAddDct_ORD_CrtItem']")
+
+    # Catch Apply Discount popup using flexible XPath
+    discount_popup_xpath = (
+        "//*[contains(normalize-space(),'Apply Discount')]"
+        "/ancestor::*[contains(@class,'modal') or contains(@class,'dialog') or contains(@class,'content')][1]"
+    )
+
+    WebDriverWait(login, 15).until(
+        EC.presence_of_element_located((By.XPATH, discount_popup_xpath))
+    )
+    print("Apply Discount popup opened")
+
+    # Click Select Discount dropdown
+    wait_and_locate_click(login,By.XPATH,
+        "//div[contains(@class,'p-dropdown')][.//input[@placeholder='Select discount']]"
+    )
+
+    time.sleep(1)
+    # Select On Demand Discount
+    wait_and_locate_click(login, By.XPATH, "//li[@role='option'][.//span[normalize-space()='On Demand Discount']]")
+    print("On Demand Discount selected")
+
+    # Enter the discount value
+    discount_input = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputAmt_ORD_Dsct']")
+        )
+    )
+
+    discount_input.clear()
+    discount_input.send_keys("10")
+
+    # Optional: enter private note
+    login.find_element(By.XPATH,
+        discount_popup_xpath + "//textarea[@placeholder='Private note']"
+    ).send_keys("Discount applied")
+
+    # Optional: enter note for customer
+    login.find_element(By.XPATH,
+        discount_popup_xpath + "//textarea[@placeholder='Notes for customer']"
+    ).send_keys("Discount applied to this order")
+
+    # Click Apply button
+    wait_and_locate_click(login, By.XPATH, discount_popup_xpath + "//button[@id='btnAplCp_ORD_Dsct']")
+    print("Discount applied successfully")
+
+    msg = get_toast_message(login)
+    print("Toast Message :", msg)
+
+    # Click on View Invoice button
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnViewInv_ORD_CrtItem']")
+
+
+    # Wait until invoice page appears
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
-            (By.XPATH, "//span[normalize-space()='Complete Order']"))
+            (By.XPATH, "//*[contains(normalize-space(),'Invoice No#')]")
+        )
+    )
+    print("Invoice page opened")
+
+    # Scroll down to bottom first
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(1)
+
+    # XPath for Get Payment PrimeNG dropdown
+    get_payment_dropdown_xpath = (
+        "//div[contains(@class,'p-dropdown')]"
+        "[.//input[@placeholder='Get Payment'] or .//span[normalize-space()='Get Payment']]"
+    )
+
+    # Locate Get Payment dropdown
+    get_payment_dropdown = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, get_payment_dropdown_xpath))
+    )
+
+    # Scroll directly to Get Payment dropdown
+    login.execute_script(
+        "arguments[0].scrollIntoView({block: 'center'});",
+        get_payment_dropdown
+    )
+
+    time.sleep(1)
+    print("Scrolled to Get Payment dropdown")
+
+    # Click Get Payment dropdown
+    wait_and_locate_click(login, By.XPATH, get_payment_dropdown_xpath)
+
+
+    # Select payment method as Cash
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//li[@aria-label='Pay by Cash']")   
+
+    # Catch / wait for Pay by Cash popup
+    pay_popup_xpath = (
+        "//div[contains(@class,'mdc-dialog__container')]"
+        "[.//app-pay-bill-invoice]"
+        "[.//*[contains(normalize-space(),'Payable Amount')]]"
+    )
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, pay_popup_xpath))
+    )
+
+    # Scroll to Pay button if needed
+    pay_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, pay_popup_xpath + "//button[@id='btnMkPay_ORD_PayBill']")
+        )
+    )
+
+    login.execute_script(
+        "arguments[0].scrollIntoView({block: 'center'});",
+        pay_button
+    )
+
+    # Click on Pay button in the payment popup
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnMkPay_ORD_PayBill']")
+    print("Pay button clicked successfully")
+
+    # Catch / wait for confirmation popup
+    confirm_payment_popup_xpath = (
+        "//div[contains(@class,'mdc-dialog__container')]"
+        "[.//app-confirm-paymentbox]"
+        "[.//*[contains(normalize-space(),'Proceed with payment')]]"
+    )
+
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, confirm_payment_popup_xpath))
+    )
+    print("Proceed with payment confirmation popup opened")
+
+    # Click on YES button to confirm payment
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//button[@id='btnSltYes_ORD_ConfPay']")
+
+    msg = get_snack_bar_message(login)
+    print("Snack Bar message :", msg)
+
+    time.sleep(2)
+    # Wait for invoice page to load again
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//*[contains(normalize-space(),'Invoice No#')]")
+        )
+    )
+    print("Invoice page loaded")
+
+    time.sleep(1)
+
+    # Scroll up to the top of the invoice page
+    login.execute_script("window.scrollTo(0, 0);")
+
+    time.sleep(1)
+
+    # Click Back arrow
+    wait_and_locate_click(login, By.XPATH,
+        "//div[contains(@class,'pointer-cursor')][.//i[contains(@class,'pi-arrow-left')] and .//*[normalize-space()='Back']]"
+    )
+
+    time.sleep(2)
+    # Wait until Order page appears
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//*[contains(normalize-space(),'Order #')]")
+        )
+    )
+
+    print("Order page opened")
+
+    time.sleep(1)
+    # Scroll down to bottom of order page
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+
+    time.sleep(2)
+    # Click complete order button
+    WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[@id='btnOdCng_ORD_CrtItem']"))
     ).click()
 
     time.sleep(2)

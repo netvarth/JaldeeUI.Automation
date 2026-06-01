@@ -533,6 +533,7 @@ def test_consumer_side(consumer_login):
         WebDriverWait(consumer_login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Next']"))
         ).click()
+        
         time.sleep(2)
         wait_and_locate_click(
             consumer_login, By.XPATH, "//button[@id='btnConfirm']"
