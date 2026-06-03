@@ -822,25 +822,42 @@ def test_create_purchase1(login):
     free_qty.send_keys(free_qty_random_number)
     print("Free Qty:", free_qty_random_number)
 
+
     # Entering MRP for the item
     mrpprice = WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH,
-            "//input[@id='inputMrp_ORD_PurchsCrt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputMrp_ORD_PurchsCrt']")
         )
+    )
+
     mrpprice.click()
-    mrpprice_random_number = str(random.randint(60, 200))
-    mrpprice.send_keys(mrpprice_random_number)
+
+    mrpprice_random_number = random.randint(60, 200)
+    mrpprice.send_keys(str(mrpprice_random_number))
+
     print("MRP of the item:", mrpprice_random_number)
+
 
     # Entering purchase price for the item
     time.sleep(2)
+
     price = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']")
         )
+    )
+
     price.click()
-    price_random_number = str(random.randint(40, 100))
-    price.send_keys(price_random_number)
+
+    price_random_number = random.randint(40, 100)
+
+    # Check if purchase price is higher than MRP
+    if price_random_number > mrpprice_random_number:
+        price_random_number = random.randint(40, mrpprice_random_number - 1)
+    print("Purchase price was higher than MRP, changed to:", price_random_number)
+
+    price.send_keys(str(price_random_number))
+
     print("Price of the item:", price_random_number)
 
 
@@ -918,25 +935,42 @@ def test_create_purchase1(login):
     free_qty.send_keys(free_qty_random_number)
     print("Free Qty:", free_qty_random_number)
 
+
     # Entering MRP for the item
     mrpprice = WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH,
-            "//input[@id='inputMrp_ORD_PurchsCrt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputMrp_ORD_PurchsCrt']")
         )
+    )
+
     mrpprice.click()
-    mrpprice_random_number = str(random.randint(60, 200))
-    mrpprice.send_keys(mrpprice_random_number)
+
+    mrpprice_random_number = random.randint(60, 200)
+    mrpprice.send_keys(str(mrpprice_random_number))
+
     print("MRP of the item:", mrpprice_random_number)
+
 
     # Entering purchase price for the item
     time.sleep(2)
+
     price = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']")
         )
+    )
+
     price.click()
-    price_random_number = str(random.randint(40, 100))
-    price.send_keys(price_random_number)
+
+    price_random_number = random.randint(40, 100)
+
+    # Check if purchase price is higher than MRP
+    if price_random_number > mrpprice_random_number:
+        price_random_number = random.randint(40, mrpprice_random_number - 1)
+    print("Purchase price was higher than MRP, changed to:", price_random_number)
+
+    price.send_keys(str(price_random_number))
+
     print("Price of the item:", price_random_number)
 
 
@@ -1235,27 +1269,42 @@ def test_create_purchase2(login):
     free_qty.send_keys(free_qty_random_number)
     print("Free Qty:", free_qty_random_number)
 
-    # Entering MRP for the item
+   # Entering MRP for the item
     mrpprice = WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH,
-            "//input[@id='inputMrp_ORD_PurchsCrt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputMrp_ORD_PurchsCrt']")
         )
+    )
+
     mrpprice.click()
-    mrpprice_random_number = str(random.randint(60, 200))
-    mrpprice.send_keys(mrpprice_random_number)
+
+    mrpprice_random_number = random.randint(60, 200)
+    mrpprice.send_keys(str(mrpprice_random_number))
+
     print("MRP of the item:", mrpprice_random_number)
+
 
     # Entering purchase price for the item
     time.sleep(2)
-    price = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']"))
-        )
-    price.click()
-    price_random_number = str(random.randint(40, 100))
-    price.send_keys(price_random_number)
-    print("Price of the item:", price_random_number)
 
+    price = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']")
+        )
+    )
+
+    price.click()
+
+    price_random_number = random.randint(40, 100)
+
+    # Check if purchase price is higher than MRP
+    if price_random_number > mrpprice_random_number:
+        price_random_number = random.randint(40, mrpprice_random_number - 1)
+    print("Purchase price was higher than MRP, changed to:", price_random_number)
+
+    price.send_keys(str(price_random_number))
+
+    print("Price of the item:", price_random_number)
 
     # Entering discount for the item
     time.sleep(1)
@@ -1376,23 +1425,39 @@ def test_create_purchase2(login):
 
     # Entering MRP for the item
     mrpprice = WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH,
-            "//input[@id='inputMrp_ORD_PurchsCrt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputMrp_ORD_PurchsCrt']")
         )
+    )
+
     mrpprice.click()
-    mrpprice_random_number = str(random.randint(60, 200))
-    mrpprice.send_keys(mrpprice_random_number)
+
+    mrpprice_random_number = random.randint(60, 200)
+    mrpprice.send_keys(str(mrpprice_random_number))
+
     print("MRP of the item:", mrpprice_random_number)
+
 
     # Entering purchase price for the item
     time.sleep(2)
+
     price = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']"))
+        EC.presence_of_element_located(
+            (By.XPATH, "//input[@id='inputPrice_ORD_PurchsCrt']")
         )
+    )
+
     price.click()
-    price_random_number = str(random.randint(40, 100))
-    price.send_keys(price_random_number)
+
+    price_random_number = random.randint(40, 100)
+
+    # Check if purchase price is higher than MRP
+    if price_random_number > mrpprice_random_number:
+        price_random_number = random.randint(40, mrpprice_random_number - 1)
+    print("Purchase price was higher than MRP, changed to:", price_random_number)
+
+    price.send_keys(str(price_random_number))
+
     print("Price of the item:", price_random_number)
 
 

@@ -4896,6 +4896,7 @@ def test_withonly_uploadprescription_NewMR_from_appointment_details(login):
         )
         last_element_in_accordian.click()
 
+        # Click on View Details button
         time.sleep(3)
         View_Detail_button = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
@@ -4968,7 +4969,7 @@ def test_withonly_uploadprescription_NewMR_from_appointment_details(login):
         wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Naveen KP'])")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//textarea[@placeholder='Add visit summary...'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//timesicon[@class='p-element p-icon-wrapper ng-star-inserted']//*[name()='svg']")
 
         time.sleep(2)
         wait_and_send_keys(login, By.XPATH, "(//textarea[@placeholder='Add visit summary...'])[1]", "visit summary of the patient")
@@ -4978,7 +4979,7 @@ def test_withonly_uploadprescription_NewMR_from_appointment_details(login):
         
         # Select Doctor from the list
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//div[@id='mat-select-value-1'])[1]")
+        wait_and_locate_click(login, By.XPATH, "//mat-select[contains(@class,'user-select')][.//span[normalize-space()='Amber Gordon']]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//mat-option[contains(@class,'mat-mdc-option') "
