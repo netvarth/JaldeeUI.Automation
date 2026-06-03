@@ -1,6 +1,9 @@
 from playwright.sync_api import expect
 
 
+DEFAULT_EXPECT_TIMEOUT = 15000
+
+
 def wait_for_page_ready(page):
     """
     Wait until the page HTML is loaded.
@@ -19,35 +22,35 @@ def wait_for_network_idle(page):
     page.wait_for_load_state("networkidle")
 
 
-def click_when_visible(locator):
+def click_when_visible(locator, timeout=DEFAULT_EXPECT_TIMEOUT):
     """
     Waits until an element is visible, then clicks it.
     """
 
-    expect(locator).to_be_visible()
+    expect(locator).to_be_visible(timeout=timeout)
     locator.click()
 
 
-def fill_when_visible(locator, value):
+def fill_when_visible(locator, value, timeout=DEFAULT_EXPECT_TIMEOUT):
     """
     Waits until an input is visible, then fills it.
     """
 
-    expect(locator).to_be_visible()
+    expect(locator).to_be_visible(timeout=timeout)
     locator.fill(value)
 
 
-def assert_text_visible(page, text):
+def assert_text_visible(page, text, timeout=DEFAULT_EXPECT_TIMEOUT):
     """
     Checks whether given text is visible on the page.
     """
 
-    expect(page.get_by_text(text)).to_be_visible()
+    expect(page.get_by_text(text)).to_be_visible(timeout=timeout)
 
 
-def assert_locator_visible(locator):
+def assert_locator_visible(locator, timeout=DEFAULT_EXPECT_TIMEOUT):
     """
     Checks whether a locator is visible.
     """
 
-    expect(locator).to_be_visible()
+    expect(locator).to_be_visible(timeout=timeout)
