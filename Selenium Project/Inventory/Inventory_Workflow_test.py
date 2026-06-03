@@ -1601,7 +1601,6 @@ def test_create_order(login):
 
     # Add items
     item_names_to_select = ['Item_1']
-    # item_prices = []
     sum = 0
     items_data_before_confirm = []
 
