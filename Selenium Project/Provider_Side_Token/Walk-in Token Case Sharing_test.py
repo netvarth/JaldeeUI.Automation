@@ -58,13 +58,6 @@ def test_MR_setting_enable(login):
             print("Toggle is already ON")
         time.sleep(3)
 
-        # time.sleep(2)
-        # wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[1]")
-
-        # msg = get_snack_bar_message(login)
-        # print("Snack bar message:", msg)
-
-        # time.sleep(3)
 
     except Exception as e:
             allure.attach(      # use Allure package, .attach() method, pass 3 params

@@ -6859,8 +6859,6 @@ def test_with_caseandprescriptions_NewMR_from_patient_tab(login):
 
 
 
-
-
 ##########  DISABLING THE NEW MR SETTINGS ##########
 
 @allure.severity(allure.severity_level.NORMAL)
