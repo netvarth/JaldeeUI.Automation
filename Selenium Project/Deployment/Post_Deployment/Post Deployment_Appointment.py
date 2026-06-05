@@ -376,8 +376,6 @@ def test_signup():
         pincode_input.clear()
         pincode_input.send_keys("682001")
 
-        # # Click on Save button
-        # login.find_element(By.XPATH, "//span[@class='mdc-button__label']").click()
 
 
             # Click Location Save button
@@ -471,12 +469,6 @@ def test_signup():
         )
 
         time.sleep(2)
-        # time.sleep(6)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//div[@class='mdc-switch__icons'])[2]")
-        #     )
-        # ).click()
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
