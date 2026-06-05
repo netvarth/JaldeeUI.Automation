@@ -30,14 +30,6 @@ def  test_consumer_side(consumer_login):
     try:    
         time.sleep(5)
         
-        # consultation = WebDriverWait(consumer_login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//h3[normalize-space()='GET YOUR CONSULTATION TODAY'])[1]")
-        #     )
-        # )
-        # consumer_login.execute_script("arguments[0].scrollIntoView(true);", consultation)
-        
-        # time.sleep(3)
         wait = WebDriverWait(consumer_login, 30)
 
         book_now_button = wait.until(
