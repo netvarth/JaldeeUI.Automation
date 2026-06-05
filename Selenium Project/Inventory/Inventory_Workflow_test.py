@@ -579,12 +579,10 @@ def test_inventory_catalog(login):
     # Wait until confirmation popup appears
     WebDriverWait(login, 10).until(
         EC.visibility_of_element_located(
-        (
-            By.XPATH,
-            "//div[contains(@class,'mdc-dialog__container')]//p[contains(normalize-space(),'Once added to the catalog')]"
+        (By.XPATH,
+            "//div[contains(@class,'mdc-dialog__container')]//p[contains(normalize-space(),'Once added to the catalog')]")
         )
     )
-)
 
     # Click YES button in popup
     wait_and_locate_click(login, By.XPATH, "//div[contains(@class,'mdc-dialog__container')]//button[normalize-space()='Yes']")

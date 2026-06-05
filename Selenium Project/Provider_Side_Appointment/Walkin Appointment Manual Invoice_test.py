@@ -8,6 +8,7 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.action_chains import ActionChains
 
 first_name, last_name, cons_manual_id, phonenumber, email = create_user_data()
 
@@ -174,7 +175,7 @@ def test_appt_manualinvoice1(login):
                 
                 break
 
-        time.sleep(1)
+        time.sleep(2)
         last_element_in_accordian = WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
         )
@@ -404,6 +405,7 @@ def test_appt_manualinvoice2(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
+    time.sleep(3)
     while True:
             try:
                 # Attempt to locate the "Next" button using the button's class
@@ -428,7 +430,7 @@ def test_appt_manualinvoice2(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -722,7 +724,7 @@ def test_appt_manualinvoice3(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -987,7 +989,7 @@ def test_appt_manualinvoice4(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -1023,6 +1025,7 @@ def test_appt_manualinvoice4(login):
     time.sleep(2)
     wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Add Procedure/Item']")  
 
+    time.sleep(1)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'item-name') and normalize-space()='item3']"))
     ).click()
@@ -1300,14 +1303,14 @@ def test_appt_manualinvoice5(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
     last_element_in_accordian.click()
 
     # Click on view details
-    time.sleep(1)
+    time.sleep(2)
     wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
     time.sleep(3)
@@ -1618,6 +1621,7 @@ def test_appt_manualinvoice6(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
+    time.sleep(3)
     while True:
             try:
                 # Attempt to locate the "Next" button using the button's class
@@ -1642,7 +1646,7 @@ def test_appt_manualinvoice6(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -1955,7 +1959,7 @@ def test_appt_manualinvoice7(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -2177,6 +2181,8 @@ def test_appt_manualinvoice8(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
+
+    time.sleep(3)
     while True:
             try:
                 # Attempt to locate the "Next" button using the button's class
@@ -2201,7 +2207,7 @@ def test_appt_manualinvoice8(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -2487,6 +2493,7 @@ def test_appt_manualinvoice9(login):
         message = snack_bar.text
         print("Snack bar message:", message)
 
+    time.sleep(3)
     while True:
             try:
                 # Attempt to locate the "Next" button using the button's class
@@ -2511,7 +2518,7 @@ def test_appt_manualinvoice9(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -2826,7 +2833,7 @@ def test_appt_manualinvoice10(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -2834,7 +2841,7 @@ def test_appt_manualinvoice10(login):
 
 
     # Click on view details
-    time.sleep(1)
+    time.sleep(2)
     wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
 
@@ -3271,7 +3278,7 @@ def test_appt_manualinvoice11(login):
                 break
 
         # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
+    time.sleep(2)
     last_element_in_accordian = WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
     )
@@ -3444,6 +3451,8 @@ def test_appt_manualinvoice_with_taxable_service1(login):
                 (By.XPATH, "//span[normalize-space()='Confirm']")
             )
         ).click()
+
+
         try:
 
             snack_bar = WebDriverWait(login, 10).until(
@@ -3460,37 +3469,62 @@ def test_appt_manualinvoice_with_taxable_service1(login):
             message = snack_bar.text
             print("Snack bar message:", message)
 
-        time.sleep(3)
 
-        while True:
-            try:
-                
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "test_confirmation_label_message_attachment")
-                    )
-                )
+        time.sleep(2)
 
-                
-                if next_button.is_enabled():
-                   
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                  
-                    break
 
-            except Exception as e:
-                
-                break
 
-        time.sleep(1)
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        # Scroll down to paginator
+        login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+
+        # Check last page button >>
+        last_page_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+            )
         )
-        last_element_in_accordian.click()
 
+        # If more than one page, click last page button
+        if "p-disabled" not in last_page_button.get_attribute("class"):
+            login.execute_script("arguments[0].click();", last_page_button)
+            print("Clicked last page")
+            time.sleep(3)
+        else:
+            print("Only one page available")
+
+        # Catch the last appointment row/card from current page
+        last_appointment = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+            )
+        )
+
+        login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+
+        # Click patient name area inside the last appointment
+        login.execute_script("""
+            var row = arguments[0];
+            var rect = row.getBoundingClientRect();
+
+            var x = rect.left + 80;
+            var y = rect.top + (rect.height / 2);
+
+            var element = document.elementFromPoint(x, y);
+
+            element.dispatchEvent(
+                new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                })
+            );
+        """, last_appointment)
+
+        print("Clicked patient name from last appointment")
+        
+
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -3699,7 +3733,6 @@ def test_appt_manualinvoice_with_taxable_service2(login):
     time.sleep(4)
 
     try:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -3707,45 +3740,69 @@ def test_appt_manualinvoice_with_taxable_service2(login):
         print("Snack bar message:", message)
 
     except:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+    # This part must NOT be inside except
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+    time.sleep(5)
 
-        # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+
+    # Scroll down to paginator
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+    # Check last page button >>
+    last_page_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+        )
     )
-    last_element_in_accordian.click()
 
+    # If more than one page, click last page button
+    if "p-disabled" not in last_page_button.get_attribute("class"):
+        login.execute_script("arguments[0].click();", last_page_button)
+        print("Clicked last page")
+        time.sleep(3)
+    else:
+        print("Only one page available")
+
+    # Catch the last appointment row/card from current page
+    last_appointment = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+        )
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+
+    # Click patient name area inside the last appointment
+    login.execute_script("""
+        var row = arguments[0];
+        var rect = row.getBoundingClientRect();
+
+        var x = rect.left + 80;
+        var y = rect.top + (rect.height / 2);
+
+        var element = document.elementFromPoint(x, y);
+
+        element.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
+    """, last_appointment)
+
+    print("Clicked patient name from last appointment")
+    
+
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -3992,8 +4049,8 @@ def test_appt_manualinvoice_with_taxable_service3(login):
     ).click()
 
     login.find_element(By.XPATH, "//span[normalize-space()='Confirm']").click()
-    try:
 
+    try:
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -4001,48 +4058,69 @@ def test_appt_manualinvoice_with_taxable_service3(login):
         print("Snack bar message:", message)
 
     except:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    time.sleep(4)
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+    # IMPORTANT: from here, code must be OUTSIDE the except block
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+    time.sleep(3)
 
-        # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    # Scroll down to paginator
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+    # Check last page button >>
+    last_page_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+        )
     )
-    last_element_in_accordian.click()
 
-    # Click on view details
+    # If more than one page, click last page button
+    if "p-disabled" not in last_page_button.get_attribute("class"):
+        login.execute_script("arguments[0].click();", last_page_button)
+        print("Clicked last page")
+        time.sleep(3)
+    else:
+        print("Only one page available")
+
+    # Catch last appointment from current page
+    last_appointment = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+        )
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
+    # Click patient name area inside last appointment
+    login.execute_script("""
+        var row = arguments[0];
+        var rect = row.getBoundingClientRect();
+
+        var x = rect.left + 90;
+        var y = rect.top + (rect.height / 2);
+
+        var element = document.elementFromPoint(x, y);
+
+        element.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
+    """, last_appointment)
+
+    print("Clicked patient name from last appointment")
+    time.sleep(5)
+
+    # Now appointment details page should be open
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -4259,7 +4337,6 @@ def test_appt_manualinvoice_with_taxable_service4(login):
     login.find_element(By.XPATH, "//span[normalize-space()='Confirm']").click()
 
     try:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -4267,47 +4344,69 @@ def test_appt_manualinvoice_with_taxable_service4(login):
         print("Snack bar message:", message)
 
     except:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    time.sleep(5)
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+    # IMPORTANT: from here, code must be OUTSIDE the except block
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+    time.sleep(3)
 
-    # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    # Scroll down to paginator
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+    # Check last page button >>
+    last_page_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+        )
     )
-    last_element_in_accordian.click()
 
-    # Click on view details
+    # If more than one page, click last page button
+    if "p-disabled" not in last_page_button.get_attribute("class"):
+        login.execute_script("arguments[0].click();", last_page_button)
+        print("Clicked last page")
+        time.sleep(3)
+    else:
+        print("Only one page available")
+
+    # Catch last appointment from current page
+    last_appointment = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+        )
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+
+    # Click patient name area inside last appointment
+    login.execute_script("""
+        var row = arguments[0];
+        var rect = row.getBoundingClientRect();
+
+        var x = rect.left + 90;
+        var y = rect.top + (rect.height / 2);
+
+        var element = document.elementFromPoint(x, y);
+
+        element.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
+    """, last_appointment)
+
+    print("Clicked patient name from last appointment")
+    time.sleep(5)
+
+    # Now appointment details page should be open and click on Create Invoice button
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -4333,8 +4432,12 @@ def test_appt_manualinvoice_with_taxable_service4(login):
     )
     
     time.sleep(2)
-    wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Add Procedure/Item']")  
+    wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Add Procedure/Item']") 
 
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//input[contains(@class,'item-service') and @placeholder='Choose Procedure/Item']") 
+
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located((By.XPATH, "//div[contains(text(),'item3')]"))
     ).click()
@@ -4573,7 +4676,6 @@ def test_appt_manualinvoice_with_taxable_service5(login):
     login.find_element(By.XPATH, "//span[normalize-space()='Confirm']").click()
 
     try:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -4581,47 +4683,70 @@ def test_appt_manualinvoice_with_taxable_service5(login):
         print("Snack bar message:", message)
 
     except:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    time.sleep(5)
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+    # IMPORTANT: from here, code must be OUTSIDE the except block
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+    time.sleep(3)
 
-        # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    # Scroll down to paginator
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+    # Check last page button >>
+    last_page_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+        )
     )
-    last_element_in_accordian.click()
 
-    # Click on view details
+    # If more than one page, click last page button
+    if "p-disabled" not in last_page_button.get_attribute("class"):
+        login.execute_script("arguments[0].click();", last_page_button)
+        print("Clicked last page")
+        time.sleep(3)
+    else:
+        print("Only one page available")
+
+    # Catch last appointment from current page
+    last_appointment = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+        )
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+
+    # Click patient name area inside last appointment
+    login.execute_script("""
+        var row = arguments[0];
+        var rect = row.getBoundingClientRect();
+
+        var x = rect.left + 90;
+        var y = rect.top + (rect.height / 2);
+
+        var element = document.elementFromPoint(x, y);
+
+        element.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
+    """, last_appointment)
+
+    print("Clicked patient name from last appointment")
+    time.sleep(5)
+
+    # Now appointment details page should be open and click on Create Invoice button
+
 
     time.sleep(3)
     WebDriverWait(login, 10).until(
@@ -4647,7 +4772,10 @@ def test_appt_manualinvoice_with_taxable_service5(login):
     )
     
     time.sleep(2)
-    wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Add Procedure/Item']")  
+    wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Add Procedure/Item']") 
+
+    time.sleep(2)
+    wait_and_locate_click(login, By.XPATH, "//input[contains(@class,'item-service') and @placeholder='Choose Procedure/Item']") 
 
     time.sleep(2)
     WebDriverWait(login, 10).until(
@@ -4919,7 +5047,6 @@ def test_appt_manualinvoice_with_taxable_service6(login):
     time.sleep(4)
 
     try:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -4927,48 +5054,69 @@ def test_appt_manualinvoice_with_taxable_service6(login):
         print("Snack bar message:", message)
 
     except:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+    # IMPORTANT: from here, code must be OUTSIDE the except block
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+    time.sleep(3)
 
-        # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    # Scroll down to paginator
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+    # Check last page button >>
+    last_page_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+        )
     )
-    last_element_in_accordian.click()
 
-    # Click on view details
+    # If more than one page, click last page button
+    if "p-disabled" not in last_page_button.get_attribute("class"):
+        login.execute_script("arguments[0].click();", last_page_button)
+        print("Clicked last page")
+        time.sleep(3)
+    else:
+        print("Only one page available")
+
+    # Catch last appointment from current page
+    last_appointment = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+        )
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
-    # Click on create invoice button
+    # Click patient name area inside last appointment
+    login.execute_script("""
+        var row = arguments[0];
+        var rect = row.getBoundingClientRect();
+
+        var x = rect.left + 90;
+        var y = rect.top + (rect.height / 2);
+
+        var element = document.elementFromPoint(x, y);
+
+        element.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
+    """, last_appointment)
+
+    print("Clicked patient name from last appointment")
+    time.sleep(5)
+
+    # Now appointment details page should be open and click on Create Invoice button
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -5228,7 +5376,6 @@ def test_appt_manualinvoice_with_taxable_service7(login):
     time.sleep(4)
 
     try:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -5236,48 +5383,69 @@ def test_appt_manualinvoice_with_taxable_service7(login):
         print("Snack bar message:", message)
 
     except:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+    # IMPORTANT: from here, code must be OUTSIDE the except block
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+    time.sleep(3)
 
-        # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    # Scroll down to paginator
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+    # Check last page button >>
+    last_page_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+        )
     )
-    last_element_in_accordian.click()
 
-    # Click on view details
+    # If more than one page, click last page button
+    if "p-disabled" not in last_page_button.get_attribute("class"):
+        login.execute_script("arguments[0].click();", last_page_button)
+        print("Clicked last page")
+        time.sleep(3)
+    else:
+        print("Only one page available")
+
+    # Catch last appointment from current page
+    last_appointment = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+        )
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
+    # Click patient name area inside last appointment
+    login.execute_script("""
+        var row = arguments[0];
+        var rect = row.getBoundingClientRect();
 
+        var x = rect.left + 90;
+        var y = rect.top + (rect.height / 2);
+
+        var element = document.elementFromPoint(x, y);
+
+        element.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
+    """, last_appointment)
+
+    print("Clicked patient name from last appointment")
+    time.sleep(5)
+
+    # Now appointment details page should be open and click on Create Invoice button
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -5536,7 +5704,6 @@ def test_appt_manualinvoice_with_taxable_service8(login):
     time.sleep(4)
 
     try:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
         )
@@ -5544,48 +5711,69 @@ def test_appt_manualinvoice_with_taxable_service8(login):
         print("Snack bar message:", message)
 
     except:
-
         snack_bar = WebDriverWait(login, 10).until(
             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
         )
         message = snack_bar.text
         print("Snack bar message:", message)
 
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
 
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
+    # IMPORTANT: from here, code must be OUTSIDE the except block
 
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
+    time.sleep(3)
 
-        # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+    # Scroll down to paginator
+    login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+    # Check last page button >>
+    last_page_button = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
+        )
     )
-    last_element_in_accordian.click()
 
-    # Click on view details
+    # If more than one page, click last page button
+    if "p-disabled" not in last_page_button.get_attribute("class"):
+        login.execute_script("arguments[0].click();", last_page_button)
+        print("Clicked last page")
+        time.sleep(3)
+    else:
+        print("Only one page available")
+
+    # Catch last appointment from current page
+    last_appointment = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+        )
+    )
+
+    login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
     time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
+    # Click patient name area inside last appointment
+    login.execute_script("""
+        var row = arguments[0];
+        var rect = row.getBoundingClientRect();
 
+        var x = rect.left + 90;
+        var y = rect.top + (rect.height / 2);
+
+        var element = document.elementFromPoint(x, y);
+
+        element.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
+    """, last_appointment)
+
+    print("Clicked patient name from last appointment")
+    time.sleep(1)
+
+    # Now appointment details page should be open and click on Create Invoice button
     time.sleep(3)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
@@ -6043,115 +6231,130 @@ def test_prepaymentbooking_with_taxable_service(con_login):
 @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
 def test_prepayment_refund_of_taxable_service(login):
 
-    time.sleep(5)
+        time.sleep(5)
+        WebDriverWait(login, 20).until(
+            EC.element_to_be_clickable(
+                (By.XPATH,
+                    "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+                )
+            )
+        ).click()
 
-    WebDriverWait(login, 20).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+        time.sleep(3)
+
+    # Scroll down to paginator
+        login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+
+        # Check last page button >>
+        last_page_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[contains(@class,'p-paginator-last')]")
             )
         )
-    ).click()
 
-    time.sleep(3)
+        # If more than one page, click last page button
+        if "p-disabled" not in last_page_button.get_attribute("class"):
+            login.execute_script("arguments[0].click();", last_page_button)
+            print("Clicked last page")
+            time.sleep(3)
+        else:
+            print("Only one page available")
 
-    while True:
-            try:
-                # Attempt to locate the "Next" button using the button's class
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class, 'p-paginator-next')]")
-                    )
-                )
-
-                # Check if the button is enabled (i.e., not disabled)
-                if next_button.is_enabled():
-                    # print("Next button found and clickable.")
-                    # Click using JavaScript to avoid interception issues
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                    # print("Next button is disabled. Reached the last page.")
-                    break
-
-            except Exception as e:
-                # # If no next button is found or any other exception occurs, exit the loop
-                # print("End of pages or error encountered:", e)
-                break
-
-        # After clicking through all pages, locate and click the last accordion
-    time.sleep(1)
-    last_element_in_accordian = WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
-    )
-    last_element_in_accordian.click()
-
-     # Click on view details
-    time.sleep(1)
-    wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
-
-    # Click on create invoice
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[@id='btnCraeteInv_BUS_bookAction']")
+        # Catch last appointment from current page
+        last_appointment = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//div[contains(@class,'card my-1 p-0 ng-star-inserted')])[last()]")
+            )
         )
-    ).click()
 
-    time.sleep(2)
-     # Locate Update button
-    update_button = WebDriverWait(login, 20).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Update']")
+        login.execute_script("arguments[0].scrollIntoView({block:'center'});", last_appointment)
+        time.sleep(1)
+
+        # Click patient name area inside last appointment
+        login.execute_script("""
+            var row = arguments[0];
+            var rect = row.getBoundingClientRect();
+
+            var x = rect.left + 90;
+            var y = rect.top + (rect.height / 2);
+
+            var element = document.elementFromPoint(x, y);
+
+            element.dispatchEvent(
+                new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                })
+            );
+        """, last_appointment)
+
+        print("Clicked patient name from last appointment")
+        time.sleep(5)
+
+        # Now appointment details page should be open and click on Create Invoice button
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@id='btnCraeteInv_BUS_bookAction']")
+            )
+        ).click()
+
+        time.sleep(2)
+        # Locate Update button
+        update_button = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Update']")
+            )
         )
-    )
 
-    # Scroll down until Update button is visible
-    login.execute_script(
-        "arguments[0].scrollIntoView({block: 'center'});",
-        update_button
-    )
-
-    time.sleep(2)
-
-    # Click on Update button in invoice
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Update']")
+        # Scroll down until Update button is visible
+        login.execute_script(
+         "arguments[0].scrollIntoView({block: 'center'});",
+                update_button
         )
-    ).click()
 
-    msg = get_snack_bar_message(login)
-    print("Sanck Bar Message :", msg)
+        time.sleep(2)
 
-    # Click on Refund button in invoice
-    time.sleep(4)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Refund']")
-        )
-    ).click()
+        # Click on Update button in invoice
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Update']")
+            )
+        ).click()
 
-    # Click on Refund button in the pop up
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'modal-content')]//button[normalize-space()='Refund']"))
-    ).click()
+        msg = get_snack_bar_message(login)
+        print("Sanck Bar Message :", msg)
 
-    time.sleep(3)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Pay Online']"))
-    ).click()
+        # Click on Refund button in invoice
+        time.sleep(4)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+             (By.XPATH, "//button[normalize-space()='Refund']")
+            )
+        ).click()
+
+        # Click on Refund button in the pop up
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class,'modal-content')]//button[normalize-space()='Refund']"))
+        ).click()
+
+        time.sleep(3)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Pay Online']"))
+        ).click()
     
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//button[normalize-space()='Yes']"))
-    ).click()
-    print("Refund successful with online payment")
-    time.sleep(5)
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Yes']"))
+            ).click()
+        print("Refund successful with online payment")
+        time.sleep(5)
 
 
 
