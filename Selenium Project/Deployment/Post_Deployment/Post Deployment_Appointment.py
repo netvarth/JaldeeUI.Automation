@@ -376,10 +376,49 @@ def test_signup():
         pincode_input.clear()
         pincode_input.send_keys("682001")
 
-        login.find_element(By.XPATH, "//span[@class='mdc-button__label']").click()
-        # login.find_element(
-        #     By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"
-        # ).click()
+        # # Click on Save button
+        # login.find_element(By.XPATH, "//span[@class='mdc-button__label']").click()
+
+
+            # Click Location Save button
+        save_location_button = WebDriverWait(login, 10).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "(//button[.//span[contains(@class,'mdc-button__label')] or .//span[normalize-space()='Save']])[last()]"
+                )
+            )
+        )
+
+        login.execute_script("arguments[0].scrollIntoView({block:'center'});", save_location_button)
+        time.sleep(1)
+        login.execute_script("arguments[0].click();", save_location_button)
+
+        print("Clicked Location Save button")
+
+        # Wait for snackbar if it appears
+        try:
+            snack_bar = WebDriverWait(login, 10).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
+            )
+            print("Snack bar message:", snack_bar.text)
+        except:
+            pass
+
+        # Close any open Angular overlay/dropdown
+        login.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
+        time.sleep(1)
+
+        # Wait until overlay is gone
+        try:
+            WebDriverWait(login, 10).until(
+                EC.invisibility_of_element_located(
+                    (By.XPATH, "//div[contains(@class,'cdk-overlay-pane')]")
+                )
+            )
+        except:
+            login.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
+            time.sleep(1)
 
         time.sleep(5)
         WebDriverWait(login, 20).until(
