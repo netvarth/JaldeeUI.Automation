@@ -3380,13 +3380,7 @@ def test_auto_manual_invoice_adhoc_predeployment(login):
         login.execute_script("arguments[0].click();", yes_button)
         
         
-        # snack_bar = WebDriverWait(login, 30).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-        # )
-        # message = snack_bar.text
-        # print("Snack bar message:", message)
-
-        
+               
         time.sleep(3)
 
         login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()

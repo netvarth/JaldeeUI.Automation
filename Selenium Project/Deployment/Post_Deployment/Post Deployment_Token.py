@@ -15,61 +15,12 @@ def test_create_patient(login):
         wait = WebDriverWait(login, 30)
         time.sleep(5)
 
-        # WebDriverWait(login, 15).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//img[@src='./assets/images/menu/settings.png']"))
-        # ).click()
-        
-        
-        # fea_cust = login.find_element(By.XPATH, "//div[normalize-space()='Features and Customization']")
-        # login.execute_script("arguments[0].scrollIntoView();", fea_cust)
-        
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//span[normalize-space()='Custom Fields']"))
-        # ).click()
-        
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//span[normalize-space()='Label']"))
-        # ).click()
-        
-        # label_name1 = "Label" + str(uuid.uuid1())[:3]
-        # label_namebox1 = WebDriverWait(login, 10).until(
-        # EC.presence_of_element_located((By.XPATH, "//input[@id='displayName']"))
-        # )
-        # label_namebox1.clear()
-        # label_namebox1.send_keys(label_name1)
-        
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//span[@class='mdc-button__label']"))
-        # ).click()
-        
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
-        # ).click()
-        
-        
-        # time.sleep(3)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//body/app-root[1]/app-business[1]/div[1]/app-sidebar-menu[1]/div[1]/div[2]/div[1]/ul[1]/li[3]/a[1]/div[1]/span[1]/span[1]/span[1]/img[1]"))
-        # ).click()
-
-        # time.sleep(3)
-
         element = WebDriverWait(login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Tokens']"))
         )
         element.click()
 
         time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located((By.XPATH, "(//span[normalize-space()='Token'])[1]"))
-        # ).click()
         wait_and_locate_click(login, By.XPATH, "//div[@id='actionCreate_BUS_bookList']")
 
         time.sleep(2)
@@ -88,20 +39,6 @@ def test_create_patient(login):
         element = login.find_element(By.XPATH, service_dropdown_xpath)
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
- 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, "//span[contains(text(),'Id : temp#87')]"))
-        # ).click()
-
-        # service_dropdown_xpath = "//p-dropdown[@optionlabel='name']"
-        # element = login.find_element(By.XPATH, service_dropdown_xpath)
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
-
-        # time.sleep(5)
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, "(//div[@class='option-container ng-star-inserted'][normalize-space()='Consultation'])[2]"))
-        # ).click()
         
 
         print("Select Service :  Consultation ")
@@ -110,9 +47,6 @@ def test_create_patient(login):
         Today_Date = WebDriverWait(login, 10).until(EC.presence_of_element_located((By.XPATH, "(//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today'])[1]")))
         Today_Date.click()
         print("Today Date:", Today_Date.text)
-        # wait = WebDriverWait(login, 10)
-        # time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected='true']")))
-        # time_slot.click()
         print("Time Slot: 9:00 AM - 11:59 PM")
 
         WebDriverWait(login, 10).until(
@@ -423,8 +357,59 @@ def test_create_patient(login):
         ).click()
 
         print("Attachment Send Successfully")
+        time.sleep(5)
 
-        # # ********************* Create the Prescription and Sharing *************************
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+# ********************* Create the Prescription and Sharing *************************
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Post deployment prescription creation and sharing")
+@pytest.mark.parametrize("url, username, password", [(prod_url, main_prod, password)])
+def test_create_prescription(login):
+
+    try:
+        wait = WebDriverWait(login, 30)
+        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+
+        while True:
+            try:
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (
+                            By.XPATH,
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                        )
+                    )
+                )
+
+                next_button.click()
+
+            except:
+                break
+
+        time.sleep(3)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+                )
+            )
+        )
+        last_element_in_accordian.click()
+
+        # Click on View Detail button
+        time.sleep(3)   
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
         time.sleep(5)
         WebDriverWait(login, 10)
@@ -494,7 +479,61 @@ def test_create_patient(login):
         login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
         print("Prescription Shared Successfully")
 
-        # # ************************* Case Creation and Sharing *********************
+        time.sleep(3)
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+
+
+
+# ************************* Case Creation and Sharing *********************
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Post deployment case creation and sharing")
+@pytest.mark.parametrize("url, username, password", [(prod_url, main_prod, password)])
+def test_create_case(login):
+
+    try:
+        wait = WebDriverWait(login, 30)
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+
+        while True:
+            try:
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (
+                            By.XPATH,
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                        )
+                    )
+                )
+
+                next_button.click()
+
+            except:
+                break
+
+        time.sleep(3)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+                )
+            )
+        )
+        last_element_in_accordian.click()
+
+        # Click on View Detail button
+        time.sleep(3)   
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
         time.sleep(5)
         WebDriverWait(login, 20).until(
@@ -548,22 +587,7 @@ def test_create_patient(login):
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Medication']"))
-        # ).click()
-
-        # time.sleep(2)
-        # enter_medication = WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Medication']"))
-        # )
-        # enter_medication.send_keys("No medication")
-        # enter_medication.send_keys(Keys.RETURN)
-        
         time.sleep(2)
-        # element = login.find_element(By.XPATH, "//button[normalize-space()='Save']")
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
-
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Vital Signs']"))
         ).click()
@@ -599,12 +623,6 @@ def test_create_patient(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//div[@class='p-multiselect-label p-placeholder']"))
         ).click()
-        
-        
-        # dropdown_xpath = "//span[normalize-space()='Swaraj K']"
-        # element = login.find_element(By.XPATH, dropdown_xpath)
-        # login.execute_script("arguments[0].scrollIntoView();", element)
-        # element.click()
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "//p-multiselectitem//li[.//span[normalize-space()='Swaraj K']]")
@@ -632,16 +650,6 @@ def test_create_patient(login):
         time.sleep(2)
         wait_and_visible_click(login, By.XPATH, "//li[@aria-label='Swaraj K']//div[contains(@class,'p-checkbox-box')]")
 
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
-        # ).click()
-        
-        # time.sleep(2)
-        # element1 = login.find_element(By.XPATH, dropdown_xpath)
-        # login.execute_script("arguments[0].scrollIntoView();", element1)
-        # element1.click()
-
 
         
         time.sleep(3)
@@ -652,12 +660,6 @@ def test_create_patient(login):
             )
         ).click()
         
-        
-        
-        # WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//div[@aria-expanded='false']//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted']"))
-        # ).click()
         time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -698,10 +700,7 @@ def test_create_patient(login):
                 (By.XPATH, "//button[normalize-space()='Save']"))
         ).click()
         time.sleep(3)
-        # login.find_element(By.XPATH, "//span[normalize-space()='Add the sections you need for this medical record']").click()
-        # # login.execute_script("arguments[0].scrollIntoView();", element2)
         
-        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Observations']"))
         ).click()
@@ -775,12 +774,6 @@ def test_create_patient(login):
 
         login.find_element(By.XPATH, "//button[normalize-space()='Save']").click()
 
-        # toast_message = WebDriverWait(login, 10).until(
-        #     EC.visibility_of_element_located((By.CLASS_NAME, "p-toast-detail"))
-        # )
-        # message = toast_message.text
-        # print("Toast Message:", message)
-
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//a[@class='add-action-btn']"))
@@ -817,23 +810,586 @@ def test_create_patient(login):
 
         print("Case file Shared successfully")
 
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//i[@class='pi pi-arrow-left back-btn-arrow']"))
-        ).click()
-
-        time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
-        ).click()
-
         time.sleep(5)
 
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+# ************************* New MR Sharing ************************    
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Post deployment New MR creation and sharing")
+@pytest.mark.parametrize("url, username, password", [(prod_url, main_prod, password)])
+def test_create_new_mr(login):
+
+    try:
+
+        # *********************** Enable New MR Setting ************************
+
+        driver = login
+        time.sleep(3)
+        wait = WebDriverWait(login, 30)
+        
+        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+
+        time.sleep(2)
+        setting_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Features and Customization']"))
+        )
+
+        driver.execute_script("arguments[0].scrollIntoView();", setting_element)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='MR and Diet Settings']")
+
+        time.sleep(2)
+
+        # Wait until MR Settings page opens
+        wait.until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(normalize-space(), 'MR Settings')]")))
+
+        # Locate the toggle button
+        toggle_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@role='switch']")
+            )
+        )
+
+        # Get current state
+        toggle_state = toggle_button.get_attribute("aria-checked")
+
+        print("Current Toggle State :", toggle_state)
+
+        # If toggle is OFF (false), click and make it ON
+        if toggle_state == "false":
+            toggle_button.click()
+            print("Toggle turned ON")
+
+        # If already ON
+        else:
+            print("Toggle is already ON")
+        time.sleep(3)
+
+        # *************************** Create and share New MR ***********************
+
+        time.sleep(2)
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "(//img)[4]")
+            )
+        ).click()
+
+            
         while True:
             try:
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                        (
+                            By.XPATH,
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                        )
+                    )
+                )
+
+                next_button.click()
+
+            except:
+                break
+
+        time.sleep(3)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+                )
+            )
+        )
+        last_element_in_accordian.click()
+
+        time.sleep(3)
+        View_Detail_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
+        )
+        View_Detail_button.click()
+      
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Patient Record']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Create Case']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@type='button'][normalize-space()='Create Case']")
+
+        # Adding case description
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_description_edit_btn']")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, 
+        "//textarea[@placeholder='Add description...']", "Case description added for testing")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='newcase_upload_file_btn'])[1]")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+        # Uploading case files
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[@id='newcase_upload_file_btn'])[1]")
+
+        time.sleep(2)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        print("Successfully upload the file")
+        
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_new_visit_btn']")
+
+        time.sleep(2)
+
+        # Assert vt-card appears
+        vt_card = wait.until(
+            EC.visibility_of_element_located(
+                (By.XPATH, "//div[contains(@class,'vt-card')]")
+            )
+        )
+
+        assert vt_card.is_displayed(), "VT Card did not appear after clicking New Visit"
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_add_clinical_notes_btn']")
+        time.sleep(2)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-edit pointer-cursor ng-star-inserted'])[2]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[1]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Swaraj K'])")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//textarea[@placeholder='Add visit summary...'])[1]")
+
+        time.sleep(2)
+        wait_and_send_keys(
+             login, By.XPATH, "(//textarea[@placeholder='Add visit summary...'])[1]", "visit summary of the patient"
+        )
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[2]")
+
+        time.sleep(1)
+        wait_and_send_keys(login,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever" + Keys.ENTER)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[3]")
+        time.sleep(1)
+
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter History']", "viral fever" + Keys.ENTER)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[4]")
+        time.sleep(1)
+
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Medication']", "no medication" + Keys.ENTER)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[5]")
+        time.sleep(2)
+
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Pulse Rate , Max : 999']", "560")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Respiration , Max : 90']", "62")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Temperature , Max : 200']", "123")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Systolic , Max : 500']", "264")
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH, "//input[@placeholder='Enter Diastolic , Max : 500']", "287")
+        
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save'] ")
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)   
+        time.sleep(3)   
+
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_add_section_menu_btn']")
+        time.sleep(2)
+
+        wait_and_locate_click(login, By.XPATH, "(//a[@role='menuitem'])[9]")
+        time.sleep(1)   
+
+        treat_name = "Treatment" + str(uuid.uuid4())[:4]
+        treat_namebox = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@role='searchbox']"))
+        )
+        treat_namebox.clear()
+        treat_namebox.send_keys(treat_name)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//div[@class='p-multiselect-label p-placeholder']")
+
+        time.sleep(2)
+        dropdown_xpath = wait.until(
+             EC.presence_of_element_located((By.XPATH, "//span[normalize-space()='Swaraj K']")
+        ))
+        login.execute_script("arguments[0].scrollIntoView();", dropdown_xpath)
+        time.sleep(1)
+        dropdown_xpath.click()
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[@class='btn btn-white shadow fw-bold']")
+        
+        step_name = "Step" + str(uuid.uuid1())[:1]
+        step_namebox = WebDriverWait(login, 10).until(
+        EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Name']"))
+        )
+        step_namebox.clear()
+        step_namebox.send_keys(step_name)
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted'])[2]")
+        
+        time.sleep(2)
+        element1 = login.find_element(By.XPATH, "//li[@aria-label='Swaraj K']")
+        login.execute_script("arguments[0].scrollIntoView();", element1)
+        time.sleep(1)
+        element1.click()
+        
+        time.sleep(1)
+        wait_and_locate_click(
+             login, By.XPATH, "//button[@class='p-ripple p-element p-multiselect-close p-link p-button-icon-only ng-star-inserted']"
+        )
+        
+        time.sleep(3)
+        wait_and_locate_click(
+             login, By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[2]"
+        )
+        
+        time.sleep(2)
+        wait_and_locate_click(
+             login, By.XPATH, "//li[@aria-label='In Progress']"
+        )
+
+        WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//textarea[@placeholder='Enter Step Notes']"))
+        ).send_keys("Steps for notes")
+
+        WebDriverWait(login, 10).until(
+        EC.element_to_be_clickable(
+            (By.XPATH, "//label[@for='treatmentPlanAattachments']")
+        )
+        ).click()
+
+        time.sleep(3)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+
+        time.sleep(2)
+        wait_and_send_keys(login, By.XPATH, "//textarea[@placeholder='Enter Treatment Notes']", "Note for the treatment")
+
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+
+        # Wait for the section/treatment plan to save
+        time.sleep(3)
+
+        # Scroll back to top because Create Rx button is at the top of the page
+        login.execute_script("window.scrollTo(0, 0);")
+        time.sleep(1)
+
+        # Click Create Rx button
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_create_rx_btn']")
+
+         # Add medicine section
+
+        # time.sleep(1)
+        # wait_and_locate_click(login, By.XPATH, "//mat-select[@role='combobox' and .//span[normalize-space()='Amber Gordon']]")
+
+        # time.sleep(2)
+        # wait_and_locate_click(login, By.XPATH, "//mat-option[contains(@class,'mat-mdc-option') "
+        # "and contains(normalize-space(.),'Swaraj K')]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Add Medicine'])[1]")
+
+        medicines = [
+            ["Dolo", "500MG", "1-1-1", "5 DAYS", "AFTER FOOD"],
+            ["Azithromycin", "250MG", "1-0-1", "3 DAYS", "AFTER FOOD"],
+            ["Pantop", "40MG", "1-0-0", "5 DAYS", "BEFORE FOOD"]
+        ]
+
+        for i in range(len(medicines)):
+
+            # Add medicine details in Add Medicine section
+            time.sleep(2)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Select Medicine']/following::input[1]",
+                medicines[i][0]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Strength/Dosage']/following::input[1]",
+                medicines[i][1]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Frequency']/following::input[1]",
+                medicines[i][2]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Duration']/following::input[1]",
+                medicines[i][3]
+            )
+
+            time.sleep(1)
+            wait_and_send_keys(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//label[normalize-space()='Instructions']/following::input[1]",
+                medicines[i][4]
+            )
+
+            # Click purple Add button to add medicine into prescription table
+            time.sleep(2)
+            wait_and_locate_click(
+                login,
+                By.XPATH,
+                "//section[contains(@class,'rx-composer-card')]//button[contains(@class,'rx-primary-btn') and not(contains(@class,'disabled')) and contains(., 'Add')]"
+            )
+
+            time.sleep(2)
+
+            # After 1st and 2nd medicine, click top-right + Add button to open Add Medicine section again
+            if i < len(medicines) - 1:
+                wait_and_locate_click(
+                    login,
+                    By.XPATH,
+                    "//button[contains(@class,'rx-link-btn') and .//i[contains(@class,'pi-plus')] and contains(., 'Add')]"
+                )
+                
+                time.sleep(2)
+        wait_and_locate_click(login, By.XPATH,
+            "//*[normalize-space()='Prescription Notes']/following::div[@role='textbox' and @contenteditable='true'][1]")
+
+        time.sleep(1)
+        wait_and_send_keys(login, By.XPATH,
+            "//*[normalize-space()='Prescription Notes']/following::div[@role='textbox' and @contenteditable='true'][1]",
+            "Prescription notes for the patient")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[contains(@class,'rx-primary-btn') and contains(normalize-space(), 'Save')]")
+
+        # Upload prescription section
+
+        # Scroll back to top because Create Rx button is at the top of the page
+        login.execute_script("window.scrollTo(0, 0);")
+        time.sleep(1)
+
+        # Click Create Rx button
+        wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_create_rx_btn']")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[contains(@class,'rx-ghost-btn') "
+        "and contains(normalize-space(.),'Upload Prescription')]")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//a[contains(@class,'cursor-pointer') and normalize-space()='Upload']")   
+
+        time.sleep(4)
+        # Get the current working directory
+        current_working_directory = os.getcwd()
+
+        # Construct the absolute path
+        absolute_path = os.path.abspath(
+            os.path.join(current_working_directory, r"Extras\test.png")
+        )
+        pyautogui.write(absolute_path)
+        pyautogui.press("enter")
+        print("Successfully upload the file")
+        time.sleep(3)
+
+        # Click SAVE button to save the prescription
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//button[contains(@class,'rx-primary-btn') and contains(normalize-space(), 'Save')]")
+        
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+
+        # Share the prescription
+        wait_and_locate_click(login, By.XPATH, "//i[@class='pi pi-share-alt']")
+
+        wait_and_send_keys(login, By.XPATH, 
+        "//textarea[@placeholder='Enter message description']", "Case sharing with prescription in new MR")
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "//span[contains(text(),'Email')]")
+
+        time.sleep(1)
+        wait_and_locate_click(
+             login, By.XPATH, "//button[normalize-space()='Share']"
+        )
+
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+        time.sleep(3)
+
+
+
+
+        # ******************************** Disable New MR Setting ***********************
+
+        driver = login
+        time.sleep(3)
+        wait = WebDriverWait(login, 30)
+        
+        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+
+        time.sleep(2)
+        setting_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//div[normalize-space()='Features and Customization']"))
+        )
+
+        driver.execute_script("arguments[0].scrollIntoView();", setting_element)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='MR and Diet Settings'] ")
+
+        time.sleep(2)
+
+        # Wait until MR Settings page opens
+        wait.until(
+        EC.presence_of_element_located((By.XPATH, "//div[contains(normalize-space(), 'MR Settings')]")))
+
+        # Locate the toggle button
+        toggle_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@role='switch']")
+            )
+        )
+
+        # Get current state
+        toggle_state = toggle_button.get_attribute("aria-checked")
+
+        print("Current Toggle State :", toggle_state)
+
+        # If toggle is ON (true), click and make it OFF
+        if toggle_state == "true":
+            toggle_button.click()
+            print("Toggle turned OFF")
+
+        # If already OFF
+        else:
+            print("Toggle is already OFF")
+        time.sleep(3)
+
+
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+# ************************* Auto and Manual Invoice Sharing ************************
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Post deployment auto invoice generation and sharing")
+@pytest.mark.parametrize("url, username, password", [(prod_url, main_prod, password)])
+def test_create_invoice(login):
+
+    try:
+
+        wait = WebDriverWait(login, 10)
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+
+        time.sleep(2)
+
+        while True:
+            try:
+
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (
+                            By.XPATH,
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                        )
+                    )
                 )
 
                 next_button.click()
@@ -843,11 +1399,19 @@ def test_create_patient(login):
                 break
 
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+                )
+            )
         )
         last_element_in_accordian.click()
 
-        # ************************* Auto Invoice and Sharing ************************
+        # Click View Details button
+        time.sleep(3)   
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+
 
         time.sleep(3)
         WebDriverWait(login, 10).until(
@@ -996,28 +1560,13 @@ def test_create_patient(login):
             message = snack_bar.text
             print("Snack bar message:", message)
 
-        # login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
+        time.sleep(3)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//i[@class='fa fa-arrow-left']"))
         ).click()
+
         time.sleep(3)
-        while True:
-            try:
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
-                )
-
-                next_button.click()
-
-            except:
-
-                break
-
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
-        )
-        last_element_in_accordian.click()
+     
 
         # ********************** Manual Invoice and Sharing ***********************
 
@@ -1201,16 +1750,42 @@ def test_create_patient(login):
         time.sleep(3)
 
 
-        login.find_element(By.XPATH, "//i[@class='fa fa-arrow-left']").click()
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
 
-        time.sleep(5)
+# *************************** Reschedule **********************
+
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Post deployment reschedule token")
+@pytest.mark.parametrize("url, username, password", [(prod_url, main_prod, password)])
+def test_reschedule_token(login):
+
+    try:
+
+        wait = WebDriverWait(login, 10)
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+
+        time.sleep(2)
 
         while True:
             try:
 
                 next_button = WebDriverWait(login, 10).until(
                     EC.presence_of_element_located(
-                        (By.XPATH, "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']"))
+                        (
+                            By.XPATH,
+                            "//anglerighticon[@class='p-element p-icon-wrapper ng-star-inserted']",
+                        )
+                    )
                 )
 
                 next_button.click()
@@ -1220,18 +1795,19 @@ def test_create_patient(login):
                 break
 
         last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]",
+                )
+            )
         )
         last_element_in_accordian.click()
 
-        time.sleep(3)
-        View_Detail_button = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(text(), 'View Details')]"))
-        )
-        View_Detail_button.click()
+        time.sleep(3)   
+        wait_and_locate_click(login, By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
 
-        # *************************** Reschedule **********************
-
+        
         time.sleep(3)
         login.find_element(By.XPATH, "//button[contains(text(),'Reschedule')]").click()
         time.sleep(2)
@@ -1246,21 +1822,8 @@ def test_create_patient(login):
         print(today_xpath_expression)
         tomorrow_date = today_date + timedelta(days=1)
         print(tomorrow_date.day)
-#==============================================================================
-        # current_month = WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[contains(@class, 'p-datepicker-month')]"))
-        # )
 
-        # current_year = WebDriverWait(login, 10).until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[contains(@class, 'p-datepicker-year')]"))
-        # )
 
-        # if current_month.text.lower() != tomorrow_date.strftime("%b").lower() or current_year.text.lower() != tomorrow_date.strftime("%Y").lower():
-            
-        #     login.find_element(By.XPATH, "//button[contains(@class, 'p-datepicker-next')]").click()
-#============================================================================
         tomorrow_xpath_expression = "//span[@class='example-custom-date-class d-pad-15 ng-star-inserted'][normalize-space()='{}']".format(
             tomorrow_date.day)
         print(tomorrow_xpath_expression)
@@ -1271,24 +1834,43 @@ def test_create_patient(login):
         Tomorrow_Date.click()
         print("Tomorrow Date:", Tomorrow_Date.text)
 
-        # wait = WebDriverWait(login, 10)
-        # time_slot = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[@aria-selected= 'false']")))
-        # time_slot.click()
+
         print("Time Slot: 9:00AM - 11:59 PM")
 
         reschedule_button = WebDriverWait(login, 30).until(
-            EC.visibility_of_element_located((By.XPATH,
-                                            "//button[@class='btn btn-primary reschedule-btn']"))
-        )
+            EC.visibility_of_element_located((By.XPATH,"//button[@class='btn btn-primary reschedule-btn']"))
+            )
 
         reschedule_button.click()
         print("Reschedule Successfully")
 
         time.sleep(3)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='fa fa-arrow-left pointer-cursor']"))
-        ).click()
 
+    except Exception as e:
+        allure.attach(  # use Allure package, .attach() method, pass 3 params
+            login.get_screenshot_as_png(),  # param1
+            # login.screenshot()
+            name="full_page",  # param2
+            attachment_type=AttachmentType.PNG,
+        )
+        raise e
+    
+
+
+# *******************Cancellation **********************
+
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Post deployment cancellation of token")
+@pytest.mark.parametrize("url, username, password", [(prod_url, main_prod, password)])
+def test_cancel_token(login):
+
+    try:
+
+        wait = WebDriverWait(login, 10)
+        time.sleep(3)
+        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+
+        time.sleep(2)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//p-dropdown[@id='selectTime_BUS_bookList']"))
         ).click()
@@ -1318,7 +1900,7 @@ def test_create_patient(login):
         )
         last_element_in_accordian.click()
 
-        # *******************Cancellation **********************
+        
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Change Status']"))
