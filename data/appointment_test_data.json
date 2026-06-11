@@ -1,4 +1,13 @@
 {
-  "known_dashboard_patient": "Jisha Rajan",
-  "invalid_patient": "Patient Name That Should Not Exist"
+  "dashboard": {
+    "known_dashboard_patient": "Jisha Rajan",
+    "invalid_patient": "Patient Name That Should Not Exist"
+  },
+  "take_appointment": {
+    "location": "Chavakkad",
+    "department_name": "ENT",
+    "provider_name": "Naveen KP",
+    "service_name": "Naveen Consultation",
+    "attachment_path": "data/attachments/sample_appointment_attachment.png"
+  }
 }

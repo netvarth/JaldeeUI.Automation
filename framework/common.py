@@ -54,3 +54,16 @@ def assert_locator_visible(locator, timeout=DEFAULT_EXPECT_TIMEOUT):
     """
 
     expect(locator).to_be_visible(timeout=timeout)
+
+
+def is_text_visible(page, text, timeout=1000):
+    """
+    Returns True if exact text is visible.
+    """
+
+    try:
+        expect(page.get_by_text(text, exact=True).first).to_be_visible(timeout=timeout)
+        return True
+
+    except Exception:
+        return False

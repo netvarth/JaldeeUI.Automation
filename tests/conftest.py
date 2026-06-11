@@ -9,23 +9,13 @@ from framework.test_data import load_json_test_data
 from framework import selectors as app_selectors
 
 
-def pytest_configure(config):
-    """
-    Basic pytest configuration hook.
-
-    Do not configure Playwright selectors here because Python Playwright
-    exposes selectors through the playwright fixture, not direct import.
-    """
-    pass
-
-
 @pytest.fixture(scope="session", autouse=True)
 def configure_playwright_test_id(playwright):
     """
     Configure Playwright test id attribute.
 
-    Playwright's default is already data-testid, but keeping this explicit
-    makes it easy to change later if the UI team uses a different attribute.
+    Playwright default is already data-testid, but keeping this explicit
+    makes it easy to change later.
     """
 
     playwright.selectors.set_test_id_attribute(app_selectors.TEST_ID_ATTRIBUTE)
@@ -89,15 +79,11 @@ def test_logger(request):
 def pytest_runtest_makereport(item, call):
     """
     Adds screenshots to Allure for failed test cases.
-
-    This captures screenshot directly from Playwright page bytes and attaches
-    it to Allure, which is more reliable than saving first and attaching later.
     """
 
     outcome = yield
     report = outcome.get_result()
 
-    # Attach screenshot for failure in test call, setup, or teardown.
     if report.passed:
         return
 
