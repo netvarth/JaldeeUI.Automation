@@ -4,3 +4,7 @@ __pycache__/
 test-results/
 playwright-report/
 *.pyc
+
+reports/
+allure-results/
+allure-report/

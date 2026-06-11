@@ -19,16 +19,21 @@ def open_login_page(page, config):
     wait_for_page_ready(page)
 
 
-def get_visible_locator(page, locators, timeout=15000):
+def get_visible_locator_from_candidates(candidates):
     """
-    Returns the first visible locator from a list of possible locators.
+    Returns the first visible locator from a list of locator candidates.
 
-    This helps when the UI label, placeholder, or accessibility name changes.
+    Each candidate is:
+        (locator, timeout_in_ms)
+
+    Important:
+    - Use short timeout for optional data-testid locators.
+    - Use longer timeout for old stable locators like id/formcontrolname.
     """
 
     last_error = None
 
-    for locator in locators:
+    for locator, timeout in candidates:
         try:
             expect(locator).to_be_visible(timeout=timeout)
             return locator
@@ -40,46 +45,75 @@ def get_visible_locator(page, locators, timeout=15000):
 
 def get_login_id_input(page):
     """
-    Finds the login ID input using multiple fallback locators.
+    Finds the login ID input.
+
+    Optimized priority:
+    1. data-testid with very short timeout
+    2. old UI stable id with normal timeout
+    3. old Angular formcontrolname
+    4. placeholder fallback
+    5. role fallback
     """
 
-    return get_visible_locator(
-        page,
+    return get_visible_locator_from_candidates(
         [
-            page.get_by_role("textbox", name=re.compile(r"Enter Login ID", re.I)),
-            page.get_by_placeholder(re.compile(r"Enter Login ID", re.I)),
-            page.locator("input[type='text']").first,
-            page.locator("input").first,
-        ],
+            # New UI - quick check only. Do not wait long if not present.
+            (page.get_by_test_id(selectors.LOGIN_ID_TEST_ID), 500),
+
+            # Old UI - current stable selectors.
+            (page.locator(selectors.LOGIN_ID_SELECTOR), 15000),
+            (page.locator(selectors.LOGIN_ID_FORM_CONTROL_SELECTOR), 3000),
+            (page.get_by_placeholder(re.compile(r"Enter Login ID", re.I)), 3000),
+            (page.get_by_role("textbox", name=re.compile(r"Enter Login ID|Login ID", re.I)), 3000),
+        ]
     )
 
 
 def get_password_input(page):
     """
-    Finds the password input using multiple fallback locators.
+    Finds the password input.
+
+    Optimized priority:
+    1. data-testid with very short timeout
+    2. old UI stable id
+    3. old Angular formcontrolname
+    4. placeholder fallback
+    5. password type fallback
     """
 
-    return get_visible_locator(
-        page,
+    return get_visible_locator_from_candidates(
         [
-            page.get_by_role("textbox", name=re.compile(r"Enter password", re.I)),
-            page.get_by_placeholder(re.compile(r"Enter password", re.I)),
-            page.locator("input[type='password']").first,
-        ],
+            # New UI - quick check only. Do not wait long if not present.
+            (page.get_by_test_id(selectors.PASSWORD_TEST_ID), 500),
+
+            # Old UI - current stable selectors.
+            (page.locator(selectors.PASSWORD_SELECTOR), 15000),
+            (page.locator(selectors.PASSWORD_FORM_CONTROL_SELECTOR), 3000),
+            (page.get_by_placeholder(re.compile(r"Enter password", re.I)), 3000),
+            (page.locator("input[type='password']").first, 3000),
+        ]
     )
 
 
 def get_sign_in_button(page):
     """
     Finds the Sign In button.
+
+    Optimized priority:
+    1. data-testid with very short timeout
+    2. role button
+    3. text fallback
     """
 
-    return get_visible_locator(
-        page,
+    return get_visible_locator_from_candidates(
         [
-            page.get_by_role("button", name=re.compile(r"Sign In", re.I)),
-            page.get_by_text(re.compile(r"Sign In", re.I)).last,
-        ],
+            # New UI - quick check only. Do not wait long if not present.
+            (page.get_by_test_id(selectors.SIGN_IN_TEST_ID), 500),
+
+            # Current UI fallbacks.
+            (page.get_by_role("button", name=re.compile(r"Sign In", re.I)), 10000),
+            (page.get_by_text(re.compile(r"Sign In", re.I)).last, 3000),
+        ]
     )
 
 

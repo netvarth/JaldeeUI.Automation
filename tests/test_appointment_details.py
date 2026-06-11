@@ -1,3 +1,4 @@
+import allure
 import pytest
 from playwright.sync_api import expect
 
@@ -18,6 +19,8 @@ from framework.appointment_actions import (
 )
 
 
+@allure.epic("Jaldee Business")
+@allure.feature("Appointments")
 @pytest.mark.smoke
 @pytest.mark.appointment
 def test_view_first_appointment_details_from_dashboard(page, config):
@@ -32,58 +35,76 @@ def test_view_first_appointment_details_from_dashboard(page, config):
     5. Go back
     """
 
-    login(page, config)
+    with allure.step("Login as business user"):
+        login(page, config)
 
-    select_first_business_card(page)
+    with allure.step("Select first business card"):
+        select_first_business_card(page)
 
-    open_first_booking_from_dashboard(page)
+    with allure.step("Open first appointment from dashboard"):
+        open_first_booking_from_dashboard(page)
 
-    assert_appointment_details_opened(page)
+    with allure.step("Verify appointment details page opened"):
+        assert_appointment_details_opened(page)
 
-    go_back_from_appointment_details(page)
+    with allure.step("Go back from appointment details"):
+        go_back_from_appointment_details(page)
 
 
+@allure.epic("Jaldee Business")
+@allure.feature("Appointments")
 @pytest.mark.smoke
 @pytest.mark.appointment
-def test_view_jisha_rajan_appointment_details_from_dashboard(page, config):
+def test_view_known_patient_appointment_details_from_dashboard(page, config, appointment_data):
     """
-    Opens Jisha Rajan's appointment from the dashboard.
+    Opens a known patient's appointment from the dashboard.
 
-    Flow:
-    1. Login
-    2. Select first business card
-    3. Find Jisha Rajan's booking on dashboard
-    4. Click the related View button
-    5. Verify appointment details page opened
-    6. Go back
+    Patient name comes from:
+        data/appointment_test_data.json
     """
 
-    login(page, config)
+    known_patient = appointment_data["known_dashboard_patient"]
 
-    select_first_business_card(page)
+    with allure.step("Login as business user"):
+        login(page, config)
 
-    open_booking_by_patient_name_from_dashboard(page, "Jisha Rajan")
+    with allure.step("Select first business card"):
+        select_first_business_card(page)
 
-    assert_appointment_details_opened(page)
+    with allure.step(f"Open appointment for patient: {known_patient}"):
+        open_booking_by_patient_name_from_dashboard(page, known_patient)
 
-    go_back_from_appointment_details(page)
+    with allure.step("Verify appointment details page opened"):
+        assert_appointment_details_opened(page)
+
+    with allure.step("Go back from appointment details"):
+        go_back_from_appointment_details(page)
 
 
+@allure.epic("Jaldee Business")
+@allure.feature("Appointments")
 @pytest.mark.appointment
-def test_invalid_patient_appointment_should_not_be_visible(page, config):
+def test_invalid_patient_appointment_should_not_be_visible(page, config, appointment_data):
     """
     Edge case test.
 
     Verifies that a non-existing patient is not shown on dashboard.
     """
 
-    login(page, config)
+    invalid_patient = appointment_data["invalid_patient"]
 
-    select_first_business_card(page)
+    with allure.step("Login as business user"):
+        login(page, config)
 
-    assert_patient_not_visible_on_dashboard(page, "Patient Name That Should Not Exist")
+    with allure.step("Select first business card"):
+        select_first_business_card(page)
+
+    with allure.step(f"Verify invalid patient is not visible: {invalid_patient}"):
+        assert_patient_not_visible_on_dashboard(page, invalid_patient)
 
 
+@allure.epic("Jaldee Business")
+@allure.feature("Authentication")
 @pytest.mark.auth
 def test_user_can_logout_successfully(page, config):
     """
@@ -92,13 +113,18 @@ def test_user_can_logout_successfully(page, config):
     Verifies user can login and logout successfully.
     """
 
-    login(page, config)
+    with allure.step("Login as business user"):
+        login(page, config)
 
-    logout(page, fail_if_not_logged_out=True)
+    with allure.step("Logout"):
+        logout(page, fail_if_not_logged_out=True)
 
-    assert_login_page_visible(page)
+    with allure.step("Verify login page is visible"):
+        assert_login_page_visible(page)
 
 
+@allure.epic("Jaldee Business")
+@allure.feature("Authentication")
 @pytest.mark.auth
 def test_invalid_login_should_not_allow_user_inside(page, config):
     """
@@ -107,11 +133,13 @@ def test_invalid_login_should_not_allow_user_inside(page, config):
     Invalid credentials should not login successfully.
     """
 
-    login_with_invalid_credentials(
-        page,
-        config,
-        login_id="invalid_user",
-        password="invalid_password",
-    )
+    with allure.step("Open login page and submit invalid credentials"):
+        login_with_invalid_credentials(
+            page,
+            config,
+            login_id="invalid_user",
+            password="invalid_password",
+        )
 
-    expect(page.get_by_role("button", name="Sign In")).to_be_visible()
+    with allure.step("Verify Sign In button is still visible"):
+        expect(page.get_by_role("button", name="Sign In")).to_be_visible()

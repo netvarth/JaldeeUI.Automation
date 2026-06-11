@@ -39,11 +39,11 @@ def open_booking_by_patient_name_from_dashboard(page, patient_name):
     Opens a visible dashboard booking by patient name.
 
     Example:
-        open_booking_by_patient_name_from_dashboard(page, "Mary Nelson")
+        open_booking_by_patient_name_from_dashboard(page, "Jisha Rajan")
 
-    This version is more flexible because the dashboard text can contain
-    hidden spaces or combined text like:
-        Mary Nelson +91 5557231469 11:10 AM Jun 3, 2026 Naveen Consultation
+    This version is flexible because dashboard text can contain hidden spaces
+    or combined text like:
+        Jisha Rajan +91 8281276241 12:10 PM Jun 3, 2026 Naveen Consultation
     """
 
     patient_pattern = build_flexible_text_pattern(patient_name)
@@ -57,7 +57,7 @@ def open_booking_by_patient_name_from_dashboard(page, patient_name):
         .last
     )
 
-    expect(booking_container).to_be_visible()
+    expect(booking_container).to_be_visible(timeout=15000)
 
     view_button = booking_container.get_by_role(
         "button",
@@ -74,10 +74,10 @@ def build_flexible_text_pattern(text):
     Converts normal text into a flexible regex.
 
     Example:
-        Mary Nelson
+        Jisha Rajan
 
     Becomes:
-        Mary\\s+Nelson
+        Jisha\\s+Rajan
 
     This helps when the UI has hidden spaces, new lines, or non-breaking spaces.
     """
@@ -91,34 +91,14 @@ def build_flexible_text_pattern(text):
     return re.compile(flexible_text, re.I)
 
 
-def click_view_details_or_assign_myself(page):
-    """
-    Clicks appointment details button if a popup appears.
-
-    Handles possible button texts:
-    - Assign Myself View Details
-    - View Details
-
-    Use this only if clicking the dashboard View button opens a popup
-    instead of directly opening the appointment details page.
-    """
-
-    button = page.get_by_role(
-        "button",
-        name=re.compile(r"(Assign Myself|View Details)", re.I)
-    ).first
-
-    click_when_visible(button)
-
-    wait_for_network_idle(page)
-
-
 def assert_appointment_details_opened(page):
     """
     Checks whether appointment details page is opened.
     """
 
-    expect(page.locator(selectors.APPOINTMENT_DETAILS_BACK_BUTTON)).to_be_visible()
+    expect(page.locator(selectors.APPOINTMENT_DETAILS_BACK_BUTTON)).to_be_visible(
+        timeout=15000
+    )
 
 
 def go_back_from_appointment_details(page):
