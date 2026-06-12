@@ -16,6 +16,8 @@ from framework.appointment_actions import (
     open_created_appointment_details,
     assert_appointment_details_opened,
     assert_created_patient_visible,
+    perform_random_appointment_detail_actions,
+    perform_random_appointment_reschedule,
 )
 
 
@@ -123,3 +125,85 @@ def test_take_appointment_from_sidebar_appointment_link(page, config, appointmen
         appointment_data,
         open_take_appointment_from_sidebar,
     )
+
+
+@allure.epic("Jaldee Business")
+@allure.feature("Appointment Details")
+@allure.story("Send message, send attachment, and create follow-up from random appointment")
+@pytest.mark.smoke
+@pytest.mark.appointment
+def test_random_appointment_message_attachment_and_followup(page, config, appointment_data):
+    """
+    Appointment detail action flow.
+
+    Steps:
+    - Login
+    - Select business
+    - Open appointment dashboard from sidebar
+    - Open last appointment accordion/tab
+    - Click View Details
+    - Send random message
+    - Send sample attachment
+    - Create follow-up with random future date, random slot, note, and attachment
+    """
+
+    attachment_path = appointment_data["take_appointment"]["attachment_path"]
+
+    with allure.step("Login as business user"):
+        login(page, config)
+
+    with allure.step("Select first business card"):
+        select_first_business_card(page)
+
+    with allure.step("Open last appointment and perform detail actions"):
+        action_result = perform_random_appointment_detail_actions(
+            page,
+            attachment_path,
+        )
+
+    with allure.step("Attach action result to report"):
+        allure.attach(
+            str(action_result),
+            name="Appointment Detail Action Result",
+            attachment_type=allure.attachment_type.TEXT,
+        )
+
+
+@allure.epic("Jaldee Business")
+@allure.feature("Appointment Details")
+@allure.story("Reschedule random appointment")
+@pytest.mark.smoke
+@pytest.mark.appointment
+def test_random_appointment_reschedule(page, config):
+    """
+    Appointment reschedule flow.
+
+    Steps:
+    - Login
+    - Select business
+    - Open appointment dashboard from sidebar
+    - Randomly select one appointment accordion/tab
+    - Click View Details
+    - Open More Actions
+    - Click Reschedule
+    - Select random future date
+    - Select random time slot
+    - Click Reschedule
+    - Assert success message
+    """
+
+    with allure.step("Login as business user"):
+        login(page, config)
+
+    with allure.step("Select first business card"):
+        select_first_business_card(page)
+
+    with allure.step("Open random appointment and reschedule"):
+        reschedule_result = perform_random_appointment_reschedule(page)
+
+    with allure.step("Attach reschedule result to report"):
+        allure.attach(
+            str(reschedule_result),
+            name="Appointment Reschedule Result",
+            attachment_type=allure.attachment_type.TEXT,
+        )

@@ -1,5 +1,7 @@
 import random
 import re
+import uuid
+from datetime import date, timedelta
 from pathlib import Path
 
 from playwright.sync_api import expect, TimeoutError as PlaywrightTimeoutError
@@ -831,7 +833,7 @@ def open_created_appointment_details(page, consumer_profile):
     Opens the newly created appointment details.
 
     Supports both UI results after appointment confirmation:
-    1. Appointment listing page with patient tab
+    1. Appointments listing page with patient appointment tab
     2. Dashboard page with booking row and View button
     """
 
@@ -839,22 +841,38 @@ def open_created_appointment_details(page, consumer_profile):
 
     consumer_pattern = build_flexible_text_pattern(consumer_profile["full_name"])
 
-    # Scenario 1: Appointment listing page has patient as a tab.
-    consumer_tab = page.get_by_role("tab", name=consumer_pattern).first
+    # Scenario 1:
+    # Appointments listing page has appointment rows/tabs.
+    # Use locator("[role='tab']").filter(has_text=...) instead of get_by_role(..., name=...)
+    # because the accessible name can include checkbox/status/provider text.
+    appointment_tab = page.locator("[role='tab']").filter(
+        has_text=consumer_pattern
+    ).first
 
-    if click_if_visible(consumer_tab, timeout=3000):
+    if click_if_visible(appointment_tab, timeout=10000):
+        wait_for_network_idle(page)
+
         details_button = page.get_by_role(
             "button",
             name=re.compile(r"(Assign Myself\s*)?View Details", re.I),
         ).first
 
-        click_when_visible(details_button, timeout=10000)
+        if click_if_visible(details_button, timeout=10000):
+            wait_for_network_idle(page)
+            return
 
-        wait_for_network_idle(page)
+        # Some UI versions may open the details directly after tab click.
+        if page.locator(selectors.APPOINTMENT_DETAILS_BACK_BUTTON).is_visible():
+            return
 
-        return
+        raise AssertionError(
+            "Clicked created appointment tab, but View Details button did not appear. "
+            f"Consumer: {consumer_profile['full_name']}. "
+            f"Current URL: {page.url}"
+        )
 
-    # Scenario 2: Dashboard has booking row with patient name and View button.
+    # Scenario 2:
+    # Dashboard booking card/row has patient name and View button.
     view_button_pattern = re.compile(r"^View$", re.I)
 
     booking_container = (
@@ -1106,3 +1124,850 @@ def wait_for_dropdown_options_to_open(page, timeout=3000):
 
     except Exception:
         return False
+    
+
+def open_appointments_dashboard_from_sidebar(page):
+    """
+    Opens the appointment dashboard from the side panel appointment icon/link.
+    """
+
+    appointment_sidebar_link = page.locator("a[href*='/business/appointments']").first
+
+    click_when_visible(appointment_sidebar_link, timeout=15000)
+
+    expect(page).to_have_url(re.compile(r".*/business/appointments.*"), timeout=20000)
+
+    expect(
+        page.get_by_text(re.compile(r"Welcome to your Appointments", re.I)).first
+    ).to_be_visible(timeout=20000)
+
+    wait_for_network_idle(page)
+
+
+def open_random_appointment_details_from_dashboard(page):
+    """
+    Randomly selects one visible appointment accordion/tab from the
+    appointment dashboard and opens its details page.
+    """
+
+    appointment_tabs = page.locator("[role='tab']").filter(
+        has_text=re.compile(r"\d{1,2}:\d{2}\s*(AM|PM)", re.I)
+    )
+
+    expect(appointment_tabs.first).to_be_visible(timeout=20000)
+
+    visible_appointment_tabs = []
+
+    tab_count = appointment_tabs.count()
+
+    for index in range(tab_count):
+        appointment_tab = appointment_tabs.nth(index)
+
+        try:
+            if appointment_tab.is_visible():
+                visible_appointment_tabs.append(appointment_tab)
+
+        except Exception:
+            continue
+
+    if not visible_appointment_tabs:
+        raise AssertionError(
+            f"No visible appointment accordion/tab found. Current URL: {page.url}"
+        )
+
+    random_appointment_tab = random.choice(visible_appointment_tabs)
+
+    selected_appointment_text = clean_visible_text(
+        random_appointment_tab.inner_text()
+    )
+
+    click_when_visible(random_appointment_tab, timeout=10000)
+
+    details_button = page.get_by_role(
+        "button",
+        name=re.compile(r"(Assign Myself\s*)?View Details|View Details", re.I),
+    ).first
+
+    click_when_visible(details_button, timeout=15000)
+
+    wait_for_network_idle(page)
+
+    assert_appointment_details_opened(page)
+
+    return selected_appointment_text
+
+
+def open_last_appointment_details_from_dashboard(page):
+    """
+    Opens the last appointment accordion/tab from the appointment dashboard,
+    then clicks View Details / Assign Myself View Details.
+    """
+
+    appointment_tabs = page.locator("[role='tab']").filter(
+        has_text=re.compile(r"\d{1,2}:\d{2}\s*(AM|PM)", re.I)
+    )
+
+    expect(appointment_tabs.first).to_be_visible(timeout=20000)
+
+    tab_count = appointment_tabs.count()
+
+    if tab_count == 0:
+        raise AssertionError(
+            f"No appointment accordion/tab found. Current URL: {page.url}"
+        )
+
+    last_appointment_tab = appointment_tabs.nth(tab_count - 1)
+
+    click_when_visible(last_appointment_tab, timeout=10000)
+
+    details_button = page.get_by_role(
+        "button",
+        name=re.compile(r"(Assign Myself\s*)?View Details", re.I),
+    ).first
+
+    click_when_visible(details_button, timeout=15000)
+
+    wait_for_network_idle(page)
+
+    assert_appointment_details_opened(page)
+
+def open_more_actions_menu(page):
+    """
+    Opens More Actions only when still on appointment details page.
+
+    If Less Actions or expanded action buttons are already visible,
+    it does nothing.
+    """
+
+    if is_followup_create_page(page):
+        return
+
+    less_actions_button = page.get_by_role(
+        "button",
+        name=re.compile(r"Less Actions", re.I),
+    ).first
+
+    if less_actions_button.is_visible():
+        return
+
+    send_message_button = page.get_by_role(
+        "button",
+        name=re.compile(r"Send Message", re.I),
+    ).first
+
+    if send_message_button.is_visible():
+        return
+
+    more_actions_button = page.get_by_role(
+        "button",
+        name=re.compile(r"More Actions", re.I),
+    ).first
+
+    click_when_visible(more_actions_button, timeout=15000)
+
+    page.wait_for_timeout(500)
+
+
+def get_appointment_action_button(page, action_text):
+    """
+    Returns an appointment action button by exact visible action text.
+
+    This avoids clicking Share Info when we need Send Message.
+    """
+
+    return page.locator("button").filter(
+        has_text=re.compile(rf"^\s*{re.escape(action_text)}\s*$", re.I)
+    ).first
+
+
+def generate_random_automation_note(prefix="Automation note"):
+    """
+    Generates a random note/message for appointment actions.
+    """
+
+    return f"{prefix} {uuid.uuid4().hex[:8]}"
+
+
+def wait_for_success_message_to_disappear(page):
+    """
+    Waits for success/toast message to appear and disappear.
+
+    Different UI versions may use different toast/snackbar containers,
+    so this function checks common success message containers.
+    """
+
+    success_message = page.locator(
+        ".p-toast-message-success, "
+        ".p-toast-message, "
+        ".toast-success, "
+        ".mat-mdc-snack-bar-container, "
+        "[role='alert']"
+    ).first
+
+    try:
+        expect(success_message).to_be_visible(timeout=8000)
+        expect(success_message).to_be_hidden(timeout=20000)
+
+    except Exception:
+        # Do not fail only because toast timing was too fast or UI changed.
+        page.wait_for_timeout(2000)
+
+
+def send_random_message_from_appointment_details(page):
+    """
+    Opens More Actions if needed, clicks Send Message, enters a random message,
+    and sends it.
+    """
+
+    random_message = generate_random_automation_note("Automation message")
+
+    open_more_actions_menu(page)
+
+    send_message_button = get_appointment_action_button(page, "Send Message")
+
+    click_when_visible(send_message_button, timeout=15000)
+
+    message_box = page.get_by_role(
+        "textbox",
+        name=re.compile(r"Message", re.I),
+    ).first
+
+    fill_when_visible(message_box, random_message, timeout=10000)
+
+    send_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^send$", re.I),
+    ).last
+
+    click_when_visible(send_button, timeout=10000)
+
+    wait_for_success_message_to_disappear(page)
+
+    return random_message
+
+
+def upload_file_using_file_chooser(page, upload_button_locator, attachment_path):
+    """
+    Uploads a file using Playwright file chooser handling.
+
+    This prevents the file picker from opening and staying there.
+    """
+
+    file_path = Path(attachment_path).resolve()
+
+    if not file_path.exists():
+        raise FileNotFoundError(f"Attachment file not found: {file_path}")
+
+    try:
+        with page.expect_file_chooser(timeout=5000) as file_chooser_info:
+            click_when_visible(upload_button_locator, timeout=10000)
+
+        file_chooser = file_chooser_info.value
+        file_chooser.set_files(str(file_path))
+
+        return
+
+    except PlaywrightTimeoutError:
+        file_input = page.locator("input[type='file']").last
+
+        expect(file_input).to_be_attached(timeout=5000)
+        file_input.set_input_files(str(file_path))
+
+
+def send_attachment_from_appointment_details(page, attachment_path):
+    """
+    Opens More Actions if needed, clicks Send Attachments, uploads the sample
+    attachment, and sends it.
+    """
+
+    open_more_actions_menu(page)
+
+    send_attachment_button = get_appointment_action_button(page, "Send Attachments")
+
+    click_when_visible(send_attachment_button, timeout=15000)
+
+    upload_area = page.locator(".select-wrapper").last
+
+    upload_file_using_file_chooser(
+        page,
+        upload_button_locator=upload_area,
+        attachment_path=attachment_path,
+    )
+
+    send_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^send$", re.I),
+    ).last
+
+    click_when_visible(send_button, timeout=10000)
+
+    wait_for_success_message_to_disappear(page)
+
+
+def select_random_future_followup_date(page):
+    """
+    Selects a random future date from the follow-up calendar.
+    """
+
+    days_to_add = random.randint(2, 14)
+    target_date = date.today() + timedelta(days=days_to_add)
+
+    target_pattern = re.compile(
+        rf"\b{target_date.day}\s+{target_date.strftime('%B')}\b",
+        re.I,
+    )
+
+    target_date_button = page.get_by_role(
+        "button",
+        name=target_pattern,
+    ).first
+
+    if click_if_visible(target_date_button, timeout=5000):
+        return target_date
+
+    # If the target date is in the next visible month, move calendar forward once.
+    next_month_button = page.get_by_role(
+        "button",
+        name=re.compile(r"Next month", re.I),
+    ).first
+
+    if click_if_visible(next_month_button, timeout=5000):
+        click_when_visible(target_date_button, timeout=10000)
+        return target_date
+
+    raise AssertionError(
+        f"Could not select future follow-up date: {target_date}. "
+        f"Current URL: {page.url}"
+    )
+
+
+def select_random_followup_slot(page):
+    """
+    Selects a random visible follow-up slot.
+    """
+
+    slot_options = page.locator("[role='option']").filter(
+        has_text=re.compile(r"\d{1,2}:\d{2}\s*(AM|PM)", re.I)
+    )
+
+    expect(slot_options.first).to_be_visible(timeout=15000)
+
+    visible_slots = []
+
+    slot_count = slot_options.count()
+
+    for index in range(slot_count):
+        slot = slot_options.nth(index)
+
+        try:
+            if slot.is_visible():
+                visible_slots.append(slot)
+
+        except Exception:
+            continue
+
+    if not visible_slots:
+        raise AssertionError(f"No visible follow-up slots found. Current URL: {page.url}")
+
+    selected_slot = random.choice(visible_slots)
+    selected_slot_text = clean_visible_text(selected_slot.inner_text())
+
+    click_when_visible(selected_slot, timeout=10000)
+
+    return selected_slot_text
+
+
+def add_followup_note(page, note):
+    """
+    Adds note in follow-up popup.
+    """
+
+    notes_tab = page.get_by_text("Notes", exact=True).first
+
+    if click_if_visible(notes_tab, timeout=5000):
+        page.wait_for_timeout(500)
+
+    note_box = page.get_by_role(
+        "textbox",
+        name=re.compile(r"Add Note", re.I),
+    ).first
+
+    fill_when_visible(note_box, note, timeout=10000)
+
+    save_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^Save$", re.I),
+    ).first
+
+    click_when_visible(save_button, timeout=10000)
+
+    page.wait_for_timeout(1000)
+
+
+def add_followup_attachment(page, attachment_path):
+    """
+    Adds attachment in follow-up popup.
+    """
+
+    attachment_button = page.locator("#actnImg_BUS_notAttch").first
+
+    upload_file_using_file_chooser(
+        page,
+        upload_button_locator=attachment_button,
+        attachment_path=attachment_path,
+    )
+
+    page.wait_for_timeout(1000)
+
+
+def create_followup_from_appointment_details(page, attachment_path):
+    """
+    Creates a follow-up appointment from appointment details.
+
+    Steps:
+    - Click Follow Up from appointment details page
+    - Wait for follow-up Create Appointment page
+    - Select random future date
+    - Select random slot
+    - Add note
+    - Add attachment
+    - Confirm
+    """
+
+    followup_note = generate_random_automation_note("Automation follow-up note")
+
+    if not is_followup_create_page(page):
+        open_more_actions_menu(page)
+
+        followup_button = page.get_by_role(
+            "button",
+            name=re.compile(r"Follow Up", re.I),
+        ).first
+
+        click_when_visible(followup_button, timeout=15000)
+
+        wait_for_network_idle(page)
+
+    wait_for_followup_create_form(page)
+
+    selected_date = select_random_future_followup_date(page)
+
+    page.wait_for_timeout(1000)
+
+    selected_slot = select_random_followup_slot(page)
+
+    add_followup_note(page, followup_note)
+
+    add_followup_attachment(page, attachment_path)
+
+    confirm_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^Confirm$", re.I),
+    ).first
+
+    click_when_visible(confirm_button, timeout=15000)
+
+    wait_for_success_message_to_disappear(page)
+
+    return {
+        "followup_date": str(selected_date),
+        "followup_slot": selected_slot,
+        "followup_note": followup_note,
+    }
+
+
+def wait_for_reschedule_form(page):
+    """
+    Waits until the reschedule dialog is visible.
+    """
+
+    dialog = page.get_by_role("dialog").filter(
+        has_text=re.compile(r"Reschedule Booking", re.I)
+    ).first
+
+    expect(dialog).to_be_visible(timeout=20000)
+
+    expect(dialog.get_by_text("Appointment Date", exact=True)).to_be_visible(
+        timeout=20000
+    )
+
+    expect(dialog.get_by_text("Choose Slot", exact=True)).to_be_visible(
+        timeout=20000
+    )
+
+    expect(
+        dialog.get_by_role("button", name=re.compile(r"^Reschedule$", re.I)).first
+    ).to_be_visible(timeout=20000)
+
+
+def open_reschedule_calendar(page):
+    """
+    Opens the calendar inside the reschedule dialog by clicking the calendar icon.
+    """
+
+    dialog = page.get_by_role("dialog").filter(
+        has_text=re.compile(r"Reschedule Booking", re.I)
+    ).first
+
+    expect(dialog).to_be_visible(timeout=10000)
+
+    calendar_button = dialog.locator(
+        "button.p-datepicker-trigger, "
+        ".p-datepicker-trigger, "
+        "button.p-button-icon-only"
+    ).first
+
+    click_when_visible(calendar_button, timeout=10000)
+
+    datepicker = page.locator(".p-datepicker").last
+    expect(datepicker).to_be_visible(timeout=10000)
+
+
+def select_random_future_reschedule_date(page):
+    """
+    Opens the reschedule calendar icon and selects a random future date.
+
+    It first tries future enabled dates in the visible month.
+    If no future date is available, it moves to next month and selects a random date.
+    """
+
+    open_reschedule_calendar(page)
+
+    datepicker = page.locator(".p-datepicker").last
+
+    today = date.today()
+
+    header_text = ""
+
+    try:
+        header_text = clean_visible_text(
+            datepicker.locator(".p-datepicker-title").inner_text()
+        )
+    except Exception:
+        header_text = ""
+
+    day_candidates = datepicker.locator(
+        "td:not(.p-disabled):not(.p-datepicker-other-month) "
+        "span:not(.p-disabled), "
+        "td:not(.p-disabled):not(.p-datepicker-other-month) "
+        "button:not([disabled])"
+    ).filter(
+        has_text=re.compile(r"^\d{1,2}$")
+    )
+
+    visible_future_days = []
+
+    day_count = day_candidates.count()
+
+    for index in range(day_count):
+        day_locator = day_candidates.nth(index)
+
+        try:
+            if not day_locator.is_visible():
+                continue
+
+            day_text = clean_visible_text(day_locator.inner_text())
+
+            if not day_text.isdigit():
+                continue
+
+            day_number = int(day_text)
+
+            # If current visible calendar is the current month/year,
+            # choose only dates after today.
+            if (
+                today.strftime("%B").lower() in header_text.lower()
+                and str(today.year) in header_text
+                and day_number <= today.day
+            ):
+                continue
+
+            visible_future_days.append(day_locator)
+
+        except Exception:
+            continue
+
+    if not visible_future_days:
+        next_month_button = page.get_by_role(
+            "button",
+            name=re.compile(r"Next month", re.I),
+        ).first
+
+        click_when_visible(next_month_button, timeout=10000)
+
+        page.wait_for_timeout(500)
+
+        day_candidates = datepicker.locator(
+            "td:not(.p-disabled):not(.p-datepicker-other-month) "
+            "span:not(.p-disabled), "
+            "td:not(.p-disabled):not(.p-datepicker-other-month) "
+            "button:not([disabled])"
+        ).filter(
+            has_text=re.compile(r"^\d{1,2}$")
+        )
+
+        visible_future_days = []
+
+        day_count = day_candidates.count()
+
+        for index in range(day_count):
+            day_locator = day_candidates.nth(index)
+
+            try:
+                if day_locator.is_visible():
+                    visible_future_days.append(day_locator)
+            except Exception:
+                continue
+
+    if not visible_future_days:
+        raise AssertionError(
+            f"No enabled future date found in reschedule calendar. Current URL: {page.url}"
+        )
+
+    selected_day = random.choice(visible_future_days)
+    selected_day_text = clean_visible_text(selected_day.inner_text())
+
+    click_when_visible(selected_day, timeout=10000)
+
+    page.wait_for_timeout(1000)
+
+    return selected_day_text
+
+
+
+def select_random_reschedule_slot(page):
+    """
+    Randomly selects one visible reschedule time slot.
+    """
+
+    slot_options = page.locator("[role='option']").filter(
+        has_text=re.compile(r"\d{1,2}:\d{2}\s*(AM|PM)", re.I)
+    )
+
+    expect(slot_options.first).to_be_visible(timeout=20000)
+
+    visible_slots = []
+
+    slot_count = slot_options.count()
+
+    for index in range(slot_count):
+        slot = slot_options.nth(index)
+
+        try:
+            if slot.is_visible():
+                visible_slots.append(slot)
+
+        except Exception:
+            continue
+
+    if not visible_slots:
+        raise AssertionError(
+            f"No visible reschedule slots found. Current URL: {page.url}"
+        )
+
+    selected_slot = random.choice(visible_slots)
+    selected_slot_text = clean_visible_text(selected_slot.inner_text())
+
+    click_when_visible(selected_slot, timeout=10000)
+
+    return selected_slot_text
+
+
+def assert_reschedule_success_message(page):
+    """
+    Asserts that a success message appears after rescheduling.
+    """
+
+    success_message = page.locator(
+        ".p-toast-message-success, "
+        ".p-toast-message, "
+        ".toast-success, "
+        ".mat-mdc-snack-bar-container, "
+        "[role='alert']"
+    ).filter(
+        has_text=re.compile(r"success|reschedule|updated", re.I)
+    ).first
+
+    expect(success_message).to_be_visible(timeout=15000)
+
+    try:
+        expect(success_message).to_be_hidden(timeout=20000)
+    except Exception:
+        page.wait_for_timeout(2000)
+
+
+def reschedule_random_appointment_from_details(page):
+    """
+    Reschedules one random appointment.
+
+    Steps:
+    - Open More Actions if needed
+    - Click Reschedule
+    - Click calendar icon
+    - Select random future date
+    - Select random slot
+    - Click Reschedule
+    - Assert success message
+    """
+
+    open_more_actions_menu(page)
+
+    reschedule_button = get_appointment_action_button(page, "Reschedule")
+
+    click_when_visible(reschedule_button, timeout=15000)
+
+    wait_for_reschedule_form(page)
+
+    selected_date = select_random_future_reschedule_date(page)
+
+    selected_slot = select_random_reschedule_slot(page)
+
+    dialog = page.get_by_role("dialog").filter(
+        has_text=re.compile(r"Reschedule Booking", re.I)
+    ).first
+
+    confirm_reschedule_button = dialog.get_by_role(
+        "button",
+        name=re.compile(r"^Reschedule$", re.I),
+    ).first
+
+    click_when_visible(confirm_reschedule_button, timeout=15000)
+
+    assert_reschedule_success_message(page)
+
+    return {
+        "reschedule_date": selected_date,
+        "reschedule_slot": selected_slot,
+    }
+
+
+def perform_random_appointment_reschedule(page):
+    """
+    Complete reschedule flow:
+    - Open appointment dashboard from sidebar
+    - Randomly select one visible appointment
+    - Open appointment details
+    - Reschedule with random future date and random slot
+    """
+
+    open_appointments_dashboard_from_sidebar(page)
+
+    selected_appointment = open_random_appointment_details_from_dashboard(page)
+
+    reschedule_result = reschedule_random_appointment_from_details(page)
+
+    return {
+        "selected_appointment": selected_appointment,
+        "reschedule_result": reschedule_result,
+    }
+
+def perform_random_appointment_detail_actions(page, attachment_path):
+    """
+    Complete flow:
+    - Open appointment dashboard from sidebar
+    - Randomly select one visible appointment
+    - Open appointment details
+    - Send random message
+    - Send attachment
+    - Create follow-up with random future date, random slot, note, and attachment
+
+    Function name kept same to avoid changing existing test imports.
+    """
+
+    open_appointments_dashboard_from_sidebar(page)
+
+    selected_appointment = open_random_appointment_details_from_dashboard(page)
+
+    sent_message = send_random_message_from_appointment_details(page)
+
+    send_attachment_from_appointment_details(page, attachment_path)
+
+    followup_details = create_followup_from_appointment_details(page, attachment_path)
+
+    return {
+        "selected_appointment": selected_appointment,
+        "sent_message": sent_message,
+        "followup_details": followup_details,
+    }
+
+def is_followup_create_page(page):
+    """
+    Returns True if the current page is the follow-up appointment creation page.
+    """
+
+    return "type=followup" in page.url
+
+
+def wait_for_followup_create_form(page):
+    """
+    Waits until the follow-up Create Appointment form is visible.
+    """
+
+    expect(
+        page.get_by_role("heading", name=re.compile(r"Create Appointment", re.I))
+    ).to_be_visible(timeout=20000)
+
+    expect(page.get_by_text("Select Service", exact=True)).to_be_visible(
+        timeout=20000
+    )
+
+    expect(page.get_by_text("Select Slots", exact=True)).to_be_visible(
+        timeout=20000
+    )
+
+    expect(
+        page.get_by_role("button", name=re.compile(r"^Confirm$", re.I)).first
+    ).to_be_visible(timeout=20000)
+
+
+def open_random_appointment_details_from_dashboard(page):
+    """
+    Randomly selects one visible appointment accordion/tab from the
+    appointment dashboard and opens its details page.
+    """
+
+    appointment_tabs = page.locator("[role='tab']").filter(
+        has_text=re.compile(r"\d{1,2}:\d{2}\s*(AM|PM)", re.I)
+    )
+
+    expect(appointment_tabs.first).to_be_visible(timeout=20000)
+
+    visible_appointment_tabs = []
+
+    tab_count = appointment_tabs.count()
+
+    for index in range(tab_count):
+        appointment_tab = appointment_tabs.nth(index)
+
+        try:
+            if appointment_tab.is_visible():
+                visible_appointment_tabs.append(appointment_tab)
+
+        except Exception:
+            continue
+
+    if not visible_appointment_tabs:
+        raise AssertionError(
+            f"No visible appointment accordion/tab found. Current URL: {page.url}"
+        )
+
+    random_appointment_tab = random.choice(visible_appointment_tabs)
+
+    selected_appointment_text = clean_visible_text(
+        random_appointment_tab.inner_text()
+    )
+
+    click_when_visible(random_appointment_tab, timeout=10000)
+
+    details_button = page.get_by_role(
+        "button",
+        name=re.compile(r"(Assign Myself\s*)?View Details|View Details", re.I),
+    ).first
+
+    click_when_visible(details_button, timeout=15000)
+
+    wait_for_network_idle(page)
+
+    assert_appointment_details_opened(page)
+
+    return selected_appointment_text
