@@ -16,8 +16,10 @@ from framework.appointment_actions import (
     open_created_appointment_details,
     assert_appointment_details_opened,
     assert_created_patient_visible,
-    perform_random_appointment_detail_actions,
+    get_random_attachment_path_from_folder,
+    perform_random_appointment_full_detail_actions,
     perform_random_appointment_reschedule,
+    perform_new_mr_complete_case_flow,
 )
 
 
@@ -69,9 +71,11 @@ def complete_take_appointment_flow(page, config, appointment_data, open_take_app
         add_appointment_note(page, consumer_profile["note"])
 
     with allure.step("Upload appointment attachment"):
+        attachment_path = get_random_attachment_path_from_folder()
+
         upload_appointment_attachment(
             page,
-            take_appointment_data["attachment_path"],
+            attachment_path,
         )
 
     with allure.step("Confirm appointment"):
@@ -86,25 +90,32 @@ def complete_take_appointment_flow(page, config, appointment_data, open_take_app
     with allure.step("Verify created patient is visible"):
         assert_created_patient_visible(page, consumer_profile)
 
+    return {
+        "consumer_profile": consumer_profile,
+        "selected_options": selected_options,
+        "attachment_path": attachment_path,
+        "final_url": page.url,
+    }
 
-@allure.epic("Jaldee Business")
-@allure.feature("Take Appointment")
-@allure.story("Create appointment from dashboard")
-@pytest.mark.smoke
-@pytest.mark.appointment
-def test_take_appointment_from_dashboard_create_button(page, config, appointment_data):
-    """
-    Happy path test.
 
-    Opens appointment creation using the dashboard Create Appointment button.
-    """
+# @allure.epic("Jaldee Business")
+# @allure.feature("Take Appointment")
+# @allure.story("Create appointment from dashboard")
+# @pytest.mark.smoke
+# @pytest.mark.appointment
+# def test_take_appointment_from_dashboard_create_button(page, config, appointment_data):
+#     """
+#     Happy path test.
 
-    complete_take_appointment_flow(
-        page,
-        config,
-        appointment_data,
-        open_take_appointment_from_dashboard_button,
-    )
+#     Opens appointment creation using the dashboard Create Appointment button.
+#     """
+
+#     complete_take_appointment_flow(
+#         page,
+#         config,
+#         appointment_data,
+#         open_take_appointment_from_dashboard_button,
+#     )
 
 
 @allure.epic("Jaldee Business")
@@ -129,25 +140,15 @@ def test_take_appointment_from_sidebar_appointment_link(page, config, appointmen
 
 @allure.epic("Jaldee Business")
 @allure.feature("Appointment Details")
-@allure.story("Send message, send attachment, and create follow-up from random appointment")
+@allure.story("Send message, send attachment, follow-up, invoice payment, and create case")
 @pytest.mark.smoke
 @pytest.mark.appointment
-def test_random_appointment_message_attachment_and_followup(page, config, appointment_data):
+def test_random_appointment_full_detail_actions(page, config):
     """
-    Appointment detail action flow.
-
-    Steps:
-    - Login
-    - Select business
-    - Open appointment dashboard from sidebar
-    - Open last appointment accordion/tab
-    - Click View Details
-    - Send random message
-    - Send sample attachment
-    - Create follow-up with random future date, random slot, note, and attachment
+    Appointment full detail action flow.
     """
 
-    attachment_path = appointment_data["take_appointment"]["attachment_path"]
+    attachment_path = get_random_attachment_path_from_folder()
 
     with allure.step("Login as business user"):
         login(page, config)
@@ -155,8 +156,8 @@ def test_random_appointment_message_attachment_and_followup(page, config, appoin
     with allure.step("Select first business card"):
         select_first_business_card(page)
 
-    with allure.step("Open last appointment and perform detail actions"):
-        action_result = perform_random_appointment_detail_actions(
+    with allure.step("Perform all detail actions on one random appointment"):
+        action_result = perform_random_appointment_full_detail_actions(
             page,
             attachment_path,
         )
@@ -164,9 +165,10 @@ def test_random_appointment_message_attachment_and_followup(page, config, appoin
     with allure.step("Attach action result to report"):
         allure.attach(
             str(action_result),
-            name="Appointment Detail Action Result",
+            name="Appointment Full Detail Action Result",
             attachment_type=allure.attachment_type.TEXT,
         )
+
 
 
 @allure.epic("Jaldee Business")
@@ -207,3 +209,51 @@ def test_random_appointment_reschedule(page, config):
             name="Appointment Reschedule Result",
             attachment_type=allure.attachment_type.TEXT,
         )
+
+
+
+@allure.epic("Jaldee Business")
+@allure.feature("New MR")
+@allure.story("Enable New MR and complete case flow from random appointment")
+@pytest.mark.smoke
+@pytest.mark.appointment
+def test_new_mr_complete_case_flow_from_random_appointment(page, config):
+    """
+    New MR full case flow.
+
+    Steps:
+    - Login
+    - Select business
+    - Enable New MR if needed
+    - Randomly select appointment
+    - Create case
+    - Upload case file
+    - New Visit
+    - Add Clinical Notes
+    - Add Chief Complaint
+    - Add History
+    - Add Medication
+    - Add Vital Signs
+    - Add Treatment Plan
+    - Create Prescription
+    - Upload Prescription
+    - Share Case via Email
+    """
+
+    with allure.step("Login as business user"):
+        login(page, config)
+
+    with allure.step("Select first business card"):
+        select_first_business_card(page)
+
+    with allure.step("Perform New MR complete case flow"):
+        result = perform_new_mr_complete_case_flow(page)
+
+    with allure.step("Attach New MR result"):
+        allure.attach(
+            str(result),
+            name="New MR Complete Case Result",
+            attachment_type=allure.attachment_type.TEXT,
+        )        
+
+

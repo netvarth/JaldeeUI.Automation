@@ -1,5 +1,5 @@
 import re
-from playwright.sync_api import expect
+from playwright.sync_api import expect, TimeoutError as PlaywrightTimeoutError
 
 from framework import selectors
 from framework.common import (
@@ -9,14 +9,94 @@ from framework.common import (
     click_when_visible,
 )
 
+def is_already_logged_in(page):
+    """
+    Returns True if the browser is already inside the business app.
+    """
+
+    if "/business/dashboard" in page.url:
+        return True
+
+    if "/business/" in page.url and "/business/login" not in page.url:
+        return True
+
+    dashboard_markers = [
+        page.get_by_text(re.compile(r"Good Morning|Good Afternoon|Good Evening", re.I)).first,
+        page.get_by_role("button", name=re.compile(r"Create Appointment", re.I)).first,
+        page.get_by_text(re.compile(r"Vision Hospital", re.I)).first,
+    ]
+
+    for marker in dashboard_markers:
+        try:
+            expect(marker).to_be_visible(timeout=1000)
+            return True
+        except Exception:
+            continue
+
+    return False
+
+
 
 def open_login_page(page, config):
     """
     Opens the Jaldee business login page.
+
+    If an existing session redirects to dashboard, do not wait for login fields.
     """
 
-    page.goto(config["login_url"])
+    try:
+        page.goto(
+            config["login_url"],
+            wait_until="domcontentloaded",
+            timeout=60000,
+        )
+
+    except PlaywrightTimeoutError:
+        page.goto(
+            config["login_url"],
+            wait_until="commit",
+            timeout=60000,
+        )
+
     wait_for_page_ready(page)
+
+    if is_already_logged_in(page):
+        return "already_logged_in"
+
+    expect(
+        page.get_by_role("textbox", name=re.compile(r"Enter Login ID", re.I)).first
+    ).to_be_visible(timeout=30000)
+
+    return "login_page"
+
+
+
+# def is_already_logged_in(page):
+#     """
+#     Returns True if the browser is already inside the business app.
+#     """
+
+#     if "/business/dashboard" in page.url:
+#         return True
+
+#     if "/business/" in page.url and "/business/login" not in page.url:
+#         return True
+
+#     dashboard_markers = [
+#         page.get_by_text(re.compile(r"Good Morning|Good Afternoon|Good Evening", re.I)).first,
+#         page.get_by_role("button", name=re.compile(r"Create Appointment", re.I)).first,
+#         page.get_by_text(re.compile(r"Vision Hospital", re.I)).first,
+#     ]
+
+#     for marker in dashboard_markers:
+#         try:
+#             expect(marker).to_be_visible(timeout=1000)
+#             return True
+#         except Exception:
+#             continue
+
+#     return False    
+
 
 
 def get_visible_locator_from_candidates(candidates):
@@ -121,7 +201,8 @@ def login(page, config):
     """
     Reusable login function.
 
-    All tests should call this function instead of writing login steps again.
+    If the browser is already logged in and redirects to dashboard,
+    skip login form entry.
     """
 
     if not config["login_id"] or not config["password"]:
@@ -130,7 +211,10 @@ def login(page, config):
             "Please add them in your .env file."
         )
 
-    open_login_page(page, config)
+    login_page_status = open_login_page(page, config)
+
+    if login_page_status == "already_logged_in":
+        return
 
     login_id_input = get_login_id_input(page)
     fill_when_visible(login_id_input, config["login_id"])
