@@ -249,3 +249,9 @@ scripts/run_with_reportportal.ps1
 Uninstall old packages:
 
 pip uninstall pytest-reportportal reportportal-client -y
+
+commands for bookings, order and IP are:-
+
+pytest tests/test_take_appointment.py --account booking
+pytest tests/test_order.py --account order
+pytest tests/test_ip.py --account ip

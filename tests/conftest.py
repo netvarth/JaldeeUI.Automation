@@ -1,4 +1,5 @@
 import logging
+import os
 
 import allure
 import pytest
@@ -7,6 +8,15 @@ from framework.config import get_config
 from framework.auth import logout
 from framework.test_data import load_json_test_data
 from framework import selectors as app_selectors
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--account",
+        action="store",
+        default=os.getenv("TEST_ACCOUNT", "booking"),
+        help="Provider account to use: booking, order, ip",
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -22,12 +32,20 @@ def configure_playwright_test_id(playwright):
 
 
 @pytest.fixture(scope="session")
-def config():
+def config(request):
     """
     Loads .env configuration once for all tests.
+
+    Account can be selected from command line:
+        --account booking
+        --account order
+        --account ip
     """
 
-    return get_config()
+    account_name = request.config.getoption("--account")
+
+    return get_config(account_name)
+
 
 
 @pytest.fixture(scope="session")
