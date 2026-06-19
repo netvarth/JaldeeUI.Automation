@@ -1,6 +1,8 @@
 
 from Framework.common_utils import *
 from Framework.consumer_common_utils import *
+from selenium.webdriver.common.keys import Keys
+from pathlib import Path
 
 driver = login
 
@@ -90,11 +92,11 @@ def test_create_sales_order_1(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
@@ -268,14 +270,14 @@ def test_create_sales_order_2(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
        
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//i[@class='pi pi-check'])[1]")
+        wait_and_click(login, By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']")
 
         
 
@@ -442,31 +444,6 @@ def test_create_sales_order_3(login):
                 (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
-        
-
-        # time.sleep(3)
-        # wait_and_locate_click(login, By.XPATH, "(//button[@id='btnBrowse_ORD_CrtItem'])[1]")
-
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//input[@type='checkbox' and contains(@class,'mdc-checkbox__native-control')])[2]"))
-        # ).click()
-
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "//button[span[normalize-space()='Select Item']]"))
-        # ).click()
-
-        # time.sleep(2)
-        # wait.until(
-        #     EC.presence_of_element_located(
-        #         (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
-        # ).click()
-
-        # time.sleep(2)
-        # wait_and_locate_click(login, By.XPATH, "(//i[@class='fa fa-caret-down'])[1]")
-
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
@@ -630,16 +607,16 @@ def test_create_sales_order_4(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//i[@class='pi pi-check'])[2]"))
+                (By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']"))
         ).click()
 
         
@@ -803,13 +780,7 @@ def test_create_sales_order_5(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+        wait_and_click(login, By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']")
 
         
 
@@ -821,16 +792,6 @@ def test_create_sales_order_5(login):
 
         message = get_toast_message(login)
         print("Toast message:", message)
-
-        # time.sleep(3)
-        # wait_and_locate_click(
-        #     driver, By.XPATH, "//button[@id='btnEdt_ORD_CrtItem']"
-        # )
-
-        # time.sleep(2)
-        # wait_and_locate_click(
-        #     driver, By.XPATH, "(//button[normalize-space()='Yes'])[1]"
-        # )
 
         time.sleep(2)
         wait_and_locate_click(
@@ -969,14 +930,9 @@ def test_create_sales_order_6(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+        wait_and_click(login, By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']")
 
         
 
@@ -1168,13 +1124,7 @@ def test_create_sales_order_8(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+        wait_and_click(login, By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']")
 
         
 
@@ -1245,7 +1195,7 @@ def test_create_sales_order_8(login):
     
 
 @allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Remove the Label from the order")
+@allure.title("Unassign the user from the order")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_create_sales_order_9(login):
     try:
@@ -1389,13 +1339,7 @@ def test_create_sales_order_10(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+        wait_and_click(login, By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']")
 
         
 
@@ -1537,14 +1481,14 @@ def test_create_sales_order_11(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
 
         time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
+        wait_and_click(login, By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']")
 
         
 
@@ -1625,67 +1569,136 @@ def test_create_sales_order_12(login):
             driver, By.XPATH, "(//button[@id='btnEdts_ORD_PurchsList'])[1]"
         )
 
-        wait_and_locate_click(
-            driver, By.XPATH, "(//p-dropdown[@id='selectCat_ORD_EdtPurchs'])[1]"
+        catalog_name = "Sale_catalog"
+
+        price = round(random.randint(2000, 6000) / 100, 2)
+        print("Entered sales price:", price)
+
+        catalog_dropdowns = driver.find_elements(
+            By.XPATH,
+            "//p-dropdown[@id='selectCat_ORD_EdtPurchs']"
         )
 
+        item_count = len(catalog_dropdowns)
+        print("Total items found:", item_count)
+
+        for i in range(1, item_count + 1):
+
+            # Locate catalog dropdown for current item
+            catalog_dropdown_xpath = f"(//p-dropdown[@id='selectCat_ORD_EdtPurchs'])[{i}]"
+
+            catalog_dropdown = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(
+                    (By.XPATH, catalog_dropdown_xpath)
+                )
+            )
+
+            driver.execute_script(
+                "arguments[0].scrollIntoView({block:'center'});",
+                catalog_dropdown
+            )
+            time.sleep(1)
+
+            # Click dropdown trigger
+            dropdown_trigger = catalog_dropdown.find_element(
+                By.XPATH,
+                ".//div[contains(@class,'p-dropdown-trigger')]"
+            )
+
+            driver.execute_script("arguments[0].click();", dropdown_trigger)
+            time.sleep(1)
+
+            # Select Sale_catalog from currently opened dropdown panel
+            catalog_option = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(
+                    (
+                        By.XPATH,
+                        "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+                        f"//li[@role='option' and (@aria-label='{catalog_name}' or .//span[normalize-space()='{catalog_name}'])]"
+                    )
+                )
+            )
+
+            driver.execute_script("arguments[0].click();", catalog_option)
+            time.sleep(1)
+
+            # Click outside to close dropdown
+            driver.find_element(By.TAG_NAME, "body").click()
+            time.sleep(1)
+
+            # Verify selected catalog without lambda
+            WebDriverWait(driver, 10).until(
+                EC.text_to_be_present_in_element(
+                    (By.XPATH, catalog_dropdown_xpath),
+                    catalog_name
+                )
+            )
+
+            selected_catalog_text = driver.find_element(
+                By.XPATH,
+                catalog_dropdown_xpath
+            ).text
+
+            print(f"Item {i} selected catalog text:", selected_catalog_text)
+
+            if catalog_name not in selected_catalog_text:
+                raise Exception(f"Catalog not selected for item {i}")
+
+            # Find the full item section that contains this catalog dropdown
+            item_section = catalog_dropdown.find_element(
+                By.XPATH,
+                "./ancestor::div[contains(@class,'row') or contains(@class,'card') or contains(@class,'ng-star-inserted')][1]"
+            )
+
+            # Find the sales price input inside the same item section
+            sell_price_element = item_section.find_element(
+                By.XPATH,
+                ".//input[@type='number']"
+            )
+
+            driver.execute_script(
+                "arguments[0].scrollIntoView({block:'center'});",
+                sell_price_element
+            )
+            time.sleep(1)
+
+            sell_price_element.click()
+            sell_price_element.send_keys(Keys.CONTROL, "a")
+            sell_price_element.send_keys(Keys.BACKSPACE)
+            time.sleep(1)
+
+            # Use JavaScript native setter only
+            driver.execute_script("""
+                const input = arguments[0];
+                const value = arguments[1];
+
+                const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                    window.HTMLInputElement.prototype,
+                    'value'
+                ).set;
+
+                nativeInputValueSetter.call(input, value);
+
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                input.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
+            """, sell_price_element, str(price))
+
+            time.sleep(1)
+
+            # Click outside to force row update
+            driver.find_element(By.TAG_NAME, "body").click()
+            time.sleep(1)
+
+            entered_value = sell_price_element.get_attribute("value")
+            print(f"Item {i} entered sales price:", entered_value)
+
+            if entered_value == "":
+                raise Exception(f"Sales price not entered for item {i}")
+
         time.sleep(1)
-        catalog_element = driver.find_element(By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sale_catalog'])[1]")
-        scroll_to_element(driver, catalog_element)
-        time.sleep(2)
-        catalog_element.click()
 
-        price = random.randint(2000, 6000)
-        print(price)
-
-        time.sleep(1)
-        sell_price_element = driver.find_element(By.XPATH, "(//input[@type='number'])[1]")
-        sell_price_element.click()
-        time.sleep(1)
-        sell_price_element.clear()
-        sell_price_element.send_keys(price)
-
-
-
-        time.sleep(1)
-
-        # wait_and_locate_click(
-        #     driver, By.XPATH, "(//p-dropdown[@id='selectCat_ORD_EdtPurchs'])[2]"
-        # )
         
-        # time.sleep(1)
-        # catalog_element = driver.find_element(By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sale_catalog'])[1]")
-        # scroll_to_element(driver, catalog_element)
-        # time.sleep(2)
-        # catalog_element.click()
-
-        # time.sleep(1)
-        # sell_price_element = driver.find_element(By.XPATH, "(//input[@type='number'])[2]")
-        # sell_price_element.click()
-        # time.sleep(1)
-        # sell_price_element.clear()
-        # sell_price_element.send_keys(price)
-
-        # time.sleep(1)
-
-        # wait_and_locate_click(
-        #     driver, By.XPATH, "(//p-dropdown[@id='selectCat_ORD_EdtPurchs'])[3]"
-        # )
-        
-        # time.sleep(1)
-        # catalog_element = driver.find_element(By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Sale_catalog'])[1]")
-        # scroll_to_element(driver, catalog_element)
-        # time.sleep(2)
-        # catalog_element.click()
-
-        # time.sleep(1)
-        # sell_price_element = driver.find_element(By.XPATH, "(//input[@type='number'])[3]")
-        # sell_price_element.click()
-        # time.sleep(1)
-        # sell_price_element.clear()
-        # sell_price_element.send_keys(price)
-
-
         time.sleep(2)
 
         wait_and_locate_click(
@@ -1739,270 +1752,246 @@ def test_create_sales_order_12(login):
                 (By.XPATH, "//tbody[contains(@class,'p-datatable-tbody')]")
             ))
 
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "(//button[@id='btnViewCata_ORD_OrdCat'])[1]"
+        # )
+
+        # time.sleep(2)
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "(//button[@id='btnEdtVItem_ORD_CatDet'])[1]"
+        # )
+
+
         wait_and_locate_click(
             driver, By.XPATH, "(//button[@id='btnViewCata_ORD_OrdCat'])[1]"
         )
 
         time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//button[@id='btnEdtVItem_ORD_CatDet'])[1]"
-        )
 
-        # Calculate expected actual price
-        expected_price = round(price / 100, 2)
+        expected_price = round(price / 10, 2)
         print("Expected Actual Price:", expected_price)
 
-        # Wait for table rows
-        wait.until(EC.presence_of_element_located(
-            (By.XPATH, "//tbody[contains(@class,'p-datatable-tbody')]//tr")
-        ))
 
-        # Get all Sales Price input fields
-        price_inputs = driver.find_elements(
-            By.XPATH,
-            "//input[@id='inputPrice_ORD_AttrbtSltn']"
+        # -----------------------------
+        # 1. Verify Item_1 Green only
+        # -----------------------------
+
+        item_name = "Item_1"
+        attribute_name = "Item_1 Green"
+
+        print("Checking:", attribute_name)
+
+        item_row = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    f"//tr[.//*[contains(normalize-space(),'{item_name}')]]"
+                )
+            )
         )
 
-        for index, input_field in enumerate(price_inputs, start=1):
+        driver.execute_script("arguments[0].scrollIntoView({block:'center'});", item_row)
+        time.sleep(1)
 
-            # Get value from input
-            actual_value = input_field.get_attribute("value")
+        edit_button = item_row.find_element(
+            By.XPATH,
+            ".//button[@id='btnEdtVItem_ORD_CatDet' or normalize-space()='Edit Details']"
+        )
 
-            if actual_value == "":
-                raise Exception(f"Row {index} price is empty")
+        driver.execute_script("arguments[0].click();", edit_button)
+        print("Opened Item_1 edit details")
+        time.sleep(2)
 
-            actual_value = float(actual_value)
+        attribute_row = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    f"//tr[.//*[contains(normalize-space(),'{attribute_name}')]]"
+                )
+            )
+        )
 
-            print(f"Row {index} UI Price:", actual_value)
+        driver.execute_script("arguments[0].scrollIntoView({block:'center'});", attribute_row)
+        time.sleep(1)
 
-            assert actual_value == expected_price, \
-                f"Price mismatch in row {index}. Expected: {expected_price}, Got: {actual_value}"
+        price_input = attribute_row.find_element(
+            By.XPATH,
+            ".//input[@id='inputPrice_ORD_AttrbtSltn']"
+        )
 
-        print("✅ All catalog item selling prices are correct")
+        actual_value = price_input.get_attribute("value")
+
+        if actual_value == "":
+            raise Exception(f"{attribute_name} price is empty")
+
+        actual_value = float(actual_value)
+
+        print(f"{attribute_name} UI Price:", actual_value)
+
+        assert abs(actual_value - expected_price) < 0.01, (
+            f"Price mismatch for {attribute_name}. "
+            f"Expected: {expected_price}, Got: {actual_value}"
+        )
+
+        print(f"{attribute_name} price verified successfully")
+
+        # Click Save after Item_1 Green verification
+        save_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "(//button[normalize-space()='Save' or .//span[normalize-space()='Save']])[last()]"
+                )
+            )
+        )
+
+        driver.execute_script("arguments[0].scrollIntoView({block:'center'});", save_button)
+        time.sleep(1)
+        driver.execute_script("arguments[0].click();", save_button)
+
+        print("Clicked Save after Item_1 Green verification")
+        time.sleep(2)
+
+        msg = get_toast_message(driver)
+        print("Item_1 Save Toast Message:", msg)
+
+        time.sleep(2)
+
+
+        # -----------------------------
+        # 2. Verify Item_4 popup
+        # -----------------------------
+
+        item_name = "Item_4"
+
+        print("Checking:", item_name)
+
+        item_row = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    f"//tr[.//*[contains(normalize-space(),'{item_name}')]]"
+                )
+            )
+        )
+
+        driver.execute_script("arguments[0].scrollIntoView({block:'center'});", item_row)
+        time.sleep(1)
+
+        edit_button = item_row.find_element(
+            By.XPATH,
+            ".//button[@id='btnEdtVItem_ORD_CatDet' or normalize-space()='Edit Details']"
+        )
+
+        driver.execute_script("arguments[0].click();", edit_button)
+        print("Opened Item_4 edit details popup")
+        time.sleep(2)
+
+        # Verify Item_4 popup is opened
+        popup = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//*[contains(normalize-space(),'Edit Item Details')]"
+                )
+            )
+        )
+
+        # Get Sales Price input inside Item_4 popup
+        sales_price_input = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "//*[contains(normalize-space(),'Sales Price')]/following::input[1]"
+                )
+            )
+        )
+
+        actual_value = sales_price_input.get_attribute("value")
+
+        if actual_value == "":
+            raise Exception("Item_4 sales price is empty")
+
+        actual_value = float(actual_value)
+
+        print("Item_4 UI Price before update:", actual_value)
+
+        # If Item_4 price is not updated, update it inside popup
+        if abs(actual_value - expected_price) >= 0.01:
+            print(f"Item_4 price mismatch. Updating from {actual_value} to {expected_price}")
+
+            sales_price_input.click()
+            sales_price_input.send_keys(Keys.CONTROL, "a")
+            sales_price_input.send_keys(Keys.BACKSPACE)
+            time.sleep(1)
+
+            driver.execute_script("""
+                const input = arguments[0];
+                const value = arguments[1];
+
+                const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                    window.HTMLInputElement.prototype,
+                    'value'
+                ).set;
+
+                nativeInputValueSetter.call(input, value);
+
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+                input.dispatchEvent(new Event('change', { bubbles: true }));
+                input.dispatchEvent(new FocusEvent('blur', { bubbles: true }));
+            """, sales_price_input, str(expected_price))
+
+            time.sleep(1)
+
+        # Verify again after update
+        actual_value = float(sales_price_input.get_attribute("value"))
+
+        print("Item_4 UI Price after update:", actual_value)
+
+        assert abs(actual_value - expected_price) < 0.01, (
+            f"Price mismatch for Item_4. "
+            f"Expected: {expected_price}, Got: {actual_value}"
+        )
+
+        print("Item_4 price verified successfully")
+
+        # Scroll down popup and click Save
+        item4_save_button = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "(//button[normalize-space()='Save' or .//span[normalize-space()='Save']])[last()]"
+                )
+            )
+        )
+
+        driver.execute_script("arguments[0].scrollIntoView({block:'center'});", item4_save_button)
+        time.sleep(1)
+
+        item4_save_button = WebDriverWait(driver, 10).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "(//button[normalize-space()='Save' or .//span[normalize-space()='Save']])[last()]"
+                )
+            )
+        )
+
+        driver.execute_script("arguments[0].click();", item4_save_button)
+
+        print("Clicked Save after Item_4 verification")
+        time.sleep(2)
+
+        msg = get_toast_message(driver)
+        print("Item_4 Save Toast Message:", msg)
+
+        print("Item_1 Green and Item_4 selling prices are correct")
 
 
 
     except Exception as e:
         allure.attach(
             login.get_screenshot_as_png(),
-            name="full_page_error",
-            attachment_type=AttachmentType.PNG,
-        )
-        raise e
-    
-
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Add Item from Wishlist to Cart after adding it to Wishlist.")
-@pytest.mark.parametrize("url", [sales_order_consumer_scale_url])
-def test_create_sales_order_13(consumer_login):
-   
-   
-    try:
-        time.sleep(3)
-        wait = WebDriverWait(consumer_login, 30)
-        driver = consumer_login
-        time.sleep(2)
-
-
-        item_element = driver.find_element(By.XPATH, "//h2[normalize-space()='Categories']")
-        scroll_to_element(driver, item_element)
-        time.sleep(2)
-        
-        wait_and_locate_click(
-            driver, By.XPATH, "//div[contains(text(),'Item_1')]"
-        )
-
-        time.sleep(3)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//h3[normalize-space()='Item_1'])[1]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//button[@id='btnAddToCart'])[1]"
-        )
-
-        time.sleep(2)
-        wait_and_send_keys(
-            driver, By.XPATH, "(//input[@placeholder='81234 56789'])[1]", "8281276241"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//input[@type='checkbox'])[1]"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnSendOTP']"
-        )
-
-        time.sleep(2)
-
-        otp_digits = "5555"
-        # otp_digits = "55555"
-        # Wait for the OTP input fields to be present
-        otp_inputs = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, "//input[contains(@id, 'otp_')]")
-            )
-        )
-
-        # print("Number of OTP input fields:", len(otp_inputs))
-        # print(otp_inputs)
-
-        for i, otp_input in enumerate(otp_inputs):
-
-            # print(i)
-            # print(otp_input)
-            otp_input.send_keys(otp_digits[i])
-
-        consumer_login.find_element(By.XPATH, "//button[@id='btnVerifyOTP']").click()
-
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-        
-        time.sleep(3)
-        element_item = driver.find_element(By.XPATH, "//div[normalize-space()='Item_2']")
-        scroll_to_element(driver, element_item)
-        time.sleep(2)
-        element_item.click()
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[normalize-space()='Add to Wishlist']"
-        )
-
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-
-        time.sleep(3)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//i[@class='fa fa-heart-o wishlist-icon'])[1]"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//h3[normalize-space()='Item_2 Black']"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnAddToCart']"
-        )
-
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//img[@class='ms-1'])[1]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnCheckout']"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//div[contains(text(),'Net Banking')])[1]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
-        )
-
-        time.sleep(3)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
-        )
-
-        time.sleep(3)
-        # Store main window
-        main_window = driver.current_window_handle
-
-        # Wait for Razorpay iframe and switch
-        wait.until(
-            EC.frame_to_be_available_and_switch_to_it(
-                (By.CSS_SELECTOR, "iframe.razorpay-checkout-frame")
-            )
-        )
-
-        print("Switched to Razorpay iframe")
-
-        # Click Netbanking option
-        netbanking = wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//div[@data-testid='netbanking']")
-            )
-        )
-        netbanking.click()
-
-        print("Netbanking selected")
-
-        # Select bank (Example: State Bank of India)
-        bank = wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//span[contains(text(),'Kotak Mahindra Bank')]")
-            )
-        )
-        bank.click()
-
-        print("Bank selected")
-
-        # Exit iframe
-        driver.switch_to.default_content()
-
-        time.sleep(2)
-       # Store main window
-        main_window = driver.current_window_handle
-
-        print("Main window:", main_window)
-
-        # Wait for Razorpay simulator window
-        wait.until(lambda d: len(d.window_handles) > 1)
-
-        # Switch to Razorpay window
-        for window in driver.window_handles:
-            driver.switch_to.window(window)
-            if "mocksharp/payment" in driver.current_url:
-                print("Switched to Razorpay simulator:", driver.current_url)
-                break
-
-        # Wait for Success button
-        success_btn = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@data-val='S']"))
-        )
-
-        # Click success
-        driver.execute_script("arguments[0].click();", success_btn)
-
-        print("Success button clicked")
-
-        # Switch back to main window
-        driver.switch_to.window(main_window)
-
-        print("Returned to main window")
-
-
-        driver.implicitly_wait(30)
-        element_invoice = driver.find_element(By.XPATH, "//button[@id='btnInvoice']")
-        scroll_to_element(driver, element_invoice)
-        time.sleep(1)
-        element_invoice.click()
-
-
-        time.sleep(3)
-    except Exception as e:
-        allure.attach(
-            consumer_login.get_screenshot_as_png(),
             name="full_page_error",
             attachment_type=AttachmentType.PNG,
         )
@@ -2137,12 +2126,8 @@ def test_create_sales_order_14(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+                (By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelectTop']"))
         ).click()
-
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
-
         
 
         time.sleep(2)
@@ -2289,13 +2274,9 @@ def test_create_sales_order_15(login):
         time.sleep(2)
         wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+                (By.XPATH, "//button[@id='btnSltDn_ORD_ItemSelect']"))
         ).click()
 
-        time.sleep(2)
-        wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
-
-        
 
         time.sleep(2)
         wait_and_locate_click(
@@ -2434,12 +2415,6 @@ def test_create_sales_order_16(login):
         wait.until(
             EC.presence_of_element_located(
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
         ).click()
 
         time.sleep(2)
@@ -2625,12 +2600,6 @@ def test_create_sales_order_17(login):
         ).click()
 
         time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
-
-        time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
 
         
@@ -2808,11 +2777,6 @@ def test_create_sales_order_18(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
 
         time.sleep(2)
         wait.until(
@@ -2861,14 +2825,14 @@ def test_create_sales_order_18(login):
             driver, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]"
         )
 
-        wait_and_locate_click(
-            driver, By.XPATH, "//p-dropdown[@id='selectBatch_ORD_CrtItem']"
-        )
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "//p-dropdown[@id='selectBatch_ORD_CrtItem']"
+        # )
 
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//li[@id='p-highlighted-option']//span[@class='ng-star-inserted'][normalize-space()='278']"
-        )
+        # time.sleep(1)
+        # wait_and_locate_click(
+        #     driver, By.XPATH, "//li[@id='p-highlighted-option']//span[@class='ng-star-inserted'][normalize-space()='278']"
+        # )
 
         time.sleep(2)
         wait_and_locate_click(
@@ -2909,6 +2873,7 @@ def test_create_sales_order_18(login):
 
         time.sleep(2)
 
+
         rows = driver.find_elements(By.XPATH, "//table//tbody//tr")
 
         item_names = []
@@ -2918,10 +2883,13 @@ def test_create_sales_order_18(login):
 
         print("Items in order table:", item_names)
 
-        assert any("Item_1" in item for item in item_names), "Item_1 disappeared after label or user assignment"
-        assert any("Item_2" in item for item in item_names), "Item_2 disappeared after label or user assignment"
+        assert any("Item_1" in item for item in item_names), \
+            "Item_1 disappeared after label or user assignment"
 
-        print("Validation Passed: Items are still present after assigning label and user.")
+        assert any("Item_4" in item for item in item_names), \
+            "Item_4 disappeared after label or user assignment"
+
+        print("Validation Passed: Item_1 and Item_4 are still present after assigning label and user.")
         time.sleep(3)
 
     except Exception as e:
@@ -3037,235 +3005,7 @@ def test_create_sales_order_19(login):
         raise e
 
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("Add Item from to Cart edit qty")
-@pytest.mark.parametrize("url", [sales_order_consumer_scale_url])
-def test_create_sales_order_20(consumer_login):
-   
-   
-    try:
-        time.sleep(3)
-        wait = WebDriverWait(consumer_login, 30)
-        driver = consumer_login
-        time.sleep(2)
 
-
-        item_element = driver.find_element(By.XPATH, "//h2[normalize-space()='Categories']")
-        scroll_to_element(driver, item_element)
-        time.sleep(2)
-        
-        wait_and_locate_click(
-            driver, By.XPATH, "//div[contains(text(),'Item_1')]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//h3[normalize-space()='Item_2']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnAddToCart']"
-        )
-
-        time.sleep(2)
-        item_element_1 = driver.find_element(By.XPATH, "//div[normalize-space()='Item_6']")
-        scroll_to_element(driver, item_element_1)
-        time.sleep(2)
-        item_element_1.click()
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnAddToCart']"
-        )
-
-        time.sleep(3)
-        item_element_2 = driver.find_element(By.XPATH, "//div[normalize-space()='Item_1']")
-        scroll_to_element(driver, item_element_2)
-        time.sleep(2)
-        item_element_2.click()
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnAddToCart']"
-        )
-
-        time.sleep(2)
-
-        wait_and_locate_click(
-            driver, By.XPATH, "//img[@alt='Logo']"
-        )
-
-        time.sleep(2)
-        
-        item_element_3 = driver.find_element(By.XPATH, "//div[contains(text(),'Item_1')]")
-        scroll_to_element(driver, item_element_3)
-        time.sleep(2)
-        item_element_3.click()
-        time.sleep(2)
-    
-        item_element_4 = driver.find_element(By.XPATH, "//button[contains(text(),'Next ›')]")
-        scroll_to_element(driver, item_element_4)
-        time.sleep(2)
-        item_element_4.click()
-
-        time.sleep(2)
-
-        # Locate product card
-        product = wait.until(EC.presence_of_element_located((
-            By.XPATH, "//div[contains(@class,'product-card')][.//h3[text()='Item_8']]"
-        )))
-
-        # Hover over product
-        actions = ActionChains(driver)
-        actions.move_to_element(product).perform()
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//img[@alt='Change address'])[1]"
-        )
-
-        time.sleep(2)
-
-        # Locate product card
-        product = wait.until(EC.presence_of_element_located((
-            By.XPATH, "//div[contains(@class,'product-card')][.//h3[text()='Item_5']]"
-        )))
-
-        # Hover over product
-        actions = ActionChains(driver)
-        actions.move_to_element(product).perform()
-
-        time.sleep(2)
-
-        wait_and_locate_click(
-            driver, By.XPATH, "(//img[@alt='Change address'])[4]"
-        )
-
-        time.sleep(2)
-
-        # Locate product card
-        product = wait.until(EC.presence_of_element_located((
-            By.XPATH, "//div[contains(@class,'product-card')][.//h3[text()='Item_4']]"
-        )))
-
-        # Hover over product
-        actions = ActionChains(driver)
-        actions.move_to_element(product).perform()
-
-        time.sleep(2)
-
-        wait_and_locate_click(
-            driver, By.XPATH, "(//img[@alt='Change address'])[3]"
-        )
-
-        time.sleep(5)
-
-        wait_and_locate_click(
-            driver, By.XPATH, "(//img[@class='ms-1'])[1]"
-        )
-
-        time.sleep(2)
-        cart_image = driver.find_element(By.XPATH, "(//img[@class='ms-1'])[1]")
-        driver.execute_script("arguments[0].click();", cart_image)
-
-
-        time.sleep(2)
-        items_xpath = "//div[contains(@class,'cart-item-card')]"
-
-        items_count = len(driver.find_elements(By.XPATH, items_xpath))
-
-        for i in range(items_count):
-            for _ in range(2):
-                items = driver.find_elements(By.XPATH, items_xpath)
-                item = items[i]
-
-                plus_btn = item.find_element(By.XPATH, ".//button[normalize-space()='+']")
-
-                # 🔹 Scroll into view (center is IMPORTANT)
-                driver.execute_script(
-                    "arguments[0].scrollIntoView({block: 'center'});", plus_btn
-                )
-
-                time.sleep(0.5)
-
-                # 🔹 Wait until clickable
-                wait.until(EC.element_to_be_clickable(plus_btn))
-
-                try:
-                    plus_btn.click()
-                except:
-                    # 🔹 Fallback if intercepted
-                    driver.execute_script("arguments[0].click();", plus_btn)
-
-                time.sleep(0.5)
-
-
-        time.sleep(2)
-        element_placeorder = driver.find_element(By.XPATH, "//label[normalize-space()='NOTES']")
-        scroll_to_element(driver, element_placeorder)
-        time.sleep(2)
-        
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnCheckout']"
-        )
-
-        time.sleep(2)
-        wait_and_send_keys(
-            driver, By.XPATH, "(//input[@placeholder='81234 56789'])[1]", "9207206005"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//input[@type='checkbox'])[1]"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnSendOTP']"
-        )
-
-        time.sleep(2)
-
-        otp_digits = "5555"
-        # otp_digits = "55555"
-        # Wait for the OTP input fields to be present
-        otp_inputs = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, "//input[contains(@id, 'otp_')]")
-            )
-        )
-
-        # print("Number of OTP input fields:", len(otp_inputs))
-        # print(otp_inputs)
-
-        for i, otp_input in enumerate(otp_inputs):
-
-            # print(i)
-            # print(otp_input)
-            otp_input.send_keys(otp_digits[i])
-
-        consumer_login.find_element(By.XPATH, "//button[@id='btnVerifyOTP']").click()
-
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-
-        
-
-
-
-
-
-
-
-
-    except Exception as e:
-        allure.attach(
-            consumer_login.get_screenshot_as_png(),
-            name="full_page_error",
-            attachment_type=AttachmentType.PNG,
-        )
-        raise e
     
 
 @allure.severity(allure.severity_level.CRITICAL)
@@ -3370,196 +3110,8 @@ def test_create_sales_order_21(login):
         )
         raise e
 
-@allure.severity(allure.severity_level.CRITICAL)
-@allure.title("")
-@pytest.mark.parametrize("url", [sales_order_consumer_scale_url])
-def test_create_sales_order_22(consumer_login):
-   
-   
-    try:
-        time.sleep(3)
-        wait = WebDriverWait(consumer_login, 30)
-        driver = consumer_login
-        time.sleep(2)
 
-
-        item_element = driver.find_element(By.XPATH, "//h2[normalize-space()='Categories']")
-        scroll_to_element(driver, item_element)
-        time.sleep(2)
-        
-        wait_and_locate_click(
-            driver, By.XPATH, "//div[contains(text(),'Item_1')]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//h3[normalize-space()='Item_1'])[1]"
-        )
-
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[normalize-space()='+']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//button[@id='btnAddToCart'])[1]"
-        )
-
-
-        time.sleep(2)
-        wait_and_send_keys(
-            driver, By.XPATH, "(//input[@placeholder='81234 56789'])[1]", "9207206005"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//input[@type='checkbox'])[1]"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnSendOTP']"
-        )
-
-        time.sleep(2)
-
-        otp_digits = "5555"
-        # otp_digits = "55555"
-        # Wait for the OTP input fields to be present
-        otp_inputs = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_all_elements_located(
-                (By.XPATH, "//input[contains(@id, 'otp_')]")
-            )
-        )
-
-        # print("Number of OTP input fields:", len(otp_inputs))
-        # print(otp_inputs)
-
-        for i, otp_input in enumerate(otp_inputs):
-
-            # print(i)
-            # print(otp_input)
-            otp_input.send_keys(otp_digits[i])
-
-        consumer_login.find_element(By.XPATH, "//button[@id='btnVerifyOTP']").click()
-
-        msg = get_toast_message(driver)
-        print("Toast Message :", msg)
-        
-        time.sleep(3)
     
-        wait_and_locate_click(
-            driver, By.XPATH, "(//img[@class='ms-1'])[1]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnCheckout']"
-        )
-
-        time.sleep(1)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "(//div[contains(text(),'Net Banking')])[1]"
-        )
-
-        time.sleep(2)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
-        )
-
-        time.sleep(3)
-        wait_and_locate_click(
-            driver, By.XPATH, "//button[@id='btnPrimaryAction']"
-        )
-
-        time.sleep(3)
-        # Store main window
-        main_window = driver.current_window_handle
-
-        # Wait for Razorpay iframe and switch
-        wait.until(
-            EC.frame_to_be_available_and_switch_to_it(
-                (By.CSS_SELECTOR, "iframe.razorpay-checkout-frame")
-            )
-        )
-
-        print("Switched to Razorpay iframe")
-
-        # Click Netbanking option
-        netbanking = wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//div[@data-testid='netbanking']")
-            )
-        )
-        netbanking.click()
-
-        print("Netbanking selected")
-
-        # Select bank (Example: State Bank of India)
-        bank = wait.until(
-            EC.element_to_be_clickable(
-                (By.XPATH, "//span[contains(text(),'Kotak Mahindra Bank')]")
-            )
-        )
-        bank.click()
-
-        print("Bank selected")
-
-        # Exit iframe
-        driver.switch_to.default_content()
-
-        time.sleep(2)
-       # Store main window
-        main_window = driver.current_window_handle
-
-        print("Main window:", main_window)
-
-        # Wait for Razorpay simulator window
-        wait.until(lambda d: len(d.window_handles) > 1)
-
-        # Switch to Razorpay window
-        for window in driver.window_handles:
-            driver.switch_to.window(window)
-            if "mocksharp/payment" in driver.current_url:
-                print("Switched to Razorpay simulator:", driver.current_url)
-                break
-
-        # Wait for Success button
-        success_btn = wait.until(
-            EC.element_to_be_clickable((By.XPATH, "//button[@data-val='S']"))
-        )
-
-        # Click success
-        driver.execute_script("arguments[0].click();", success_btn)
-
-        print("Success button clicked")
-
-        # Switch back to main window
-        driver.switch_to.window(main_window)
-
-        print("Returned to main window")
-
-
-        driver.implicitly_wait(30)
-        element_invoice = driver.find_element(By.XPATH, "//button[@id='btnInvoice']")
-        scroll_to_element(driver, element_invoice)
-        time.sleep(1)
-        element_invoice.click()
-
-
-        time.sleep(3)
-    except Exception as e:
-        allure.attach(
-            consumer_login.get_screenshot_as_png(),
-            name="full_page_error",
-            attachment_type=AttachmentType.PNG,
-        )
-        raise e
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Refund completed → Total Amount Due should be ₹0 (not negative)")
@@ -3652,9 +3204,9 @@ def test_create_sales_order_23(login):
 
         # Wait until confirmation popup appears
         WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.XPATH, "//app-confirm-paymentbox")
+                EC.visibility_of_element_located((By.XPATH, "//app-confirm-paymentbox")
+            )
         )
-    )
 
         # Click Yes button in confirmation popup
         time.sleep(2)
@@ -3673,12 +3225,11 @@ def test_create_sales_order_23(login):
         # Wait for refund popup/modal content to appear
         WebDriverWait(driver, 10).until(
             EC.visibility_of_element_located(
-        (
-            By.XPATH,
-            "//div[contains(@class,'modal-content') and .//th[normalize-space()='Status'] and .//button[normalize-space()='Refund']]"
+            (By.XPATH,
+                "//div[contains(@class,'modal-content') and .//th[normalize-space()='Status'] and .//button[normalize-space()='Refund']]"
+            )
         )
     )
-)
 
         # Click Refund button inside the popup
         wait_and_locate_click(driver, By.XPATH,
@@ -4495,11 +4046,11 @@ def test_create_sales_order_27(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
@@ -4623,11 +4174,11 @@ def test_create_sales_order_28(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
@@ -4745,11 +4296,11 @@ def test_create_sales_order_29(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
@@ -4868,11 +4419,11 @@ def test_create_sales_order_30(login):
                 (By.XPATH, "(//input[@id='actionSltSts_ORD_ItemSelect-input'])[1]"))
         ).click()
 
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
-        ).click()
+        # time.sleep(2)
+        # wait.until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//button[@id='btnSave_ORD_Vitem'])[1]"))
+        # ).click()
 
         time.sleep(2)
         wait_and_click(login, By.XPATH, "(//button[@id='btnSltDn_ORD_ItemSelect'])[1]")
@@ -5076,8 +4627,9 @@ def test_create_delivery_profile_with_empty_fields(login):
 
         msg = get_snack_bar_message(login)
         print("Snack bar Message :", msg)
+        time.sleep(1)
 
-        time.sleep(2)
+
     except Exception as e:
         allure.attach(  
             login.get_screenshot_as_png(),  
@@ -5255,7 +4807,7 @@ def test_assign_delivery_profile_to_store_from_detail_page(login):
         msg = get_snack_bar_message(login)
         print("Snack bar Message :", msg)
 
-        time.sleep(2)
+        time.sleep(1)
         
     except Exception as e:
         allure.attach(  
@@ -5273,6 +4825,7 @@ def test_assign_delivery_profile_to_store_from_detail_page(login):
 
 # Global variable to store invoice type
 invoice_type_name_global = None
+INVOICE_TYPE_NAME_FILE = Path("invoice_type_name.txt")
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Test Case: Create a Invoice type")
@@ -5322,6 +4875,7 @@ def test_invoice_type_1(login):
 @allure.title("Test Case: Enable Invoice type and Apply the Invoice type in Store")
 @pytest.mark.parametrize("url, username, password", [(scale_url, sales_order_scale, password)])
 def test_invoice_type_2(login):
+
     global invoice_type_name_global
     driver = login
     wait = WebDriverWait(driver, 30)
@@ -5379,18 +4933,91 @@ def test_invoice_type_2(login):
             print("Invoice type already enabled. No action needed.")
 
         time.sleep(2)
-        # wait_and_locate_click(driver, By.XPATH, "//p-inputswitch[@id='typeStatus_ORD_storeCre']")
-        wait_and_locate_click(driver, By.XPATH, "//p-multiselect[@id='invTypes_ORD_CrtItemPop']")
+        # wait_and_locate_click(driver, By.XPATH, "//p-multiselect[@id='invTypes_ORD_CrtItemPop']")
 
-        wait_and_locate_click(driver, By.XPATH, f"//span[normalize-space()='{invoice_type_name_global}']")
-        print("Selected invoice type:", invoice_type_name_global)
+        # wait_and_locate_click(driver, By.XPATH, f"//span[normalize-space()='{invoice_type_name_global}']")
+        # print("Selected invoice type:", invoice_type_name_global)
 
-        time.sleep(2)
+        # time.sleep(2)
+        # wait_and_locate_click(
+        #     driver,
+        #     By.XPATH,
+        #     "//button[contains(@class,'p-multiselect-close')]"
+        # )
+
+
+        # Validate invoice type name
+        if not invoice_type_name_global:
+            invoice_type_name_global = "YOUR_INVOICE_TYPE_NAME_HERE"
+
+        print("Invoice type to select:", invoice_type_name_global)
+
+        # Open Invoice Type multiselect
         wait_and_locate_click(
             driver,
             By.XPATH,
-            "//button[contains(@class,'p-multiselect-close')]"
+            "//p-multiselect[@id='invTypes_ORD_CrtItemPop']"
         )
+
+        time.sleep(1)
+
+        # Wait for PrimeNG multiselect panel
+        invoice_type_panel = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "(//div[contains(@class,'p-multiselect-panel')])[last()]"
+                )
+            )
+        )
+
+        # If filter/search input is available, search invoice type
+        filter_inputs = driver.find_elements(
+            By.XPATH,
+            "(//div[contains(@class,'p-multiselect-panel')])[last()]//input"
+        )
+
+        if filter_inputs:
+            filter_input = filter_inputs[0]
+            filter_input.click()
+            filter_input.send_keys(Keys.CONTROL, "a")
+            filter_input.send_keys(Keys.BACKSPACE)
+            filter_input.send_keys(invoice_type_name_global)
+            time.sleep(1)
+
+        # Select invoice type from opened multiselect panel
+        invoice_type_option_xpath = (
+            "(//div[contains(@class,'p-multiselect-panel')])[last()]"
+            f"//li[.//span[normalize-space()='{invoice_type_name_global}'] "
+            f"or @aria-label='{invoice_type_name_global}']"
+        )
+
+        invoice_type_option = WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, invoice_type_option_xpath)
+            )
+        )
+
+        driver.execute_script("arguments[0].scrollIntoView({block:'center'});", invoice_type_option)
+        time.sleep(1)
+        driver.execute_script("arguments[0].click();", invoice_type_option)
+
+        print("Selected invoice type:", invoice_type_name_global)
+        time.sleep(1)
+
+        # Close multiselect dropdown
+        close_buttons = driver.find_elements(
+            By.XPATH,
+            "(//div[contains(@class,'p-multiselect-panel')])[last()]"
+            "//button[contains(@class,'p-multiselect-close') or .//*[name()='svg']]"
+        )
+
+        if close_buttons:
+            driver.execute_script("arguments[0].click();", close_buttons[0])
+        else:
+            driver.find_element(By.TAG_NAME, "body").click()
+
+        time.sleep(1)
 
         wait_and_locate_click(driver, By.XPATH, "//button[@id='create_ORD_storeCre']")
         print("Snack Bar Message:", get_snack_bar_message(driver))
