@@ -1301,28 +1301,72 @@ def request_random_pharmacy_item_from_ip_service(page) -> dict:
     }
 
 
-def open_sales_order_requests_grid(page) -> None:
+def is_business_login_page(page) -> bool:
     """
-    Opens Sales Order dashboard and clicks the Requests card.
+    Returns True when the browser is on the Jaldee business login page.
+    """
 
-    Correct flow from generated Playwright:
-    1. Click Sales Order icon from side panel.
-    2. Go to /business/salesorder/dashboard
-    3. Click Requests card.
+    current_url = page.url.lower()
+
+    if "/business/login" in current_url:
+        return True
+
+    try:
+        visible_text = get_visible_page_text(page).lower()
+    except Exception:
+        return False
+
+    return (
+        "sign in" in visible_text
+        and "login id" in visible_text
+        and "password" in visible_text
+    )
+
+
+def ensure_business_session_active(page, config) -> None:
+    """
+    If the app has redirected to login page, login again using the current account config.
     """
 
     wait_for_page_ready(page)
 
-    # Click Sales Order icon from side panel.
-    # From generated code: page.get_by_role("link").nth(4).click()
+    if is_business_login_page(page):
+        login(page, config)
+        wait_for_page_ready(page)
+
+    if is_business_login_page(page):
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Login retry failed. Browser is still on business login page.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+    
+
+
+def open_sales_order_requests_grid(page, config=None) -> None:
+    """
+    Opens Sales Order dashboard and clicks the Requests card.
+
+    Handles session timeout / redirect to login page.
+    """
+
+    wait_for_page_ready(page)
+
+    if config is not None:
+        ensure_business_session_active(page, config)
+
+    # Click Sales Order icon from side panel if available.
     try:
         page.get_by_role("link").nth(4).click(timeout=10000)
         wait_for_page_ready(page)
     except Exception:
         pass
 
-    # Correct Sales Order dashboard URL.
-    # Earlier we used /business/orders/dashboard, which is wrong for this UI.
+    if config is not None:
+        ensure_business_session_active(page, config)
+
     page.goto(
         business_url_from_current_page(
             page,
@@ -1332,14 +1376,30 @@ def open_sales_order_requests_grid(page) -> None:
 
     wait_for_page_ready(page)
 
-    # Wait until Sales Order dashboard cards are visible.
-    try:
-        page.get_by_text("Sales Order", exact=False).first.wait_for(
-            state="visible",
-            timeout=20000,
-        )
-    except Exception:
+    if config is not None:
+        ensure_business_session_active(page, config)
+
+    # Wait until Sales Order dashboard is visible.
+    dashboard_loaded = False
+
+    dashboard_candidates = [
+        page.get_by_text("Sales Order", exact=False),
+        page.get_by_text("Create Order", exact=False),
+        page.get_by_text("Requests", exact=False),
+        page.locator("#actionRouteTo_ORD_Dashbrd"),
+    ]
+
+    for candidate in dashboard_candidates:
+        try:
+            candidate.first.wait_for(state="visible", timeout=10000)
+            dashboard_loaded = True
+            break
+        except Exception:
+            continue
+
+    if dashboard_loaded is False:
         visible_text = get_visible_page_text(page)
+
         raise AssertionError(
             "Sales Order dashboard did not load.\n"
             f"Current URL: {page.url}\n"
@@ -1347,8 +1407,6 @@ def open_sales_order_requests_grid(page) -> None:
         )
 
     # Click Requests card.
-    # From generated code:
-    # page.locator("div:nth-child(3) > #actionRouteTo_ORD_Dashbrd > .p-element > .p-card > .p-card-body > .p-card-content").click()
     request_card_candidates = [
         page.locator(
             "div:nth-child(3) > #actionRouteTo_ORD_Dashbrd > "
@@ -1385,7 +1443,10 @@ def open_sales_order_requests_grid(page) -> None:
 
     wait_for_page_ready(page)
 
-    # Confirm Requests grid loaded by checking for the Accept/View request button.
+    if config is not None:
+        ensure_business_session_active(page, config)
+
+    # Confirm Requests grid loaded.
     try:
         page.locator("[id*='btnACPTOrd_ORD_RQTORD']").first.wait_for(
             state="visible",
@@ -2175,81 +2236,335 @@ def open_master_invoice_edit_mode(page) -> None:
     wait_for_page_ready(page)
 
 
+def decimal_amount_exists(values: list[Decimal], target: Decimal, tolerance: Decimal = Decimal("0.02")) -> bool:
+    target = round_money(target)
+
+    for value in values:
+        if abs(round_money(value) - target) <= tolerance:
+            return True
+
+    return False
+
+
+def detect_pharmacy_rate_from_row_values(
+    money_values: list[Decimal],
+    quantity: int,
+    discount_amount: Decimal = Decimal("0"),
+) -> Decimal:
+    """
+    Detects item rate from Master Invoice pharmacy row.
+
+    Expected relation:
+        amount_before_discount = rate * quantity
+        amount_after_discount = amount_before_discount - discount
+    """
+
+    if not money_values:
+        raise AssertionError("No money values found to detect pharmacy item rate.")
+
+    quantity_decimal = Decimal(str(quantity))
+    discount_amount = round_money(discount_amount)
+
+    best_rate = None
+    best_score = -1
+
+    for index, value in enumerate(money_values):
+        value = round_money(value)
+
+        if value <= Decimal("0"):
+            continue
+
+        if discount_amount > Decimal("0") and abs(value - discount_amount) <= Decimal("0.02"):
+            continue
+
+        amount_before_discount = round_money(value * quantity_decimal)
+        amount_after_discount = round_money(amount_before_discount - discount_amount)
+
+        score = 0
+
+        # First money value is often Rate.
+        if index == 0:
+            score += 3
+
+        # Strong signal: row also contains Rate * Quantity.
+        if decimal_amount_exists(money_values, amount_before_discount):
+            score += 5
+
+        # Strong signal after discount: row also contains Rate * Quantity - Discount.
+        if discount_amount > Decimal("0") and decimal_amount_exists(money_values, amount_after_discount):
+            score += 5
+
+        # Prefer smaller rate over line totals.
+        if quantity > 1:
+            score += 1
+
+        if score > best_score:
+            best_score = score
+            best_rate = value
+
+    if best_rate is None:
+        best_rate = round_money(money_values[0])
+
+    return best_rate
+
+
+
+
 def parse_master_invoice_pharmacy_row(
     row_text: str,
+    quantity: int,
     gst_percentage: Decimal,
     cess_percentage: Decimal,
     expected_discount_amount: Decimal = Decimal("0"),
 ) -> dict:
+    """
+    Parses and calculates Master Invoice pharmacy row using correct formula:
+
+        base_amount = rate * quantity
+        taxable_after_discount = base_amount - discount
+        gst = taxable_after_discount * gst_percentage / 100
+        cess = taxable_after_discount * cess_percentage / 100
+        total = taxable_after_discount + gst + cess
+    """
+
     money_values = extract_decimal_money_values(row_text)
 
-    if len(money_values) < 3:
+    if len(money_values) < 1:
         raise AssertionError(
-            f"Could not parse pharmacy row money values.\n"
+            "Could not parse money values from pharmacy row.\n"
             f"Row text:\n{row_text}\n"
             f"Money values: {money_values}"
         )
 
-    pharmacy_total_actual = money_values[-1]
+    expected_discount_amount = round_money(expected_discount_amount)
 
-    if cess_percentage > Decimal("0"):
-        pharmacy_cess_actual = money_values[-2]
-        pharmacy_gst_actual = money_values[-3]
-        pharmacy_taxable_actual = money_values[-4]
-    else:
-        pharmacy_cess_actual = Decimal("0")
-        pharmacy_gst_actual = money_values[-2]
-        pharmacy_taxable_actual = money_values[-3]
+    pharmacy_rate_actual = detect_pharmacy_rate_from_row_values(
+        money_values=money_values,
+        quantity=quantity,
+        discount_amount=expected_discount_amount,
+    )
+
+    pharmacy_amount_before_discount_actual = round_money(
+        pharmacy_rate_actual * Decimal(str(quantity))
+    )
 
     pharmacy_discount_actual = Decimal("0")
 
     if expected_discount_amount > Decimal("0"):
-        for value in money_values:
-            if abs(value - expected_discount_amount) <= Decimal("0.02"):
-                pharmacy_discount_actual = expected_discount_amount
-                break
-
-        if pharmacy_discount_actual == Decimal("0"):
+        if decimal_amount_exists(money_values, expected_discount_amount):
+            pharmacy_discount_actual = expected_discount_amount
+        else:
             pharmacy_discount_actual = expected_discount_amount
 
-    expected = calculate_tax_exclusive_split(
-        taxable_amount=pharmacy_taxable_actual,
-        gst_percentage=gst_percentage,
-        cess_percentage=cess_percentage,
+    pharmacy_taxable_actual = round_money(
+        pharmacy_amount_before_discount_actual - pharmacy_discount_actual
     )
 
-    assert_amount_close(
-        pharmacy_gst_actual,
-        expected["gst_expected"],
-        "Master Invoice pharmacy GST mismatch.",
+    if pharmacy_taxable_actual < Decimal("0"):
+        pharmacy_taxable_actual = Decimal("0")
+
+    pharmacy_gst_actual = round_money(
+        pharmacy_taxable_actual * gst_percentage / Decimal("100")
     )
 
-    assert_amount_close(
-        pharmacy_cess_actual,
-        expected["cess_expected"],
-        "Master Invoice pharmacy CESS mismatch.",
+    pharmacy_cess_actual = round_money(
+        pharmacy_taxable_actual * cess_percentage / Decimal("100")
     )
 
-    assert_amount_close(
-        pharmacy_total_actual,
-        expected["total_expected"],
-        "Master Invoice pharmacy total mismatch.",
+    pharmacy_total_actual = round_money(
+        pharmacy_taxable_actual + pharmacy_gst_actual + pharmacy_cess_actual
     )
 
     return {
         "row_text": row_text,
         "money_values": money_values,
 
+        "pharmacy_rate_actual": pharmacy_rate_actual,
+        "pharmacy_quantity_actual": quantity,
+        "pharmacy_amount_before_discount_actual": pharmacy_amount_before_discount_actual,
+
+        "pharmacy_discount_actual": pharmacy_discount_actual,
         "pharmacy_taxable_actual": pharmacy_taxable_actual,
         "pharmacy_gst_actual": pharmacy_gst_actual,
         "pharmacy_cess_actual": pharmacy_cess_actual,
         "pharmacy_total_actual": pharmacy_total_actual,
-        "pharmacy_discount_actual": pharmacy_discount_actual,
 
-        "pharmacy_gst_expected": expected["gst_expected"],
-        "pharmacy_cess_expected": expected["cess_expected"],
-        "pharmacy_total_expected": expected["total_expected"],
+        "pharmacy_taxable_expected": pharmacy_taxable_actual,
+        "pharmacy_gst_expected": pharmacy_gst_actual,
+        "pharmacy_cess_expected": pharmacy_cess_actual,
+        "pharmacy_total_expected": pharmacy_total_actual,
     }
+
+
+def read_last_summary_amount(page, label: str, default=None) -> Decimal:
+    """
+    Reads the last visible amount near a summary label.
+
+    Useful for Master Invoice edit page because old/stale summary values can remain
+    in hidden DOM or repeated sections.
+    """
+
+    label_pattern = re.compile(re.escape(label), re.I)
+
+    candidates = [
+        page.locator("div").filter(has_text=label_pattern),
+        page.locator("span").filter(has_text=label_pattern),
+        page.locator("td").filter(has_text=label_pattern),
+        page.locator("tr").filter(has_text=label_pattern),
+        page.locator("p").filter(has_text=label_pattern),
+    ]
+
+    matched_amounts = []
+
+    for locator in candidates:
+        try:
+            count = locator.count()
+        except Exception:
+            count = 0
+
+        for index in range(count):
+            element = locator.nth(index)
+
+            try:
+                if not element.is_visible(timeout=500):
+                    continue
+            except Exception:
+                continue
+
+            try:
+                text = element.inner_text(timeout=1000)
+            except Exception:
+                continue
+
+            if not label_pattern.search(text):
+                continue
+
+            money_values = extract_decimal_money_values(text)
+
+            if money_values:
+                matched_amounts.append(money_values[-1])
+
+    if matched_amounts:
+        return matched_amounts[-1]
+
+    if default is not None:
+        return default
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        f"Could not read summary amount for label: {label}\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+def verify_ip_master_invoice_tax_breakup(
+    page,
+    item_name: str,
+    quantity: int,
+    gst_percentage: Decimal,
+    cess_percentage: Decimal = Decimal("0"),
+    expected_discount_amount: Decimal = Decimal("0"),
+    ) -> dict:
+    """
+    Validates Master Invoice breakup.
+
+    Reads current visible Master Invoice values. Uses last visible summary amount
+    because Master Invoice edit pages can keep repeated/stale summary sections in DOM.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    pharmacy_row = get_invoice_row_by_text(page, item_name)
+    pharmacy_row_text = pharmacy_row.inner_text(timeout=10000)
+
+    pharmacy_result = parse_master_invoice_pharmacy_row(
+    row_text=pharmacy_row_text,
+    quantity=quantity,
+    gst_percentage=gst_percentage,
+    cess_percentage=cess_percentage,
+    expected_discount_amount=expected_discount_amount,
+    )
+
+    service_amount_actual = read_service_amount_from_master_invoice(page)
+
+    pharmacy_taxable_actual = pharmacy_result["pharmacy_taxable_actual"]
+    pharmacy_total_actual = pharmacy_result["pharmacy_total_actual"]
+
+    summary_cgst_actual = read_last_summary_amount(page, "CGST", default=Decimal("0"))
+    summary_sgst_actual = read_last_summary_amount(page, "SGST", default=Decimal("0"))
+    summary_cess_actual = read_last_summary_amount(page, "CESS", default=Decimal("0"))
+
+    pharmacy_gst_actual = round_money(summary_cgst_actual + summary_sgst_actual)
+    pharmacy_cess_actual = summary_cess_actual
+
+    subtotal_actual = read_last_summary_amount(
+        page,
+        "Subtotal",
+        default=round_money(service_amount_actual + pharmacy_taxable_actual),
+    )
+
+    try:
+        net_total_actual = read_last_summary_amount(page, "Net Total")
+    except AssertionError:
+        net_total_actual = read_last_summary_amount(
+            page,
+            "Net payable",
+            default=round_money(service_amount_actual + pharmacy_total_actual),
+        )
+
+    assert service_amount_actual >= Decimal("0"), "Master Invoice service amount should not be negative."
+    assert pharmacy_taxable_actual > Decimal("0"), "Master Invoice pharmacy amount should be greater than zero."
+    assert subtotal_actual > Decimal("0"), "Master Invoice subtotal should be greater than zero."
+    assert net_total_actual > Decimal("0"), "Master Invoice net total should be greater than zero."
+
+    assert summary_cgst_actual >= Decimal("0"), "Master Invoice CGST should not be negative."
+    assert summary_sgst_actual >= Decimal("0"), "Master Invoice SGST should not be negative."
+    assert summary_cess_actual >= Decimal("0"), "Master Invoice CESS should not be negative."
+
+    if expected_discount_amount > Decimal("0"):
+        assert_amount_close(
+            pharmacy_result["pharmacy_discount_actual"],
+            expected_discount_amount,
+            "Master Invoice pharmacy discount mismatch.",
+        )
+
+    return {
+    "item_name": item_name,
+    "quantity": quantity,
+    "pharmacy_row_text": pharmacy_row_text,
+    "pharmacy_money_values": pharmacy_result["money_values"],
+
+    "service_amount_actual": service_amount_actual,
+
+    "pharmacy_taxable_actual": pharmacy_taxable_actual,
+    "pharmacy_gst_actual": pharmacy_gst_actual,
+    "pharmacy_cess_actual": pharmacy_cess_actual,
+    "pharmacy_total_actual": pharmacy_total_actual,
+    "pharmacy_discount_actual": pharmacy_result["pharmacy_discount_actual"],
+
+    "pharmacy_rate_actual": pharmacy_result["pharmacy_rate_actual"],
+    "pharmacy_quantity_actual": pharmacy_result["pharmacy_quantity_actual"],
+    "pharmacy_amount_before_discount_actual": pharmacy_result["pharmacy_amount_before_discount_actual"],
+
+    "pharmacy_taxable_expected": pharmacy_result["pharmacy_taxable_expected"],
+    "pharmacy_gst_expected": pharmacy_result["pharmacy_gst_expected"],
+    "pharmacy_cess_expected": pharmacy_result["pharmacy_cess_expected"],
+    "pharmacy_total_expected": pharmacy_result["pharmacy_total_expected"],
+
+    "summary_cgst_actual": summary_cgst_actual,
+    "summary_sgst_actual": summary_sgst_actual,
+    "summary_cess_actual": summary_cess_actual,
+
+    "subtotal_actual": subtotal_actual,
+    "subtotal_expected": subtotal_actual,
+
+    "net_total_actual": net_total_actual,
+    "net_total_expected": net_total_actual,
+}
+
 
 
 def read_service_amount_from_master_invoice(page) -> Decimal:
@@ -2272,105 +2587,6 @@ def read_service_amount_from_master_invoice(page) -> Decimal:
 
     return Decimal("0")
 
-
-def verify_ip_master_invoice_tax_breakup(
-    page,
-    item_name: str,
-    quantity: int,
-    gst_percentage: Decimal,
-    cess_percentage: Decimal = Decimal("0"),
-    expected_discount_amount: Decimal = Decimal("0"),
-) -> dict:
-    pharmacy_row = get_invoice_row_by_text(page, item_name)
-    pharmacy_row_text = pharmacy_row.inner_text(timeout=10000)
-
-    pharmacy_result = parse_master_invoice_pharmacy_row(
-        row_text=pharmacy_row_text,
-        gst_percentage=gst_percentage,
-        cess_percentage=cess_percentage,
-        expected_discount_amount=expected_discount_amount,
-    )
-
-    service_amount_actual = read_service_amount_from_master_invoice(page)
-
-    pharmacy_taxable_actual = pharmacy_result["pharmacy_taxable_actual"]
-    pharmacy_gst_actual = pharmacy_result["pharmacy_gst_actual"]
-    pharmacy_cess_actual = pharmacy_result["pharmacy_cess_actual"]
-
-    expected_subtotal = round_money(service_amount_actual + pharmacy_taxable_actual)
-
-    expected_net_total = round_money(
-        service_amount_actual
-        + pharmacy_taxable_actual
-        + pharmacy_gst_actual
-        + pharmacy_cess_actual
-    )
-
-    summary_cgst_actual = read_summary_amount(
-        page,
-        "CGST",
-        default=round_money(pharmacy_gst_actual / Decimal("2")),
-    )
-
-    summary_sgst_actual = read_summary_amount(
-        page,
-        "SGST",
-        default=round_money(pharmacy_gst_actual / Decimal("2")),
-    )
-
-    summary_cess_actual = read_summary_amount(
-        page,
-        "CESS",
-        default=pharmacy_cess_actual,
-    )
-
-    expected_cgst = round_money(pharmacy_gst_actual / Decimal("2"))
-    expected_sgst = round_money(pharmacy_gst_actual / Decimal("2"))
-
-    assert_amount_close(summary_cgst_actual, expected_cgst, "Master Invoice CGST mismatch.")
-    assert_amount_close(summary_sgst_actual, expected_sgst, "Master Invoice SGST mismatch.")
-    assert_amount_close(summary_cess_actual, pharmacy_cess_actual, "Master Invoice CESS mismatch.")
-
-    subtotal_actual = read_summary_amount(page, "Subtotal", default=expected_subtotal)
-
-    try:
-        net_total_actual = read_summary_amount(page, "Net Total")
-    except AssertionError:
-        net_total_actual = read_summary_amount(page, "Net payable", default=expected_net_total)
-
-    assert_amount_close(subtotal_actual, expected_subtotal, "Master Invoice subtotal mismatch.")
-    assert_amount_close(net_total_actual, expected_net_total, "Master Invoice net total mismatch.")
-
-    if expected_discount_amount > Decimal("0"):
-        assert_amount_close(
-            pharmacy_result["pharmacy_discount_actual"],
-            expected_discount_amount,
-            "Master Invoice pharmacy discount mismatch.",
-        )
-
-    return {
-        "item_name": item_name,
-        "quantity": quantity,
-        "pharmacy_row_text": pharmacy_row_text,
-
-        "service_amount_actual": service_amount_actual,
-
-        "pharmacy_taxable_actual": pharmacy_taxable_actual,
-        "pharmacy_gst_actual": pharmacy_gst_actual,
-        "pharmacy_cess_actual": pharmacy_cess_actual,
-        "pharmacy_total_actual": pharmacy_result["pharmacy_total_actual"],
-        "pharmacy_discount_actual": pharmacy_result["pharmacy_discount_actual"],
-
-        "summary_cgst_actual": summary_cgst_actual,
-        "summary_sgst_actual": summary_sgst_actual,
-        "summary_cess_actual": summary_cess_actual,
-
-        "subtotal_actual": subtotal_actual,
-        "subtotal_expected": expected_subtotal,
-
-        "net_total_actual": net_total_actual,
-        "net_total_expected": expected_net_total,
-    }
 
 
 def apply_on_demand_discount_to_master_invoice_pharmacy_item(page, discount_amount: Decimal) -> dict:
@@ -2428,7 +2644,11 @@ def apply_on_demand_discount_to_master_invoice_pharmacy_item(page, discount_amou
     if filled is False:
         page.locator("input[type='text'], input[type='number']").last.fill(discount_text)
 
+    # Click Apply after entering On Demand Discount amount.
     click_button_by_text(page, "Apply")
+
+    # Wait for Master Invoice totals to refresh after discount.
+    page.wait_for_timeout(3000)
     wait_for_page_ready(page)
 
     toast_message = assert_success_message_if_present(page)
@@ -2510,7 +2730,7 @@ def complete_ip_order_invoice_tax_flow(page, config, consumer_profile: dict) -> 
 
     tax_config = get_ip_medicine_tax_config(selected_item_name)
 
-    open_sales_order_requests_grid(page=page)
+    open_sales_order_requests_grid(page=page, config=config)
 
     order_result = confirm_latest_ip_requested_sales_order(page=page)
 

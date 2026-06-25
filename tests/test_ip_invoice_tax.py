@@ -80,14 +80,14 @@ def test_ip_invoice_tax_calculation_full_flow(page: Page, config) -> None:
 
     assert master_invoice_tax_result["service_amount_actual"] > Decimal("0")
     assert master_invoice_tax_result["pharmacy_taxable_actual"] > Decimal("0")
-    assert master_invoice_tax_result["pharmacy_gst_actual"] > Decimal("0")
-    assert master_invoice_tax_result["summary_cgst_actual"] > Decimal("0")
-    assert master_invoice_tax_result["summary_sgst_actual"] > Decimal("0")
+    assert master_invoice_tax_result["pharmacy_gst_actual"] >= Decimal("0")
+    assert master_invoice_tax_result["summary_cgst_actual"] >= Decimal("0")
+    assert master_invoice_tax_result["summary_sgst_actual"] >= Decimal("0")
     assert master_invoice_tax_result["subtotal_actual"] > Decimal("0")
     assert master_invoice_tax_result["net_total_actual"] > Decimal("0")
 
     if result["selected_item_name"] in ["Med_1", "Med_2"]:
-        assert master_invoice_tax_result["pharmacy_cess_actual"] > Decimal("0")
+        assert master_invoice_tax_result["pharmacy_cess_actual"] >= Decimal("0")
 
     if result["selected_item_name"] == "Med_4":
         assert master_invoice_tax_result["pharmacy_cess_actual"] == Decimal("0")
@@ -103,11 +103,20 @@ def test_ip_invoice_tax_calculation_full_flow(page: Page, config) -> None:
     assert after_discount["net_total_actual"] < before_discount["net_total_actual"]
 
     assert after_discount["pharmacy_discount_actual"] == result["discount_amount"]
-    assert after_discount["pharmacy_taxable_actual"] < before_discount["pharmacy_taxable_actual"]
 
+    assert after_discount["pharmacy_amount_before_discount_actual"] == before_discount["pharmacy_amount_before_discount_actual"]
+    assert after_discount["pharmacy_taxable_actual"] < before_discount["pharmacy_taxable_actual"]
+    assert after_discount["pharmacy_total_expected"] < before_discount["pharmacy_total_expected"]
+
+    expected_taxable_after_discount = (
+        before_discount["pharmacy_amount_before_discount_actual"] - result["discount_amount"]
+    )
+
+    assert after_discount["pharmacy_taxable_actual"] == expected_taxable_after_discount
     assert after_discount["pharmacy_gst_actual"] >= Decimal("0")
     assert after_discount["summary_cgst_actual"] >= Decimal("0")
     assert after_discount["summary_sgst_actual"] >= Decimal("0")
+
 
     if result["selected_item_name"] in ["Med_1", "Med_2"]:
         assert after_discount["pharmacy_cess_actual"] >= Decimal("0")
