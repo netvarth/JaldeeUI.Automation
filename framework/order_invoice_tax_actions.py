@@ -374,39 +374,54 @@ def select_first_business_if_needed(page: Page) -> None:
 
 def open_sales_order_dashboard(page: Page) -> None:
     """
-    Open Sales Order dashboard only if we are not already there.
+    Open Sales Order dashboard.
 
-    Expected behavior:
-    - After login, if already on Sales Order dashboard, stay there.
-    - If another dashboard is open, click Sales Order icon/menu from left side panel.
+    Important:
+    Do not treat URLs like this as dashboard:
+    /salesorder/catalogs?from=orderDashboard
+
+    Only this path is dashboard:
+    /business/salesorder/dashboard
     """
 
-    page.wait_for_load_state("networkidle")
+    page.wait_for_load_state("domcontentloaded")
     close_blocking_dialog_if_present(page)
 
     current_url = page.url.lower()
 
-    if "/business/salesorder/dashboard" in current_url or "/salesorder/dashboard" in current_url:
+    if re.search(r"/business/salesorder/dashboard(?:\?|$)", current_url):
         print("[Navigation] Already on Sales Order dashboard.")
         return
 
-    print("[Navigation] Not on Sales Order dashboard. Opening from left side panel.")
+    print(f"[Navigation] Not on Sales Order dashboard. Current URL: {page.url}")
 
-    click_first_visible(
-        page,
-        [
-            lambda: page.locator("a[href*='salesorder/dashboard']").first,
-            lambda: page.locator("[routerlink*='salesorder/dashboard']").first,
-            lambda: page.locator("[id*='ORD_Dashbrd']").first,
-            lambda: page.get_by_role("link", name=re.compile(r"Sales\s*Order", re.I)),
-            lambda: page.locator("xpath=//a[contains(normalize-space(), 'Sales Order')]").first,
-            lambda: page.locator("xpath=//*[contains(normalize-space(), 'Sales Order') and self::a or self::button]").first,
-        ],
-        "Sales Order left side panel icon/menu",
+    # Direct navigation is more stable than clicking sidebar icons.
+    dashboard_url = re.sub(
+        r"/business/.*",
+        "/business/salesorder/dashboard",
+        page.url,
+        flags=re.I,
     )
 
-    page.wait_for_load_state("networkidle")
-    close_blocking_dialog_if_present(page)
+    if dashboard_url == page.url:
+        dashboard_url = "https://scale.jaldee.com/business/salesorder/dashboard"
+
+    print(f"[Navigation] Opening Sales Order dashboard directly: {dashboard_url}")
+
+    page.goto(dashboard_url)
+    page.wait_for_load_state("domcontentloaded")
+    page.wait_for_timeout(1500)
+
+    expect(page).to_have_url(
+        re.compile(r".*/business/salesorder/dashboard.*"),
+        timeout=DEFAULT_TIMEOUT,
+    )
+
+    expect(page.get_by_text("Sales Order", exact=False).first).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    print("[Navigation] Sales Order dashboard opened.")
 
 
 def ensure_store_is_bnb_stores(page: Page) -> None:
@@ -460,40 +475,233 @@ def ensure_store_is_bnb_stores(page: Page) -> None:
 
 def open_create_order_popup(page: Page) -> None:
     """
-    Click Create Order from Sales Order dashboard and wait for the final
-    Create Order popup.
-
-    Do not call close_blocking_dialog_if_present after this function.
+    Click Create Order from Sales Order dashboard and wait for Create Order popup.
     """
 
     page.wait_for_load_state("domcontentloaded")
 
-    wait_for_sales_order_dashboard_ready(page)
+    if not re.search(r"/business/salesorder/dashboard(?:\?|$)", page.url.lower()):
+        print(f"[Order] Not on dashboard before Create Order click. Current URL: {page.url}")
+        open_sales_order_dashboard(page)
 
-    # If popup is already open, do not click Create Order again.
-    existing_dialog = page.get_by_role("dialog").filter(
-        has_text=re.compile(r"Create Order|Select customer|Select Catalog", re.I)
-    ).last
-
-    if is_visible(existing_dialog, timeout=1000):
+    if is_create_order_popup_open(page, timeout=1000):
         wait_for_create_order_popup_ready(page)
         print("[Order] Create Order popup already open and ready.")
         return
 
-    click_first_visible(
+    print("[Order] Trying to open Create Order popup from dashboard.")
+
+    create_order_tile = find_first_visible(
         page,
         [
-            lambda: page.locator("#btnCreate_ORD_Order").first,
             lambda: page.locator("#actionCreate_ORD_Dashbrd").first,
-            lambda: page.locator("xpath=//*[normalize-space()='Create Order']/ancestor::*[contains(@class, 'p-card') or contains(@class, 'card')][1]").first,
-            lambda: page.get_by_text("Create Order", exact=True),
+            lambda: page.locator("#btnCreate_ORD_Order").first,
+            lambda: page.locator("[id*='Create'][id*='ORD']").first,
+            lambda: page.locator("[id*='Create'][id*='Order']").first,
+            lambda: page.locator(
+                "xpath=//*[normalize-space()='Create Order']/ancestor::*[contains(@class, 'p-card')][1]"
+            ).first,
+            lambda: page.locator(
+                "xpath=//*[normalize-space()='Create Order']/ancestor::*[contains(@class, 'card')][1]"
+            ).first,
+            lambda: page.get_by_text("Create Order", exact=True).first,
         ],
-        "Create Order icon/button",
+        timeout=DEFAULT_TIMEOUT,
     )
+
+    if create_order_tile is None:
+        page.screenshot(
+            path="reports/artifacts/create_order_tile_not_found.png",
+            full_page=True,
+        )
+
+        body_text = normalize_text(page.locator("body").inner_text(timeout=5000))
+
+        raise AssertionError(
+            "Create Order tile was not found on Sales Order dashboard. "
+            f"Current URL: {page.url}. "
+            f"Page text: {body_text[:2000]}"
+        )
+
+    create_order_tile.scroll_into_view_if_needed(timeout=5000)
+    create_order_tile.click(timeout=10000, force=True)
+
+    page.wait_for_timeout(1500)
+
+    if not is_create_order_popup_open(page, timeout=5000):
+        print("[Order] Normal click did not open popup. Trying JS parent click.")
+
+        if not click_create_order_using_js_parent(page):
+            print("[Order] JS parent click did not open popup. Trying mouse coordinate click.")
+
+            if not click_create_order_using_mouse_coordinates(page):
+                page.screenshot(
+                    path="reports/artifacts/create_order_click_failed.png",
+                    full_page=True,
+                )
+
+                body_text = normalize_text(page.locator("body").inner_text(timeout=5000))
+
+                raise AssertionError(
+                    "Create Order was visible, but clicking it did not open the Create Order popup. "
+                    f"Current URL: {page.url}. "
+                    f"Page text: {body_text[:2000]}"
+                )
 
     wait_for_create_order_popup_ready(page)
 
     print("[Order] Create Order popup opened and ready.")
+
+    
+
+
+def is_create_order_popup_open(page: Page, timeout: int = 1000) -> bool:
+    """
+    Returns True if Create Order dialog is already visible.
+    """
+
+    dialog = page.get_by_role("dialog").filter(
+        has_text=re.compile(r"Create Order|Select customer|Select Catalog", re.I)
+    ).last
+
+    return is_visible(dialog, timeout=timeout)
+
+
+
+def click_create_order_using_js_parent(page: Page) -> bool:
+    """
+    Click nearest useful parent of the visible 'Create Order' text.
+
+    This is needed because Create Order appears as plain text in the accessibility tree,
+    but the click handler may be attached to a parent div/card.
+    """
+
+    create_order_text = find_first_visible(
+        page,
+        [
+            lambda: page.get_by_text("Create Order", exact=True).first,
+            lambda: page.locator("xpath=//*[normalize-space()='Create Order']").first,
+        ],
+        timeout=5000,
+    )
+
+    if create_order_text is None:
+        print("[Order] Create Order text was not found for JS parent click.")
+        return False
+
+    try:
+        clicked_info = create_order_text.evaluate(
+            """
+            (el) => {
+                let node = el;
+
+                for (let depth = 0; depth < 10 && node; depth++) {
+                    const text = (node.innerText || '').trim();
+                    const rect = node.getBoundingClientRect();
+
+                    const hasCreateOrderText = text.includes('Create Order');
+                    const usefulSize =
+                        rect.width >= 60 &&
+                        rect.height >= 30 &&
+                        rect.width <= 600 &&
+                        rect.height <= 400;
+
+                    if (hasCreateOrderText && usefulSize) {
+                        node.click();
+
+                        return {
+                            clicked: true,
+                            depth: depth,
+                            tag: node.tagName,
+                            className: node.className,
+                            text: text.substring(0, 100),
+                            width: rect.width,
+                            height: rect.height
+                        };
+                    }
+
+                    node = node.parentElement;
+                }
+
+                el.click();
+
+                return {
+                    clicked: true,
+                    depth: -1,
+                    tag: el.tagName,
+                    className: el.className,
+                    text: (el.innerText || '').substring(0, 100)
+                };
+            }
+            """
+        )
+
+        print(f"[Order] JS Create Order click result: {clicked_info}")
+
+        page.wait_for_timeout(1500)
+
+        return is_create_order_popup_open(page, timeout=3000)
+
+    except Exception as error:
+        print(f"[Order] JS parent click failed: {error}")
+        return False
+    
+
+
+def click_create_order_using_mouse_coordinates(page: Page) -> bool:
+    """
+    Final fallback: click around the visible Create Order text.
+
+    Some dashboard cards attach the click handler to the icon/card area,
+    not the text itself.
+    """
+
+    create_order_text = find_first_visible(
+        page,
+        [
+            lambda: page.get_by_text("Create Order", exact=True).first,
+            lambda: page.locator("xpath=//*[normalize-space()='Create Order']").first,
+        ],
+        timeout=5000,
+    )
+
+    if create_order_text is None:
+        print("[Order] Create Order text was not found for mouse fallback.")
+        return False
+
+    try:
+        create_order_text.scroll_into_view_if_needed(timeout=5000)
+
+        box = create_order_text.bounding_box(timeout=5000)
+
+        if box is None:
+            print("[Order] Could not get Create Order bounding box.")
+            return False
+
+        x = box["x"] + box["width"] / 2
+        y = box["y"] + box["height"] / 2
+
+        click_points = [
+            (x, y),
+            (x, y - 35),
+            (x, y - 60),
+            (x, y + 35),
+        ]
+
+        for index, point in enumerate(click_points, start=1):
+            print(f"[Order] Mouse clicking Create Order point {index}: {point}")
+
+            page.mouse.click(point[0], point[1])
+            page.wait_for_timeout(1500)
+
+            if is_create_order_popup_open(page, timeout=3000):
+                return True
+
+        return False
+
+    except Exception as error:
+        print(f"[Order] Mouse coordinate click failed: {error}")
+        return False    
 
 
 

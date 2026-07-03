@@ -255,3 +255,6 @@ commands for bookings, order and IP are:-
 pytest tests/test_take_appointment.py --account booking
 pytest tests/test_order.py --account order
 pytest tests/test_ip.py --account ip
+
+
+pytest tests/test_order_invoice_tax.py --account order

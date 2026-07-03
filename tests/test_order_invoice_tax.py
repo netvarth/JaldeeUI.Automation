@@ -173,4 +173,13 @@ def test_order_invoice_taxable_and_exempt_items_tax_breakup_flow(page, config):
 
 
 
+def assert_order_account(config):
+    assert config.get("account_name") == "order", (
+        "This Sales Order invoice tax test must run with the order account. "
+        f"Current account_name={config.get('account_name')}. "
+        "Run with: pytest tests/test_order_invoice_tax.py --account order"
+    )    
+
+
+
 #    Line item discount applied on taxable order item; taxable value and GST reduce correctly       
