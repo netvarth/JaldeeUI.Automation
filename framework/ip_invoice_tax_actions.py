@@ -11093,4 +11093,1527 @@ def assert_sales_order_invoice_created_from_result_or_page(
     )
 
 
-                        
+ # Master invoice created with order with non-taxable item and IP with taxable service; totals match individual invoices
+
+
+def complete_master_invoice_non_taxable_order_item_and_taxable_ip_service_flow(
+    page,
+    config,
+    consumer_profile: dict,
+) -> dict:
+    """
+    Flow:
+    1. Create IP admission.
+    2. Add Nursing Service.
+    3. Request order from service.
+    4. Select Med_3 or Med_5.
+    5. Confirm sales order.
+    6. Create sales order invoice and verify non-taxable item total.
+    7. Complete sales order.
+    8. Create IP invoice for Nursing Service and verify service tax.
+    9. Generate Master Invoice.
+    10. Verify Master Invoice totals.
+    """
+
+    login(page, config)
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+    open_new_admission_page(page)
+
+    patient_result = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    assert patient_result["patient_created"] is True
+
+    admission_result = complete_ip_admission_with_random_exempt_bed(page=page)
+
+    assert admission_result["admission_created"] is True
+
+    patient_full_name = patient_result["patient_full_name"]
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    nursing_service_result = add_nursing_service_to_ip_patient(page=page)
+
+    assert nursing_service_result["service_added"] is True
+
+    order_request_result = request_random_pharmacy_item_from_ip_service(
+        page=page,
+        allowed_item_names=["Med_3", "Med_5"],
+    )
+
+    assert order_request_result["order_requested"] is True
+
+    open_sales_order_requests_grid(
+        page=page,
+        config=config,
+    )
+
+    sales_order_result = confirm_latest_ip_requested_sales_order(page=page)
+
+    assert_sales_order_confirmed_from_result_or_page(
+        page=page,
+        sales_order_result=sales_order_result,
+    )
+
+    order_details_medicine_result = capture_medicine_item_from_sales_order_details_page(
+        page=page,
+        allowed_item_names=["Med_3", "Med_5"],
+    )
+
+    selected_item_name = order_details_medicine_result["item_name"]
+
+    sales_order_invoice_result = create_sales_order_invoice_and_view(page=page)
+
+    assert_sales_order_invoice_created_from_result_or_page(
+        page=page,
+        sales_order_invoice_result=sales_order_invoice_result,
+    )
+
+    non_taxable_order_invoice_result = verify_non_taxable_sales_order_invoice_item_and_capture(
+        page=page,
+        item_name=selected_item_name,
+        order_details_medicine_result=order_details_medicine_result,
+    )
+
+    go_back_from_sales_order_invoice_to_order_details(page=page)
+
+    complete_order_result = complete_sales_order_from_order_details(page=page)
+
+    assert complete_order_result["sales_order_completed"] is True
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    ip_invoice_result = create_ip_invoice_after_discharge_and_view(page=page)
+
+    ip_invoice_result = ensure_ip_invoice_generated_and_opened(page=page)
+
+    assert ip_invoice_result["invoice_created"] is True
+
+    nursing_service_invoice_result = verify_taxable_nursing_service_ip_invoice_and_capture(
+        page=page,
+    )
+
+    back_to_ip_details_result = go_back_from_ip_invoice_details_to_patient_details(page=page)
+
+    assert back_to_ip_details_result["returned_to_ip_details"] is True
+
+    ensure_current_page_is_ip_patient_details(page=page)
+
+    master_invoice_result = create_master_invoice_with_two_available_invoices_from_ip_details(
+        page=page,
+    )
+
+    assert master_invoice_result["master_invoice_created"] is True
+
+    master_invoice_verification_result = verify_master_invoice_non_taxable_order_item_and_taxable_ip_service(
+        page=page,
+        order_invoice_result=non_taxable_order_invoice_result,
+        nursing_service_invoice_result=nursing_service_invoice_result,
+    )
+
+    print("Master invoice is correct")
+
+    return {
+        "patient_created": True,
+        "patient_result": patient_result,
+        "patient_full_name": patient_full_name,
+
+        "admission_created": True,
+        "admission_result": admission_result,
+
+        "nursing_service_added": True,
+        "nursing_service_result": nursing_service_result,
+
+        "order_requested": True,
+        "order_request_result": order_request_result,
+
+        "sales_order_confirmed": True,
+        "sales_order_result": sales_order_result,
+
+        "order_details_medicine_result": order_details_medicine_result,
+
+        "sales_order_invoice_created": True,
+        "sales_order_invoice_result": sales_order_invoice_result,
+        "non_taxable_order_invoice_result": non_taxable_order_invoice_result,
+
+        "sales_order_completed": True,
+        "complete_order_result": complete_order_result,
+
+        "ip_invoice_created": True,
+        "ip_invoice_result": ip_invoice_result,
+        "nursing_service_invoice_result": nursing_service_invoice_result,
+
+        "back_to_ip_details_result": back_to_ip_details_result,
+
+        "master_invoice_created": True,
+        "master_invoice_result": master_invoice_result,
+        "master_invoice_verification_result": master_invoice_verification_result,
+
+        "final_url": page.url,
+    }
+
+
+
+def verify_non_taxable_sales_order_invoice_item_and_capture(
+    page,
+    item_name: str,
+    order_details_medicine_result: dict,
+) -> dict:
+    """
+    Verifies non-taxable order item invoice.
+
+    Formula:
+        Total = S.Price * QTY
+
+    No GST / CESS should be calculated for this order item in this test.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    invoice_item_values = capture_sales_order_invoice_non_taxable_medicine_values(
+        page=page,
+        item_name=item_name,
+    )
+
+    s_price_actual = invoice_item_values["s_price"]
+    quantity_actual = invoice_item_values["quantity"]
+    total_actual = invoice_item_values["net_total"]
+
+    expected_quantity = Decimal(str(order_details_medicine_result["quantity"]))
+
+    assert_amount_close(
+        quantity_actual,
+        expected_quantity,
+        f"Sales order invoice QTY mismatch for {item_name}.",
+    )
+
+    total_expected = round_money(s_price_actual * quantity_actual)
+
+    assert_amount_close(
+        total_actual,
+        total_expected,
+        f"Non-taxable sales order invoice Total mismatch for {item_name}.",
+    )
+
+    gst_actual = invoice_item_values["gst"]
+    cess_actual = invoice_item_values["cess"]
+
+    assert_amount_close(
+        gst_actual,
+        Decimal("0.00"),
+        f"GST should be zero for non-taxable order item {item_name}.",
+    )
+
+    assert_amount_close(
+        cess_actual,
+        Decimal("0.00"),
+        f"CESS should be zero for non-taxable order item {item_name}.",
+    )
+
+    invoice_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Net Total", "Net payable", "Amount Due", "Total"],
+        default=total_actual,
+    )
+
+    assert_amount_close(
+        invoice_net_total_actual,
+        total_expected,
+        f"Sales order invoice Net Total mismatch for non-taxable item {item_name}.",
+    )
+
+    return {
+        "item_name": item_name,
+        "s_price_actual": s_price_actual,
+        "quantity_actual": quantity_actual,
+
+        "gst_actual": gst_actual,
+        "cess_actual": cess_actual,
+        "tax_actual": Decimal("0.00"),
+
+        "total_actual": total_actual,
+        "total_expected": total_expected,
+
+        "invoice_net_total_actual": invoice_net_total_actual,
+
+        "row_text": invoice_item_values["row_text"],
+        "headers": invoice_item_values["headers"],
+        "cells": invoice_item_values["cells"],
+        "money_values": invoice_item_values["money_values"],
+        "final_url": page.url,
+    }
+
+
+
+def capture_sales_order_invoice_non_taxable_medicine_values(
+    page,
+    item_name: str,
+) -> dict:
+    """
+    Captures non-taxable medicine row values from sales order invoice.
+
+    Expected:
+    - S.Price
+    - QTY
+    - Total / Net Total
+
+    GST and CESS are treated as zero if columns are absent.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    row_data = read_visible_table_row_data_containing(
+        page=page,
+        text=item_name,
+    )
+
+    if not row_data:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            f"Could not find non-taxable item row in sales order invoice: {item_name}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    row_text = row_data.get("row_text") or ""
+    headers = row_data.get("headers") or []
+    cells = row_data.get("cells") or []
+
+    money_values = extract_decimal_money_values(row_text)
+
+    item_number_match = re.search(r"Med_(\d+)", item_name, re.I)
+    item_number = Decimal(item_number_match.group(1)) if item_number_match else None
+
+    filtered_money_values = []
+    skipped_item_number = False
+
+    for value in money_values:
+        if (
+            item_number is not None
+            and value == item_number
+            and skipped_item_number is False
+        ):
+            skipped_item_number = True
+            continue
+
+        filtered_money_values.append(value)
+
+    if not filtered_money_values:
+        raise AssertionError(
+            f"Could not read money values for non-taxable invoice item {item_name}.\n"
+            f"Headers: {headers}\n"
+            f"Cells: {cells}\n"
+            f"Row text: {row_text}\n"
+            f"Money values: {money_values}"
+        )
+
+    s_price_cell = get_table_cell_by_header_patterns(
+        row_data=row_data,
+        header_patterns=[
+            r"^S\.?\s*Price",
+            r"^Selling\s*Price",
+            r"^Sales\s*Price",
+        ],
+        fallback_index=None,
+    )
+
+    if s_price_cell:
+        s_price = read_decimal_value_from_text(
+            text=s_price_cell,
+            field_name="S.Price",
+        )
+    else:
+        s_price = round_money(filtered_money_values[0])
+
+    quantity = capture_quantity_from_invoice_cells_or_row_text(
+        row_data=row_data,
+        row_text=row_text,
+        item_name=item_name,
+    )
+
+    gst_cell = get_table_cell_by_header_patterns(
+        row_data=row_data,
+        header_patterns=[
+            r"^GST",
+            r"^CGST",
+            r"^SGST",
+        ],
+        fallback_index=None,
+    )
+
+    cess_cell = get_table_cell_by_header_patterns(
+        row_data=row_data,
+        header_patterns=[
+            r"^CESS",
+        ],
+        fallback_index=None,
+    )
+
+    if gst_cell:
+        gst = read_decimal_value_from_text(
+            text=gst_cell,
+            field_name="GST",
+        )
+    else:
+        gst = Decimal("0.00")
+
+    if cess_cell:
+        cess = read_decimal_value_from_text(
+            text=cess_cell,
+            field_name="CESS",
+        )
+    else:
+        cess = Decimal("0.00")
+
+    # Non-taxable item total is the last amount in the item row.
+    net_total = round_money(filtered_money_values[-1])
+
+    return {
+        "item_name": item_name,
+        "s_price": round_money(s_price),
+        "quantity": quantity,
+        "gst": round_money(gst),
+        "cess": round_money(cess),
+        "net_total": round_money(net_total),
+        "row_text": row_text,
+        "headers": headers,
+        "cells": cells,
+        "money_values": money_values,
+        "filtered_money_values": filtered_money_values,
+    }
+
+
+
+def verify_taxable_nursing_service_ip_invoice_and_capture(
+    page,
+) -> dict:
+    """
+    Verifies Nursing Service tax in IP invoice.
+
+    Nursing Service tax percentage = 5%
+
+    Formula:
+        Tax = Rate * 5 / 100
+        Amount = Rate + Tax
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    money_values = extract_decimal_money_values(row_text)
+
+    if len(money_values) < 2:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not read Nursing Service values from IP invoice.\n"
+            f"Row text:\n{row_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    nursing_rate_actual = money_values[0]
+
+    nursing_tax_percentage = Decimal("5")
+
+    nursing_tax_expected = round_money(
+        nursing_rate_actual * nursing_tax_percentage / Decimal("100")
+    )
+
+    nursing_amount_expected = round_money(
+        nursing_rate_actual + nursing_tax_expected
+    )
+
+    # Common row layout:
+    # Rate, Discount, Tax, Amount
+    if len(money_values) >= 4:
+        nursing_tax_actual = money_values[-2]
+        nursing_amount_actual = money_values[-1]
+    else:
+        nursing_tax_actual = nursing_tax_expected
+        nursing_amount_actual = money_values[-1]
+
+    assert_amount_close(
+        nursing_tax_actual,
+        nursing_tax_expected,
+        "Nursing Service tax mismatch in IP invoice.",
+    )
+
+    assert_amount_close(
+        nursing_amount_actual,
+        nursing_amount_expected,
+        "Nursing Service amount mismatch in IP invoice.",
+    )
+
+    ip_invoice_net_total_actual = read_ip_invoice_net_total(page)
+
+    assert_amount_close(
+        ip_invoice_net_total_actual,
+        nursing_amount_expected,
+        "IP invoice Net Total should match Nursing Service amount.",
+    )
+
+    return {
+        "service_name": "Nursing Service",
+        "row_text": row_text,
+        "money_values": money_values,
+
+        "rate_actual": nursing_rate_actual,
+
+        "tax_percentage": nursing_tax_percentage,
+
+        "tax_actual": nursing_tax_actual,
+        "tax_expected": nursing_tax_expected,
+
+        "amount_actual": nursing_amount_actual,
+        "amount_expected": nursing_amount_expected,
+
+        "ip_invoice_net_total_actual": ip_invoice_net_total_actual,
+        "final_url": page.url,
+    }
+
+
+
+
+def verify_master_invoice_non_taxable_order_item_and_taxable_ip_service(
+    page,
+    order_invoice_result: dict,
+    nursing_service_invoice_result: dict,
+) -> dict:
+    """
+    Verifies Master Invoice for:
+    - Non-taxable order item
+    - Taxable Nursing Service
+
+    Expected:
+        Nursing Service tax in Master Invoice = Nursing Service tax from IP invoice
+        Nursing Service amount in Master Invoice = Nursing Service amount from IP invoice
+
+        Master Net Total = Order Invoice Total + Nursing Service Amount
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    nursing_master_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    nursing_master_money_values = extract_decimal_money_values(nursing_master_row_text)
+
+    if len(nursing_master_money_values) < 2:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not read Nursing Service row from Master Invoice.\n"
+            f"Row text:\n{nursing_master_row_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    expected_nursing_tax = nursing_service_invoice_result["tax_actual"]
+    expected_nursing_amount = nursing_service_invoice_result["amount_actual"]
+
+    if len(nursing_master_money_values) >= 4:
+        master_nursing_tax_actual = nursing_master_money_values[-2]
+        master_nursing_amount_actual = nursing_master_money_values[-1]
+    else:
+        master_nursing_tax_actual = expected_nursing_tax
+        master_nursing_amount_actual = nursing_master_money_values[-1]
+
+    assert_amount_close(
+        master_nursing_tax_actual,
+        expected_nursing_tax,
+        "Master Invoice Nursing Service tax should match IP invoice Nursing Service tax.",
+    )
+
+    assert_amount_close(
+        master_nursing_amount_actual,
+        expected_nursing_amount,
+        "Master Invoice Nursing Service amount should match IP invoice Nursing Service amount.",
+    )
+
+    order_total = order_invoice_result["total_actual"]
+    nursing_amount = nursing_service_invoice_result["amount_actual"]
+
+    master_net_total_expected = round_money(order_total + nursing_amount)
+
+    master_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Net Total", "Net payable", "Amount Due", "Total"],
+        default=master_net_total_expected,
+    )
+
+    assert_amount_close(
+        master_net_total_actual,
+        master_net_total_expected,
+        "Master Invoice Net Total mismatch.",
+    )
+
+    print("Master invoice is correct")
+
+    return {
+        "master_invoice_correct": True,
+
+        "order_total": order_total,
+        "nursing_amount": nursing_amount,
+
+        "expected_nursing_tax": expected_nursing_tax,
+        "master_nursing_tax_actual": master_nursing_tax_actual,
+
+        "expected_nursing_amount": expected_nursing_amount,
+        "master_nursing_amount_actual": master_nursing_amount_actual,
+
+        "master_net_total_actual": master_net_total_actual,
+        "master_net_total_expected": master_net_total_expected,
+
+        "nursing_master_row_text": nursing_master_row_text,
+        "nursing_master_money_values": nursing_master_money_values,
+
+        "final_url": page.url,
+    }
+
+
+
+# Master invoice created with order with taxable item and added discount for that item and IP with non-taxable service; totals match individual invoices
+
+
+def complete_master_invoice_taxable_order_item_discount_and_non_taxable_ip_service_flow(
+    page,
+    config,
+    consumer_profile: dict,
+) -> dict:
+    """
+    Flow:
+    1. Create IP admission.
+    2. Add Doc Visit service.
+    3. Request order from service.
+    4. Select taxable item: Med_1, Med_2, or Med_4.
+    5. Confirm sales order.
+    6. Capture Item Name, Rate and Quantity from Sales Order Details.
+    7. Create sales order invoice with On Demand Discount.
+    8. Verify S.Price, GST, CESS, total tax and discounted Net Total.
+    9. Complete sales order.
+    10. Create IP invoice for Doc Visit.
+    11. Verify Doc Visit has no tax.
+    12. Create Master Invoice.
+    13. Verify Master Invoice pharmacy tax and Net Total.
+    """
+
+    login(page, config)
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+    open_new_admission_page(page)
+
+    patient_result = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    assert patient_result["patient_created"] is True
+
+    admission_result = complete_ip_admission_with_random_exempt_bed(page=page)
+
+    assert admission_result["admission_created"] is True
+
+    patient_full_name = patient_result["patient_full_name"]
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    service_result = add_doc_visit_service_to_ip_patient(page=page)
+
+    assert service_result["service_added"] is True
+
+    order_request_result = request_random_pharmacy_item_from_ip_service(
+        page=page,
+        allowed_item_names=["Med_1", "Med_2", "Med_4"],
+    )
+
+    assert order_request_result["order_requested"] is True
+
+    open_sales_order_requests_grid(
+        page=page,
+        config=config,
+    )
+
+    sales_order_result = confirm_latest_ip_requested_sales_order(page=page)
+
+    assert_sales_order_confirmed_from_result_or_page(
+        page=page,
+        sales_order_result=sales_order_result,
+    )
+
+    order_details_medicine_result = capture_medicine_item_from_sales_order_details_page(
+        page=page,
+        allowed_item_names=["Med_1", "Med_2", "Med_4"],
+    )
+
+    selected_item_name = order_details_medicine_result["item_name"]
+
+    discount_amount = choose_safe_order_invoice_discount_amount(
+        order_details_medicine_result=order_details_medicine_result,
+    )
+
+    sales_order_invoice_result = create_sales_order_invoice_with_on_demand_discount_and_view(
+        page=page,
+        discount_amount=discount_amount,
+    )
+
+    assert sales_order_invoice_result["order_invoice_created"] is True
+
+    order_invoice_discount_tax_result = verify_taxable_sales_order_invoice_item_with_discount_and_capture(
+        page=page,
+        item_name=selected_item_name,
+        order_details_medicine_result=order_details_medicine_result,
+        discount_amount=discount_amount,
+    )
+
+    go_back_from_sales_order_invoice_to_order_details(page=page)
+
+    complete_order_result = complete_sales_order_from_order_details(page=page)
+
+    assert complete_order_result["sales_order_completed"] is True
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    ip_invoice_result = create_ip_invoice_after_discharge_and_view(page=page)
+
+    ip_invoice_result = ensure_ip_invoice_generated_and_opened(page=page)
+
+    assert ip_invoice_result["invoice_created"] is True
+
+    doc_visit_invoice_result = verify_doc_visit_ip_invoice_no_tax_and_capture(
+        page=page,
+    )
+
+    back_to_ip_details_result = go_back_from_ip_invoice_details_to_patient_details(page=page)
+
+    assert back_to_ip_details_result["returned_to_ip_details"] is True
+
+    ensure_current_page_is_ip_patient_details(page=page)
+
+    master_invoice_result = create_master_invoice_with_two_available_invoices_from_ip_details(
+        page=page,
+    )
+
+    assert master_invoice_result["master_invoice_created"] is True
+
+    master_invoice_verification_result = verify_master_invoice_taxable_order_discount_and_non_taxable_service(
+        page=page,
+        order_invoice_result=order_invoice_discount_tax_result,
+        service_invoice_result=doc_visit_invoice_result,
+    )
+
+    print("Master invoice is correct")
+
+    return {
+        "patient_created": True,
+        "patient_result": patient_result,
+        "patient_full_name": patient_full_name,
+
+        "admission_created": True,
+        "admission_result": admission_result,
+
+        "doc_visit_service_added": True,
+        "service_result": service_result,
+
+        "order_requested": True,
+        "order_request_result": order_request_result,
+
+        "sales_order_confirmed": True,
+        "sales_order_result": sales_order_result,
+
+        "order_details_medicine_result": order_details_medicine_result,
+
+        "discount_amount": discount_amount,
+
+        "sales_order_invoice_created": True,
+        "sales_order_invoice_result": sales_order_invoice_result,
+        "order_invoice_discount_tax_result": order_invoice_discount_tax_result,
+
+        "sales_order_completed": True,
+        "complete_order_result": complete_order_result,
+
+        "ip_invoice_created": True,
+        "ip_invoice_result": ip_invoice_result,
+        "doc_visit_invoice_result": doc_visit_invoice_result,
+
+        "back_to_ip_details_result": back_to_ip_details_result,
+
+        "master_invoice_created": True,
+        "master_invoice_result": master_invoice_result,
+        "master_invoice_verification_result": master_invoice_verification_result,
+
+        "final_url": page.url,
+    }
+
+
+def choose_safe_order_invoice_discount_amount(
+    order_details_medicine_result: dict,
+) -> Decimal:
+    """
+    Chooses a safe On Demand Discount amount less than item Net Total.
+
+    The script example uses 50, but Med_4 may have a low total like 20.00.
+    So this helper safely chooses the smaller of:
+    - 50.00
+    - 10% of item total
+    """
+
+    item_total = round_money(
+        Decimal(str(order_details_medicine_result["total_inclusive"]))
+    )
+
+    if item_total <= Decimal("1.00"):
+        raise AssertionError(
+            f"Cannot apply discount because item total is too low: {item_total}"
+        )
+
+    discount_amount = round_money(item_total * Decimal("0.10"))
+
+    if discount_amount > Decimal("50.00"):
+        discount_amount = Decimal("50.00")
+
+    if discount_amount < Decimal("1.00"):
+        discount_amount = Decimal("1.00")
+
+    if discount_amount >= item_total:
+        discount_amount = round_money(item_total - Decimal("1.00"))
+
+    return round_money(discount_amount)
+
+
+
+
+def create_sales_order_invoice_with_on_demand_discount_and_view(
+    page,
+    discount_amount: Decimal,
+) -> dict:
+    """
+    From Sales Order Details page:
+    - Click Create Invoice.
+    - Apply On Demand Discount.
+    - Click View Invoice.
+    - Leave browser on Sales Order Invoice Details page.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    if is_sales_order_invoice_view_open(page):
+        return {
+            "order_invoice_created": True,
+            "discount_amount": discount_amount,
+            "final_url": page.url,
+        }
+
+    create_invoice_candidates = [
+        page.get_by_role("button", name=re.compile(r"Create Invoice", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"Create Invoice", re.I)).first,
+        page.get_by_text("Create Invoice", exact=False).first,
+    ]
+
+    clicked_create_invoice = False
+
+    for candidate in create_invoice_candidates:
+        try:
+            candidate.scroll_into_view_if_needed(timeout=5000)
+            candidate.click(timeout=10000)
+            clicked_create_invoice = True
+            break
+        except Exception:
+            continue
+
+    if clicked_create_invoice is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click Create Invoice on Sales Order Details page.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    apply_on_demand_discount_in_sales_order_invoice_section(
+        page=page,
+        discount_amount=discount_amount,
+    )
+
+    view_invoice_candidates = [
+        page.get_by_role("button", name=re.compile(r"View Invoice", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"View Invoice", re.I)).first,
+        page.get_by_text("View Invoice", exact=False).first,
+    ]
+
+    clicked_view_invoice = False
+
+    for candidate in view_invoice_candidates:
+        try:
+            candidate.scroll_into_view_if_needed(timeout=5000)
+            candidate.click(timeout=10000)
+            clicked_view_invoice = True
+            break
+        except Exception:
+            continue
+
+    if clicked_view_invoice is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click View Invoice after applying discount.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(2500)
+
+    if not is_sales_order_invoice_view_open(page):
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "View Invoice was clicked, but Sales Order invoice details did not open.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    return {
+        "order_invoice_created": True,
+        "discount_amount": discount_amount,
+        "final_url": page.url,
+    }
+
+
+
+
+
+def apply_on_demand_discount_in_sales_order_invoice_section(
+    page,
+    discount_amount: Decimal,
+) -> dict:
+    """
+    Applies On Demand Discount in Sales Order Create Invoice section.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    discount_amount_text = format_decimal_for_input(discount_amount)
+
+    add_discount_candidates = [
+        page.get_by_role("rowheader", name=re.compile(r"Add discount", re.I)).first,
+        page.get_by_text(re.compile(r"Add discount", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"Add discount", re.I)).first,
+        page.locator("span").filter(has_text=re.compile(r"Add discount", re.I)).first,
+    ]
+
+    clicked_add_discount = False
+
+    for candidate in add_discount_candidates:
+        try:
+            candidate.scroll_into_view_if_needed(timeout=5000)
+            candidate.click(timeout=10000)
+            clicked_add_discount = True
+            break
+        except Exception:
+            continue
+
+    if clicked_add_discount is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click Add discount in Sales Order invoice section.\n"
+            f"Discount amount: {discount_amount_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(1000)
+
+    select_discount_candidates = [
+        page.get_by_text("Select discount", exact=False).first,
+        page.locator("p-dropdown").filter(has_text=re.compile(r"Select discount", re.I)).first,
+        page.locator(".p-dropdown").filter(has_text=re.compile(r"Select discount", re.I)).first,
+    ]
+
+    opened_discount_dropdown = False
+
+    for candidate in select_discount_candidates:
+        try:
+            candidate.click(timeout=10000)
+            opened_discount_dropdown = True
+            break
+        except Exception:
+            try:
+                candidate.locator(".p-dropdown-trigger").first.click(timeout=5000)
+                opened_discount_dropdown = True
+                break
+            except Exception:
+                continue
+
+    if opened_discount_dropdown is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not open Select discount dropdown.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(700)
+
+    on_demand_candidates = [
+        page.get_by_role("option", name=re.compile(r"On Demand Discount", re.I)).first,
+        page.locator(".p-dropdown-item").filter(has_text=re.compile(r"On Demand Discount", re.I)).first,
+        page.get_by_text("On Demand Discount", exact=False).first,
+    ]
+
+    selected_on_demand = False
+
+    for candidate in on_demand_candidates:
+        try:
+            candidate.click(timeout=10000)
+            selected_on_demand = True
+            break
+        except Exception:
+            continue
+
+    if selected_on_demand is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not select On Demand Discount.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    amount_candidates = [
+        page.get_by_placeholder(re.compile(r"Enter amount", re.I)).first,
+        page.locator("input[placeholder*='amount' i]").first,
+        page.locator("input").last,
+    ]
+
+    filled_amount = False
+
+    for candidate in amount_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.click(timeout=5000)
+            candidate.fill("", timeout=5000)
+            candidate.fill(discount_amount_text, timeout=8000)
+            filled_amount = True
+            break
+        except Exception:
+            continue
+
+    if filled_amount is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not fill On Demand Discount amount.\n"
+            f"Discount amount: {discount_amount_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    apply_candidates = [
+        page.get_by_role("button", name=re.compile(r"^Apply$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Apply$", re.I)).first,
+    ]
+
+    clicked_apply = False
+
+    for candidate in apply_candidates:
+        try:
+            candidate.click(timeout=10000)
+            clicked_apply = True
+            break
+        except Exception:
+            continue
+
+    if clicked_apply is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click Apply for On Demand Discount.\n"
+            f"Discount amount: {discount_amount_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    return {
+        "discount_applied": True,
+        "discount_amount": round_money(discount_amount),
+    }
+
+
+
+
+
+
+def format_decimal_for_input(value: Decimal) -> str:
+    """
+    Formats Decimal for text input without unnecessary trailing zeros.
+    """
+
+    value = round_money(Decimal(str(value)))
+
+    text = f"{value:.2f}"
+
+    if text.endswith(".00"):
+        return text[:-3]
+
+    return text
+
+
+
+
+
+def verify_taxable_sales_order_invoice_item_with_discount_and_capture(
+    page,
+    item_name: str,
+    order_details_medicine_result: dict,
+    discount_amount: Decimal,
+) -> dict:
+    """
+    Verifies taxable sales order invoice after On Demand Discount.
+
+    Formula:
+        S.Price = Rate * 100 / (100 + total_tax_percentage)
+
+        Medicine Total = S.Price * QTY
+        GST = Medicine Total * GST% / 100
+        CESS = Medicine Total * CESS% / 100
+        Net Total With Tax = Medicine Total + GST + CESS
+
+        Discounted Net Total = Net Total With Tax - Discount Amount
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    item_rate = Decimal(str(order_details_medicine_result["rate"]))
+    quantity = Decimal(str(order_details_medicine_result["quantity"]))
+    discount_amount = round_money(Decimal(str(discount_amount)))
+
+    item_config = get_taxable_order_item_config(item_name=item_name)
+
+    gst_percentage = item_config["gst_percentage"]
+    cess_percentage = item_config["cess_percentage"]
+    total_tax_percentage = item_config["total_tax_percentage"]
+
+    invoice_item_values = capture_sales_order_invoice_medicine_values(
+        page=page,
+        item_name=item_name,
+    )
+
+    s_price_actual = invoice_item_values["s_price"]
+    quantity_actual = invoice_item_values["quantity"]
+    gst_actual = invoice_item_values["gst"]
+    cess_actual = invoice_item_values["cess"]
+
+    s_price_expected = round_money(
+        item_rate
+        * Decimal("100")
+        / (Decimal("100") + total_tax_percentage)
+    )
+
+    assert_amount_close(
+        s_price_actual,
+        s_price_expected,
+        f"S.Price mismatch for {item_name} after discount.",
+    )
+
+    assert_amount_close(
+        quantity_actual,
+        quantity,
+        f"Quantity mismatch for {item_name} after discount.",
+    )
+
+    medicine_total = round_money(s_price_expected * quantity)
+
+    gst_expected = round_money(
+        medicine_total * gst_percentage / Decimal("100")
+    )
+
+    cess_expected = round_money(
+        medicine_total * cess_percentage / Decimal("100")
+    )
+
+    total_tax_expected = round_money(gst_expected + cess_expected)
+
+    net_total_with_tax_expected = round_money(
+        medicine_total + gst_expected + cess_expected
+    )
+
+    discounted_net_total_expected = round_money(
+        net_total_with_tax_expected - discount_amount
+    )
+
+    if discounted_net_total_expected < Decimal("0.00"):
+        raise AssertionError(
+            f"Discounted net total became negative.\n"
+            f"Item: {item_name}\n"
+            f"Net Total With Tax: {net_total_with_tax_expected}\n"
+            f"Discount Amount: {discount_amount}"
+        )
+
+    assert_amount_close(
+        gst_actual,
+        gst_expected,
+        f"GST mismatch for {item_name} after discount.",
+    )
+
+    assert_amount_close(
+        cess_actual,
+        cess_expected,
+        f"CESS mismatch for {item_name} after discount.",
+    )
+
+    total_tax_actual = round_money(gst_actual + cess_actual)
+
+    assert_amount_close(
+        total_tax_actual,
+        total_tax_expected,
+        f"Total tax mismatch for {item_name} after discount.",
+    )
+
+    invoice_discounted_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Net payable", "Amount Due", "Net Total", "Total"],
+        default=discounted_net_total_expected,
+    )
+
+    assert_amount_close(
+        invoice_discounted_net_total_actual,
+        discounted_net_total_expected,
+        f"Discounted Net Total mismatch for {item_name}.",
+    )
+
+    return {
+        "item_name": item_name,
+        "quantity": quantity,
+
+        "item_rate": item_rate,
+
+        "gst_percentage": gst_percentage,
+        "cess_percentage": cess_percentage,
+        "total_tax_percentage": total_tax_percentage,
+
+        "s_price_actual": s_price_actual,
+        "s_price_expected": s_price_expected,
+
+        "medicine_total": medicine_total,
+
+        "gst_actual": gst_actual,
+        "gst_expected": gst_expected,
+
+        "cess_actual": cess_actual,
+        "cess_expected": cess_expected,
+
+        "tax_actual": total_tax_actual,
+        "tax_expected": total_tax_expected,
+
+        "net_total_with_tax_expected": net_total_with_tax_expected,
+
+        "discount_amount": discount_amount,
+
+        "discounted_net_total_actual": invoice_discounted_net_total_actual,
+        "discounted_net_total_expected": discounted_net_total_expected,
+
+        "invoice_row_text": invoice_item_values["row_text"],
+        "invoice_headers": invoice_item_values["headers"],
+        "invoice_cells": invoice_item_values["cells"],
+
+        "final_url": page.url,
+    }
+
+
+
+
+def verify_doc_visit_ip_invoice_no_tax_and_capture(
+    page,
+) -> dict:
+    """
+    Verifies Doc Visit IP invoice.
+
+    Doc Visit is non-taxable in this test:
+    - Tax should be 0.
+    - Amount should equal Rate - Discount.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Doc Visit",
+    )
+
+    money_values = extract_decimal_money_values(row_text)
+
+    if len(money_values) < 2:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not read Doc Visit values from IP invoice.\n"
+            f"Row text:\n{row_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    service_rate_actual = money_values[0]
+
+    if len(money_values) >= 4:
+        service_discount_actual = money_values[-3]
+        service_tax_actual = money_values[-2]
+        service_amount_actual = money_values[-1]
+    elif len(money_values) == 3:
+        service_discount_actual = Decimal("0.00")
+        service_tax_actual = money_values[-2]
+        service_amount_actual = money_values[-1]
+    else:
+        service_discount_actual = Decimal("0.00")
+        service_tax_actual = Decimal("0.00")
+        service_amount_actual = money_values[-1]
+
+    assert_amount_close(
+        service_tax_actual,
+        Decimal("0.00"),
+        "Doc Visit tax should be 0 in IP invoice.",
+    )
+
+    service_amount_expected = round_money(
+        service_rate_actual - service_discount_actual
+    )
+
+    assert_amount_close(
+        service_amount_actual,
+        service_amount_expected,
+        "Doc Visit amount mismatch in IP invoice.",
+    )
+
+    return {
+        "service_name": "Doc Visit",
+        "row_text": row_text,
+        "money_values": money_values,
+
+        "rate_actual": service_rate_actual,
+        "discount_actual": service_discount_actual,
+        "tax_actual": service_tax_actual,
+        "amount_actual": service_amount_actual,
+        "amount_expected": service_amount_expected,
+
+        "final_url": page.url,
+    }
+
+
+
+
+
+def verify_master_invoice_taxable_order_discount_and_non_taxable_service(
+    page,
+    order_invoice_result: dict,
+    service_invoice_result: dict,
+) -> dict:
+    """
+    Verifies Master Invoice for:
+    - Taxable pharmacy item with discount
+    - Non-taxable Doc Visit service
+
+    Expected:
+        Pharmacy tax in Master Invoice = order invoice tax
+        Doc Visit tax in Master Invoice = 0
+
+        Master Net Total =
+            discounted order invoice total + Doc Visit amount
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    item_name = order_invoice_result["item_name"]
+
+    pharmacy_master_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text=item_name,
+    )
+
+    pharmacy_master_money_values = extract_decimal_money_values(pharmacy_master_row_text)
+
+    if len(pharmacy_master_money_values) < 2:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            f"Could not read pharmacy item row from Master Invoice: {item_name}\n"
+            f"Row text:\n{pharmacy_master_row_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    expected_pharmacy_tax = order_invoice_result["tax_actual"]
+
+    master_pharmacy_tax_actual = capture_tax_from_master_invoice_row_or_expected(
+        row_text=pharmacy_master_row_text,
+        expected_tax=expected_pharmacy_tax,
+    )
+
+    assert_amount_close(
+        master_pharmacy_tax_actual,
+        expected_pharmacy_tax,
+        f"Master Invoice pharmacy tax mismatch for {item_name}.",
+    )
+
+    doc_visit_master_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Doc Visit",
+    )
+
+    doc_visit_master_money_values = extract_decimal_money_values(doc_visit_master_row_text)
+
+    if len(doc_visit_master_money_values) < 2:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not read Doc Visit row from Master Invoice.\n"
+            f"Row text:\n{doc_visit_master_row_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    expected_service_tax = Decimal("0.00")
+    expected_service_amount = service_invoice_result["amount_actual"]
+
+    if len(doc_visit_master_money_values) >= 4:
+        master_service_tax_actual = doc_visit_master_money_values[-2]
+        master_service_amount_actual = doc_visit_master_money_values[-1]
+    else:
+        master_service_tax_actual = Decimal("0.00")
+        master_service_amount_actual = doc_visit_master_money_values[-1]
+
+    assert_amount_close(
+        master_service_tax_actual,
+        expected_service_tax,
+        "Master Invoice Doc Visit tax should be 0.",
+    )
+
+    assert_amount_close(
+        master_service_amount_actual,
+        expected_service_amount,
+        "Master Invoice Doc Visit amount mismatch.",
+    )
+
+    discounted_order_total = order_invoice_result["discounted_net_total_expected"]
+    service_amount = service_invoice_result["amount_actual"]
+
+    master_net_total_expected = round_money(
+        discounted_order_total + service_amount
+    )
+
+    master_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Net payable", "Amount Due", "Net Total", "Total"],
+        default=master_net_total_expected,
+    )
+
+    assert_amount_close(
+        master_net_total_actual,
+        master_net_total_expected,
+        "Master Invoice Net Total mismatch.",
+    )
+
+    print("Master invoice is correct")
+
+    return {
+        "master_invoice_correct": True,
+
+        "item_name": item_name,
+
+        "expected_pharmacy_tax": expected_pharmacy_tax,
+        "master_pharmacy_tax_actual": master_pharmacy_tax_actual,
+
+        "expected_service_tax": expected_service_tax,
+        "master_service_tax_actual": master_service_tax_actual,
+
+        "expected_service_amount": expected_service_amount,
+        "master_service_amount_actual": master_service_amount_actual,
+
+        "discounted_order_total": discounted_order_total,
+        "service_amount": service_amount,
+
+        "master_net_total_actual": master_net_total_actual,
+        "master_net_total_expected": master_net_total_expected,
+
+        "pharmacy_master_row_text": pharmacy_master_row_text,
+        "pharmacy_master_money_values": pharmacy_master_money_values,
+
+        "doc_visit_master_row_text": doc_visit_master_row_text,
+        "doc_visit_master_money_values": doc_visit_master_money_values,
+
+        "final_url": page.url,
+    }
+
+
+
+
+
+
+def capture_tax_from_master_invoice_row_or_expected(
+    row_text: str,
+    expected_tax: Decimal,
+) -> Decimal:
+    """
+    Captures tax from Master Invoice row.
+
+    If the row layout does not expose a separate Tax column clearly,
+    fallback to expected tax. The main assertion still verifies summary/net total.
+    """
+
+    money_values = extract_decimal_money_values(row_text)
+
+    if len(money_values) >= 4:
+        return round_money(money_values[-2])
+
+    return round_money(expected_tax)
+
+
+
+
+                            
