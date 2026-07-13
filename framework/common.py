@@ -12,14 +12,30 @@ def wait_for_page_ready(page):
     page.wait_for_load_state("domcontentloaded")
 
 
-def wait_for_network_idle(page):
+def wait_for_network_idle(page, timeout: int = 15000) -> None:
     """
-    Wait until network calls are mostly completed.
+    Waits for page readiness without failing only because networkidle is not reached.
 
-    Useful after login, dashboard load, and page changes.
+    Angular/PrimeNG dashboard pages may keep polling APIs or background requests active.
+    In those cases, networkidle is not reliable even though the page is usable.
+
+    This helper:
+    - waits for DOM content if possible
+    - tries networkidle
+    - falls back to a short wait if networkidle times out
     """
 
-    page.wait_for_load_state("networkidle")
+    try:
+        page.wait_for_load_state("domcontentloaded", timeout=timeout)
+    except Exception:
+        pass
+
+    try:
+        page.wait_for_load_state("networkidle", timeout=timeout)
+    except Exception:
+        page.wait_for_timeout(1000)
+
+        
 
 
 def click_when_visible(locator, timeout=DEFAULT_EXPECT_TIMEOUT):

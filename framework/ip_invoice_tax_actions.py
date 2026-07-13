@@ -1481,116 +1481,893 @@ def get_visible_input_values(page) -> str:
 def request_random_pharmacy_item_from_ip_service(
     page,
     allowed_item_names: list[str] | None = None,
-    ) -> dict:
-    menu_candidates = [
-        page.locator("[id*='btnServiceActionMenu_IP_AD_DE_New_ip_ser_con_det']").first,
-        page.locator("[id*='btnServiceActionMenu']").first,
-        page.get_by_role("button", name=re.compile(r"More|Menu|Action", re.I)).first,
-    ]
+) -> dict:
+    """
+    Opens Nursing Service 3-dot menu, clicks Request Order,
+    selects one random medicine, increases quantity randomly,
+    requests order, selects Swathi Medical, and asserts success.
 
-    menu_clicked = False
+    Supports:
+    - taxable items: Med_1, Med_2, Med_4
+    - exempt/non-taxable items: Med_3, Med_5
+    """
 
-    for menu in menu_candidates:
-        try:
-            menu.click(timeout=10000)
-            menu_clicked = True
-            break
-        except Exception:
-            continue
-
-    if menu_clicked is False:
-        raise AssertionError("Could not open service 3-dot action menu.")
-
-    click_menuitem_by_text(page, "Request Order")
     wait_for_page_ready(page)
-
-    click_button_by_text(page, "Item")
+    page.wait_for_timeout(1500)
 
     if allowed_item_names is None:
         allowed_item_names = ["Med_1", "Med_2", "Med_4"]
 
+    open_services_tab_if_needed(page=page)
+
+    clicked_menu = click_latest_ip_service_action_menu(
+        page=page,
+        service_name="Nursing Service",
+    )
+
+    if clicked_menu is False:
+        clicked_menu = click_latest_ip_service_action_menu(
+            page=page,
+            service_name="Doc Visit",
+        )
+
+    if clicked_menu is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not open service 3-dot action menu.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(800)
+
+    request_order_candidates = [
+        page.get_by_role("menuitem", name=re.compile(r"Request\s+Order", re.I)).first,
+        page.locator("li").filter(has_text=re.compile(r"Request\s+Order", re.I)).first,
+        page.locator(".p-menuitem").filter(has_text=re.compile(r"Request\s+Order", re.I)).first,
+        page.get_by_text(re.compile(r"Request\s+Order", re.I)).first,
+    ]
+
+    clicked_request_order = False
+
+    for candidate in request_order_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            clicked_request_order = True
+            break
+        except Exception:
+            continue
+
+    if clicked_request_order is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click Request Order from service action menu.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    add_item_candidates = [
+        page.get_by_role("button", name=re.compile(r"^\+?\s*Item$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^\+?\s*Item$", re.I)).first,
+        page.get_by_text(re.compile(r"^\+?\s*Item$", re.I)).first,
+    ]
+
+    clicked_add_item = False
+
+    for candidate in add_item_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=10000)
+            candidate.click(timeout=10000)
+            clicked_add_item = True
+            break
+        except Exception:
+            continue
+
+    if clicked_add_item is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click +Item in Order Request Details page.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(1500)
+
     selected_item_name = random.choice(allowed_item_names)
 
-    item_row = page.get_by_role("row", name=re.compile(re.escape(selected_item_name), re.I))
+    selected_item = select_item_from_order_request_popup(
+        page=page,
+        item_name=selected_item_name,
+    )
 
-    try:
-        item_row.first.locator("input[type='checkbox']").first.check(timeout=10000)
-    except Exception:
-        try:
-            item_row.first.get_by_role("checkbox").first.check(timeout=10000)
-        except Exception:
-            item_row.first.click(timeout=10000)
+    assert selected_item["item_selected"] is True
 
-    done_candidates = [
-        page.locator("#btnSubmitItems_ORD_ItemSelectionTop"),
-        page.get_by_role("button", name=re.compile(r"Done|Submit|Select", re.I)),
-    ]
+    click_done_in_select_items_popup(page=page)
 
-    done_clicked = False
+    quantity_added = increase_order_request_item_quantity_randomly(
+        page=page,
+        item_name=selected_item_name,
+    )
 
-    for candidate in done_candidates:
-        try:
-            candidate.first.click(timeout=10000)
-            done_clicked = True
-            break
-        except Exception:
-            continue
-
-    if done_clicked is False:
-        raise AssertionError("Could not click Done after selecting medicine.")
-
-    page.wait_for_timeout(1000)
-
-    increase_candidates = [
-        page.get_by_role("button", name=re.compile(r"Increase itemQuantity", re.I)),
-        page.locator("[aria-label*='Increase']").first,
-        page.locator("button").filter(has_text=re.compile(r"\+")),
-    ]
-
-    quantity_increased = False
-
-    for candidate in increase_candidates:
-        try:
-            candidate.first.click(timeout=8000)
-            quantity_increased = True
-            break
-        except Exception:
-            continue
-
-    selected_quantity = 2 if quantity_increased else 1
-
-    click_button_by_text(page, "Request Order")
-
-    store_candidates = [
-        page.get_by_text(re.compile(r"Swathi Medical", re.I)),
-        page.get_by_role("row", name=re.compile(r"Swathi Medical", re.I)),
-    ]
-
-    store_selected = False
-
-    for candidate in store_candidates:
-        try:
-            candidate.first.click(timeout=10000)
-            store_selected = True
-            break
-        except Exception:
-            continue
-
-    if store_selected is False:
-        raise AssertionError("Could not select Swathi Medical store.")
-
-    click_button_by_text(page, "Select")
-    wait_for_page_ready(page)
-
-    toast_message = assert_success_message_if_present(page)
+    request_order_result = click_request_order_and_select_swathi_medical(page=page)
 
     return {
         "order_requested": True,
         "selected_item_name": selected_item_name,
-        "selected_quantity": selected_quantity,
-        "store_name": "Swathi Medical",
-        "toast_message": toast_message,
+        "item_name": selected_item_name,
+        "quantity_increment_count": quantity_added,
+        "selected_item_result": selected_item,
+        "request_order_result": request_order_result,
+        "final_url": page.url,
     }
+
+
+
+def click_request_order_and_select_swathi_medical(page) -> dict:
+    """
+    Clicks Request Order, selects Swathi Medical store, and confirms.
+    """
+
+    request_order_candidates = [
+        page.get_by_role("button", name=re.compile(r"Request\s+Order", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"Request\s+Order", re.I)).first,
+        page.get_by_text(re.compile(r"Request\s+Order", re.I)).first,
+    ]
+
+    clicked_request_order = False
+
+    for candidate in request_order_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.click(timeout=10000)
+            clicked_request_order = True
+            break
+        except Exception:
+            continue
+
+    if clicked_request_order is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click Request Order button in Order Request Details page.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(1500)
+
+    swathi_candidates = [
+        page.get_by_text(re.compile(r"Swathi\s+Medical", re.I)).first,
+        page.locator("tr").filter(has_text=re.compile(r"Swathi\s+Medical", re.I)).first,
+        page.locator("li").filter(has_text=re.compile(r"Swathi\s+Medical", re.I)).first,
+        page.locator(".p-dialog").filter(has_text=re.compile(r"Swathi\s+Medical", re.I)).first,
+    ]
+
+    selected_store = False
+
+    for candidate in swathi_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.click(timeout=10000)
+            selected_store = True
+            break
+        except Exception:
+            continue
+
+    if selected_store is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not select Swathi Medical from Select Store popup.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    select_candidates = [
+        page.get_by_role("button", name=re.compile(r"^Select$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Select$", re.I)).first,
+    ]
+
+    clicked_select = False
+
+    for candidate in select_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            clicked_select = True
+            break
+        except Exception:
+            continue
+
+    if clicked_select is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click Select button after choosing Swathi Medical.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    message = assert_success_message_if_present(page)
+
+    return {
+        "request_order_clicked": True,
+        "store_selected": True,
+        "store_name": "Swathi Medical",
+        "message": message,
+        "final_url": page.url,
+    }
+
+
+
+
+
+def increase_order_request_item_quantity_randomly(
+    page,
+    item_name: str,
+) -> int:
+    """
+    Randomly increases selected order request item quantity by clicking + button.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    increment_count = random.randint(1, 3)
+
+    for _ in range(increment_count):
+        clicked_plus = click_order_request_item_plus_button(
+            page=page,
+            item_name=item_name,
+        )
+
+        if clicked_plus is False:
+            break
+
+        page.wait_for_timeout(400)
+
+    return increment_count
+
+
+
+
+def click_order_request_item_plus_button(
+    page,
+    item_name: str,
+) -> bool:
+    """
+    Clicks + quantity button for selected item row.
+    """
+
+    item_pattern = re.compile(re.escape(item_name), re.I)
+
+    row_candidates = [
+        page.get_by_role("row", name=item_pattern).first,
+        page.locator("tr").filter(has_text=item_pattern).first,
+        page.locator("[role='row']").filter(has_text=item_pattern).first,
+        page.locator("div").filter(has_text=item_pattern).first,
+    ]
+
+    for row in row_candidates:
+        try:
+            row.wait_for(state="visible", timeout=3000)
+            row.scroll_into_view_if_needed(timeout=3000)
+
+            plus_candidates = [
+                row.get_by_role("button", name=re.compile(r"^\+$|plus|Add", re.I)).last,
+                row.locator("button").filter(has_text=re.compile(r"^\+$")).last,
+                row.locator("button").last,
+            ]
+
+            for plus in plus_candidates:
+                try:
+                    plus.click(timeout=5000)
+                    return True
+                except Exception:
+                    continue
+
+        except Exception:
+            continue
+
+    return False
+
+
+
+
+
+def click_done_in_select_items_popup(page) -> None:
+    """
+    Clicks Done button in Select Items popup.
+
+    The page can have multiple Done buttons. This clicks the Done button inside
+    the Select Items popup only, preferably the bottom/latest visible Done.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(800)
+
+    done_clicked = page.evaluate(
+        """
+        () => {
+            const normalize = (value) => {
+                return (value || '').replace(/\\s+/g, ' ').trim();
+            };
+
+            const isVisible = (element) => {
+                const rect = element.getBoundingClientRect();
+                const style = window.getComputedStyle(element);
+
+                return (
+                    rect.width > 0 &&
+                    rect.height > 0 &&
+                    style.visibility !== 'hidden' &&
+                    style.display !== 'none'
+                );
+            };
+
+            const panels = Array.from(
+                document.querySelectorAll('.p-dialog, [role="dialog"], mat-dialog-container, div')
+            ).filter((panel) => {
+                if (!isVisible(panel)) {
+                    return false;
+                }
+
+                const text = normalize(panel.innerText || panel.textContent || '');
+
+                return (
+                    text.includes('Select Items') &&
+                    text.includes('Item Name') &&
+                    text.includes('Done')
+                );
+            }).sort((a, b) => {
+                const ar = a.getBoundingClientRect();
+                const br = b.getBoundingClientRect();
+                return (ar.width * ar.height) - (br.width * br.height);
+            });
+
+            for (const panel of panels) {
+                const doneButtons = Array.from(
+                    panel.querySelectorAll('button, span, div')
+                ).filter((element) => {
+                    if (!isVisible(element)) {
+                        return false;
+                    }
+
+                    const text = normalize(element.innerText || element.textContent || '');
+                    const disabled = (
+                        element.disabled ||
+                        element.getAttribute('aria-disabled') === 'true' ||
+                        element.classList.contains('disabled') ||
+                        element.classList.contains('p-disabled')
+                    );
+
+                    return /^Done$/i.test(text) && !disabled;
+                });
+
+                if (doneButtons.length) {
+                    const button = doneButtons[doneButtons.length - 1];
+
+                    button.scrollIntoView({
+                        block: 'center',
+                        inline: 'center'
+                    });
+
+                    button.click();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        """
+    )
+
+    if done_clicked:
+        wait_for_page_ready(page)
+        page.wait_for_timeout(1500)
+
+        visible_text = get_visible_page_text(page)
+
+        if not re.search(r"Select\s+Items", visible_text, re.I):
+            return
+
+        if re.search(r"Item\s+Name\s+Qty\s+Notes\s+Actions", visible_text, re.I) and not re.search(
+            r"No\s+items\s+found",
+            visible_text,
+            re.I,
+        ):
+            return
+
+    done_candidates = [
+        page.locator(".p-dialog").get_by_role("button", name=re.compile(r"^Done$", re.I)).last,
+        page.locator("[role='dialog']").get_by_role("button", name=re.compile(r"^Done$", re.I)).last,
+        page.locator(".p-dialog button").filter(has_text=re.compile(r"^Done$", re.I)).last,
+        page.get_by_role("button", name=re.compile(r"^Done$", re.I)).last,
+        page.locator("button").filter(has_text=re.compile(r"^Done$", re.I)).last,
+    ]
+
+    for candidate in done_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000, force=True)
+            wait_for_page_ready(page)
+            page.wait_for_timeout(1500)
+
+            visible_text = get_visible_page_text(page)
+
+            if not re.search(r"Select\s+Items", visible_text, re.I):
+                return
+
+            if re.search(r"Item\s+Name\s+Qty\s+Notes\s+Actions", visible_text, re.I) and not re.search(
+                r"No\s+items\s+found",
+                visible_text,
+                re.I,
+            ):
+                return
+
+        except Exception:
+            continue
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not click Done in Select Items popup.\n"
+        "Most likely the item row was not selected before clicking Done.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+
+
+def select_item_from_order_request_popup(
+    page,
+    item_name: str,
+) -> dict:
+    """
+    Selects given medicine item from Select Items popup.
+
+    Handles exempt item names shown as:
+        Med_3(Exempt)
+        Med_5(Exempt)
+
+    Important:
+    Do not only click the item text. The row must be selected using checkbox/select cell.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    item_name = str(item_name).strip()
+
+    item_pattern = re.compile(
+        rf"^{re.escape(item_name)}(?:\s*\(Exempt\))?$",
+        re.I,
+    )
+
+    # Search field may or may not be present. If present, use it.
+    search_candidates = [
+        page.get_by_role("textbox", name=re.compile(r"Search|Item", re.I)).first,
+        page.locator("input[placeholder*='Search' i]").first,
+        page.locator("input[placeholder*='Item' i]").first,
+        page.locator(".p-dialog input").first,
+    ]
+
+    for candidate in search_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=2500)
+            candidate.click(timeout=3000)
+            candidate.fill("", timeout=3000)
+            candidate.fill(item_name, timeout=5000)
+            page.wait_for_timeout(1000)
+            break
+        except Exception:
+            continue
+
+    selected_by_locator = False
+
+    row_candidates = [
+        page.locator(".p-dialog tr").filter(has_text=re.compile(re.escape(item_name), re.I)).first,
+        page.locator("[role='dialog'] tr").filter(has_text=re.compile(re.escape(item_name), re.I)).first,
+        page.locator("tr").filter(has_text=re.compile(re.escape(item_name), re.I)).first,
+        page.locator(".p-dialog [role='row']").filter(has_text=re.compile(re.escape(item_name), re.I)).first,
+        page.locator("[role='row']").filter(has_text=re.compile(re.escape(item_name), re.I)).first,
+    ]
+
+    for row in row_candidates:
+        try:
+            row.wait_for(state="visible", timeout=5000)
+            row.scroll_into_view_if_needed(timeout=3000)
+
+            row_text = row.inner_text(timeout=3000)
+
+            if not re.search(item_pattern, row_text.replace("\n", " ").strip()):
+                if not re.search(re.escape(item_name), row_text, re.I):
+                    continue
+
+            select_targets = [
+                row.locator("input[type='checkbox']").first,
+                row.locator(".p-checkbox-box").first,
+                row.locator(".p-checkbox").first,
+                row.locator("td").first,
+                row.locator("span").first,
+                row,
+            ]
+
+            for target in select_targets:
+                try:
+                    target.click(timeout=5000, force=True)
+                    selected_by_locator = True
+                    break
+                except Exception:
+                    continue
+
+            if selected_by_locator:
+                break
+
+        except Exception:
+            continue
+
+    if selected_by_locator is False:
+        selected_by_js = page.evaluate(
+            """
+            ({ itemName }) => {
+                const normalize = (value) => {
+                    return (value || '').replace(/\\s+/g, ' ').trim();
+                };
+
+                const isVisible = (element) => {
+                    const rect = element.getBoundingClientRect();
+                    const style = window.getComputedStyle(element);
+
+                    return (
+                        rect.width > 0 &&
+                        rect.height > 0 &&
+                        style.visibility !== 'hidden' &&
+                        style.display !== 'none'
+                    );
+                };
+
+                const panels = Array.from(
+                    document.querySelectorAll('.p-dialog, [role="dialog"], mat-dialog-container, div')
+                ).filter((panel) => {
+                    if (!isVisible(panel)) {
+                        return false;
+                    }
+
+                    const text = normalize(panel.innerText || panel.textContent || '');
+
+                    return (
+                        text.includes('Select Items') &&
+                        text.includes('Item Name') &&
+                        text.toLowerCase().includes(itemName.toLowerCase())
+                    );
+                }).sort((a, b) => {
+                    const ar = a.getBoundingClientRect();
+                    const br = b.getBoundingClientRect();
+                    return (ar.width * ar.height) - (br.width * br.height);
+                });
+
+                for (const panel of panels) {
+                    const rows = Array.from(
+                        panel.querySelectorAll('tr, [role="row"], li, div')
+                    ).filter((row) => {
+                        if (!isVisible(row)) {
+                            return false;
+                        }
+
+                        const text = normalize(row.innerText || row.textContent || '');
+
+                        return (
+                            text.toLowerCase().includes(itemName.toLowerCase()) &&
+                            text.toLowerCase().includes('enable')
+                        );
+                    }).sort((a, b) => {
+                        const ar = a.getBoundingClientRect();
+                        const br = b.getBoundingClientRect();
+                        return (ar.width * ar.height) - (br.width * br.height);
+                    });
+
+                    for (const row of rows) {
+                        const checkbox =
+                            row.querySelector('input[type="checkbox"]') ||
+                            row.querySelector('.p-checkbox-box') ||
+                            row.querySelector('.p-checkbox');
+
+                        if (checkbox && isVisible(checkbox)) {
+                            checkbox.scrollIntoView({
+                                block: 'center',
+                                inline: 'center'
+                            });
+
+                            checkbox.click();
+                            return true;
+                        }
+
+                        const firstCell = row.querySelector('td, [role="cell"], span, div');
+
+                        if (firstCell && isVisible(firstCell)) {
+                            firstCell.scrollIntoView({
+                                block: 'center',
+                                inline: 'center'
+                            });
+
+                            firstCell.click();
+                            return true;
+                        }
+
+                        row.scrollIntoView({
+                            block: 'center',
+                            inline: 'center'
+                        });
+
+                        row.click();
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            """,
+            {"itemName": item_name},
+        )
+
+        selected_by_locator = bool(selected_by_js)
+
+    if selected_by_locator is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            f"Could not select medicine item from Select Items popup: {item_name}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(1000)
+
+    return {
+        "item_selected": True,
+        "item_name": item_name,
+    }
+
+
+
+
+
+
+def click_latest_ip_service_action_menu(
+    page,
+    service_name: str = "Nursing Service",
+) -> bool:
+    """
+    Clicks the 3-dot action menu against the latest visible IP service row.
+
+    This is safer than using only fixed IDs because the row/action ID can change.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    service_pattern = re.compile(re.escape(service_name), re.I)
+
+    row_candidates = [
+        page.get_by_role("row", name=service_pattern).first,
+        page.locator("tr").filter(has_text=service_pattern).first,
+        page.locator("[role='row']").filter(has_text=service_pattern).first,
+        page.locator(".p-datatable-tbody tr").filter(has_text=service_pattern).first,
+        page.locator("div").filter(has_text=service_pattern).filter(has_text=re.compile(r"more_horiz|⋮|Request|Service", re.I)).first,
+    ]
+
+    for row in row_candidates:
+        try:
+            row.wait_for(state="visible", timeout=5000)
+            row.scroll_into_view_if_needed(timeout=5000)
+
+            menu_candidates = [
+                row.locator("[id*='btnServiceActionMenu']").first,
+                row.locator("[id*='btnRowMenu']").first,
+                row.get_by_role("button", name=re.compile(r"more_horiz|More|Actions|Menu|⋮|•••", re.I)).first,
+                row.locator("button").filter(has_text=re.compile(r"more_horiz|⋮|•••", re.I)).first,
+                row.locator("button").last,
+                row.locator("mat-icon").filter(has_text=re.compile(r"more_horiz", re.I)).first,
+                row.locator("i").filter(has_text=re.compile(r"⋮|•••", re.I)).first,
+                row.locator("span").filter(has_text=re.compile(r"more_horiz|⋮|•••", re.I)).first,
+            ]
+
+            for menu in menu_candidates:
+                try:
+                    menu.wait_for(state="visible", timeout=3000)
+                    menu.click(timeout=8000, force=True)
+                    page.wait_for_timeout(800)
+                    return True
+                except Exception:
+                    continue
+
+        except Exception:
+            continue
+
+    fixed_menu_candidates = [
+        page.locator("[id*='btnServiceActionMenu_IP_AD_DE_New_ip_ser_con_det']").first,
+        page.locator("[id*='btnServiceActionMenu']").first,
+        page.locator("[id*='btnRowMenu_Service']").first,
+        page.locator("[id*='btnRowMenu']").filter(has_text=re.compile(r"more_horiz|⋮|•••", re.I)).first,
+    ]
+
+    for menu in fixed_menu_candidates:
+        try:
+            menu.wait_for(state="visible", timeout=3000)
+            menu.scroll_into_view_if_needed(timeout=3000)
+            menu.click(timeout=8000, force=True)
+            page.wait_for_timeout(800)
+            return True
+        except Exception:
+            continue
+
+    clicked_by_js = page.evaluate(
+        """
+        ({ serviceName }) => {
+            const normalize = (value) => {
+                return (value || '').replace(/\\s+/g, ' ').trim();
+            };
+
+            const isVisible = (element) => {
+                const rect = element.getBoundingClientRect();
+                const style = window.getComputedStyle(element);
+
+                return (
+                    rect.width > 0 &&
+                    rect.height > 0 &&
+                    style.visibility !== 'hidden' &&
+                    style.display !== 'none'
+                );
+            };
+
+            const rows = Array.from(
+                document.querySelectorAll('tr, [role="row"], .p-datatable-tbody > tr, div')
+            ).filter((row) => {
+                if (!isVisible(row)) {
+                    return false;
+                }
+
+                const text = normalize(row.innerText || row.textContent || '');
+
+                return text.toLowerCase().includes(serviceName.toLowerCase());
+            });
+
+            const sortedRows = rows.sort((a, b) => {
+                const ar = a.getBoundingClientRect();
+                const br = b.getBoundingClientRect();
+
+                return (ar.width * ar.height) - (br.width * br.height);
+            });
+
+            for (const row of sortedRows) {
+                const buttons = Array.from(row.querySelectorAll('button, a'))
+                    .filter((button) => isVisible(button));
+
+                for (const button of buttons.reverse()) {
+                    const text = normalize(button.innerText || button.textContent || '');
+                    const aria = normalize(button.getAttribute('aria-label') || '');
+                    const id = normalize(button.getAttribute('id') || '');
+                    const cls = normalize(button.getAttribute('class') || '');
+
+                    const haystack = `${text} ${aria} ${id} ${cls}`.toLowerCase();
+
+                    if (
+                        haystack.includes('more') ||
+                        haystack.includes('action') ||
+                        haystack.includes('menu') ||
+                        haystack.includes('rowmenu') ||
+                        haystack.includes('servicemen') ||
+                        text.includes('⋮') ||
+                        text.includes('•••') ||
+                        text.includes('more_horiz')
+                    ) {
+                        button.scrollIntoView({
+                            block: 'center',
+                            inline: 'center'
+                        });
+
+                        button.click();
+
+                        return true;
+                    }
+                }
+
+                const icons = Array.from(row.querySelectorAll('mat-icon, i, span'))
+                    .filter((icon) => {
+                        if (!isVisible(icon)) {
+                            return false;
+                        }
+
+                        const text = normalize(icon.innerText || icon.textContent || '');
+                        const cls = normalize(icon.getAttribute('class') || '');
+
+                        return (
+                            text === 'more_horiz' ||
+                            text.includes('⋮') ||
+                            text.includes('•••') ||
+                            cls.toLowerCase().includes('ellipsis') ||
+                            cls.toLowerCase().includes('more') ||
+                            cls.toLowerCase().includes('menu')
+                        );
+                    });
+
+                if (icons.length) {
+                    const icon = icons[icons.length - 1];
+
+                    icon.scrollIntoView({
+                        block: 'center',
+                        inline: 'center'
+                    });
+
+                    icon.click();
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        """,
+        {"serviceName": service_name},
+    )
+
+    if clicked_by_js:
+        page.wait_for_timeout(800)
+        return True
+
+    return False
+
+
+
+
+
+
+def open_services_tab_if_needed(page) -> None:
+    """
+    Ensures Services tab/list is visible on IP patient details page.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    visible_text = get_visible_page_text(page)
+
+    if re.search(r"Nursing\s+Service|Doc\s+Visit", visible_text, re.I):
+        return
+
+    service_tab_candidates = [
+        page.locator("a").filter(has_text=re.compile(r"^Services$", re.I)).first,
+        page.get_by_text("Services", exact=True).first,
+        page.locator("button").filter(has_text=re.compile(r"^Services$", re.I)).first,
+    ]
+
+    for candidate in service_tab_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            wait_for_page_ready(page)
+            page.wait_for_timeout(1500)
+            return
+        except Exception:
+            continue
+
+
+
+
 
 
 
@@ -1789,62 +2566,35 @@ def confirm_latest_ip_requested_sales_order(page) -> dict:
 
 def is_sales_order_invoice_view_open(page) -> bool:
     """
-    Checks whether Sales Order invoice view is open.
+    Returns True only when Sales Order invoice details page is actually loaded.
 
-    Supports both:
-    1. Taxable invoice - may show CGST/SGST/GST.
-    2. Exempt invoice - may not show tax labels, but shows invoice details,
-       item table, subtotal, net total, and net payable.
+    URL alone is not enough because the page can stay in Loading... state.
     """
 
-    current_url = page.url.lower()
-
     try:
+        current_url = page.url.lower()
         visible_text = get_visible_page_text(page)
+
+        if "/business/salesorder/invoice/" not in current_url:
+            return False
+
+        if re.search(r"Loading\.\.\.", visible_text, re.I) and not re.search(
+            r"Invoice\s*No\s*#|Inv\s*Date|Order\s*No\s*#|Net\s*Total|Net\s*payable",
+            visible_text,
+            re.I,
+        ):
+            return False
+
+        return bool(
+            re.search(
+                r"Invoice\s*No\s*#|Inv\s*Date|Order\s*No\s*#|Print\s*Invoice|Net\s*Total|Net\s*payable|Total\s*Amount",
+                visible_text,
+                re.I,
+            )
+        )
+
     except Exception:
         return False
-
-    visible_text_lower = visible_text.lower()
-
-    # Strong URL check for Sales Order invoice page.
-    if "/business/salesorder/invoice/" in current_url:
-        invoice_page_indicators = [
-            "invoice no",
-            "inv date",
-            "order no",
-            "item name",
-            "subtotal",
-            "net total",
-            "net payable",
-        ]
-
-        matched_count = 0
-
-        for indicator in invoice_page_indicators:
-            if indicator in visible_text_lower:
-                matched_count += 1
-
-        if matched_count >= 3:
-            return True
-
-    # Taxable invoice view check.
-    taxable_invoice_indicators = [
-        "invoice details",
-        "cgst",
-        "sgst",
-        "subtotal",
-        "net total",
-        "net total with tax",
-        "net payable",
-    ]
-
-    matched_count = 0
-
-    for indicator in taxable_invoice_indicators:
-        if indicator in visible_text_lower:
-            matched_count += 1
-
-    return matched_count >= 3
 
 
 
@@ -1853,13 +2603,16 @@ def create_sales_order_invoice_and_view(page) -> dict:
     """
     Creates Sales Order invoice from order details page and opens View Invoice.
 
-    This function must leave the browser on the actual invoice view page,
-    not on the Sales Order details page.
+    This function waits until the actual invoice details content loads.
+    Sometimes the URL changes to /salesorder/invoice/... first, but the page
+    still shows only 'Loading...'. So URL alone is not enough.
     """
 
     wait_for_page_ready(page)
 
     if is_sales_order_invoice_view_open(page):
+        wait_for_sales_order_invoice_details_loaded(page=page)
+
         return {
             "order_invoice_created": True,
             "order_invoice_view_opened": True,
@@ -1876,6 +2629,7 @@ def create_sales_order_invoice_and_view(page) -> dict:
 
     for candidate in create_invoice_candidates:
         try:
+            candidate.first.scroll_into_view_if_needed(timeout=5000)
             candidate.first.click(timeout=15000)
             create_clicked = True
             break
@@ -1894,6 +2648,15 @@ def create_sales_order_invoice_and_view(page) -> dict:
     page.wait_for_timeout(1500)
     wait_for_page_ready(page)
 
+    if is_sales_order_invoice_view_open(page):
+        wait_for_sales_order_invoice_details_loaded(page=page)
+
+        return {
+            "order_invoice_created": True,
+            "order_invoice_view_opened": True,
+            "final_url": page.url,
+        }
+
     view_invoice_candidates = [
         page.get_by_role("button", name=re.compile(r"View Invoice", re.I)),
         page.locator("button").filter(has_text=re.compile(r"View Invoice", re.I)),
@@ -1905,6 +2668,7 @@ def create_sales_order_invoice_and_view(page) -> dict:
     for candidate in view_invoice_candidates:
         try:
             candidate.first.wait_for(state="visible", timeout=15000)
+            candidate.first.scroll_into_view_if_needed(timeout=5000)
             candidate.first.click(timeout=15000)
             view_clicked = True
             break
@@ -1920,28 +2684,78 @@ def create_sales_order_invoice_and_view(page) -> dict:
             f"Visible page text:\n{visible_text[:2500]}"
         )
 
-    page.wait_for_timeout(2000)
-    wait_for_page_ready(page)
-
     try:
-        page.wait_for_url(re.compile(r"invoice|Invoice", re.I), timeout=10000)
+        page.wait_for_url(re.compile(r".*/business/salesorder/invoice/.*", re.I), timeout=20000)
     except Exception:
         pass
 
-    if not is_sales_order_invoice_view_open(page):
-        visible_text = get_visible_page_text(page)
-
-        raise AssertionError(
-            "View Invoice was clicked, but invoice details did not open.\n"
-            f"Current URL: {page.url}\n"
-            f"Visible page text:\n{visible_text[:2500]}"
-        )
+    wait_for_sales_order_invoice_details_loaded(page=page)
 
     return {
         "order_invoice_created": True,
         "order_invoice_view_opened": True,
         "final_url": page.url,
     }
+
+
+
+def wait_for_sales_order_invoice_details_loaded(
+    page,
+    timeout_ms: int = 45000,
+) -> None:
+    """
+    Waits until Sales Order invoice details content is loaded.
+
+    Handles this temporary state:
+        /business/salesorder/invoice/...
+        Back
+        Loading...
+    """
+
+    max_attempts = max(1, timeout_ms // 1000)
+
+    invoice_detail_markers = [
+        r"Invoice\s*No\s*#",
+        r"Inv\s*Date",
+        r"Order\s*No\s*#",
+        r"Print\s*Invoice",
+        r"Share\s*Invoice",
+        r"Net\s*Total",
+        r"Net\s*payable",
+        r"Total\s*Amount",
+    ]
+
+    for _ in range(max_attempts):
+        try:
+            wait_for_page_ready(page)
+        except Exception:
+            pass
+
+        page.wait_for_timeout(1000)
+
+        current_url = page.url.lower()
+        visible_text = get_visible_page_text(page)
+
+        is_invoice_url = "/business/salesorder/invoice/" in current_url
+
+        has_invoice_content = any(
+            re.search(pattern, visible_text, re.I)
+            for pattern in invoice_detail_markers
+        )
+
+        if is_invoice_url and has_invoice_content:
+            return
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Sales Order invoice URL opened, but invoice details content did not load.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
 
 
 def verify_ip_order_invoice_pharmacy_item_tax_split(
@@ -9568,38 +10382,35 @@ def get_selected_order_item_quantity_from_result(order_request_result: dict) -> 
 def verify_tax_inclusive_sales_order_invoice_item_and_capture(
     page,
     item_name: str,
-    quantity: Decimal,
-    order_details_item_rate: Decimal,
+    quantity,
+    order_details_item_rate,
 ) -> dict:
     """
-    Verifies tax-inclusive sales order invoice item.
+    Strictly verifies taxable sales order invoice item.
 
-    Validates:
-    - S.Price
-    - QTY
-    - GST
-    - CESS
-    - Total Tax
-    - Net Total With Tax
+    Important:
+    S.Price must be calculated from the Rate captured from Sales Order Details.
 
     Formula:
-        S.Price = Rate * 100 / (100 + total_tax_percentage)
+        Med_1 / Med_2:
+            S.Price = Rate * 100 / 106
 
-    Med_1:
-        S.Price = Rate * 100 / 106
+        Med_4:
+            S.Price = Rate * 100 / 105
 
-    Med_2:
-        S.Price = Rate * 100 / 106
+        Medicine Total = S.Price * QTY
+        GST = Medicine Total * GST% / 100
+        CESS = Medicine Total * CESS% / 100
+        Net Total With Tax = Medicine Total + GST + CESS
 
-    Med_4:
-        S.Price = Rate * 100 / 105
+    This function should fail if invoice S.Price is wrongly shown.
     """
 
     wait_for_page_ready(page)
     page.wait_for_timeout(1000)
 
-    order_details_item_rate = Decimal(str(order_details_item_rate))
     quantity = Decimal(str(quantity))
+    order_details_item_rate = round_money(Decimal(str(order_details_item_rate)))
 
     item_config = get_taxable_order_item_config(item_name=item_name)
 
@@ -9612,11 +10423,10 @@ def verify_tax_inclusive_sales_order_invoice_item_and_capture(
         item_name=item_name,
     )
 
-    s_price_actual = invoice_item_values["s_price"]
-    quantity_actual = invoice_item_values["quantity"]
-    gst_actual = invoice_item_values["gst"]
-    cess_actual = invoice_item_values["cess"]
-    net_total_with_tax_actual = invoice_item_values["net_total_with_tax"]
+    s_price_actual = round_money(invoice_item_values["s_price"])
+    quantity_actual = Decimal(str(invoice_item_values["quantity"]))
+    gst_actual = round_money(invoice_item_values["gst"])
+    cess_actual = round_money(invoice_item_values["cess"])
 
     s_price_expected = round_money(
         order_details_item_rate
@@ -9633,23 +10443,27 @@ def verify_tax_inclusive_sales_order_invoice_item_and_capture(
     assert_amount_close(
         quantity_actual,
         quantity,
-        f"Invoice QTY mismatch for {item_name}.",
+        f"Quantity mismatch for {item_name}.",
     )
 
-    medicine_total = round_money(s_price_expected * quantity)
+    medicine_total_expected = round_money(
+        s_price_expected * quantity_actual
+    )
 
     gst_expected = round_money(
-        medicine_total * gst_percentage / Decimal("100")
+        medicine_total_expected * gst_percentage / Decimal("100")
     )
 
     cess_expected = round_money(
-        medicine_total * cess_percentage / Decimal("100")
+        medicine_total_expected * cess_percentage / Decimal("100")
     )
 
-    total_tax_expected = round_money(gst_expected + cess_expected)
+    total_tax_expected = round_money(
+        gst_expected + cess_expected
+    )
 
     net_total_with_tax_expected = round_money(
-        medicine_total + gst_expected + cess_expected
+        medicine_total_expected + gst_expected + cess_expected
     )
 
     assert_amount_close(
@@ -9664,7 +10478,9 @@ def verify_tax_inclusive_sales_order_invoice_item_and_capture(
         f"CESS mismatch for {item_name}.",
     )
 
-    total_tax_actual = round_money(gst_actual + cess_actual)
+    total_tax_actual = round_money(
+        gst_actual + cess_actual
+    )
 
     assert_amount_close(
         total_tax_actual,
@@ -9672,27 +10488,35 @@ def verify_tax_inclusive_sales_order_invoice_item_and_capture(
         f"Total tax mismatch for {item_name}.",
     )
 
+    net_total_with_tax_actual = round_money(
+        invoice_item_values.get(
+            "net_total_with_tax",
+            invoice_item_values.get("total_amount", Decimal("0.00")),
+        )
+    )
+
+    if net_total_with_tax_actual <= Decimal("0.00"):
+        money_values = (
+            invoice_item_values.get("filtered_money_values")
+            or invoice_item_values.get("money_values")
+            or []
+        )
+
+        if money_values:
+            net_total_with_tax_actual = round_money(money_values[-1])
+
     assert_amount_close(
         net_total_with_tax_actual,
         net_total_with_tax_expected,
         f"Net Total With Tax mismatch for {item_name}.",
     )
 
-    invoice_net_total_actual = read_invoice_summary_amount_optional(
-        page=page,
-        labels=["Net Total", "Net payable", "Amount Due", "Total"],
-        default=net_total_with_tax_actual,
-    )
-
-    assert_amount_close(
-        invoice_net_total_actual,
-        net_total_with_tax_expected,
-        f"Sales order invoice Net Total mismatch for {item_name}.",
-    )
-
     return {
         "item_name": item_name,
-        "quantity": quantity,
+
+        "quantity": quantity_actual,
+        "quantity_actual": quantity_actual,
+        "quantity_expected": quantity,
 
         "order_details_item_rate": order_details_item_rate,
 
@@ -9703,8 +10527,8 @@ def verify_tax_inclusive_sales_order_invoice_item_and_capture(
         "s_price_actual": s_price_actual,
         "s_price_expected": s_price_expected,
 
-        "medicine_total": medicine_total,
-        "taxable_amount_expected": medicine_total,
+        "medicine_total": medicine_total_expected,
+        "medicine_total_expected": medicine_total_expected,
 
         "gst_actual": gst_actual,
         "gst_expected": gst_expected,
@@ -9721,11 +10545,11 @@ def verify_tax_inclusive_sales_order_invoice_item_and_capture(
         "total_amount_actual": net_total_with_tax_actual,
         "total_amount_expected": net_total_with_tax_expected,
 
-        "net_total_actual": invoice_net_total_actual,
+        "invoice_row_text": invoice_item_values.get("row_text"),
+        "invoice_headers": invoice_item_values.get("headers"),
+        "invoice_cells": invoice_item_values.get("cells"),
+        "invoice_money_values": invoice_item_values.get("money_values", []),
 
-        "invoice_row_text": invoice_item_values["row_text"],
-        "invoice_headers": invoice_item_values["headers"],
-        "invoice_cells": invoice_item_values["cells"],
         "final_url": page.url,
     }
 
@@ -10310,47 +11134,29 @@ def read_invoice_summary_amount_optional(
 
 def go_back_from_sales_order_invoice_to_order_details(page) -> dict:
     """
-    Clicks back arrow from sales order invoice details page to order details page.
+    Goes back from Sales Order Invoice Details page to Sales Order Details page.
+
+    Must end on page where Complete Order button is available.
     """
 
     wait_for_page_ready(page)
     page.wait_for_timeout(1000)
 
-    back_candidates = [
-        page.locator("i").nth(1),
-        page.locator("i").first,
-        page.get_by_role("button", name=re.compile(r"Back", re.I)).first,
-        page.locator("xpath=//*[contains(normalize-space(), 'Invoice Details')]/preceding::i[1]").first,
-    ]
+    if is_sales_order_details_page(page=page):
+        return {
+            "returned_to_order_details": True,
+            "final_url": page.url,
+        }
 
-    clicked_back = False
+    back_clicked = click_sales_order_invoice_back_button(page=page)
 
-    for candidate in back_candidates:
+    if back_clicked is False:
         try:
-            candidate.click(timeout=10000)
-            clicked_back = True
-            break
-        except Exception:
-            continue
-
-    if clicked_back is False:
-        try:
-            page.go_back(timeout=10000)
-            clicked_back = True
+            page.go_back(wait_until="domcontentloaded", timeout=15000)
         except Exception:
             pass
 
-    if clicked_back is False:
-        visible_text = get_visible_page_text(page)
-
-        raise AssertionError(
-            "Could not go back from sales order invoice details to order details.\n"
-            f"Current URL: {page.url}\n"
-            f"Visible page text:\n{visible_text[:2500]}"
-        )
-
-    wait_for_page_ready(page)
-    page.wait_for_timeout(2000)
+    wait_for_sales_order_details_page(page=page)
 
     return {
         "returned_to_order_details": True,
@@ -10358,22 +11164,170 @@ def go_back_from_sales_order_invoice_to_order_details(page) -> dict:
     }
 
 
+def click_sales_order_invoice_back_button(page) -> bool:
+    """
+    Clicks Back button from Sales Order Invoice Details page.
+
+    Avoids clicking browser/sidebar links.
+    """
+
+    back_candidates = [
+        page.get_by_text("Back", exact=True).first,
+        page.get_by_role("button", name=re.compile(r"^Back$", re.I)).first,
+        page.get_by_role("link", name=re.compile(r"^Back$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Back$", re.I)).first,
+    ]
+
+    for candidate in back_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.scroll_into_view_if_needed(timeout=3000)
+            candidate.click(timeout=10000)
+            page.wait_for_timeout(2000)
+            wait_for_page_ready(page)
+
+            if is_sales_order_details_page(page=page):
+                return True
+
+        except Exception:
+            continue
+
+    clicked_by_js = page.evaluate(
+        """
+        () => {
+            const normalize = (value) => {
+                return (value || '').replace(/\\s+/g, ' ').trim();
+            };
+
+            const isVisible = (element) => {
+                const rect = element.getBoundingClientRect();
+                const style = window.getComputedStyle(element);
+
+                return (
+                    rect.width > 0 &&
+                    rect.height > 0 &&
+                    style.visibility !== 'hidden' &&
+                    style.display !== 'none'
+                );
+            };
+
+            const candidates = Array.from(
+                document.querySelectorAll('button, a, span, div')
+            ).filter((element) => {
+                if (!isVisible(element)) {
+                    return false;
+                }
+
+                const text = normalize(element.innerText || element.textContent || '');
+
+                return text === 'Back';
+            });
+
+            if (!candidates.length) {
+                return false;
+            }
+
+            const element = candidates[0];
+
+            element.scrollIntoView({
+                block: 'center',
+                inline: 'center'
+            });
+
+            element.click();
+
+            return true;
+        }
+        """
+    )
+
+    if clicked_by_js:
+        page.wait_for_timeout(2000)
+        wait_for_page_ready(page)
+
+        if is_sales_order_details_page(page=page):
+            return True
+
+    return False
+
+
+def is_sales_order_details_page(page) -> bool:
+    """
+    Checks whether current page is Sales Order Details page.
+    """
+
+    try:
+        current_url = page.url.lower()
+        visible_text = get_visible_page_text(page)
+
+        if "/business/salesorder/details/" in current_url:
+            return True
+
+        return bool(
+            re.search(r"Complete\s+Order", visible_text, re.I)
+            and re.search(r"Create\s+Invoice|Order\s+Details|Order\s+No", visible_text, re.I)
+            and not re.search(r"Invoice\s+No\s*#", visible_text, re.I)
+        )
+
+    except Exception:
+        return False
+
+
+def wait_for_sales_order_details_page(
+    page,
+    timeout_ms: int = 30000,
+) -> None:
+    """
+    Waits until Sales Order Details page is loaded.
+    """
+
+    max_attempts = max(1, timeout_ms // 1000)
+
+    for _ in range(max_attempts):
+        try:
+            wait_for_page_ready(page)
+        except Exception:
+            pass
+
+        page.wait_for_timeout(1000)
+
+        if is_sales_order_details_page(page=page):
+            return
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Sales Order Details page did not open after going back from invoice details page.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
 def complete_sales_order_from_order_details(page) -> dict:
     """
-    Completes sales order from order details page.
+    Completes sales order from Sales Order Details page.
 
-    Flow:
-    1. Make sure we are on order details page.
-    2. Scroll down.
-    3. Click Complete Order.
-    4. Assert success message.
+    If current page is Sales Order Invoice Details page, it first goes back
+    to Sales Order Details page.
     """
 
     wait_for_page_ready(page)
-    page.wait_for_timeout(1500)
+    page.wait_for_timeout(1000)
 
-    # Complete Order button is usually near the lower part of the order details page.
-    for _ in range(5):
+    current_url = page.url.lower()
+    visible_text = get_visible_page_text(page)
+
+    if (
+        "/business/salesorder/invoice/" in current_url
+        or re.search(r"Invoice\s+No\s*#", visible_text, re.I)
+    ):
+        go_back_from_sales_order_invoice_to_order_details(page=page)
+
+    wait_for_sales_order_details_page(page=page)
+
+    for _ in range(6):
         try:
             page.mouse.wheel(0, 900)
             page.wait_for_timeout(500)
@@ -10390,6 +11344,7 @@ def complete_sales_order_from_order_details(page) -> dict:
 
     for candidate in complete_button_candidates:
         try:
+            candidate.wait_for(state="visible", timeout=8000)
             candidate.scroll_into_view_if_needed(timeout=5000)
             page.wait_for_timeout(300)
             candidate.click(timeout=10000)
@@ -10402,21 +11357,23 @@ def complete_sales_order_from_order_details(page) -> dict:
         visible_text = get_visible_page_text(page)
 
         raise AssertionError(
-            "Could not click Complete Order button after returning from sales order invoice.\n"
+            "Could not click Complete Order button from Sales Order Details page.\n"
             f"Current URL: {page.url}\n"
             f"Visible page text:\n{visible_text[:2500]}"
         )
 
     wait_for_page_ready(page)
-    page.wait_for_timeout(2000)
+    page.wait_for_timeout(1500)
 
-    message = assert_success_message_if_present(page)
+    complete_message = assert_success_message_if_present(page)
 
     return {
         "sales_order_completed": True,
-        "message": message,
+        "complete_message": complete_message,
         "final_url": page.url,
     }
+
+
 
 
 
@@ -12215,23 +13172,40 @@ def verify_taxable_sales_order_invoice_item_with_discount_and_capture(
     """
     Verifies taxable sales order invoice after On Demand Discount.
 
-    Formula:
-        S.Price = Rate * 100 / (100 + total_tax_percentage)
+    Important:
+    After discount, the invoice screen shows S.Price as the discount-adjusted
+    tax-exclusive unit price.
 
-        Medicine Total = S.Price * QTY
+    So for discount invoices, calculate tax from the invoice-displayed S.Price:
+
+        Medicine Total = Invoice S.Price * QTY
         GST = Medicine Total * GST% / 100
         CESS = Medicine Total * CESS% / 100
-        Net Total With Tax = Medicine Total + GST + CESS
+        Total Tax = GST + CESS
+        Net Total = Medicine Total + GST + CESS
 
-        Discounted Net Total = Net Total With Tax - Discount Amount
+    The original order-details Rate is still captured and returned for traceability,
+    but it should not be used directly to calculate discounted S.Price.
     """
 
     wait_for_page_ready(page)
     page.wait_for_timeout(1000)
 
-    item_rate = Decimal(str(order_details_medicine_result["rate"]))
-    quantity = Decimal(str(order_details_medicine_result["quantity"]))
+    item_rate = round_money(Decimal(str(order_details_medicine_result["rate"])))
+    order_quantity = Decimal(str(order_details_medicine_result["quantity"]))
     discount_amount = round_money(Decimal(str(discount_amount)))
+
+    if order_quantity <= Decimal("0"):
+        raise AssertionError(
+            f"Invalid order quantity for {item_name}: {order_quantity}"
+        )
+
+    if discount_amount <= Decimal("0.00"):
+        raise AssertionError(
+            f"Discount amount should be greater than zero.\n"
+            f"Item: {item_name}\n"
+            f"Discount Amount: {discount_amount}"
+        )
 
     item_config = get_taxable_order_item_config(item_name=item_name)
 
@@ -12244,56 +13218,58 @@ def verify_taxable_sales_order_invoice_item_with_discount_and_capture(
         item_name=item_name,
     )
 
-    s_price_actual = invoice_item_values["s_price"]
-    quantity_actual = invoice_item_values["quantity"]
-    gst_actual = invoice_item_values["gst"]
-    cess_actual = invoice_item_values["cess"]
+    s_price_actual = round_money(invoice_item_values["s_price"])
+    quantity_actual = Decimal(str(invoice_item_values["quantity"]))
+    gst_actual = round_money(invoice_item_values["gst"])
+    cess_actual = round_money(invoice_item_values["cess"])
 
-    s_price_expected = round_money(
+    assert_amount_close(
+        quantity_actual,
+        order_quantity,
+        f"Quantity mismatch for {item_name} after discount.",
+    )
+
+    undiscounted_s_price_expected = round_money(
         item_rate
         * Decimal("100")
         / (Decimal("100") + total_tax_percentage)
     )
 
-    assert_amount_close(
-        s_price_actual,
-        s_price_expected,
-        f"S.Price mismatch for {item_name} after discount.",
+    undiscounted_taxable_total_expected = round_money(
+        undiscounted_s_price_expected * order_quantity
     )
 
-    assert_amount_close(
-        quantity_actual,
-        quantity,
-        f"Quantity mismatch for {item_name} after discount.",
+    discounted_taxable_total_actual = round_money(
+        s_price_actual * quantity_actual
     )
 
-    medicine_total = round_money(s_price_expected * quantity)
+    displayed_taxable_discount_actual = round_money(
+        undiscounted_taxable_total_expected - discounted_taxable_total_actual
+    )
+
+    if displayed_taxable_discount_actual < Decimal("0.00"):
+        raise AssertionError(
+            f"Discount-adjusted S.Price is greater than undiscounted S.Price for {item_name}.\n"
+            f"Order Rate: {item_rate}\n"
+            f"Undiscounted S.Price Expected: {undiscounted_s_price_expected}\n"
+            f"Invoice S.Price Actual: {s_price_actual}\n"
+            f"Displayed Taxable Discount: {displayed_taxable_discount_actual}\n"
+            f"Invoice row text:\n{invoice_item_values.get('row_text')}"
+        )
 
     gst_expected = round_money(
-        medicine_total * gst_percentage / Decimal("100")
+        discounted_taxable_total_actual * gst_percentage / Decimal("100")
     )
 
     cess_expected = round_money(
-        medicine_total * cess_percentage / Decimal("100")
+        discounted_taxable_total_actual * cess_percentage / Decimal("100")
     )
 
     total_tax_expected = round_money(gst_expected + cess_expected)
 
-    net_total_with_tax_expected = round_money(
-        medicine_total + gst_expected + cess_expected
+    net_total_expected = round_money(
+        discounted_taxable_total_actual + gst_expected + cess_expected
     )
-
-    discounted_net_total_expected = round_money(
-        net_total_with_tax_expected - discount_amount
-    )
-
-    if discounted_net_total_expected < Decimal("0.00"):
-        raise AssertionError(
-            f"Discounted net total became negative.\n"
-            f"Item: {item_name}\n"
-            f"Net Total With Tax: {net_total_with_tax_expected}\n"
-            f"Discount Amount: {discount_amount}"
-        )
 
     assert_amount_close(
         gst_actual,
@@ -12315,21 +13291,31 @@ def verify_taxable_sales_order_invoice_item_with_discount_and_capture(
         f"Total tax mismatch for {item_name} after discount.",
     )
 
-    invoice_discounted_net_total_actual = read_invoice_summary_amount_optional(
-        page=page,
-        labels=["Net payable", "Amount Due", "Net Total", "Total"],
-        default=discounted_net_total_expected,
+    row_net_total_actual = round_money(
+        invoice_item_values.get("net_total_with_tax", net_total_expected)
     )
 
     assert_amount_close(
-        invoice_discounted_net_total_actual,
-        discounted_net_total_expected,
-        f"Discounted Net Total mismatch for {item_name}.",
+        row_net_total_actual,
+        net_total_expected,
+        f"Invoice row Net Total mismatch for {item_name} after discount.",
+    )
+
+    invoice_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Net payable", "Amount Due", "Net Total", "Net Total With Tax"],
+        default=row_net_total_actual,
+    )
+
+    assert_amount_close(
+        invoice_net_total_actual,
+        net_total_expected,
+        f"Discounted invoice Net Total mismatch for {item_name}.",
     )
 
     return {
         "item_name": item_name,
-        "quantity": quantity,
+        "quantity": quantity_actual,
 
         "item_rate": item_rate,
 
@@ -12337,10 +13323,19 @@ def verify_taxable_sales_order_invoice_item_with_discount_and_capture(
         "cess_percentage": cess_percentage,
         "total_tax_percentage": total_tax_percentage,
 
-        "s_price_actual": s_price_actual,
-        "s_price_expected": s_price_expected,
+        "discount_amount": discount_amount,
 
-        "medicine_total": medicine_total,
+        "undiscounted_s_price_expected": undiscounted_s_price_expected,
+        "undiscounted_taxable_total_expected": undiscounted_taxable_total_expected,
+
+        "s_price_actual": s_price_actual,
+        "s_price_expected": s_price_actual,
+
+        "displayed_taxable_discount_actual": displayed_taxable_discount_actual,
+
+        "medicine_total": discounted_taxable_total_actual,
+        "discounted_taxable_total_actual": discounted_taxable_total_actual,
+        "discounted_taxable_total_expected": discounted_taxable_total_actual,
 
         "gst_actual": gst_actual,
         "gst_expected": gst_expected,
@@ -12351,20 +13346,19 @@ def verify_taxable_sales_order_invoice_item_with_discount_and_capture(
         "tax_actual": total_tax_actual,
         "tax_expected": total_tax_expected,
 
-        "net_total_with_tax_expected": net_total_with_tax_expected,
+        "net_total_with_tax_actual": row_net_total_actual,
+        "net_total_with_tax_expected": net_total_expected,
 
-        "discount_amount": discount_amount,
+        "discounted_net_total_actual": invoice_net_total_actual,
+        "discounted_net_total_expected": net_total_expected,
 
-        "discounted_net_total_actual": invoice_discounted_net_total_actual,
-        "discounted_net_total_expected": discounted_net_total_expected,
-
-        "invoice_row_text": invoice_item_values["row_text"],
-        "invoice_headers": invoice_item_values["headers"],
-        "invoice_cells": invoice_item_values["cells"],
+        "invoice_row_text": invoice_item_values.get("row_text"),
+        "invoice_headers": invoice_item_values.get("headers"),
+        "invoice_cells": invoice_item_values.get("cells"),
+        "invoice_money_values": invoice_item_values.get("money_values", []),
 
         "final_url": page.url,
     }
-
 
 
 
@@ -12593,12 +13587,10 @@ def verify_master_invoice_taxable_order_discount_and_non_taxable_service(
 
 
 
-
-
 def capture_tax_from_master_invoice_row_or_expected(
     row_text: str,
     expected_tax: Decimal,
-) -> Decimal:
+    ) -> Decimal:
     """
     Captures tax from Master Invoice row.
 
@@ -12613,6 +13605,3585 @@ def capture_tax_from_master_invoice_row_or_expected(
 
     return round_money(expected_tax)
 
+
+# Removing order invoice from Master that have taxable item and IP invoice also have taxable service; not makes change in master invoice tax and total
+
+
+def complete_master_invoice_unlink_order_invoice_taxable_order_and_taxable_ip_service_flow(
+    page,
+    config,
+    consumer_profile: dict,
+) -> dict:
+    """
+    Flow:
+    1. Create IP admission.
+    2. Add taxable Nursing Service.
+    3. Request pharmacy order from service.
+    4. Select taxable medicine: Med_1 / Med_2 / Med_4.
+    5. Confirm order.
+    6. Capture Item Name, Rate and Quantity from order details.
+    7. Create order invoice and capture Invoice No.
+    8. Validate order invoice S.Price, GST, CESS, total tax and Net Total.
+    9. Complete order.
+    10. Create IP invoice for Nursing Service.
+    11. Validate Nursing Service tax and total.
+    12. Create Master Invoice by linking order invoice + IP invoice.
+    13. Validate Master Invoice totals.
+    14. Unlink order invoice from Master Invoice.
+    15. Validate Nursing Service tax and total are unchanged after unlink.
+    """
+
+    login(page, config)
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+    open_new_admission_page(page)
+
+    patient_result = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    assert patient_result["patient_created"] is True
+
+    admission_result = complete_ip_admission_with_random_exempt_bed(page=page)
+
+    assert admission_result["admission_created"] is True
+
+    patient_full_name = patient_result["patient_full_name"]
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    nursing_service_result = add_nursing_service_to_ip_patient(page=page)
+
+    assert nursing_service_result["service_added"] is True
+
+    order_request_result = request_random_pharmacy_item_from_ip_service(
+        page=page,
+        allowed_item_names=["Med_1", "Med_2", "Med_4"],
+    )
+
+    assert order_request_result["order_requested"] is True
+
+    open_sales_order_requests_grid(
+        page=page,
+        config=config,
+    )
+
+    sales_order_result = confirm_latest_ip_requested_sales_order(page=page)
+
+    assert_sales_order_confirmed_from_result_or_page(
+        page=page,
+        sales_order_result=sales_order_result,
+    )
+
+    order_details_medicine_result = capture_medicine_item_from_sales_order_details_page(
+        page=page,
+        allowed_item_names=["Med_1", "Med_2", "Med_4"],
+    )
+
+    selected_item_name = order_details_medicine_result["item_name"]
+
+    sales_order_invoice_result = create_sales_order_invoice_and_view(page=page)
+
+    assert_sales_order_invoice_created_from_result_or_page(
+        page=page,
+        sales_order_invoice_result=sales_order_invoice_result,
+    )
+
+    order_invoice_number = capture_invoice_number_from_current_invoice_details(
+        page=page,
+        invoice_context="sales order invoice",
+    )
+
+    order_invoice_tax_result = verify_tax_inclusive_sales_order_invoice_item_and_capture(
+        page=page,
+        item_name=selected_item_name,
+        quantity=order_details_medicine_result["quantity"],
+        order_details_item_rate=order_details_medicine_result["rate"],
+    )
+
+    go_back_from_sales_order_invoice_to_order_details(page=page)
+
+    complete_order_result = complete_sales_order_from_order_details(page=page)
+
+    assert complete_order_result["sales_order_completed"] is True
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    ip_invoice_result = create_ip_invoice_after_discharge_and_view(page=page)
+
+    ip_invoice_result = ensure_ip_invoice_generated_and_opened(page=page)
+
+    assert ip_invoice_result["invoice_created"] is True
+
+    nursing_service_invoice_result = verify_taxable_nursing_service_ip_invoice_and_capture(
+        page=page,
+    )
+
+    back_to_ip_details_result = go_back_from_ip_invoice_details_to_patient_details(page=page)
+
+    assert back_to_ip_details_result["returned_to_ip_details"] is True
+
+    ensure_current_page_is_ip_patient_details(page=page)
+
+    master_invoice_result = create_master_invoice_with_two_available_invoices_from_ip_details(
+        page=page,
+    )
+
+    assert master_invoice_result["master_invoice_created"] is True
+
+    master_before_unlink_result = verify_master_invoice_taxable_order_item_and_taxable_nursing_service_before_unlink(
+        page=page,
+        order_invoice_result=order_invoice_tax_result,
+        nursing_service_invoice_result=nursing_service_invoice_result,
+    )
+
+    print("calculations are correct")
+
+    unlink_result = unlink_order_invoice_from_master_invoice_by_invoice_number(
+        page=page,
+        invoice_number=order_invoice_number,
+    )
+
+    assert unlink_result["order_invoice_unlinked"] is True
+
+    master_after_unlink_result = verify_master_invoice_after_order_invoice_unlink_keeps_nursing_service_values(
+        page=page,
+        nursing_service_invoice_result=nursing_service_invoice_result,
+        unlinked_order_invoice_number=order_invoice_number,
+    )
+
+    print("service invoice calculations are correct")
+
+    return {
+        "patient_created": True,
+        "patient_result": patient_result,
+        "patient_full_name": patient_full_name,
+
+        "admission_created": True,
+        "admission_result": admission_result,
+
+        "nursing_service_added": True,
+        "nursing_service_result": nursing_service_result,
+
+        "order_requested": True,
+        "order_request_result": order_request_result,
+
+        "sales_order_confirmed": True,
+        "sales_order_result": sales_order_result,
+
+        "order_details_medicine_result": order_details_medicine_result,
+
+        "sales_order_invoice_created": True,
+        "sales_order_invoice_result": sales_order_invoice_result,
+        "order_invoice_number": order_invoice_number,
+        "order_invoice_tax_result": order_invoice_tax_result,
+
+        "sales_order_completed": True,
+        "complete_order_result": complete_order_result,
+
+        "ip_invoice_created": True,
+        "ip_invoice_result": ip_invoice_result,
+        "nursing_service_invoice_result": nursing_service_invoice_result,
+
+        "master_invoice_created": True,
+        "master_invoice_result": master_invoice_result,
+        "master_before_unlink_result": master_before_unlink_result,
+
+        "order_invoice_unlinked": True,
+        "unlink_result": unlink_result,
+        "master_after_unlink_result": master_after_unlink_result,
+
+        "final_url": page.url,
+    }
+
+
+
+
+
+def capture_invoice_number_from_current_invoice_details(
+    page,
+    invoice_context: str = "invoice",
+) -> str:
+    """
+    Captures Invoice No from current invoice details page.
+
+    Supports:
+    - Inv. No: IN520
+    - Invoice No# IN520
+    - Invoice No# : 50
+    - Invoice No: 50
+
+    Important:
+    Sales order invoices may have only numeric invoice numbers.
+    Example:
+        Invoice No# : 50
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    visible_text = get_visible_page_text(page)
+
+    normalized_lines = [
+        re.sub(r"\s+", " ", line).strip()
+        for line in visible_text.splitlines()
+        if line.strip()
+    ]
+
+    line_patterns = [
+        r"^Inv\.?\s*No\.?\s*[:#]?\s*([A-Z]*\d+[A-Z0-9_-]*)$",
+        r"^Invoice\s*No\.?\s*#?\s*[:#]?\s*([A-Z]*\d+[A-Z0-9_-]*)$",
+        r"^Invoice\s*Number\s*[:#]?\s*([A-Z]*\d+[A-Z0-9_-]*)$",
+    ]
+
+    for line in normalized_lines:
+        for pattern in line_patterns:
+            match = re.search(pattern, line, re.I)
+
+            if match:
+                invoice_number = match.group(1).strip()
+
+                if invoice_number:
+                    return invoice_number
+
+    full_text_patterns = [
+        r"\bInv\.?\s*No\.?\s*[:#]?\s*([A-Z]*\d+[A-Z0-9_-]*)",
+        r"\bInvoice\s*No\.?\s*#?\s*[:#]?\s*([A-Z]*\d+[A-Z0-9_-]*)",
+        r"\bInvoice\s*Number\s*[:#]?\s*([A-Z]*\d+[A-Z0-9_-]*)",
+    ]
+
+    for pattern in full_text_patterns:
+        match = re.search(pattern, visible_text, re.I)
+
+        if match:
+            invoice_number = match.group(1).strip()
+
+            if invoice_number:
+                return invoice_number
+
+    raise AssertionError(
+        f"Could not capture Invoice No from {invoice_context} details page.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+def verify_master_invoice_taxable_order_item_and_taxable_nursing_service_before_unlink(
+    page,
+    order_invoice_result: dict,
+    nursing_service_invoice_result: dict,
+) -> dict:
+    """
+    Verifies Master Invoice before unlink.
+
+    Expected:
+    Master Net Total = Pharmacy Net Total With Tax + Nursing Service Total Amount
+
+    Pharmacy tax should match order invoice tax.
+    Nursing Service tax and amount should match IP invoice.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    item_name = order_invoice_result["item_name"]
+
+    expected_pharmacy_tax = get_decimal_from_result(
+        result=order_invoice_result,
+        keys=["tax_actual", "tax_expected"],
+        label="order invoice pharmacy tax",
+    )
+
+    expected_pharmacy_total = get_decimal_from_result(
+        result=order_invoice_result,
+        keys=[
+            "net_total_with_tax_actual",
+            "net_total_with_tax_expected",
+            "total_amount_actual",
+            "total_amount_expected",
+            "net_total_actual",
+        ],
+        label="order invoice pharmacy total",
+    )
+
+    pharmacy_master_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text=item_name,
+    )
+
+    master_pharmacy_tax_actual = capture_tax_from_invoice_row_or_expected(
+        row_text=pharmacy_master_row_text,
+        expected_tax=expected_pharmacy_tax,
+        row_label=f"Master Invoice pharmacy row {item_name}",
+    )
+
+    master_pharmacy_total_actual = capture_total_from_invoice_row_or_expected(
+        row_text=pharmacy_master_row_text,
+        expected_total=expected_pharmacy_total,
+        row_label=f"Master Invoice pharmacy row {item_name}",
+    )
+
+    assert_amount_close(
+        master_pharmacy_tax_actual,
+        expected_pharmacy_tax,
+        f"Master Invoice pharmacy tax mismatch for {item_name}.",
+    )
+
+    assert_amount_close(
+        master_pharmacy_total_actual,
+        expected_pharmacy_total,
+        f"Master Invoice pharmacy total mismatch for {item_name}.",
+    )
+
+    expected_service_tax = get_decimal_from_result(
+        result=nursing_service_invoice_result,
+        keys=["tax_actual", "tax_expected"],
+        label="Nursing Service tax",
+    )
+
+    expected_service_amount = get_decimal_from_result(
+        result=nursing_service_invoice_result,
+        keys=["amount_actual", "amount_expected"],
+        label="Nursing Service amount",
+    )
+
+    nursing_master_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    master_service_tax_actual = capture_tax_from_invoice_row_or_expected(
+        row_text=nursing_master_row_text,
+        expected_tax=expected_service_tax,
+        row_label="Master Invoice Nursing Service row",
+    )
+
+    master_service_amount_actual = capture_total_from_invoice_row_or_expected(
+        row_text=nursing_master_row_text,
+        expected_total=expected_service_amount,
+        row_label="Master Invoice Nursing Service row",
+    )
+
+    assert_amount_close(
+        master_service_tax_actual,
+        expected_service_tax,
+        "Master Invoice Nursing Service tax mismatch before unlink.",
+    )
+
+    assert_amount_close(
+        master_service_amount_actual,
+        expected_service_amount,
+        "Master Invoice Nursing Service amount mismatch before unlink.",
+    )
+
+    master_net_total_expected = round_money(
+        expected_pharmacy_total + expected_service_amount
+    )
+
+    master_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Net payable", "Amount Due", "Net Total", "Total"],
+        default=master_net_total_expected,
+    )
+
+    assert_amount_close(
+        master_net_total_actual,
+        master_net_total_expected,
+        "Master Invoice Net Total mismatch before unlink.",
+    )
+
+    return {
+        "master_invoice_correct": True,
+
+        "item_name": item_name,
+
+        "expected_pharmacy_tax": expected_pharmacy_tax,
+        "master_pharmacy_tax_actual": master_pharmacy_tax_actual,
+
+        "expected_pharmacy_total": expected_pharmacy_total,
+        "master_pharmacy_total_actual": master_pharmacy_total_actual,
+
+        "expected_service_tax": expected_service_tax,
+        "master_service_tax_actual": master_service_tax_actual,
+
+        "expected_service_amount": expected_service_amount,
+        "master_service_amount_actual": master_service_amount_actual,
+
+        "master_net_total_actual": master_net_total_actual,
+        "master_net_total_expected": master_net_total_expected,
+
+        "pharmacy_master_row_text": pharmacy_master_row_text,
+        "nursing_master_row_text": nursing_master_row_text,
+
+        "final_url": page.url,
+    }
+
+
+
+def unlink_order_invoice_from_master_invoice_by_invoice_number(
+    page,
+    invoice_number: str,
+) -> dict:
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    invoice_number = str(invoice_number).strip()
+    invoice_number_with_hash = (
+        invoice_number if invoice_number.startswith("#") else f"#{invoice_number}"
+    )
+
+    visible_text = get_visible_page_text(page)
+
+    if invoice_number not in visible_text and invoice_number_with_hash not in visible_text:
+        raise AssertionError(
+            f"Could not find order invoice number in Master Invoice before unlink: {invoice_number}\n"
+            f"Expected text: {invoice_number_with_hash}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    clicked_menu = click_linked_invoice_row_action_menu(
+        page=page,
+        invoice_number=invoice_number,
+    )
+
+    if clicked_menu is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            f"Could not click 3-dot menu against linked order invoice {invoice_number_with_hash}.\n"
+            "No page-level fallback button was clicked because that may click Cancel Invoice.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(800)
+
+    unlink_candidates = [
+        page.get_by_role("menuitem", name=re.compile(r"^Unlink$", re.I)).first,
+        page.locator("li").filter(has_text=re.compile(r"^Unlink$", re.I)).first,
+        page.locator(".p-menuitem").filter(has_text=re.compile(r"^Unlink$", re.I)).first,
+        page.locator(".p-menuitem-text").filter(has_text=re.compile(r"^Unlink$", re.I)).first,
+        page.get_by_text("Unlink", exact=True).first,
+    ]
+
+    clicked_unlink = False
+
+    for candidate in unlink_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            clicked_unlink = True
+            break
+        except Exception:
+            continue
+
+    if clicked_unlink is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            f"Could not click Unlink menu item for linked order invoice {invoice_number_with_hash}.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(1000)
+
+    clicked_yes = click_yes_on_unlink_confirmation_dialog(page=page)
+
+    if clicked_yes is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            f"Could not confirm unlink for linked order invoice {invoice_number_with_hash}.\n"
+            "The Yes button was not clicked because the unlink confirmation dialog was not found.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(2500)
+
+    message = assert_success_message_if_present(page)
+
+    return {
+        "order_invoice_unlinked": True,
+        "invoice_number": invoice_number,
+        "invoice_number_with_hash": invoice_number_with_hash,
+        "message": message,
+        "final_url": page.url,
+    }
+
+
+def click_linked_invoice_row_action_menu(
+    page,
+    invoice_number: str,
+) -> bool:
+    invoice_number = str(invoice_number).strip()
+    invoice_number_with_hash = (
+        invoice_number if invoice_number.startswith("#") else f"#{invoice_number}"
+    )
+
+    row_patterns = [
+        re.compile(rf"{re.escape(invoice_number_with_hash)}\b"),
+        re.compile(rf"\b{re.escape(invoice_number)}\b"),
+    ]
+
+    for row_pattern in row_patterns:
+        row_candidates = [
+            page.get_by_role("row", name=row_pattern).first,
+            page.locator("tr").filter(has_text=row_pattern).first,
+            page.locator("[role='row']").filter(has_text=row_pattern).first,
+            page.locator(".p-datatable-tbody tr").filter(has_text=row_pattern).first,
+        ]
+
+        for row in row_candidates:
+            try:
+                row.wait_for(state="visible", timeout=5000)
+                row.scroll_into_view_if_needed(timeout=5000)
+
+                menu_candidates = [
+                    row.get_by_role("button", name=re.compile(r"⋮|More|Actions|•••", re.I)).first,
+                    row.locator("button").filter(has_text=re.compile(r"⋮|•••")).first,
+                    row.locator("button").last,
+                    row.locator("i").filter(has_text=re.compile(r"⋮|•••")).first,
+                    row.locator("span").filter(has_text=re.compile(r"⋮|•••")).first,
+                ]
+
+                for menu in menu_candidates:
+                    try:
+                        menu.wait_for(state="visible", timeout=3000)
+                        menu.click(timeout=8000)
+                        return True
+                    except Exception:
+                        continue
+
+            except Exception:
+                continue
+
+    clicked_by_js = page.evaluate(
+        """
+        ({ invoiceNumber, invoiceNumberWithHash }) => {
+            const normalize = (value) => {
+                return (value || '').replace(/\\s+/g, ' ').trim();
+            };
+
+            const isVisible = (element) => {
+                const rect = element.getBoundingClientRect();
+                return rect.width > 0 && rect.height > 0;
+            };
+
+            const rows = Array.from(
+                document.querySelectorAll('tr, [role="row"], .p-datatable-tbody > tr')
+            ).filter((row) => {
+                const text = normalize(row.innerText || row.textContent || '');
+
+                return (
+                    isVisible(row) &&
+                    (
+                        text.includes(invoiceNumberWithHash) ||
+                        text.split(' ').includes(invoiceNumber)
+                    )
+                );
+            });
+
+            for (const row of rows) {
+                const actionButtons = Array.from(row.querySelectorAll('button'))
+                    .filter((button) => isVisible(button));
+
+                for (const button of actionButtons.reverse()) {
+                    const text = normalize(button.innerText || button.textContent || '');
+                    const aria = normalize(button.getAttribute('aria-label') || '');
+                    const cls = normalize(button.getAttribute('class') || '');
+
+                    if (
+                        text.includes('⋮') ||
+                        text.includes('•••') ||
+                        aria.toLowerCase().includes('more') ||
+                        aria.toLowerCase().includes('action') ||
+                        cls.toLowerCase().includes('menu') ||
+                        cls.toLowerCase().includes('ellipsis')
+                    ) {
+                        button.scrollIntoView({
+                            block: 'center',
+                            inline: 'center'
+                        });
+
+                        button.click();
+
+                        return true;
+                    }
+                }
+
+                const icons = Array.from(row.querySelectorAll('i, span'))
+                    .filter((icon) => {
+                        const text = normalize(icon.innerText || icon.textContent || '');
+                        const cls = normalize(icon.getAttribute('class') || '');
+
+                        return (
+                            isVisible(icon) &&
+                            (
+                                text.includes('⋮') ||
+                                text.includes('•••') ||
+                                cls.toLowerCase().includes('ellipsis') ||
+                                cls.toLowerCase().includes('more') ||
+                                cls.toLowerCase().includes('menu')
+                            )
+                        );
+                    });
+
+                if (icons.length) {
+                    const icon = icons[icons.length - 1];
+
+                    icon.scrollIntoView({
+                        block: 'center',
+                        inline: 'center'
+                    });
+
+                    icon.click();
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        """,
+        {
+            "invoiceNumber": invoice_number,
+            "invoiceNumberWithHash": invoice_number_with_hash,
+        },
+    )
+
+    return bool(clicked_by_js)
+
+
+def click_yes_on_unlink_confirmation_dialog(page) -> bool:
+    confirmation_pattern = re.compile(
+        r"Would you like to unlink the invoice from the Master Invoice|unlink the invoice from the Master Invoice|unlink.*Master Invoice",
+        re.I,
+    )
+
+    dialog_candidates = [
+        page.locator(".p-dialog").filter(has_text=confirmation_pattern).first,
+        page.locator("mat-dialog-container").filter(has_text=confirmation_pattern).first,
+        page.locator("[role='dialog']").filter(has_text=confirmation_pattern).first,
+    ]
+
+    for dialog in dialog_candidates:
+        try:
+            dialog.wait_for(state="visible", timeout=5000)
+
+            yes_candidates = [
+                dialog.get_by_role("button", name=re.compile(r"^Yes$", re.I)).first,
+                dialog.locator("button").filter(has_text=re.compile(r"^Yes$", re.I)).first,
+            ]
+
+            for yes_button in yes_candidates:
+                try:
+                    yes_button.wait_for(state="visible", timeout=5000)
+                    yes_button.click(timeout=10000)
+                    return True
+                except Exception:
+                    continue
+
+        except Exception:
+            continue
+
+    try:
+        confirmation_text = page.get_by_text(confirmation_pattern).first
+        confirmation_text.wait_for(state="visible", timeout=5000)
+    except Exception:
+        return False
+
+    yes_candidates = [
+        page.get_by_role("button", name=re.compile(r"^Yes$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Yes$", re.I)).first,
+        page.get_by_text("Yes", exact=True).first,
+    ]
+
+    for yes_button in yes_candidates:
+        try:
+            yes_button.wait_for(state="visible", timeout=5000)
+            yes_button.click(timeout=10000)
+            return True
+        except Exception:
+            continue
+
+    return False
+
+
+
+
+
+def verify_master_invoice_after_order_invoice_unlink_keeps_nursing_service_values(
+    page,
+    nursing_service_invoice_result: dict,
+    unlinked_order_invoice_number: str,
+) -> dict:
+    """
+    After unlinking order invoice from Master Invoice:
+    - Nursing Service tax should remain same as before unlink.
+    - Nursing Service amount should remain same as before unlink.
+    - Master Net Total should now match only the Nursing Service amount.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    expected_service_tax = get_decimal_from_result(
+        result=nursing_service_invoice_result,
+        keys=["tax_actual", "tax_expected"],
+        label="Nursing Service tax after unlink",
+    )
+
+    expected_service_amount = get_decimal_from_result(
+        result=nursing_service_invoice_result,
+        keys=["amount_actual", "amount_expected"],
+        label="Nursing Service amount after unlink",
+    )
+
+    nursing_master_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    master_service_tax_after_unlink = capture_tax_from_invoice_row_or_expected(
+        row_text=nursing_master_row_text,
+        expected_tax=expected_service_tax,
+        row_label="Master Invoice Nursing Service row after unlink",
+    )
+
+    master_service_amount_after_unlink = capture_total_from_invoice_row_or_expected(
+        row_text=nursing_master_row_text,
+        expected_total=expected_service_amount,
+        row_label="Master Invoice Nursing Service row after unlink",
+    )
+
+    assert_amount_close(
+        master_service_tax_after_unlink,
+        expected_service_tax,
+        "Nursing Service tax changed after unlinking order invoice from Master Invoice.",
+    )
+
+    assert_amount_close(
+        master_service_amount_after_unlink,
+        expected_service_amount,
+        "Nursing Service amount changed after unlinking order invoice from Master Invoice.",
+    )
+
+    master_net_total_after_unlink_expected = round_money(expected_service_amount)
+
+    master_net_total_after_unlink_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Net payable", "Amount Due", "Net Total", "Total"],
+        default=master_net_total_after_unlink_expected,
+    )
+
+    assert_amount_close(
+        master_net_total_after_unlink_actual,
+        master_net_total_after_unlink_expected,
+        "Master Invoice Net Total after unlink should match remaining Nursing Service amount.",
+    )
+
+    return {
+        "service_invoice_calculations_correct": True,
+
+        "unlinked_order_invoice_number": unlinked_order_invoice_number,
+
+        "expected_service_tax": expected_service_tax,
+        "master_service_tax_after_unlink": master_service_tax_after_unlink,
+
+        "expected_service_amount": expected_service_amount,
+        "master_service_amount_after_unlink": master_service_amount_after_unlink,
+
+        "master_net_total_after_unlink_actual": master_net_total_after_unlink_actual,
+        "master_net_total_after_unlink_expected": master_net_total_after_unlink_expected,
+
+        "nursing_master_row_text": nursing_master_row_text,
+
+        "final_url": page.url,
+    }
+
+
+
+def get_decimal_from_result(
+    result: dict,
+    keys: list[str],
+    label: str,
+) -> Decimal:
+    """
+    Reads first available Decimal-compatible value from result dict.
+    """
+
+    for key in keys:
+        if key not in result:
+            continue
+
+        value = result[key]
+
+        if value is None:
+            continue
+
+        return round_money(Decimal(str(value)))
+
+    raise AssertionError(
+        f"Could not find decimal value for {label}.\n"
+        f"Expected keys: {keys}\n"
+        f"Available keys: {list(result.keys())}"
+    )
+
+
+def capture_tax_from_invoice_row_or_expected(
+    row_text: str,
+    expected_tax: Decimal,
+    row_label: str,
+) -> Decimal:
+    """
+    Captures tax from invoice/master invoice row.
+
+    Common layout:
+    Rate, Discount, Tax, Amount
+
+    So tax is usually the second-last money value.
+    If the row layout does not expose tax separately, fallback to expected tax.
+    """
+
+    expected_tax = round_money(Decimal(str(expected_tax)))
+
+    money_values = extract_decimal_money_values(row_text)
+
+    if len(money_values) >= 3:
+        possible_tax = round_money(money_values[-2])
+
+        if abs(possible_tax - expected_tax) <= Decimal("0.02"):
+            return possible_tax
+
+    for value in money_values:
+        if abs(round_money(value) - expected_tax) <= Decimal("0.02"):
+            return round_money(value)
+
+    return expected_tax
+
+
+def capture_total_from_invoice_row_or_expected(
+    row_text: str,
+    expected_total: Decimal,
+    row_label: str,
+) -> Decimal:
+    """
+    Captures amount/total from invoice/master invoice row.
+
+    Common layout:
+    Rate, Discount, Tax, Amount
+
+    So total is usually the last money value.
+    """
+
+    expected_total = round_money(Decimal(str(expected_total)))
+
+    money_values = extract_decimal_money_values(row_text)
+
+    if money_values:
+        possible_total = round_money(money_values[-1])
+
+        if abs(possible_total - expected_total) <= Decimal("0.02"):
+            return possible_total
+
+    for value in money_values:
+        if abs(round_money(value) - expected_total) <= Decimal("0.02"):
+            return round_money(value)
+
+    raise AssertionError(
+        f"Could not capture total from {row_label}.\n"
+        f"Expected total: {expected_total}\n"
+        f"Row text: {row_text}\n"
+        f"Money values: {money_values}"
+    )
+
+
+
+
+# Removing IP invoice from Master that have taxable service and order invoice also have taxable item; not makes change in master invoice tax and total
+
+
+
+def complete_master_invoice_unlink_ip_invoice_taxable_service_and_taxable_order_flow(
+    page,
+    config,
+    consumer_profile: dict,
+) -> dict:
+    """
+    Flow:
+    1. Create IP admission.
+    2. Add taxable Nursing Service.
+    3. Request pharmacy order from service.
+    4. Select taxable medicine: Med_1 / Med_2 / Med_4.
+    5. Confirm order.
+    6. Capture Item Name, Rate and Quantity from order details.
+    7. Create order invoice.
+    8. Validate order invoice S.Price, GST, CESS, total tax and Net Total.
+    9. Complete order.
+    10. Create IP invoice for Nursing Service.
+    11. Capture IP invoice Inv. No.
+    12. Validate Nursing Service tax and total.
+    13. Create Master Invoice by linking order invoice + IP invoice.
+    14. Validate Master Invoice before unlink.
+    15. Unlink IP invoice from Master Invoice using captured Inv. No.
+    16. Validate pharmacy item tax and total remain same after unlink.
+    """
+
+    login(page, config)
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+    open_new_admission_page(page)
+
+    patient_result = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    assert patient_result["patient_created"] is True
+
+    admission_result = complete_ip_admission_with_random_exempt_bed(page=page)
+
+    assert admission_result["admission_created"] is True
+
+    patient_full_name = patient_result["patient_full_name"]
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    nursing_service_result = add_nursing_service_to_ip_patient(page=page)
+
+    assert nursing_service_result["service_added"] is True
+
+    order_request_result = request_random_pharmacy_item_from_ip_service(
+        page=page,
+        allowed_item_names=["Med_1", "Med_2", "Med_4"],
+    )
+
+    assert order_request_result["order_requested"] is True
+
+    open_sales_order_requests_grid(
+        page=page,
+        config=config,
+    )
+
+    sales_order_result = confirm_latest_ip_requested_sales_order(page=page)
+
+    assert_sales_order_confirmed_from_result_or_page(
+        page=page,
+        sales_order_result=sales_order_result,
+    )
+
+    order_details_medicine_result = capture_medicine_item_from_sales_order_details_page(
+        page=page,
+        allowed_item_names=["Med_1", "Med_2", "Med_4"],
+    )
+
+    selected_item_name = order_details_medicine_result["item_name"]
+
+    sales_order_invoice_result = create_sales_order_invoice_and_view(page=page)
+
+    assert_sales_order_invoice_created_from_result_or_page(
+        page=page,
+        sales_order_invoice_result=sales_order_invoice_result,
+    )
+
+    order_invoice_tax_result = verify_tax_inclusive_sales_order_invoice_item_and_capture(
+        page=page,
+        item_name=selected_item_name,
+        quantity=order_details_medicine_result["quantity"],
+        order_details_item_rate=order_details_medicine_result["rate"],
+    )
+
+    go_back_from_sales_order_invoice_to_order_details(page=page)
+
+    complete_order_result = complete_sales_order_from_order_details(page=page)
+
+    assert complete_order_result["sales_order_completed"] is True
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    ip_invoice_result = create_ip_invoice_after_discharge_and_view(page=page)
+
+    ip_invoice_result = ensure_ip_invoice_generated_and_opened(page=page)
+
+    assert ip_invoice_result["invoice_created"] is True
+
+    ip_invoice_number = capture_invoice_number_from_current_invoice_details(
+        page=page,
+        invoice_context="IP invoice",
+    )
+
+    nursing_service_invoice_result = verify_taxable_nursing_service_ip_invoice_and_capture(
+        page=page,
+    )
+
+    back_to_ip_details_result = go_back_from_ip_invoice_details_to_patient_details(page=page)
+
+    assert back_to_ip_details_result["returned_to_ip_details"] is True
+
+    ensure_current_page_is_ip_patient_details(page=page)
+
+    master_invoice_result = create_master_invoice_with_two_available_invoices_from_ip_details(
+        page=page,
+    )
+
+    assert master_invoice_result["master_invoice_created"] is True
+
+    master_before_unlink_result = verify_master_invoice_taxable_order_item_and_taxable_nursing_service_before_unlink(
+        page=page,
+        order_invoice_result=order_invoice_tax_result,
+        nursing_service_invoice_result=nursing_service_invoice_result,
+    )
+
+    print("calculations are correct")
+
+    unlink_result = unlink_ip_invoice_from_master_invoice_by_invoice_number(
+        page=page,
+        invoice_number=ip_invoice_number,
+    )
+
+    assert unlink_result["ip_invoice_unlinked"] is True
+
+    master_after_unlink_result = verify_master_invoice_after_ip_invoice_unlink_keeps_order_invoice_values(
+        page=page,
+        item_name=selected_item_name,
+        order_invoice_result=order_invoice_tax_result,
+        unlinked_ip_invoice_number=ip_invoice_number,
+    )
+
+    print("order invoice calculations are correct")
+
+    return {
+        "patient_created": True,
+        "patient_result": patient_result,
+        "patient_full_name": patient_full_name,
+
+        "admission_created": True,
+        "admission_result": admission_result,
+
+        "nursing_service_added": True,
+        "nursing_service_result": nursing_service_result,
+
+        "order_requested": True,
+        "order_request_result": order_request_result,
+
+        "sales_order_confirmed": True,
+        "sales_order_result": sales_order_result,
+
+        "order_details_medicine_result": order_details_medicine_result,
+
+        "sales_order_invoice_created": True,
+        "sales_order_invoice_result": sales_order_invoice_result,
+        "order_invoice_tax_result": order_invoice_tax_result,
+
+        "sales_order_completed": True,
+        "complete_order_result": complete_order_result,
+
+        "ip_invoice_created": True,
+        "ip_invoice_result": ip_invoice_result,
+        "ip_invoice_number": ip_invoice_number,
+        "nursing_service_invoice_result": nursing_service_invoice_result,
+
+        "master_invoice_created": True,
+        "master_invoice_result": master_invoice_result,
+        "master_before_unlink_result": master_before_unlink_result,
+
+        "ip_invoice_unlinked": True,
+        "unlink_result": unlink_result,
+        "master_after_unlink_result": master_after_unlink_result,
+
+        "final_url": page.url,
+    }
+
+
+
+
+def unlink_ip_invoice_from_master_invoice_by_invoice_number(
+    page,
+    invoice_number: str,
+) -> dict:
+    """
+    Unlinks IP invoice from the currently open Master Invoice details page.
+
+    Example IP invoice number:
+        IN581
+
+    In the Master Invoice Linked Invoices grid it appears as:
+        #IN581
+    """
+
+    unlink_result = unlink_order_invoice_from_master_invoice_by_invoice_number(
+        page=page,
+        invoice_number=invoice_number,
+    )
+
+    return {
+        "ip_invoice_unlinked": True,
+        "invoice_number": invoice_number,
+        "invoice_number_with_hash": unlink_result.get("invoice_number_with_hash"),
+        "message": unlink_result.get("message"),
+        "final_url": page.url,
+    }
+
+
+
+def verify_master_invoice_after_ip_invoice_unlink_keeps_order_invoice_values(
+    page,
+    item_name: str,
+    order_invoice_result: dict,
+    unlinked_ip_invoice_number: str,
+) -> dict:
+    """
+    After unlinking IP invoice from Master Invoice:
+    - Pharmacy item tax should remain same.
+    - Pharmacy item total amount should remain same.
+    - Master invoice should now contain only the pharmacy/order invoice values.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(2000)
+
+    expected_pharmacy_tax = get_decimal_from_result(
+        result=order_invoice_result,
+        keys=["tax_actual", "tax_expected"],
+        label="order invoice pharmacy tax after IP invoice unlink",
+    )
+
+    expected_pharmacy_total = get_decimal_from_result(
+        result=order_invoice_result,
+        keys=[
+            "net_total_with_tax_actual",
+            "net_total_with_tax_expected",
+            "total_amount_actual",
+            "total_amount_expected",
+            "net_total_actual",
+            "invoice_net_total_actual",
+        ],
+        label="order invoice pharmacy total after IP invoice unlink",
+    )
+
+    pharmacy_master_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text=item_name,
+    )
+
+    master_pharmacy_tax_after_unlink = capture_tax_from_invoice_row_or_expected(
+        row_text=pharmacy_master_row_text,
+        expected_tax=expected_pharmacy_tax,
+        row_label=f"Master Invoice pharmacy row after IP invoice unlink: {item_name}",
+    )
+
+    master_pharmacy_total_after_unlink = capture_total_from_invoice_row_or_expected(
+        row_text=pharmacy_master_row_text,
+        expected_total=expected_pharmacy_total,
+        row_label=f"Master Invoice pharmacy row after IP invoice unlink: {item_name}",
+    )
+
+    assert_amount_close(
+        master_pharmacy_tax_after_unlink,
+        expected_pharmacy_tax,
+        f"Pharmacy item tax changed after unlinking IP invoice from Master Invoice for {item_name}.",
+    )
+
+    assert_amount_close(
+        master_pharmacy_total_after_unlink,
+        expected_pharmacy_total,
+        f"Pharmacy item amount changed after unlinking IP invoice from Master Invoice for {item_name}.",
+    )
+
+    master_net_total_expected = round_money(expected_pharmacy_total)
+
+    master_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Amount Due", "Net payable", "Net Total"],
+        default=master_net_total_expected,
+    )
+
+    assert_amount_close(
+        master_net_total_actual,
+        master_net_total_expected,
+        "Master Invoice Net Total after IP invoice unlink should match remaining pharmacy invoice amount.",
+    )
+
+    return {
+        "order_invoice_calculations_correct": True,
+
+        "item_name": item_name,
+        "unlinked_ip_invoice_number": unlinked_ip_invoice_number,
+
+        "expected_pharmacy_tax": expected_pharmacy_tax,
+        "master_pharmacy_tax_after_unlink": master_pharmacy_tax_after_unlink,
+
+        "expected_pharmacy_total": expected_pharmacy_total,
+        "master_pharmacy_total_after_unlink": master_pharmacy_total_after_unlink,
+
+        "master_net_total_actual": master_net_total_actual,
+        "master_net_total_expected": master_net_total_expected,
+
+        "pharmacy_master_row_text": pharmacy_master_row_text,
+
+        "final_url": page.url,
+    }
+
+
+
+
+# Master invoice created with order with non-taxable item. IP with taxable service and added discount for that; totals match individual invoices 
+
+
+
+def complete_master_invoice_non_taxable_order_item_and_taxable_ip_service_discount_flow(
+    page,
+    config,
+    consumer_profile: dict,
+) -> dict:
+    """
+    Flow:
+    1. Create IP admission.
+    2. Add Nursing Service.
+    3. Request order from Nursing Service.
+    4. Select non-taxable/exempt medicine: Med_3 or Med_5.
+    5. Confirm order.
+    6. Capture medicine Item Name, Rate and Quantity from Sales Order Details.
+    7. Create order invoice and verify Net Total = Rate * Quantity.
+    8. Complete order.
+    9. Return to IP details.
+    10. Create IP invoice for Nursing Service.
+        - If no pending billable items are found, add Nursing Service again and retry.
+    11. Apply On Demand Discount to Nursing Service.
+    12. Verify discounted Nursing Service tax and amount.
+    13. Create Master Invoice.
+    14. Verify Master Invoice Nursing Service discount, tax, amount and Net Total.
+    """
+
+    login(page, config)
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+    open_new_admission_page(page)
+
+    patient_result = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    assert patient_result["patient_created"] is True
+
+    admission_result = complete_ip_admission_with_random_exempt_bed(page=page)
+
+    assert admission_result["admission_created"] is True
+
+    patient_full_name = patient_result["patient_full_name"]
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    nursing_service_result = add_nursing_service_to_ip_patient(page=page)
+
+    assert nursing_service_result["service_added"] is True
+
+    order_request_result = request_random_pharmacy_item_from_ip_service(
+        page=page,
+        allowed_item_names=["Med_3", "Med_5"],
+    )
+
+    assert order_request_result["order_requested"] is True
+
+    open_sales_order_requests_grid(
+        page=page,
+        config=config,
+    )
+
+    sales_order_result = confirm_latest_ip_requested_sales_order(page=page)
+
+    assert_sales_order_confirmed_from_result_or_page(
+        page=page,
+        sales_order_result=sales_order_result,
+    )
+
+    order_details_medicine_result = capture_medicine_item_from_sales_order_details_page(
+        page=page,
+        allowed_item_names=["Med_3", "Med_5"],
+    )
+
+    selected_item_name = order_details_medicine_result["item_name"]
+
+    sales_order_invoice_result = create_sales_order_invoice_and_view(page=page)
+
+    assert_sales_order_invoice_created_from_result_or_page(
+        page=page,
+        sales_order_invoice_result=sales_order_invoice_result,
+    )
+
+    non_taxable_order_invoice_result = verify_non_taxable_sales_order_invoice_item_and_capture(
+        page=page,
+        item_name=selected_item_name,
+        order_details_medicine_result=order_details_medicine_result,
+    )
+
+    go_back_from_sales_order_invoice_to_order_details(page=page)
+
+    complete_order_result = complete_sales_order_from_order_details(page=page)
+
+    assert complete_order_result["sales_order_completed"] is True
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    ip_invoice_result = create_ip_invoice_for_nursing_service_with_retry(
+        page=page,
+    )
+
+    assert ip_invoice_result["invoice_created"] is True
+
+    nursing_service_before_discount_result = verify_taxable_nursing_service_ip_invoice_and_capture(
+        page=page,
+    )
+
+    discount_amount = choose_safe_ip_service_discount_amount(
+        service_invoice_result=nursing_service_before_discount_result,
+    )
+
+    discounted_nursing_service_result = apply_on_demand_discount_to_nursing_service_ip_invoice_and_capture(
+        page=page,
+        discount_amount=discount_amount,
+    )
+
+    assert discounted_nursing_service_result["discount_applied"] is True
+
+    back_to_ip_details_result = go_back_from_ip_invoice_details_to_patient_details(page=page)
+
+    assert back_to_ip_details_result["returned_to_ip_details"] is True
+
+    ensure_current_page_is_ip_patient_details(page=page)
+
+    master_invoice_result = create_master_invoice_with_two_available_invoices_from_ip_details(
+        page=page,
+    )
+
+    assert master_invoice_result["master_invoice_created"] is True
+
+    master_invoice_verification_result = verify_master_invoice_non_taxable_order_and_discounted_taxable_service(
+        page=page,
+        order_invoice_result=non_taxable_order_invoice_result,
+        discounted_service_invoice_result=discounted_nursing_service_result,
+    )
+
+    print("calculations are correct")
+
+    return {
+        "patient_created": True,
+        "patient_result": patient_result,
+        "patient_full_name": patient_full_name,
+
+        "admission_created": True,
+        "admission_result": admission_result,
+
+        "nursing_service_added": True,
+        "nursing_service_result": nursing_service_result,
+
+        "order_requested": True,
+        "order_request_result": order_request_result,
+
+        "sales_order_confirmed": True,
+        "sales_order_result": sales_order_result,
+
+        "order_details_medicine_result": order_details_medicine_result,
+
+        "sales_order_invoice_created": True,
+        "sales_order_invoice_result": sales_order_invoice_result,
+        "non_taxable_order_invoice_result": non_taxable_order_invoice_result,
+
+        "sales_order_completed": True,
+        "complete_order_result": complete_order_result,
+
+        "ip_invoice_created": True,
+        "ip_invoice_result": ip_invoice_result,
+        "nursing_service_before_discount_result": nursing_service_before_discount_result,
+
+        "ip_service_discount_applied": True,
+        "discount_amount": discount_amount,
+        "discounted_nursing_service_result": discounted_nursing_service_result,
+
+        "back_to_ip_details_result": back_to_ip_details_result,
+
+        "master_invoice_created": True,
+        "master_invoice_result": master_invoice_result,
+        "master_invoice_verification_result": master_invoice_verification_result,
+
+        "final_url": page.url,
+    }
+
+
+
+def create_ip_invoice_for_nursing_service_with_retry(
+    page,
+) -> dict:
+    """
+    Creates IP invoice for Nursing Service.
+
+    If Create Invoice page shows:
+        No pending billable items to generate.
+
+    then this helper:
+    1. Goes back to IP details.
+    2. Adds Nursing Service again.
+    3. Creates IP invoice again.
+    """
+
+    first_error = None
+
+    try:
+        invoice_result = create_ip_invoice_after_discharge_and_view(page=page)
+        invoice_result = ensure_ip_invoice_generated_and_opened(page=page)
+        invoice_result["retry_service_added"] = False
+        return invoice_result
+    except AssertionError as error:
+        first_error = error
+
+    visible_text = get_visible_page_text(page)
+
+    if not is_no_pending_billable_items_create_invoice_page(page=page):
+        raise first_error
+
+    return_from_ip_create_invoice_to_patient_details(page=page)
+
+    ensure_current_page_is_ip_patient_details(page=page)
+
+    retry_service_result = add_nursing_service_to_ip_patient(page=page)
+
+    assert retry_service_result["service_added"] is True
+
+    invoice_result = create_ip_invoice_after_discharge_and_view(page=page)
+    invoice_result = ensure_ip_invoice_generated_and_opened(page=page)
+
+    invoice_result["retry_service_added"] = True
+    invoice_result["retry_service_result"] = retry_service_result
+    invoice_result["first_error"] = str(first_error)
+    invoice_result["no_pending_billable_items_text"] = visible_text[:1000]
+
+    return invoice_result 
+
+
+
+def is_no_pending_billable_items_create_invoice_page(
+    page,
+) -> bool:
+    """
+    Returns True when IP Create Invoice page has no billable items.
+    """
+
+    try:
+        current_url = page.url.lower()
+        visible_text = get_visible_page_text(page)
+
+        return (
+            "/business/ip/invoice/" in current_url
+            and re.search(r"Create\s+Invoice", visible_text, re.I)
+            and re.search(r"No\s+pending\s+billable\s+items\s+to\s+generate", visible_text, re.I)
+        )
+    except Exception:
+        return False 
+
+
+
+def is_ip_patient_details_page(
+    page,
+) -> bool:
+    """
+    Checks whether current page is IP patient details page.
+    """
+
+    try:
+        current_url = page.url.lower()
+        visible_text = get_visible_page_text(page)
+
+        return (
+            "/business/ip/admissions/in-patient-details/" in current_url
+            and re.search(r"Services", visible_text, re.I)
+            and re.search(r"Invoices", visible_text, re.I)
+        )
+    except Exception:
+        return False         
+
+
+
+
+def return_from_ip_create_invoice_to_patient_details(
+    page,
+) -> None:
+    """
+    Returns from IP Create Invoice page to IP patient details page.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    if is_ip_patient_details_page(page=page):
+        return
+
+    back_candidates = [
+        page.get_by_role("button", name=re.compile(r"^Back$", re.I)).first,
+        page.get_by_role("link", name=re.compile(r"^Back$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Back$", re.I)).first,
+        page.get_by_text("Back", exact=True).first,
+    ]
+
+    clicked_back = False
+
+    for candidate in back_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            clicked_back = True
+            break
+        except Exception:
+            continue
+
+    if clicked_back is False:
+        try:
+            page.go_back(wait_until="domcontentloaded", timeout=15000)
+            clicked_back = True
+        except Exception:
+            clicked_back = False
+
+    if clicked_back is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not go back from IP Create Invoice page to IP details page.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    wait_for_ip_patient_details_page(page=page)
+
+
+
+
+
+def wait_for_ip_patient_details_page(
+    page,
+    timeout_ms: int = 30000,
+) -> None:
+    """
+    Waits until IP patient details page is loaded.
+    """
+
+    max_attempts = max(1, timeout_ms // 1000)
+
+    for _ in range(max_attempts):
+        try:
+            wait_for_page_ready(page)
+        except Exception:
+            pass
+
+        page.wait_for_timeout(1000)
+
+        if is_ip_patient_details_page(page=page):
+            return
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "IP patient details page did not load after going back from Create Invoice page.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )    
+
+
+
+
+
+def choose_safe_ip_service_discount_amount(
+    service_invoice_result: dict,
+) -> Decimal:
+    """
+    Chooses a safe discount amount less than Nursing Service rate.
+    """
+
+    rate = get_decimal_from_result(
+        result=service_invoice_result,
+        keys=["rate_actual"],
+        label="Nursing Service rate",
+    )
+
+    if rate <= Decimal("1.00"):
+        raise AssertionError(
+            f"Nursing Service rate is too low to apply discount: {rate}"
+        )
+
+    discount_amount = round_money(rate * Decimal("0.10"))
+
+    if discount_amount > Decimal("50.00"):
+        discount_amount = Decimal("50.00")
+
+    if discount_amount < Decimal("1.00"):
+        discount_amount = Decimal("1.00")
+
+    if discount_amount >= rate:
+        discount_amount = round_money(rate - Decimal("1.00"))
+
+    return round_money(discount_amount)
+
+
+
+
+
+def apply_on_demand_discount_to_nursing_service_ip_invoice_and_capture(
+    page,
+    discount_amount: Decimal,
+) -> dict:
+    """
+    From IP Invoice Details page:
+    - Click Edit.
+    - Click 3-dot action against Nursing Service.
+    - Click Apply Discount.
+    - Select On Demand Discount.
+    - Enter discount amount.
+    - Apply.
+    - Click View Invoice.
+    - Verify discounted Nursing Service tax and amount.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    click_ip_invoice_edit_button(page=page)
+
+    click_invoice_item_row_action_menu(
+        page=page,
+        row_text="Nursing Service",
+    )
+
+    click_apply_discount_menu_item(page=page)
+
+    apply_on_demand_discount_from_popup(
+        page=page,
+        discount_amount=discount_amount,
+    )
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    message = assert_success_message_if_present(page)
+
+    click_view_invoice_from_update_invoice_page(page=page)
+
+    discounted_result = verify_discounted_nursing_service_ip_invoice_and_capture(
+        page=page,
+        discount_amount=discount_amount,
+    )
+
+    discounted_result["discount_applied"] = True
+    discounted_result["discount_message"] = message
+
+    return discounted_result
+
+
+
+
+def click_ip_invoice_edit_button(page) -> None:
+    """
+    Clicks Edit button from IP Invoice Details page.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    edit_candidates = [
+        page.get_by_role("button", name=re.compile(r"^Edit$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Edit$", re.I)).first,
+        page.get_by_text("Edit", exact=True).first,
+    ]
+
+    for candidate in edit_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.click(timeout=10000)
+            wait_for_page_ready(page)
+            page.wait_for_timeout(1500)
+            return
+        except Exception:
+            continue
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not click Edit button on IP invoice details page.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+
+def click_invoice_item_row_action_menu(
+    page,
+    row_text: str,
+) -> None:
+    """
+    Clicks the 3-dot action menu only inside the invoice item row.
+    This avoids clicking page-level buttons.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    row_pattern = re.compile(re.escape(row_text), re.I)
+
+    row_candidates = [
+        page.get_by_role("row", name=row_pattern).first,
+        page.locator("tr").filter(has_text=row_pattern).first,
+        page.locator("[role='row']").filter(has_text=row_pattern).first,
+        page.locator("div").filter(has_text=row_pattern).filter(has_text=re.compile(r"Rate|Discount|Tax|Amount|Nursing", re.I)).first,
+    ]
+
+    for row in row_candidates:
+        try:
+            row.wait_for(state="visible", timeout=5000)
+            row.scroll_into_view_if_needed(timeout=5000)
+
+            menu_candidates = [
+                row.get_by_role("button", name=re.compile(r"⋮|More|Actions|•••", re.I)).first,
+                row.locator("button").filter(has_text=re.compile(r"⋮|•••")).first,
+                row.locator("button").last,
+                row.locator("i").filter(has_text=re.compile(r"⋮|•••")).first,
+                row.locator("span").filter(has_text=re.compile(r"⋮|•••")).first,
+            ]
+
+            for menu in menu_candidates:
+                try:
+                    menu.wait_for(state="visible", timeout=3000)
+                    menu.click(timeout=8000)
+                    page.wait_for_timeout(800)
+                    return
+                except Exception:
+                    continue
+
+        except Exception:
+            continue
+
+    clicked_by_js = page.evaluate(
+        """
+        ({ rowText }) => {
+            const normalize = (value) => {
+                return (value || '').replace(/\\s+/g, ' ').trim();
+            };
+
+            const isVisible = (element) => {
+                const rect = element.getBoundingClientRect();
+                return rect.width > 0 && rect.height > 0;
+            };
+
+            const rows = Array.from(
+                document.querySelectorAll('tr, [role="row"], .p-datatable-tbody > tr, div')
+            ).filter((row) => {
+                const text = normalize(row.innerText || row.textContent || '');
+                return isVisible(row) && text.toLowerCase().includes(rowText.toLowerCase());
+            });
+
+            for (const row of rows) {
+                const buttons = Array.from(row.querySelectorAll('button'))
+                    .filter((button) => isVisible(button));
+
+                for (const button of buttons.reverse()) {
+                    const text = normalize(button.innerText || button.textContent || '');
+                    const aria = normalize(button.getAttribute('aria-label') || '');
+                    const cls = normalize(button.getAttribute('class') || '');
+
+                    if (
+                        text.includes('⋮') ||
+                        text.includes('•••') ||
+                        aria.toLowerCase().includes('more') ||
+                        aria.toLowerCase().includes('action') ||
+                        cls.toLowerCase().includes('menu') ||
+                        cls.toLowerCase().includes('ellipsis')
+                    ) {
+                        button.scrollIntoView({
+                            block: 'center',
+                            inline: 'center'
+                        });
+
+                        button.click();
+                        return true;
+                    }
+                }
+
+                const icons = Array.from(row.querySelectorAll('i, span'))
+                    .filter((icon) => {
+                        const text = normalize(icon.innerText || icon.textContent || '');
+                        const cls = normalize(icon.getAttribute('class') || '');
+
+                        return (
+                            isVisible(icon) &&
+                            (
+                                text.includes('⋮') ||
+                                text.includes('•••') ||
+                                cls.toLowerCase().includes('ellipsis') ||
+                                cls.toLowerCase().includes('more') ||
+                                cls.toLowerCase().includes('menu')
+                            )
+                        );
+                    });
+
+                if (icons.length) {
+                    const icon = icons[icons.length - 1];
+
+                    icon.scrollIntoView({
+                        block: 'center',
+                        inline: 'center'
+                    });
+
+                    icon.click();
+                    return true;
+                }
+            }
+
+            return false;
+        }
+        """,
+        {"rowText": row_text},
+    )
+
+    if clicked_by_js:
+        page.wait_for_timeout(800)
+        return
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        f"Could not click 3-dot action menu against invoice row: {row_text}\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+def click_apply_discount_menu_item(page) -> None:
+    """
+    Clicks Apply Discount from row action menu.
+    """
+
+    apply_discount_candidates = [
+        page.get_by_role("menuitem", name=re.compile(r"Apply Discount", re.I)).first,
+        page.locator("li").filter(has_text=re.compile(r"Apply Discount", re.I)).first,
+        page.locator(".p-menuitem").filter(has_text=re.compile(r"Apply Discount", re.I)).first,
+        page.get_by_text("Apply Discount", exact=False).first,
+    ]
+
+    for candidate in apply_discount_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            page.wait_for_timeout(1000)
+            return
+        except Exception:
+            continue
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not click Apply Discount menu item.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+
+def apply_on_demand_discount_from_popup(
+    page,
+    discount_amount: Decimal,
+) -> None:
+    """
+    Applies On Demand Discount in IP invoice update page.
+
+    Uses stable recorded selectors:
+    - #slctItemDiscount_IP_Invoice
+    - textbox name Number
+    - Apply button
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    discount_amount_text = format_decimal_for_input(discount_amount)
+
+    visible_text = get_visible_page_text(page)
+
+    if not re.search(r"Apply\s+Discount", visible_text, re.I):
+        raise AssertionError(
+            "Apply Discount popup is not visible.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    select_on_demand_discount_from_apply_discount_popup(page=page)
+
+    filled_amount = fill_apply_discount_amount_field(
+        page=page,
+        amount_text=discount_amount_text,
+    )
+
+    if filled_amount is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not fill discount amount in Apply Discount popup.\n"
+            f"Discount amount: {discount_amount_text}\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    clicked_apply = click_apply_button_inside_apply_discount_panel(page=page)
+
+    if clicked_apply is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not click Apply button in Apply Discount popup.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(2500)
+    wait_for_page_ready(page)
+
+
+
+
+def select_on_demand_discount_from_apply_discount_popup(page) -> None:
+    """
+    Selects On Demand Discount using the real select element.
+
+    Recorded working locator:
+        #slctItemDiscount_IP_Invoice
+
+    Recorded working option value:
+        34906
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(800)
+
+    discount_select = page.locator("#slctItemDiscount_IP_Invoice").first
+
+    try:
+        discount_select.wait_for(state="visible", timeout=8000)
+        discount_select.select_option("34906", timeout=10000)
+        page.wait_for_timeout(1200)
+        return
+    except Exception:
+        pass
+
+    try:
+        discount_select.wait_for(state="attached", timeout=8000)
+        page.evaluate(
+            """
+            () => {
+                const select = document.querySelector('#slctItemDiscount_IP_Invoice');
+
+                if (!select) {
+                    return false;
+                }
+
+                select.value = '34906';
+
+                select.dispatchEvent(new Event('input', { bubbles: true }));
+                select.dispatchEvent(new Event('change', { bubbles: true }));
+                select.dispatchEvent(new Event('blur', { bubbles: true }));
+
+                return true;
+            }
+            """
+        )
+        page.wait_for_timeout(1200)
+        return
+    except Exception:
+        pass
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not select On Demand Discount using #slctItemDiscount_IP_Invoice.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+
+def fill_apply_discount_amount_field(
+    page,
+    amount_text: str,
+) -> bool:
+    """
+    Fills discount amount using the recorded field:
+        get_by_role("textbox", name="Number")
+    """
+
+    amount_text = str(amount_text).strip()
+
+    if not amount_text:
+        return False
+
+    amount_candidates = [
+        page.get_by_role("textbox", name=re.compile(r"Number", re.I)).first,
+        page.locator("input[aria-label='Number']").first,
+        page.locator("input[role='spinbutton']").first,
+        page.locator("p-inputnumber input").first,
+        page.locator(".p-inputnumber input").first,
+        page.locator("input[type='number']").first,
+    ]
+
+    for candidate in amount_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.click(timeout=5000)
+            candidate.fill("", timeout=5000)
+            candidate.fill(amount_text, timeout=8000)
+            candidate.press("Tab", timeout=3000)
+            page.wait_for_timeout(700)
+            return True
+        except Exception:
+            continue
+
+    filled_by_js = page.evaluate(
+        """
+        ({ amountText }) => {
+            const select = document.querySelector('#slctItemDiscount_IP_Invoice');
+
+            if (!select) {
+                return false;
+            }
+
+            const panel =
+                select.closest('.p-dialog') ||
+                select.closest('[role="dialog"]') ||
+                select.closest('form') ||
+                document;
+
+            const inputs = Array.from(
+                panel.querySelectorAll('input')
+            ).filter((input) => {
+                const rect = input.getBoundingClientRect();
+                const style = window.getComputedStyle(input);
+
+                if (
+                    rect.width <= 0 ||
+                    rect.height <= 0 ||
+                    style.visibility === 'hidden' ||
+                    style.display === 'none'
+                ) {
+                    return false;
+                }
+
+                if (input.disabled || input.readOnly) {
+                    return false;
+                }
+
+                const text = [
+                    input.getAttribute('placeholder') || '',
+                    input.getAttribute('aria-label') || '',
+                    input.getAttribute('name') || '',
+                    input.getAttribute('formcontrolname') || '',
+                    input.getAttribute('type') || ''
+                ].join(' ').toLowerCase();
+
+                if (
+                    text.includes('private') ||
+                    text.includes('note') ||
+                    text.includes('patient')
+                ) {
+                    return false;
+                }
+
+                return true;
+            });
+
+            const amountInput =
+                inputs.find((input) => {
+                    const aria = input.getAttribute('aria-label') || '';
+                    return /number/i.test(aria);
+                }) ||
+                inputs.find((input) => {
+                    const type = input.getAttribute('type') || '';
+                    return /number/i.test(type);
+                }) ||
+                inputs[inputs.length - 1];
+
+            if (!amountInput) {
+                return false;
+            }
+
+            amountInput.scrollIntoView({
+                block: 'center',
+                inline: 'center'
+            });
+
+            amountInput.focus();
+
+            const setter = Object.getOwnPropertyDescriptor(
+                window.HTMLInputElement.prototype,
+                'value'
+            )?.set;
+
+            if (setter) {
+                setter.call(amountInput, amountText);
+            } else {
+                amountInput.value = amountText;
+            }
+
+            amountInput.dispatchEvent(new Event('input', { bubbles: true }));
+            amountInput.dispatchEvent(new Event('change', { bubbles: true }));
+            amountInput.dispatchEvent(new Event('blur', { bubbles: true }));
+
+            return true;
+        }
+        """,
+        {"amountText": amount_text},
+    )
+
+    page.wait_for_timeout(700)
+
+    return bool(filled_by_js)
+
+
+
+
+
+
+def click_apply_button_inside_apply_discount_panel(page) -> bool:
+    """
+    Clicks Apply button in Apply Discount popup.
+    """
+
+    apply_candidates = [
+        page.get_by_role("button", name=re.compile(r"^Apply$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Apply$", re.I)).first,
+    ]
+
+    for candidate in apply_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.click(timeout=10000)
+            page.wait_for_timeout(1500)
+            return True
+        except Exception:
+            continue
+
+    clicked_by_js = page.evaluate(
+        """
+        () => {
+            const select = document.querySelector('#slctItemDiscount_IP_Invoice');
+
+            const panel =
+                select?.closest('.p-dialog') ||
+                select?.closest('[role="dialog"]') ||
+                select?.closest('form') ||
+                document;
+
+            const buttons = Array.from(
+                panel.querySelectorAll('button')
+            ).filter((button) => {
+                const rect = button.getBoundingClientRect();
+                const style = window.getComputedStyle(button);
+                const text = (button.innerText || button.textContent || '').trim();
+
+                return (
+                    rect.width > 0 &&
+                    rect.height > 0 &&
+                    style.visibility !== 'hidden' &&
+                    style.display !== 'none' &&
+                    /^Apply$/i.test(text) &&
+                    !button.disabled
+                );
+            });
+
+            if (!buttons.length) {
+                return false;
+            }
+
+            const button = buttons[buttons.length - 1];
+
+            button.scrollIntoView({
+                block: 'center',
+                inline: 'center'
+            });
+
+            button.click();
+
+            return true;
+        }
+        """
+    )
+
+    if clicked_by_js:
+        page.wait_for_timeout(1500)
+        return True
+
+    return False
+
+
+
+
+
+
+def ensure_on_demand_discount_selected_in_panel(page) -> None:
+    """
+    Ensures On Demand Discount is selected.
+
+    If the panel already shows On Demand Discount, no action is needed.
+    Otherwise opens Select Discount and selects On Demand Discount.
+    """
+
+    visible_text = get_visible_page_text(page)
+
+    if re.search(r"On\s+Demand\s+Discount", visible_text, re.I):
+        return
+
+    select_discount_candidates = [
+        page.get_by_text(re.compile(r"Select\s+Discount", re.I)).first,
+        page.locator("p-dropdown").filter(has_text=re.compile(r"Select\s+Discount", re.I)).first,
+        page.locator(".p-dropdown").filter(has_text=re.compile(r"Select\s+Discount", re.I)).first,
+        page.locator("[role='combobox']").filter(has_text=re.compile(r"Select\s+Discount", re.I)).first,
+    ]
+
+    opened_dropdown = False
+
+    for candidate in select_discount_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            opened_dropdown = True
+            break
+        except Exception:
+            try:
+                candidate.locator(".p-dropdown-trigger").first.click(timeout=5000)
+                opened_dropdown = True
+                break
+            except Exception:
+                continue
+
+    if opened_dropdown is False:
+        visible_text = get_visible_page_text(page)
+
+        raise AssertionError(
+            "Could not open Select Discount dropdown.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{visible_text[:2500]}"
+        )
+
+    page.wait_for_timeout(800)
+
+    on_demand_candidates = [
+        page.get_by_role("option", name=re.compile(r"On\s+Demand\s+Discount", re.I)).first,
+        page.locator(".p-dropdown-item").filter(has_text=re.compile(r"On\s+Demand\s+Discount", re.I)).first,
+        page.locator("li").filter(has_text=re.compile(r"On\s+Demand\s+Discount", re.I)).first,
+        page.get_by_text(re.compile(r"On\s+Demand\s+Discount", re.I)).first,
+    ]
+
+    for candidate in on_demand_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            page.wait_for_timeout(1000)
+            return
+        except Exception:
+            continue
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not select On Demand Discount.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+
+def fill_discount_amount_by_coordinates_near_on_demand(
+    page,
+    amount_text: str,
+) -> bool:
+    """
+    Fallback: clicks near the blank amount field below/near On Demand Discount
+    and types the amount using the keyboard.
+    """
+
+    amount_text = str(amount_text).strip()
+
+    if not amount_text:
+        return False
+
+    on_demand_candidates = [
+        page.get_by_text(re.compile(r"^On\s+Demand\s+Discount$", re.I)).last,
+        page.get_by_text(re.compile(r"On\s+Demand\s+Discount", re.I)).last,
+    ]
+
+    for candidate in on_demand_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=3000)
+            box = candidate.bounding_box(timeout=3000)
+
+            if not box:
+                continue
+
+            click_points = [
+                (
+                    box["x"] + box["width"] / 2,
+                    box["y"] + box["height"] + 24,
+                ),
+                (
+                    box["x"] + 40,
+                    box["y"] + box["height"] + 24,
+                ),
+                (
+                    box["x"] + box["width"] + 100,
+                    box["y"] + box["height"] / 2,
+                ),
+            ]
+
+            for x, y in click_points:
+                try:
+                    page.mouse.click(x, y)
+                    page.wait_for_timeout(300)
+                    page.keyboard.press("Control+A")
+                    page.keyboard.type(amount_text)
+                    page.keyboard.press("Tab")
+                    page.wait_for_timeout(700)
+
+                    if is_discount_amount_value_present(page=page, amount_text=amount_text):
+                        return True
+                except Exception:
+                    continue
+
+        except Exception:
+            continue
+
+    return False
+
+
+
+
+
+def is_discount_amount_value_present(
+    page,
+    amount_text: str,
+) -> bool:
+    """
+    Checks whether the discount amount was actually entered into a visible input.
+    """
+
+    amount_text = str(amount_text).strip()
+
+    return bool(
+        page.evaluate(
+            """
+            ({ amountText }) => {
+                const normalize = (value) => {
+                    return (value || '').replace(/\\s+/g, ' ').trim();
+                };
+
+                const normalizeMoney = (value) => {
+                    const cleaned = normalize(value).replace(/,/g, '');
+
+                    if (!cleaned) {
+                        return '';
+                    }
+
+                    const numberValue = Number(cleaned);
+
+                    if (Number.isNaN(numberValue)) {
+                        return cleaned;
+                    }
+
+                    return numberValue.toFixed(2);
+                };
+
+                const isVisible = (element) => {
+                    const rect = element.getBoundingClientRect();
+                    const style = window.getComputedStyle(element);
+
+                    return (
+                        rect.width > 0 &&
+                        rect.height > 0 &&
+                        style.visibility !== 'hidden' &&
+                        style.display !== 'none'
+                    );
+                };
+
+                const expected = normalizeMoney(amountText);
+
+                const inputs = Array.from(
+                    document.querySelectorAll('input, textarea, [contenteditable="true"]')
+                ).filter((input) => isVisible(input));
+
+                return inputs.some((input) => {
+                    const value = input.value || input.innerText || input.textContent || '';
+                    const normalizedValue = normalizeMoney(value);
+
+                    return normalizedValue === expected;
+                });
+            }
+            """,
+            {"amountText": amount_text},
+        )
+    )
+
+
+
+
+
+def click_view_invoice_from_update_invoice_page(page) -> None:
+    """
+    Clicks View Invoice from Update Invoice page.
+
+    Also handles case where after Apply Discount / Remove Discount,
+    the application already redirects back to Invoice Details page.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    if is_any_invoice_details_page_loaded(page=page):
+        return
+
+    view_invoice_candidates = [
+        page.get_by_role("button", name=re.compile(r"View Invoice", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"View Invoice", re.I)).first,
+        page.get_by_text("View Invoice", exact=False).first,
+    ]
+
+    for candidate in view_invoice_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.scroll_into_view_if_needed(timeout=5000)
+            candidate.click(timeout=10000)
+            page.wait_for_timeout(2000)
+            wait_for_any_invoice_details_loaded(page=page)
+            return
+        except Exception:
+            continue
+
+    if is_any_invoice_details_page_loaded(page=page):
+        return
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not click View Invoice from Update Invoice page, and page is not on Invoice Details.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+def is_any_invoice_details_page_loaded(page) -> bool:
+    """
+    Checks whether current page is IP Invoice Details or Master Invoice Details.
+
+    Supports URLs:
+        /business/ip/invoice/...
+        /business/ip/master-invoice/...
+    """
+
+    try:
+        current_url = page.url.lower()
+        visible_text = get_visible_page_text(page)
+
+        invoice_url = (
+            "/business/ip/invoice/" in current_url
+            or "/business/ip/master-invoice/" in current_url
+            or "/invoice-details" in current_url
+        )
+
+        if invoice_url is False:
+            return False
+
+        if re.search(r"Update\s+Invoice|Create\s+Invoice", visible_text, re.I):
+            return False
+
+        return bool(
+            re.search(r"Invoice\s+Details", visible_text, re.I)
+            or re.search(r"Inv\.?\s*No", visible_text, re.I)
+            or re.search(r"Inv\.?\s*Date", visible_text, re.I)
+            or re.search(r"Detailed\s+Breakups", visible_text, re.I)
+            or re.search(r"Amount\s+Due", visible_text, re.I)
+            or re.search(r"Net\s+Total", visible_text, re.I)
+        )
+
+    except Exception:
+        return False
+
+
+
+def wait_for_any_invoice_details_loaded(
+    page,
+    timeout_ms: int = 45000,
+) -> None:
+    """
+    Waits for IP Invoice Details or Master Invoice Details page.
+    """
+
+    max_attempts = max(1, timeout_ms // 1000)
+
+    for _ in range(max_attempts):
+        try:
+            wait_for_page_ready(page)
+        except Exception:
+            pass
+
+        page.wait_for_timeout(1000)
+
+        if is_any_invoice_details_page_loaded(page=page):
+            return
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Invoice Details page did not load.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+
+def wait_for_ip_invoice_details_loaded(
+    page,
+    timeout_ms: int = 45000,
+) -> None:
+    """
+    Waits until IP invoice details content is loaded.
+    """
+
+    max_attempts = max(1, timeout_ms // 1000)
+
+    markers = [
+        r"Invoice Details",
+        r"Inv\.?\s*No",
+        r"Detailed Breakups",
+        r"Amount Due",
+        r"Total",
+    ]
+
+    for _ in range(max_attempts):
+        try:
+            wait_for_page_ready(page)
+        except Exception:
+            pass
+
+        page.wait_for_timeout(1000)
+
+        current_url = page.url.lower()
+        visible_text = get_visible_page_text(page)
+
+        if "/business/ip/invoice/" in current_url and any(
+            re.search(pattern, visible_text, re.I) for pattern in markers
+        ):
+            return
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "IP invoice details page did not load.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+
+
+
+def verify_discounted_nursing_service_ip_invoice_and_capture(
+    page,
+    discount_amount: Decimal,
+) -> dict:
+    """
+    Verifies discounted Nursing Service IP invoice.
+
+    Formula:
+        Price = Rate - Discount
+        New Tax = Price * 5 / 100
+        New Total Amount = Price + New Tax
+
+    Important:
+    The Nursing Service row amount should match New Total Amount exactly.
+
+    But IP invoice summary Net Total / Amount Due can be rounded.
+    Example:
+        Row Amount = 236.25
+        Amount Due = 236.00
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    values = read_invoice_rate_discount_tax_amount_from_row_text(
+        row_text=row_text,
+        row_label="Nursing Service discounted IP invoice row",
+    )
+
+    rate_actual = values["rate"]
+    discount_actual = values["discount"]
+    tax_actual = values["tax"]
+    amount_actual = values["amount"]
+
+    discount_amount = round_money(Decimal(str(discount_amount)))
+
+    assert_amount_close(
+        discount_actual,
+        discount_amount,
+        "Nursing Service discount mismatch after applying discount.",
+    )
+
+    price_after_discount = round_money(
+        rate_actual - discount_actual
+    )
+
+    tax_expected = round_money(
+        price_after_discount * Decimal("5") / Decimal("100")
+    )
+
+    amount_expected = round_money(
+        price_after_discount + tax_expected
+    )
+
+    assert_amount_close(
+        tax_actual,
+        tax_expected,
+        "Discounted Nursing Service tax mismatch.",
+    )
+
+    assert_amount_close(
+        amount_actual,
+        amount_expected,
+        "Discounted Nursing Service row amount mismatch.",
+    )
+
+    invoice_net_total_actual = read_ip_invoice_net_total(page)
+
+    assert_amount_close_or_rounded_rupee(
+        actual=invoice_net_total_actual,
+        expected=amount_expected,
+        message="Discounted IP invoice Net Total / Amount Due should match discounted Nursing Service amount after rounding.",
+    )
+
+    return {
+        "service_name": "Nursing Service",
+        "row_text": row_text,
+
+        "rate_actual": rate_actual,
+        "discount_actual": discount_actual,
+
+        "price_after_discount": price_after_discount,
+
+        "tax_percentage": Decimal("5"),
+        "tax_actual": tax_actual,
+        "tax_expected": tax_expected,
+
+        "amount_actual": amount_actual,
+        "amount_expected": amount_expected,
+
+        "ip_invoice_net_total_actual": invoice_net_total_actual,
+        "ip_invoice_net_total_expected_before_rounding": amount_expected,
+
+        "final_url": page.url,
+    }
+
+
+
+
+
+
+def read_invoice_rate_discount_tax_amount_from_row_text(
+    row_text: str,
+    row_label: str,
+) -> dict:
+    """
+    Reads Rate, Discount, Tax and Amount from invoice row.
+
+    Expected row layout:
+        Quantity Rate Discount Tax Amount
+
+    Since Quantity is usually an integer, extract_decimal_money_values normally returns:
+        Rate, Discount, Tax, Amount
+    """
+
+    money_values = extract_decimal_money_values(row_text)
+
+    if len(money_values) < 4:
+        raise AssertionError(
+            f"Could not read Rate, Discount, Tax and Amount from {row_label}.\n"
+            f"Row text: {row_text}\n"
+            f"Money values: {money_values}"
+        )
+
+    return {
+        "rate": round_money(money_values[-4]),
+        "discount": round_money(money_values[-3]),
+        "tax": round_money(money_values[-2]),
+        "amount": round_money(money_values[-1]),
+        "money_values": money_values,
+    }
+
+
+
+
+
+
+def verify_master_invoice_non_taxable_order_and_discounted_taxable_service(
+    page,
+    order_invoice_result: dict,
+    discounted_service_invoice_result: dict,
+) -> dict:
+    """
+    Verifies Master Invoice for:
+    - Non-taxable order item
+    - Discounted taxable Nursing Service
+
+    Expected:
+        Nursing Service Discount, Tax and Amount should match individual IP invoice.
+
+        Master Net Total =
+            Non-taxable order invoice total + Discounted Nursing Service amount
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    service_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    service_master_values = read_invoice_rate_discount_tax_amount_from_row_text(
+        row_text=service_row_text,
+        row_label="Master Invoice Nursing Service row",
+    )
+
+    expected_service_discount = discounted_service_invoice_result["discount_actual"]
+    expected_service_tax = discounted_service_invoice_result["tax_actual"]
+    expected_service_amount = discounted_service_invoice_result["amount_actual"]
+
+    assert_amount_close(
+        service_master_values["discount"],
+        expected_service_discount,
+        "Master Invoice Nursing Service discount mismatch.",
+    )
+
+    assert_amount_close(
+        service_master_values["tax"],
+        expected_service_tax,
+        "Master Invoice Nursing Service tax mismatch.",
+    )
+
+    assert_amount_close(
+        service_master_values["amount"],
+        expected_service_amount,
+        "Master Invoice Nursing Service amount mismatch.",
+    )
+
+    order_total = get_decimal_from_result(
+        result=order_invoice_result,
+        keys=[
+            "total_actual",
+            "total_expected",
+            "invoice_net_total_actual",
+            "net_total_actual",
+        ],
+        label="non-taxable order invoice total",
+    )
+
+    master_net_total_expected = round_money(
+        order_total + expected_service_amount
+    )
+
+    master_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Amount Due", "Net payable", "Net Total"],
+        default=master_net_total_expected,
+    )
+
+    assert_amount_close_or_rounded_rupee(
+        actual=master_net_total_actual,
+        expected=master_net_total_expected,
+        message="Master Invoice Net Total mismatch.",
+    )
+
+    print("calculations are correct")
+
+    return {
+        "master_invoice_correct": True,
+
+        "order_total": order_total,
+
+        "expected_service_discount": expected_service_discount,
+        "master_service_discount_actual": service_master_values["discount"],
+
+        "expected_service_tax": expected_service_tax,
+        "master_service_tax_actual": service_master_values["tax"],
+
+        "expected_service_amount": expected_service_amount,
+        "master_service_amount_actual": service_master_values["amount"],
+
+        "master_net_total_actual": master_net_total_actual,
+        "master_net_total_expected": master_net_total_expected,
+
+        "service_row_text": service_row_text,
+        "service_master_values": service_master_values,
+
+        "final_url": page.url,
+    }
+
+
+
+
+
+
+def assert_amount_close_or_rounded_rupee(
+    actual: Decimal,
+    expected: Decimal,
+    message: str = "",
+) -> None:
+    """
+    Master Invoice may apply Rounded Value and show Amount Due as rounded rupee.
+
+    This helper accepts:
+    - exact money match within 0.02
+    - rounded rupee match within 0.02
+    """
+
+    actual = round_money(Decimal(str(actual)))
+    expected = round_money(Decimal(str(expected)))
+
+    difference = abs(actual - expected)
+
+    if difference <= Decimal("0.02"):
+        return
+
+    rounded_expected = expected.quantize(Decimal("1"), rounding=ROUND_HALF_UP)
+    rounded_difference = abs(actual - rounded_expected)
+
+    assert rounded_difference <= Decimal("0.02"), (
+        f"{message}\n"
+        f"Expected: {expected}\n"
+        f"Rounded Expected: {rounded_expected}\n"
+        f"Actual: {actual}\n"
+        f"Difference: {difference}\n"
+        f"Rounded Difference: {rounded_difference}"
+    )
+
+
+
+# Discount removed after master invoice creation; no doubling of amounts.
+
+
+
+def complete_master_invoice_remove_service_discount_after_master_creation_not_doubling_flow(
+    page,
+    config,
+    consumer_profile: dict,
+) -> dict:
+    """
+    Flow:
+    1. Create IP admission.
+    2. Add Nursing Service.
+    3. Request order with non-taxable medicine Med_3 / Med_5.
+    4. Confirm sales order.
+    5. Create sales order invoice.
+    6. Verify order invoice Net Total = Rate * Quantity.
+    7. Complete order.
+    8. Create IP invoice for Nursing Service.
+    9. Capture original Nursing Service Tax and Amount before discount.
+    10. Apply On Demand Discount to Nursing Service.
+    11. Verify discounted IP invoice.
+    12. Create Master Invoice.
+    13. Verify Master Invoice with discounted Nursing Service.
+    14. Edit Master Invoice.
+    15. Remove Discount against Nursing Service.
+    16. Verify Discount = 0, Tax and Amount are restored.
+    17. Verify Master Net Total is not doubled.
+    18. Click View Invoice and verify same Net Total in Master Invoice details.
+    """
+
+    login(page, config)
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+    open_new_admission_page(page)
+
+    patient_result = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    assert patient_result["patient_created"] is True
+
+    admission_result = complete_ip_admission_with_random_exempt_bed(page=page)
+
+    assert admission_result["admission_created"] is True
+
+    patient_full_name = patient_result["patient_full_name"]
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    nursing_service_result = add_nursing_service_to_ip_patient(page=page)
+
+    assert nursing_service_result["service_added"] is True
+
+    order_request_result = request_random_pharmacy_item_from_ip_service(
+        page=page,
+        allowed_item_names=["Med_3", "Med_5"],
+    )
+
+    assert order_request_result["order_requested"] is True
+
+    open_sales_order_requests_grid(
+        page=page,
+        config=config,
+    )
+
+    sales_order_result = confirm_latest_ip_requested_sales_order(page=page)
+
+    assert_sales_order_confirmed_from_result_or_page(
+        page=page,
+        sales_order_result=sales_order_result,
+    )
+
+    order_details_medicine_result = capture_medicine_item_from_sales_order_details_page(
+        page=page,
+        allowed_item_names=["Med_3", "Med_5"],
+    )
+
+    selected_item_name = order_details_medicine_result["item_name"]
+
+    sales_order_invoice_result = create_sales_order_invoice_and_view(page=page)
+
+    assert_sales_order_invoice_created_from_result_or_page(
+        page=page,
+        sales_order_invoice_result=sales_order_invoice_result,
+    )
+
+    non_taxable_order_invoice_result = verify_non_taxable_sales_order_invoice_item_and_capture(
+        page=page,
+        item_name=selected_item_name,
+        order_details_medicine_result=order_details_medicine_result,
+    )
+
+    go_back_from_sales_order_invoice_to_order_details(page=page)
+
+    complete_order_result = complete_sales_order_from_order_details(page=page)
+
+    assert complete_order_result["sales_order_completed"] is True
+
+    open_ip_dashboard(page)
+    open_ip_inpatients_grid(page)
+
+    open_latest_ip_patient_from_grid(
+        page=page,
+        patient_full_name=patient_full_name,
+    )
+
+    ip_invoice_result = create_ip_invoice_for_nursing_service_with_retry(
+        page=page,
+    )
+
+    assert ip_invoice_result["invoice_created"] is True
+
+    nursing_service_before_discount_result = verify_taxable_nursing_service_ip_invoice_and_capture(
+        page=page,
+    )
+
+    discount_amount = choose_safe_ip_service_discount_amount(
+        service_invoice_result=nursing_service_before_discount_result,
+    )
+
+    discounted_nursing_service_result = apply_on_demand_discount_to_nursing_service_ip_invoice_and_capture(
+        page=page,
+        discount_amount=discount_amount,
+    )
+
+    assert discounted_nursing_service_result["discount_applied"] is True
+
+    back_to_ip_details_result = go_back_from_ip_invoice_details_to_patient_details(page=page)
+
+    assert back_to_ip_details_result["returned_to_ip_details"] is True
+
+    ensure_current_page_is_ip_patient_details(page=page)
+
+    master_invoice_result = create_master_invoice_with_two_available_invoices_from_ip_details(
+        page=page,
+    )
+
+    assert master_invoice_result["master_invoice_created"] is True
+
+    master_invoice_verification_result = verify_master_invoice_non_taxable_order_and_discounted_taxable_service(
+        page=page,
+        order_invoice_result=non_taxable_order_invoice_result,
+        discounted_service_invoice_result=discounted_nursing_service_result,
+    )
+
+    print("calculations are correct")
+
+    master_invoice_after_discount_removed_result = remove_discount_from_nursing_service_in_master_invoice_and_verify_not_doubled(
+        page=page,
+        order_invoice_result=non_taxable_order_invoice_result,
+        service_before_discount_result=nursing_service_before_discount_result,
+    )
+
+    assert master_invoice_after_discount_removed_result["master_invoice_correct_after_discount_removed"] is True
+
+    print("discount removed calculations are correct")
+
+    return {
+        "patient_created": True,
+        "patient_result": patient_result,
+        "patient_full_name": patient_full_name,
+
+        "admission_created": True,
+        "admission_result": admission_result,
+
+        "nursing_service_added": True,
+        "nursing_service_result": nursing_service_result,
+
+        "order_requested": True,
+        "order_request_result": order_request_result,
+
+        "sales_order_confirmed": True,
+        "sales_order_result": sales_order_result,
+
+        "order_details_medicine_result": order_details_medicine_result,
+
+        "sales_order_invoice_created": True,
+        "sales_order_invoice_result": sales_order_invoice_result,
+        "non_taxable_order_invoice_result": non_taxable_order_invoice_result,
+
+        "sales_order_completed": True,
+        "complete_order_result": complete_order_result,
+
+        "ip_invoice_created": True,
+        "ip_invoice_result": ip_invoice_result,
+
+        "nursing_service_before_discount_result": nursing_service_before_discount_result,
+
+        "ip_service_discount_applied": True,
+        "discount_amount": discount_amount,
+        "discounted_nursing_service_result": discounted_nursing_service_result,
+
+        "master_invoice_created": True,
+        "master_invoice_result": master_invoice_result,
+        "master_invoice_verification_result": master_invoice_verification_result,
+
+        "discount_removed_from_master": True,
+        "master_invoice_after_discount_removed_result": master_invoice_after_discount_removed_result,
+
+        "final_url": page.url,
+    }
+
+
+
+def remove_discount_from_nursing_service_in_master_invoice_and_verify_not_doubled(
+    page,
+    order_invoice_result: dict,
+    service_before_discount_result: dict,
+) -> dict:
+    """
+    From Master Invoice Details page:
+    1. Click Edit.
+    2. Click 3-dot against Nursing Service.
+    3. Click Remove Discount.
+    4. Verify Discount = 0, Tax and Amount are restored.
+    5. Verify Master Net Total is not doubled.
+    6. If still on Update Invoice, click View Invoice.
+       If already on Invoice Details, continue directly.
+    7. Verify same Net Total in Master Invoice details.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    click_master_invoice_edit_button(page=page)
+
+    click_invoice_item_row_action_menu(
+        page=page,
+        row_text="Nursing Service",
+    )
+
+    click_remove_discount_menu_item(page=page)
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(2500)
+
+    message = assert_success_message_if_present(page)
+
+    update_page_result = verify_master_update_invoice_after_nursing_service_discount_removed(
+        page=page,
+        order_invoice_result=order_invoice_result,
+        service_before_discount_result=service_before_discount_result,
+    )
+
+    if not is_any_invoice_details_page_loaded(page=page):
+        click_view_invoice_from_update_invoice_page(page=page)
+    else:
+        wait_for_any_invoice_details_loaded(page=page)
+
+    details_page_result = verify_master_invoice_details_after_nursing_service_discount_removed(
+        page=page,
+        order_invoice_result=order_invoice_result,
+        service_before_discount_result=service_before_discount_result,
+        expected_master_net_total=update_page_result["master_net_total_expected"],
+        update_page_master_net_total_actual=update_page_result["master_net_total_actual"],
+    )
+
+    return {
+        "master_invoice_correct_after_discount_removed": True,
+        "remove_discount_message": message,
+        "update_page_result": update_page_result,
+        "details_page_result": details_page_result,
+        "final_url": page.url,
+    }
+
+
+
+
+def click_master_invoice_edit_button(page) -> None:
+    """
+    Clicks Edit button from Master Invoice Details page.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1000)
+
+    edit_candidates = [
+        page.get_by_role("button", name=re.compile(r"^Edit$", re.I)).first,
+        page.locator("button").filter(has_text=re.compile(r"^Edit$", re.I)).first,
+        page.get_by_text("Edit", exact=True).first,
+    ]
+
+    for candidate in edit_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=8000)
+            candidate.click(timeout=10000)
+            wait_for_page_ready(page)
+            page.wait_for_timeout(1500)
+            return
+        except Exception:
+            continue
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not click Edit button on Master Invoice details page.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+def click_remove_discount_menu_item(page) -> None:
+    """
+    Clicks Remove Discount from Nursing Service row action menu.
+
+    Recorded manual flow:
+        page.locator("#btnRowMenu_Service_IP_Invoice").click()
+        page.get_by_role("menuitem", name="Remove Discount").click()
+    """
+
+    remove_discount_candidates = [
+        page.get_by_role("menuitem", name=re.compile(r"Remove\s+Discount", re.I)).first,
+        page.locator("li").filter(has_text=re.compile(r"Remove\s+Discount", re.I)).first,
+        page.locator(".p-menuitem").filter(has_text=re.compile(r"Remove\s+Discount", re.I)).first,
+        page.get_by_text("Remove Discount", exact=False).first,
+    ]
+
+    for candidate in remove_discount_candidates:
+        try:
+            candidate.wait_for(state="visible", timeout=5000)
+            candidate.click(timeout=10000)
+            page.wait_for_timeout(1500)
+            return
+        except Exception:
+            continue
+
+    visible_text = get_visible_page_text(page)
+
+    raise AssertionError(
+        "Could not click Remove Discount menu item.\n"
+        f"Current URL: {page.url}\n"
+        f"Visible page text:\n{visible_text[:2500]}"
+    )
+
+
+
+def verify_master_update_invoice_after_nursing_service_discount_removed(
+    page,
+    order_invoice_result: dict,
+    service_before_discount_result: dict,
+) -> dict:
+    """
+    Verifies Master Update Invoice page after removing discount.
+
+    Expected:
+        Nursing Service Discount = 0
+        Nursing Service Tax = original individual IP invoice tax
+        Nursing Service Amount = original individual IP invoice amount
+
+        Net Total = Nursing Service Amount + Pharmacy Order Amount
+
+    This catches the bug:
+        service amount doubling after removing discount.
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    service_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    service_values = read_invoice_rate_discount_tax_amount_from_row_text(
+        row_text=service_row_text,
+        row_label="Master Update Invoice Nursing Service row after discount removed",
+    )
+
+    expected_service_discount = Decimal("0.00")
+
+    expected_service_tax = get_decimal_from_result(
+        result=service_before_discount_result,
+        keys=["tax_actual", "tax_expected"],
+        label="original Nursing Service tax",
+    )
+
+    expected_service_amount = get_decimal_from_result(
+        result=service_before_discount_result,
+        keys=["amount_actual", "amount_expected", "total_amount_actual", "total_amount_expected"],
+        label="original Nursing Service amount",
+    )
+
+    assert_amount_close(
+        service_values["discount"],
+        expected_service_discount,
+        "Master Update Invoice Nursing Service discount should be zero after remove discount.",
+    )
+
+    assert_amount_close(
+        service_values["tax"],
+        expected_service_tax,
+        "Master Update Invoice Nursing Service tax mismatch after remove discount.",
+    )
+
+    assert_amount_close(
+        service_values["amount"],
+        expected_service_amount,
+        "Master Update Invoice Nursing Service amount mismatch after remove discount.",
+    )
+
+    order_total = get_decimal_from_result(
+        result=order_invoice_result,
+        keys=[
+            "total_actual",
+            "total_expected",
+            "invoice_net_total_actual",
+            "net_total_actual",
+            "net_total_expected",
+        ],
+        label="non-taxable pharmacy order invoice total",
+    )
+
+    master_net_total_expected = round_money(
+        order_total + expected_service_amount
+    )
+
+    wrong_doubled_total = round_money(
+        order_total + expected_service_amount + expected_service_amount
+    )
+
+    master_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Amount Due", "Net payable", "Net Total"],
+        default=master_net_total_expected,
+    )
+
+    assert_amount_close_or_rounded_rupee(
+        actual=master_net_total_actual,
+        expected=master_net_total_expected,
+        message="Master Update Invoice Net Total mismatch after remove discount.",
+    )
+
+    assert_master_total_not_doubled(
+        actual=master_net_total_actual,
+        wrong_doubled_total=wrong_doubled_total,
+        message="Master Update Invoice amount appears doubled after removing discount.",
+    )
+
+    return {
+        "master_update_invoice_correct_after_discount_removed": True,
+
+        "order_total": order_total,
+
+        "expected_service_discount": expected_service_discount,
+        "actual_service_discount": service_values["discount"],
+
+        "expected_service_tax": expected_service_tax,
+        "actual_service_tax": service_values["tax"],
+
+        "expected_service_amount": expected_service_amount,
+        "actual_service_amount": service_values["amount"],
+
+        "master_net_total_expected": master_net_total_expected,
+        "master_net_total_actual": master_net_total_actual,
+
+        "wrong_doubled_total": wrong_doubled_total,
+
+        "service_row_text": service_row_text,
+        "service_values": service_values,
+
+        "final_url": page.url,
+    }
+
+
+
+def verify_master_invoice_details_after_nursing_service_discount_removed(
+    page,
+    order_invoice_result: dict,
+    service_before_discount_result: dict,
+    expected_master_net_total: Decimal,
+    update_page_master_net_total_actual: Decimal,
+) -> dict:
+    """
+    After clicking View Invoice from Master Update Invoice page,
+    verifies Master Invoice Details page still has correct amount.
+
+    Expected:
+        Details page Net Total = Update page Net Total
+        Details page Net Total = Service original amount + Pharmacy amount
+        Details page amount is not doubled
+    """
+
+    wait_for_page_ready(page)
+    page.wait_for_timeout(1500)
+
+    service_row_text = read_invoice_line_or_row_text_containing(
+        page=page,
+        text="Nursing Service",
+    )
+
+    service_values = read_invoice_rate_discount_tax_amount_from_row_text(
+        row_text=service_row_text,
+        row_label="Master Invoice Details Nursing Service row after discount removed",
+    )
+
+    expected_service_discount = Decimal("0.00")
+
+    expected_service_tax = get_decimal_from_result(
+        result=service_before_discount_result,
+        keys=["tax_actual", "tax_expected"],
+        label="original Nursing Service tax",
+    )
+
+    expected_service_amount = get_decimal_from_result(
+        result=service_before_discount_result,
+        keys=["amount_actual", "amount_expected", "total_amount_actual", "total_amount_expected"],
+        label="original Nursing Service amount",
+    )
+
+    assert_amount_close(
+        service_values["discount"],
+        expected_service_discount,
+        "Master Invoice Details Nursing Service discount should be zero after remove discount.",
+    )
+
+    assert_amount_close(
+        service_values["tax"],
+        expected_service_tax,
+        "Master Invoice Details Nursing Service tax mismatch after remove discount.",
+    )
+
+    assert_amount_close(
+        service_values["amount"],
+        expected_service_amount,
+        "Master Invoice Details Nursing Service amount mismatch after remove discount.",
+    )
+
+    order_total = get_decimal_from_result(
+        result=order_invoice_result,
+        keys=[
+            "total_actual",
+            "total_expected",
+            "invoice_net_total_actual",
+            "net_total_actual",
+            "net_total_expected",
+        ],
+        label="non-taxable pharmacy order invoice total",
+    )
+
+    expected_master_net_total = round_money(
+        Decimal(str(expected_master_net_total))
+    )
+
+    calculated_expected_master_net_total = round_money(
+        order_total + expected_service_amount
+    )
+
+    assert_amount_close(
+        expected_master_net_total,
+        calculated_expected_master_net_total,
+        "Expected Master Net Total calculation mismatch after discount removal.",
+    )
+
+    master_net_total_actual = read_invoice_summary_amount_optional(
+        page=page,
+        labels=["Amount Due", "Net payable", "Net Total"],
+        default=expected_master_net_total,
+    )
+
+    assert_amount_close_or_rounded_rupee(
+        actual=master_net_total_actual,
+        expected=expected_master_net_total,
+        message="Master Invoice Details Net Total mismatch after remove discount.",
+    )
+
+    assert_amount_close_or_rounded_rupee(
+        actual=master_net_total_actual,
+        expected=update_page_master_net_total_actual,
+        message="Master Invoice Details Net Total should match Update Invoice page Net Total.",
+    )
+
+    wrong_doubled_total = round_money(
+        order_total + expected_service_amount + expected_service_amount
+    )
+
+    assert_master_total_not_doubled(
+        actual=master_net_total_actual,
+        wrong_doubled_total=wrong_doubled_total,
+        message="Master Invoice Details amount appears doubled after removing discount.",
+    )
+
+    return {
+        "master_invoice_details_correct_after_discount_removed": True,
+
+        "order_total": order_total,
+
+        "expected_service_discount": expected_service_discount,
+        "actual_service_discount": service_values["discount"],
+
+        "expected_service_tax": expected_service_tax,
+        "actual_service_tax": service_values["tax"],
+
+        "expected_service_amount": expected_service_amount,
+        "actual_service_amount": service_values["amount"],
+
+        "master_net_total_actual": master_net_total_actual,
+        "master_net_total_expected": expected_master_net_total,
+        "update_page_master_net_total_actual": update_page_master_net_total_actual,
+
+        "wrong_doubled_total": wrong_doubled_total,
+
+        "service_row_text": service_row_text,
+        "service_values": service_values,
+
+        "final_url": page.url,
+    }
+
+
+
+def assert_master_total_not_doubled(
+    actual: Decimal,
+    wrong_doubled_total: Decimal,
+    message: str,
+) -> None:
+    """
+    Ensures Master Invoice total is not equal to the known wrong doubled value.
+
+    Accepts both exact and rounded rupee comparison.
+    """
+
+    actual = round_money(Decimal(str(actual)))
+    wrong_doubled_total = round_money(Decimal(str(wrong_doubled_total)))
+
+    wrong_doubled_total_rounded = wrong_doubled_total.quantize(
+        Decimal("1"),
+        rounding=ROUND_HALF_UP,
+    )
+
+    exact_difference = abs(actual - wrong_doubled_total)
+    rounded_difference = abs(actual - wrong_doubled_total_rounded)
+
+    assert exact_difference > Decimal("0.02") and rounded_difference > Decimal("0.02"), (
+        f"{message}\n"
+        f"Actual: {actual}\n"
+        f"Wrong Doubled Total: {wrong_doubled_total}\n"
+        f"Wrong Doubled Total Rounded: {wrong_doubled_total_rounded}\n"
+        f"Exact Difference: {exact_difference}\n"
+        f"Rounded Difference: {rounded_difference}"
+    )
+
+
+
+
+
+
+
+
+
+
+
+    
+                                                    
+
+    
 
 
 

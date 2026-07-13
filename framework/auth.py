@@ -225,8 +225,15 @@ def login(page, config):
     sign_in_button = get_sign_in_button(page)
     click_when_visible(sign_in_button)
 
-    wait_for_network_idle(page)
+    try:
+        page.wait_for_url(re.compile(r".*/business/dashboard.*"), timeout=15000)
+    except Exception:
+        pass
 
+    try:
+        wait_for_network_idle(page)
+    except Exception:
+        page.wait_for_timeout(1000)
 
 def open_profile_menu(page):
     """
