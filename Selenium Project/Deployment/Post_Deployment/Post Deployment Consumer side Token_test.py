@@ -159,6 +159,7 @@ def test_consumer_side_token(consumer_login):
             )
         )
         consumer_notes.send_keys("Notes added from consumer side")
+        
         time.sleep(3)
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         WebDriverWait(consumer_login, 10).until(
