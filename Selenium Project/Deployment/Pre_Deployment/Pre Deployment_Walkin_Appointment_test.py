@@ -3951,12 +3951,12 @@ def test_appointment_family_confirmation_attachment_predeployment(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@placeholder='Enter name or phone or id']")
             )
-        ).send_keys("9207206005")
+        ).send_keys("8281276241")
         time.sleep(2)
         login.implicitly_wait(5)
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Id : 2']")
+                (By.XPATH, "//span[normalize-space()='Id : 456547']")
             )
         ).click()
 
@@ -3970,7 +3970,7 @@ def test_appointment_family_confirmation_attachment_predeployment(login):
         time.sleep(1)
         WebDriverWait(login, 20).until(
             EC.presence_of_element_located(
-                (By.XPATH, "(//label[normalize-space()='Archana Gopi'])[1]"))
+                (By.XPATH, "//div[contains(@class,'mdc-form-field')][.//label[normalize-space()='Vedhika Sreejith']]//input[@type='radio']"))
         ).click()
 
         WebDriverWait(login, 20).until(

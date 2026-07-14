@@ -1598,12 +1598,14 @@ def test_create_order(login):
             (By.XPATH, "//p-dropdown[@optionlabel='name']"))
     ).click()
 
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//span[normalize-space()='B&B Stores']"))
     ).click()
 
     # Click on Create order card from the order dashboard
+    time.sleep(2)
     WebDriverWait(login, 10).until(
         EC.presence_of_element_located(
             (By.XPATH, "//div[contains(text(),'Create Order')]"))
