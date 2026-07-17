@@ -1,0 +1,3780 @@
+import random
+import re
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+from typing import Any
+
+from playwright.sync_api import (
+    Locator,
+    Page,
+    TimeoutError as PlaywrightTimeoutError,
+    expect,
+)
+
+
+DEFAULT_TIMEOUT = 15_000
+
+
+# Case 1 :: Create an invoice and do the payment
+
+
+def complete_single_service_booking_invoice_flow(
+    page: Page,
+    config,
+    consumer_profile,
+    doctor_name: str = "Naveen KP",
+    service_name: str = "Video call Services",
+) -> dict:
+    """
+    Complete flow for creating a booking invoice with one service.
+
+    Flow:
+    1. Open Appointment dashboard.
+    2. Click +Appointment.
+    3. Create a random patient.
+    4. Select doctor and service.
+    5. Confirm appointment.
+    6. Open the latest appointment from the final pagination page.
+    7. Open appointment details.
+    8. Create and update invoice.
+    9. Complete payment using Cash or Pay by Others.
+    10. Verify Amount Due is zero.
+    """
+
+    select_first_business_if_needed(page)
+    open_appointment_dashboard(page)
+    open_create_appointment_page(page)
+
+    patient_name = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    select_appointment_doctor(
+        page=page,
+        doctor_name=doctor_name,
+    )
+
+    select_appointment_service(
+        page=page,
+        service_name=service_name,
+    )
+
+    confirm_appointment(page)
+
+    open_latest_created_appointment(
+        page=page,
+        patient_name=patient_name,
+    )
+
+    open_appointment_details(page)
+
+    create_booking_invoice(page)
+
+    invoice_created = update_booking_invoice(page)
+
+    payment_result = complete_booking_invoice_payment(page)
+    amount_due = payment_result["amount_due"]
+
+    assert_amount_close(
+        actual=amount_due,
+        expected=Decimal("0.00"),
+        label="Booking invoice amount due after payment",
+    )
+
+    return {
+        "patient_name": patient_name,
+        "doctor_name": doctor_name,
+        "service_name": service_name,
+        "invoice_created": invoice_created,
+        "payment_completed": payment_result["payment_completed"],
+        "payment_method": payment_result["payment_method"],
+        "payment_mode": payment_result.get("payment_mode"),
+        "amount_due": amount_due,
+    }
+
+
+def select_first_business_if_needed(page: Page) -> None:
+    """
+    Select the first business only when a business-selection screen is shown.
+
+    This function does not click arbitrary sidebar links.
+    """
+
+    # Already inside the provider business application.
+    if "/business/" in page.url:
+        return
+
+    business_selection_indicators = [
+        page.get_by_text(
+            re.compile(
+                r"Select Business|Choose Business|My Businesses",
+                re.IGNORECASE,
+            )
+        ),
+        page.locator(
+            '[class*="business-card" i], '
+            '[id*="business-card" i]'
+        ),
+    ]
+
+    selection_screen_visible = any(
+        first_visible_locator(locator) is not None
+        for locator in business_selection_indicators
+    )
+
+    if not selection_screen_visible:
+        return
+
+    business_cards = page.locator(
+        '[class*="business-card" i], '
+        'p-card, '
+        '.p-card'
+    )
+
+    visible_business = first_visible_locator(business_cards)
+
+    assert visible_business is not None, (
+        "Business selection page is visible, but no business card was found."
+    )
+
+    visible_business.click()
+    page.wait_for_load_state("domcontentloaded")
+
+
+
+
+
+
+def open_appointment_dashboard(page: Page) -> None:
+    """
+    Open the Appointment dashboard using the sidebar link.
+    """
+
+    if (
+        "/business/appointments" in page.url
+        and "/business/appointments/appointment" not in page.url
+    ):
+        wait_for_appointment_dashboard(page)
+        return
+
+    sidebar_link = page.locator(
+        'a[href^="/business/appointments?"]'
+    )
+
+    visible_sidebar_link = first_visible_locator(sidebar_link)
+
+    if visible_sidebar_link is None:
+        sidebar_link = page.locator(
+            'a[href*="/business/appointments"]'
+        )
+
+        visible_sidebar_link = first_visible_locator(sidebar_link)
+
+    assert visible_sidebar_link is not None, (
+        "Unable to locate the Appointment sidebar link."
+    )
+
+    visible_sidebar_link.click()
+
+    page.wait_for_url(
+        re.compile(
+            r"/business/appointments(?:\?|$)",
+            re.IGNORECASE,
+        ),
+        timeout=DEFAULT_TIMEOUT,
+    )
+
+    try:
+        page.wait_for_load_state(
+            "networkidle",
+            timeout=10_000,
+        )
+    except PlaywrightTimeoutError:
+        pass
+
+    wait_for_appointment_dashboard(page)
+
+
+
+def wait_for_appointment_dashboard(page: Page) -> None:
+    """
+    Wait until the Appointment dashboard finishes loading.
+
+    The page may initially show:
+    'Welcome to your Appointments Loading... Appointments'
+    before the dashboard cards are rendered.
+    """
+
+    expect(
+        page.get_by_text(
+            re.compile(
+                r"Welcome to your Appointments",
+                re.IGNORECASE,
+            )
+        ).first
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+    loading_text = page.get_by_text(
+        re.compile(r"^\s*Loading\.\.\.\s*$", re.IGNORECASE)
+    )
+
+    try:
+        expect(loading_text).to_be_hidden(timeout=30_000)
+    except AssertionError:
+        # Some builds render Loading... inside a larger text container.
+        page.wait_for_function(
+            """
+            () => !document.body.innerText.includes('Loading...')
+            """,
+            timeout=30_000,
+        )
+
+    page.wait_for_timeout(500)
+
+    appointment_card_candidates = [
+        page.locator("p-card").filter(
+            has_text=re.compile(
+                r"^\s*Appointment\s*$",
+                re.IGNORECASE,
+            )
+        ),
+        page.locator(".p-card").filter(
+            has_text=re.compile(
+                r"^\s*Appointment\s*$",
+                re.IGNORECASE,
+            )
+        ),
+        page.get_by_text(
+            "Appointment",
+            exact=True,
+        ),
+    ]
+
+    for candidate_group in appointment_card_candidates:
+        visible_candidate = first_visible_locator(candidate_group)
+
+        if visible_candidate is not None:
+            return
+
+    raise AssertionError(
+        "Appointment dashboard finished loading, but the "
+        "Appointment creation card was not displayed."
+    )
+
+
+
+def open_create_appointment_page(page: Page) -> None:
+    """
+    Click the Appointment creation card from the Appointment dashboard.
+
+    The card contains a plus icon and the text 'Appointment'.
+    """
+
+    # Do nothing when this page is already open.
+    if "/business/appointments/appointment" in page.url:
+        expect(
+            page.get_by_text(
+                re.compile(r"Create New Patient", re.IGNORECASE)
+            )
+        ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+        return
+
+    appointment_card = page.locator("p-card").filter(
+        has_text=re.compile(r"^\s*Appointment\s*$", re.IGNORECASE)
+    )
+
+    visible_card = first_visible_locator(appointment_card)
+
+    if visible_card is None:
+        # PrimeNG may render p-card as a div with p-card class.
+        card_container = page.locator(".p-card").filter(
+            has_text=re.compile(r"^\s*Appointment\s*$", re.IGNORECASE)
+        )
+
+        visible_card = first_visible_locator(card_container)
+
+    if visible_card is None:
+        # Final fallback: exact Appointment text and nearest card ancestor.
+        appointment_text = page.get_by_text(
+            "Appointment",
+            exact=True,
+        )
+
+        visible_text = first_visible_locator(appointment_text)
+
+        assert visible_text is not None, (
+            "Unable to locate the Appointment creation card."
+        )
+
+        card_ancestor = visible_text.locator(
+            "xpath=ancestor::*["
+            "self::p-card or "
+            "contains(@class, 'p-card')"
+            "][1]"
+        )
+
+        if card_ancestor.count() > 0:
+            visible_card = card_ancestor.first
+        else:
+            visible_card = visible_text
+
+    visible_card.scroll_into_view_if_needed()
+    visible_card.click()
+
+    page.wait_for_url(
+        re.compile(
+            r"/business/appointments/appointment",
+            re.IGNORECASE,
+        ),
+        timeout=DEFAULT_TIMEOUT,
+    )
+
+    expect(
+        page.get_by_text(
+            re.compile(r"Create New Patient", re.IGNORECASE)
+        )
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+
+
+
+def create_random_patient_from_consumer_profile(
+    page: Page,
+    consumer_profile,
+) -> str:
+    """
+    Create a new random patient from the Create Appointment page.
+    """
+
+    create_patient_button = page.get_by_text(
+        re.compile(r"^\s*Create New Patient\s*$", re.IGNORECASE)
+    )
+
+    expect(create_patient_button.first).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+    create_patient_button.first.click()
+
+    # Wait until the patient creation form/dialog is actually visible.
+    patient_form = page.locator(
+        "p-dialog:visible, "
+        ".p-dialog:visible, "
+        "form:visible"
+    ).filter(
+        has=page.locator(
+            'input[placeholder*="First Name" i], '
+            'input[formcontrolname*="first" i], '
+            'input[name*="first" i]'
+        )
+    )
+
+    expect(patient_form.first).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    first_name = str(
+        get_profile_value(
+            consumer_profile,
+            "first_name",
+            "firstname",
+            "firstName",
+            default=f"Auto{random.randint(1000, 9999)}",
+        )
+    )
+
+    last_name = str(
+        get_profile_value(
+            consumer_profile,
+            "last_name",
+            "lastname",
+            "lastName",
+            default=f"Patient{random.randint(100, 999)}",
+        )
+    )
+
+    email = str(
+        get_profile_value(
+            consumer_profile,
+            "email",
+            "email_id",
+            "emailId",
+            default=(
+                f"{first_name}.{last_name}.{random.randint(1000, 9999)}"
+                "@example.com"
+            ),
+        )
+    )
+
+    phone = str(
+        get_profile_value(
+            consumer_profile,
+            "phone",
+            "phone_number",
+            "mobile",
+            "mobile_number",
+            "consumer_phone",
+            default=generate_random_indian_mobile_number(),
+        )
+    )
+
+    gender = str(
+        get_profile_value(
+            consumer_profile,
+            "gender",
+            default=random.choice(["Male", "Female"]),
+        )
+    )
+
+    fill_patient_field(
+        page=page,
+        field_name="First Name",
+        value=first_name,
+        role_names=["First Name", "First name"],
+        placeholders=["First Name", "First name"],
+        selectors=[
+            'input[formcontrolname="firstName"]',
+            'input[formcontrolname="firstname"]',
+            'input[formcontrolname*="first" i]',
+            'input[name="firstName"]',
+            'input[name*="first" i]',
+            'input[id*="firstName" i]',
+        ],
+        required=True,
+    )
+
+    fill_patient_field(
+        page=page,
+        field_name="Last Name",
+        value=last_name,
+        role_names=["Last Name", "Last name"],
+        placeholders=["Last Name", "Last name"],
+        selectors=[
+            'input[formcontrolname="lastName"]',
+            'input[formcontrolname="lastname"]',
+            'input[formcontrolname*="last" i]',
+            'input[name="lastName"]',
+            'input[name*="last" i]',
+            'input[id*="lastName" i]',
+        ],
+        required=False,
+    )
+
+    fill_patient_field(
+        page=page,
+        field_name="Email",
+        value=email,
+        role_names=[
+            "Email(user@xyz.com)",
+            "Email",
+            "Email Address",
+        ],
+        placeholders=[
+            "Email(user@xyz.com)",
+            "Email",
+            "Email Address",
+        ],
+        selectors=[
+            'input[type="email"]',
+            'input[formcontrolname*="email" i]',
+            'input[name*="email" i]',
+            'input[id*="email" i]',
+        ],
+        required=False,
+    )
+
+    fill_patient_phone_number(
+        page=page,
+        phone=phone,
+    )
+
+    select_patient_gender(
+        page=page,
+        gender=gender,
+    )
+
+    save_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^\s*Save\s*$", re.IGNORECASE),
+    )
+
+    visible_save = last_visible_locator(save_button)
+
+    assert visible_save is not None, (
+        "Unable to locate the Save button in the patient creation form."
+    )
+
+    visible_save.scroll_into_view_if_needed()
+    visible_save.click()
+
+    confirm_yes_dialog_if_visible(page)
+
+    # After saving, the patient form should close and appointment form remain.
+    expect(
+        page.get_by_text(
+            re.compile(
+                r"Select Doctor|Select Service|Create Appointment",
+                re.IGNORECASE,
+            )
+        ).first
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+    return f"{first_name} {last_name}".strip()
+
+
+
+def fill_patient_field(
+    page: Page,
+    field_name: str,
+    value: str,
+    role_names: list[str],
+    placeholders: list[str],
+    selectors: list[str],
+    required: bool = True,
+) -> bool:
+    """
+    Fill a patient form field using accessible name, placeholder,
+    label association, and stable HTML attribute fallbacks.
+    """
+
+    candidates: list[Locator] = []
+
+    for role_name in role_names:
+        candidates.append(
+            page.get_by_role(
+                "textbox",
+                name=re.compile(
+                    rf"^\s*{re.escape(role_name)}\s*\*?\s*$",
+                    re.IGNORECASE,
+                ),
+            )
+        )
+
+    for placeholder in placeholders:
+        candidates.append(
+            page.get_by_placeholder(
+                re.compile(
+                    re.escape(placeholder),
+                    re.IGNORECASE,
+                )
+            )
+        )
+
+    for role_name in role_names:
+        candidates.append(
+            page.get_by_label(
+                re.compile(
+                    re.escape(role_name),
+                    re.IGNORECASE,
+                )
+            )
+        )
+
+    for selector in selectors:
+        candidates.append(page.locator(selector))
+
+    for candidate_group in candidates:
+        for index in range(candidate_group.count()):
+            candidate = candidate_group.nth(index)
+
+            try:
+                if not candidate.is_visible():
+                    continue
+
+                candidate.scroll_into_view_if_needed()
+                candidate.click()
+                candidate.fill(value)
+
+                assert candidate.input_value() == value, (
+                    f"{field_name} was not filled correctly. "
+                    f"Expected={value}, Actual={candidate.input_value()}"
+                )
+
+                return True
+
+            except PlaywrightTimeoutError:
+                continue
+
+    if required:
+        visible_inputs = page.locator(
+            "p-dialog:visible input:visible, "
+            ".p-dialog:visible input:visible, "
+            "form:visible input:visible"
+        )
+
+        input_details: list[str] = []
+
+        for index in range(visible_inputs.count()):
+            field = visible_inputs.nth(index)
+
+            input_details.append(
+                " | ".join(
+                    [
+                        f"type={field.get_attribute('type')}",
+                        f"name={field.get_attribute('name')}",
+                        f"id={field.get_attribute('id')}",
+                        (
+                            "formcontrolname="
+                            f"{field.get_attribute('formcontrolname')}"
+                        ),
+                        f"placeholder={field.get_attribute('placeholder')}",
+                        f"aria-label={field.get_attribute('aria-label')}",
+                    ]
+                )
+            )
+
+        raise AssertionError(
+            f"Unable to locate patient field: {field_name}.\n"
+            f"Visible inputs:\n" + "\n".join(input_details)
+        )
+
+    return False
+
+
+
+def select_appointment_doctor(
+    page: Page,
+    doctor_name: str,
+) -> None:
+    """
+    Select the requested doctor from the Create Appointment page.
+    """
+
+    doctor_field = page.get_by_text(
+        "Hari Kumar",
+        exact=True,
+    )
+
+    if doctor_field.count() == 0:
+        doctor_field = page.locator(
+            "p-dropdown, p-select, .p-dropdown, .p-select"
+        ).filter(
+            has=page.get_by_text(
+                re.compile(r"Hari Kumar|James J|Naveen KP", re.IGNORECASE)
+            )
+        )
+
+    expect(doctor_field.first).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    doctor_field.first.click()
+
+    doctor_option = page.get_by_text(
+        doctor_name,
+        exact=True,
+    )
+
+    expect(doctor_option.last).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    doctor_option.last.click()
+
+    expect(
+        page.get_by_text(
+            doctor_name,
+            exact=True,
+        ).first
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+    print(f"[Appointment] Selected doctor: {doctor_name}")
+
+
+
+
+def is_dropdown_overlay_open(page: Page) -> bool:
+    """
+    Return True when a visible dropdown option overlay is open.
+    """
+
+    overlays = page.locator(
+        ".p-dropdown-panel:visible, "
+        ".p-select-overlay:visible, "
+        ".p-overlay:visible [role='option']:visible, "
+        '[role="listbox"]:visible'
+    )
+
+    return overlays.count() > 0
+
+
+
+
+def expect_doctor_selected(
+    page: Page,
+    doctor_name: str,
+) -> None:
+    """
+    Verify that the requested doctor is displayed after selection.
+    """
+
+    selected_doctor = page.get_by_text(
+        re.compile(
+            rf"^\s*{re.escape(doctor_name)}\s*$",
+            re.IGNORECASE,
+        )
+    )
+
+    visible_selected_doctor = first_visible_locator(selected_doctor)
+
+    assert visible_selected_doctor is not None, (
+        f"Doctor '{doctor_name}' was selected, but the selected value "
+        "was not displayed in the appointment form."
+    )
+
+
+
+def locate_visible_dropdown_option(
+    page: Page,
+    option_text: str,
+) -> Locator | None:
+    """
+    Locate a visible option from an open PrimeNG dropdown.
+
+    Supports:
+    - role="option"
+    - PrimeNG dropdown items
+    - list items
+    - plain text options rendered inside the visible overlay
+    """
+
+    exact_pattern = re.compile(
+        rf"^\s*{re.escape(option_text)}\s*$",
+        re.IGNORECASE,
+    )
+
+    option_candidates = [
+        # Standard accessible option.
+        page.get_by_role(
+            "option",
+            name=exact_pattern,
+        ),
+
+        # PrimeNG dropdown and select implementations.
+        page.locator(
+            ".p-dropdown-panel:visible .p-dropdown-item:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+        page.locator(
+            ".p-select-overlay:visible .p-select-option:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+        page.locator(
+            ".p-overlay:visible [role='option']:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+
+        # Common list structures.
+        page.locator(
+            ".p-dropdown-panel:visible li:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+        page.locator(
+            ".p-overlay:visible li:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+        page.locator(
+            "[role='listbox']:visible li:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+
+        # Exact text inside any currently visible dropdown overlay.
+        page.locator(
+            ".p-dropdown-panel:visible"
+        ).get_by_text(
+            exact_pattern,
+            exact=True,
+        ),
+        page.locator(
+            ".p-select-overlay:visible"
+        ).get_by_text(
+            exact_pattern,
+            exact=True,
+        ),
+        page.locator(
+            "[role='listbox']:visible"
+        ).get_by_text(
+            exact_pattern,
+            exact=True,
+        ),
+
+        # Final fallback for the UI shown in the screenshot.
+        page.get_by_text(
+            exact_pattern,
+            exact=True,
+        ),
+    ]
+
+    for candidate_group in option_candidates:
+        for index in range(candidate_group.count()):
+            candidate = candidate_group.nth(index)
+
+            try:
+                if candidate.is_visible():
+                    return candidate
+            except PlaywrightTimeoutError:
+                continue
+
+    return None
+
+
+
+
+def find_doctor_dropdown(page: Page) -> Locator | None:
+    """
+    Locate the clickable dropdown directly below the Select Doctor label.
+    """
+
+    doctor_label_candidates = [
+        page.locator("label").filter(
+            has_text=re.compile(r"^\s*Select Doctor\s*\*?\s*$", re.IGNORECASE)
+        ),
+        page.locator("div, span, p").filter(
+            has_text=re.compile(r"^\s*Select Doctor\s*\*?\s*$", re.IGNORECASE)
+        ),
+        page.get_by_text(
+            re.compile(r"^\s*Select Doctor\s*\*?\s*$", re.IGNORECASE)
+        ),
+    ]
+
+    visible_label: Locator | None = None
+
+    for candidate_group in doctor_label_candidates:
+        visible_label = first_visible_locator(candidate_group)
+
+        if visible_label is not None:
+            break
+
+    if visible_label is None:
+        return None
+
+    # First try the immediate sibling after the Select Doctor label.
+    sibling_candidates = [
+        visible_label.locator("xpath=following-sibling::*[1]"),
+        visible_label.locator("xpath=parent::*/following-sibling::*[1]"),
+    ]
+
+    for sibling in sibling_candidates:
+        if sibling.count() == 0:
+            continue
+
+        candidate = sibling.first
+
+        try:
+            if candidate.is_visible():
+                return candidate
+        except PlaywrightTimeoutError:
+            pass
+
+    # Locate a dropdown inside the nearest field container.
+    field_containers = [
+        visible_label.locator("xpath=parent::*"),
+        visible_label.locator("xpath=ancestor::div[1]"),
+        visible_label.locator("xpath=ancestor::div[2]"),
+    ]
+
+    dropdown_selector = (
+        "p-dropdown, "
+        "p-select, "
+        ".p-dropdown, "
+        ".p-select, "
+        '[role="combobox"], '
+        ".p-dropdown-trigger, "
+        ".p-select-dropdown"
+    )
+
+    for container in field_containers:
+        if container.count() == 0:
+            continue
+
+        dropdowns = container.first.locator(dropdown_selector)
+        visible_dropdown = first_visible_locator(dropdowns)
+
+        if visible_dropdown is not None:
+            return visible_dropdown
+
+    # Recorded-page fallback: current selected doctor is Hari Kumar.
+    current_doctor = page.get_by_text(
+        re.compile(r"^\s*Hari Kumar\s*$", re.IGNORECASE)
+    )
+
+    visible_current_doctor = first_visible_locator(current_doctor)
+
+    if visible_current_doctor is not None:
+        clickable_ancestor = visible_current_doctor.locator(
+            "xpath=ancestor::*["
+            "@role='combobox' or "
+            "self::p-dropdown or "
+            "self::p-select or "
+            "contains(@class, 'p-dropdown') or "
+            "contains(@class, 'p-select')"
+            "][1]"
+        )
+
+        if clickable_ancestor.count() > 0:
+            return clickable_ancestor.first
+
+        return visible_current_doctor
+
+    return None
+
+
+
+
+
+def get_clickable_dropdown_element(locator: Locator) -> Locator:
+    """
+    Return the clickable container for a PrimeNG dropdown element.
+    """
+
+    try:
+        tag_name = locator.evaluate(
+            "(element) => element.tagName.toLowerCase()"
+        )
+    except PlaywrightTimeoutError:
+        return locator
+
+    if tag_name in {"input", "span", "label"}:
+        ancestor = locator.locator(
+            "xpath=ancestor::*["
+            "self::p-dropdown or "
+            "self::p-select or "
+            "contains(@class, 'p-dropdown') or "
+            "contains(@class, 'p-select') or "
+            "@role='combobox'"
+            "][1]"
+        )
+
+        if ancestor.count() > 0:
+            return ancestor.first
+
+    return locator
+
+
+
+
+
+def select_appointment_service(
+    page: Page,
+    service_name: str,
+) -> None:
+    """
+    Open the Select Service dropdown and choose the requested service.
+
+    The service field initially displays the value 'service'.
+    """
+
+    # This follows the recorded UI flow:
+    # page.get_by_text("service", exact=True).click()
+    service_field = page.get_by_text(
+        re.compile(r"^\s*service\s*$", re.IGNORECASE),
+        exact=True,
+    )
+
+    visible_service_field = first_visible_locator(service_field)
+
+    if visible_service_field is None:
+        # Locate the combobox immediately after the Select Service label.
+        service_label = page.get_by_text(
+            re.compile(r"^\s*Select Service\s*\*?\s*$", re.IGNORECASE),
+            exact=True,
+        )
+
+        visible_service_label = first_visible_locator(service_label)
+
+        assert visible_service_label is not None, (
+            "Unable to locate the Select Service label."
+        )
+
+        service_combobox = visible_service_label.locator(
+            "xpath=following::*[@role='combobox'][1]"
+        )
+
+        visible_service_field = first_visible_locator(service_combobox)
+
+    assert visible_service_field is not None, (
+        "Unable to locate the Select Service dropdown field."
+    )
+
+    visible_service_field.scroll_into_view_if_needed()
+
+    try:
+        visible_service_field.click(timeout=5_000)
+    except PlaywrightTimeoutError:
+        visible_service_field.click(timeout=5_000, force=True)
+
+    # Wait for the requested service to appear in the opened dropdown.
+    service_option = page.get_by_text(
+        re.compile(
+            rf"^\s*{re.escape(service_name)}\s*$",
+            re.IGNORECASE,
+        ),
+        exact=True,
+    )
+
+    visible_service_option = last_visible_locator(service_option)
+
+    assert visible_service_option is not None, (
+        f"Service option '{service_name}' was not visible after "
+        "opening the Select Service dropdown."
+    )
+
+    visible_service_option.scroll_into_view_if_needed()
+
+    try:
+        visible_service_option.click(timeout=5_000)
+    except PlaywrightTimeoutError:
+        visible_service_option.click(timeout=5_000, force=True)
+
+    # Confirm that the selected service now appears in the field.
+    selected_service = page.get_by_text(
+        re.compile(
+            rf"^\s*{re.escape(service_name)}\s*$",
+            re.IGNORECASE,
+        ),
+        exact=True,
+    )
+
+    expect(selected_service.first).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    print(f"[Appointment] Selected service: {service_name}")
+
+
+
+
+
+def confirm_appointment(page: Page) -> None:
+    """
+    Confirm the appointment.
+
+    For WhatsApp services, ensure the WhatsApp number field is valid before
+    clicking Confirm.
+    """
+
+    ensure_whatsapp_service_field_is_valid(page)
+
+    confirm_button = page.get_by_role(
+        "button",
+        name="Confirm",
+        exact=True,
+    )
+
+    expect(confirm_button.last).to_be_visible(timeout=DEFAULT_TIMEOUT)
+    expect(confirm_button.last).to_be_enabled(timeout=20_000)
+
+    confirm_button.last.click()
+
+    wait_for_success_message(
+        page=page,
+        patterns=[
+            r"appointment.*created",
+            r"appointment.*confirmed",
+            r"booking.*created",
+            r"successfully",
+        ],
+        required=False,
+    )
+
+    page.wait_for_url(
+        re.compile(
+            r"/business/appointments(?:\?|$)",
+            re.IGNORECASE,
+        ),
+        timeout=30_000,
+    )
+
+    wait_for_appointment_dashboard(page)
+
+
+def ensure_whatsapp_service_field_is_valid(page: Page) -> None:
+    """
+    Validate the additional WhatsApp number field shown for WhatsApp services.
+    """
+
+    whatsapp_inputs = [
+        page.get_by_role(
+            "textbox",
+            name=re.compile(
+                r"WhatsApp|10123",
+                re.IGNORECASE,
+            ),
+        ),
+        page.locator(
+            'input[formcontrolname*="whatsapp" i], '
+            'input[name*="whatsapp" i], '
+            'input[id*="whatsapp" i]'
+        ),
+    ]
+
+    whatsapp_input = None
+
+    for candidate_group in whatsapp_inputs:
+        whatsapp_input = first_visible_locator(candidate_group)
+
+        if whatsapp_input is not None:
+            break
+
+    # Non-WhatsApp services do not show this field.
+    if whatsapp_input is None:
+        return
+
+    current_value = re.sub(
+        r"\D",
+        "",
+        whatsapp_input.input_value(),
+    )[-10:]
+
+    assert len(current_value) == 10, (
+        "WhatsApp service requires a valid 10-digit WhatsApp number. "
+        f"Current value={current_value}"
+    )
+
+    # Refill and blur so Angular validation is triggered.
+    whatsapp_input.fill(current_value)
+    whatsapp_input.press("Tab")
+    page.wait_for_timeout(500)
+
+    
+
+
+def open_latest_created_appointment(
+    page: Page,
+    patient_name: str | None = None,
+) -> None:
+    """
+    Find and expand the newly created appointment.
+
+    Strategy:
+    1. Search each pagination page for the generated patient name.
+    2. When found, click the appointment row's right-side expand control.
+    3. If the patient name cannot be found, go to the final page and
+       expand the last visible appointment row.
+    """
+
+    wait_for_appointment_rows(page)
+
+    if patient_name and find_and_expand_patient_appointment(
+        page=page,
+        patient_name=patient_name,
+    ):
+        return
+
+    # Fallback: move to the final page and expand the last visible row.
+    navigate_to_last_appointment_page(page)
+    wait_for_appointment_rows(page)
+
+    appointment_rows = get_visible_appointment_rows(page)
+
+    assert appointment_rows, (
+        "No appointment rows were found on the Appointment dashboard."
+    )
+
+    expand_appointment_row(
+        row=appointment_rows[-1],
+        patient_name=patient_name,
+    )
+
+
+
+def find_and_expand_patient_appointment(
+    page: Page,
+    patient_name: str,
+) -> bool:
+    """
+    Search all appointment pagination pages for the specified patient.
+    """
+
+    normalized_patient_name = normalize_text(patient_name)
+
+    # Start from the current page and move forward through pagination.
+    for _ in range(100):
+        wait_for_appointment_rows(page)
+
+        patient_matches = page.get_by_text(
+            re.compile(
+                rf"^\s*{re.escape(normalized_patient_name)}\s*$",
+                re.IGNORECASE,
+            )
+        )
+
+        for index in range(patient_matches.count()):
+            patient = patient_matches.nth(index)
+
+            try:
+                if not patient.is_visible():
+                    continue
+
+                row = find_appointment_row_from_patient(patient)
+
+                if row is None:
+                    continue
+
+                expand_appointment_row(
+                    row=row,
+                    patient_name=patient_name,
+                )
+                return True
+
+            except PlaywrightTimeoutError:
+                continue
+
+        next_button = find_visible_next_pagination_button(page)
+
+        if next_button is None or is_locator_disabled(next_button):
+            break
+
+        next_button.click()
+        wait_for_appointment_page_change(page)
+
+    return False
+
+
+
+
+
+def find_appointment_row_from_patient(
+    patient_locator: Locator,
+) -> Locator | None:
+    """
+    Find the appointment row containing the patient name.
+    """
+
+    row_candidates = [
+        patient_locator.locator(
+            "xpath=ancestor::*["
+            "contains(@class, 'appointment') and "
+            "(contains(@class, 'row') or contains(@class, 'item'))"
+            "][1]"
+        ),
+        patient_locator.locator(
+            "xpath=ancestor::*["
+            "self::tr or "
+            "@role='row' or "
+            "contains(@class, 'p-accordion-header') or "
+            "contains(@class, 'list-item') or "
+            "contains(@class, 'card')"
+            "][1]"
+        ),
+        patient_locator.locator(
+            "xpath=ancestor::div["
+            ".//button or "
+            ".//*[@role='button'] or "
+            ".//*[contains(@class, 'chevron')] or "
+            ".//*[contains(@class, 'angle-down')]"
+            "][1]"
+        ),
+    ]
+
+    for candidate in row_candidates:
+        if candidate.count() == 0:
+            continue
+
+        row = candidate.first
+
+        try:
+            if row.is_visible():
+                return row
+        except PlaywrightTimeoutError:
+            continue
+
+    return None
+
+
+def expand_appointment_row(
+    row: Locator,
+    patient_name: str | None = None,
+) -> None:
+    """
+    Expand one appointment row using its right-side dropdown/chevron control.
+    """
+
+    row.scroll_into_view_if_needed()
+
+    expand_candidates = [
+        row.get_by_role(
+            "button",
+            name=re.compile(
+                r"Expand|View|Details|dropdown|chevron",
+                re.IGNORECASE,
+            ),
+        ),
+        row.locator(
+            'button[aria-expanded], '
+            'button[aria-label*="expand" i], '
+            'button[aria-label*="details" i], '
+            '[role="button"][aria-expanded], '
+            '.p-accordion-header-link, '
+            '.p-accordion-toggle-icon, '
+            '.pi-chevron-down, '
+            '.pi-angle-down, '
+            '.fa-chevron-down, '
+            '.fa-angle-down, '
+            'i[class*="chevron-down"], '
+            'i[class*="angle-down"]'
+        ),
+        row.locator("button"),
+        row.locator('[role="button"]'),
+    ]
+
+    for candidate_group in expand_candidates:
+        visible_candidate = last_visible_locator(candidate_group)
+
+        if visible_candidate is None:
+            continue
+
+        try:
+            visible_candidate.click(timeout=5_000)
+            wait_for_expanded_appointment_actions(
+                row=row,
+                patient_name=patient_name,
+            )
+            return
+        except (PlaywrightTimeoutError, AssertionError):
+            continue
+
+    # Final fallback: click near the right edge of the appointment row.
+    try:
+        bounding_box = row.bounding_box()
+
+        if bounding_box:
+            row.click(
+                position={
+                    "x": max(bounding_box["width"] - 20, 1),
+                    "y": bounding_box["height"] / 2,
+                },
+                timeout=5_000,
+            )
+
+            wait_for_expanded_appointment_actions(
+                row=row,
+                patient_name=patient_name,
+            )
+            return
+    except PlaywrightTimeoutError:
+        pass
+
+    raise AssertionError(
+        "Unable to expand the appointment row"
+        + (
+            f" for patient '{patient_name}'."
+            if patient_name
+            else "."
+        )
+    )
+
+
+
+
+def wait_for_expanded_appointment_actions(
+    row: Locator,
+    patient_name: str | None = None,
+) -> None:
+    """
+    Verify that the appointment row has expanded.
+    """
+
+    action_pattern = re.compile(
+        r"View Details|Assign Myself|Generate Bill|Create Invoice",
+        re.IGNORECASE,
+    )
+
+    row_actions = row.get_by_text(action_pattern)
+
+    try:
+        expect(row_actions.first).to_be_visible(timeout=5_000)
+        return
+    except AssertionError:
+        pass
+
+    page = row.page
+
+    global_actions = page.get_by_text(action_pattern)
+
+    expect(global_actions.last).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+
+
+
+def get_visible_appointment_rows(page: Page) -> list[Locator]:
+    """
+    Return visible appointment rows from the dashboard.
+    """
+
+    row_selectors = [
+        page.locator(
+            '[class*="appointment"][class*="row" i]'
+        ),
+        page.locator(
+            '[class*="appointment"][class*="item" i]'
+        ),
+        page.locator(
+            ".p-accordion-tab"
+        ),
+        page.locator(
+            '[role="row"]'
+        ),
+    ]
+
+    rows: list[Locator] = []
+
+    for group in row_selectors:
+        for index in range(group.count()):
+            candidate = group.nth(index)
+
+            try:
+                if not candidate.is_visible():
+                    continue
+
+                text = normalize_text(candidate.inner_text())
+
+                if not text:
+                    continue
+
+                # Appointment rows normally contain status, service, time,
+                # doctor, or a patient name.
+                if not re.search(
+                    r"Confirmed|Arrived|Checked|AM|PM|Consultation|Services?",
+                    text,
+                    re.IGNORECASE,
+                ):
+                    continue
+
+                rows.append(candidate)
+
+            except PlaywrightTimeoutError:
+                continue
+
+        if rows:
+            return rows
+
+    # Generic fallback: rows containing a confirmed appointment.
+    confirmed_labels = page.get_by_text(
+        re.compile(
+            r"^\s*(Confirmed|Arrived|Checked In)\s*$",
+            re.IGNORECASE,
+        )
+    )
+
+    for index in range(confirmed_labels.count()):
+        status = confirmed_labels.nth(index)
+
+        try:
+            if not status.is_visible():
+                continue
+
+            row = status.locator(
+                "xpath=ancestor::div["
+                ".//button or "
+                ".//*[@role='button'] or "
+                ".//*[contains(@class, 'chevron')]"
+                "][1]"
+            )
+
+            if row.count() > 0 and row.first.is_visible():
+                rows.append(row.first)
+
+        except PlaywrightTimeoutError:
+            continue
+
+    return rows
+
+
+
+def wait_for_appointment_rows(page: Page) -> None:
+    """
+    Wait until appointment data is visible on the dashboard.
+    """
+
+    expect(
+        page.get_by_text(
+            re.compile(
+                r"Confirmed|Arrived|Checked In|Completed",
+                re.IGNORECASE,
+            )
+        ).first
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+
+
+
+
+def navigate_to_last_appointment_page(page: Page) -> None:
+    """
+    Navigate forward until the pagination Next button becomes disabled.
+    """
+
+    for _ in range(100):
+        next_button = find_visible_next_pagination_button(page)
+
+        if next_button is None or is_locator_disabled(next_button):
+            return
+
+        next_button.click()
+        wait_for_appointment_page_change(page)
+
+    raise AssertionError(
+        "Appointment pagination did not reach the final page."
+    )
+
+
+
+def wait_for_appointment_page_change(page: Page) -> None:
+    """
+    Wait briefly for the appointment list to refresh after pagination.
+    """
+
+    page.wait_for_timeout(750)
+
+    try:
+        page.wait_for_load_state(
+            "networkidle",
+            timeout=3_000,
+        )
+    except PlaywrightTimeoutError:
+        pass
+
+    wait_for_appointment_rows(page)
+
+
+
+
+def find_visible_next_pagination_button(
+    page: Page,
+) -> Locator | None:
+    candidates = [
+        page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Next|Next Page|Go to next page",
+                re.IGNORECASE,
+            ),
+        ),
+        page.locator(
+            'button[aria-label*="next" i], '
+            '.p-paginator-next, '
+            'a[aria-label*="next" i]'
+        ),
+        page.get_by_text(re.compile(r"^>$")),
+    ]
+
+    for candidate_group in candidates:
+        count = candidate_group.count()
+
+        for index in range(count):
+            candidate = candidate_group.nth(index)
+
+            try:
+                if candidate.is_visible():
+                    return candidate
+            except PlaywrightTimeoutError:
+                continue
+
+    return None
+
+
+def open_appointment_details(page: Page) -> None:
+    """
+    Click View Details from the expanded appointment accordion.
+    """
+
+    view_details = page.get_by_role(
+        "button",
+        name=re.compile(r"View Details", re.IGNORECASE),
+    )
+
+    if view_details.count() == 0:
+        view_details = page.get_by_text(
+            re.compile(r"View Details", re.IGNORECASE)
+        )
+
+    expect(view_details.last).to_be_visible(timeout=DEFAULT_TIMEOUT)
+    view_details.last.click()
+
+    expect(
+        page.get_by_text(
+            re.compile(
+                r"Appointment Details|Create Invoice|Generate Bill",
+                re.IGNORECASE,
+            )
+        ).first
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+
+def create_booking_invoice(page: Page) -> None:
+    """
+    Open the Create Invoice page from Appointment Details.
+
+    The appointment page contains a combined control with two actions:
+    - Generate Bill / Payment Info
+    - Create Invoice
+
+    This helper clicks only the Create Invoice portion.
+    """
+
+    expect(
+        page.get_by_text(
+            re.compile(r"Create Invoice", re.IGNORECASE)
+        ).first
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+    create_invoice_text = page.get_by_text(
+        re.compile(r"^\s*Create Invoice\s*$", re.IGNORECASE),
+        exact=True,
+    )
+
+    visible_create_invoice = last_visible_locator(create_invoice_text)
+
+    if visible_create_invoice is not None:
+        visible_create_invoice.scroll_into_view_if_needed()
+
+        try:
+            visible_create_invoice.click(timeout=5_000)
+        except PlaywrightTimeoutError:
+            visible_create_invoice.click(
+                timeout=5_000,
+                force=True,
+            )
+    else:
+        # The accessible name may be combined:
+        # "Generate BillCreate Invoice"
+        combined_button = page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Generate Bill.*Create Invoice",
+                re.IGNORECASE,
+            ),
+        )
+
+        visible_combined_button = first_visible_locator(combined_button)
+
+        assert visible_combined_button is not None, (
+            "Unable to locate the Generate Bill/Create Invoice control."
+        )
+
+        visible_combined_button.scroll_into_view_if_needed()
+
+        # Click the right half of the combined button, where
+        # Create Invoice is displayed.
+        box = visible_combined_button.bounding_box()
+
+        assert box is not None, (
+            "Unable to determine the Create Invoice button position."
+        )
+
+        visible_combined_button.click(
+            position={
+                "x": box["width"] * 0.80,
+                "y": box["height"] / 2,
+            },
+            timeout=5_000,
+        )
+
+    page.wait_for_url(
+        re.compile(
+            r"/business/bookingInvoice(?:\?|$)",
+            re.IGNORECASE,
+        ),
+        timeout=DEFAULT_TIMEOUT,
+    )
+
+    try:
+        page.wait_for_load_state(
+            "networkidle",
+            timeout=5_000,
+        )
+    except PlaywrightTimeoutError:
+        pass
+
+        assert "/business/bill/" not in page.url, (
+        "Generate Bill/Payment Info was opened instead of Create Invoice. "
+        f"Current URL: {page.url}"
+    )
+
+    create_invoice_heading = page.get_by_role(
+        "heading",
+        name=re.compile(
+            r"^\s*Create Invoice\s*$",
+            re.IGNORECASE,
+        ),
+    )
+
+    expect(create_invoice_heading.first).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    invoice_table = page.get_by_role("table")
+
+    expect(invoice_table.first).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+
+
+
+def update_booking_invoice(page: Page) -> bool:
+    """
+    Save the newly created booking invoice and wait until the saved invoice
+    view exposes the payment controls.
+    """
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(500)
+
+    update_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^\s*Update\s*$", re.IGNORECASE),
+    )
+
+    expect(update_button).to_be_visible(timeout=DEFAULT_TIMEOUT)
+    update_button.scroll_into_view_if_needed()
+    update_button.click()
+
+    # Wait for the invoice-save request and UI update.
+    wait_for_success_message(
+        page=page,
+        patterns=[
+            r"invoice.*created",
+            r"invoice.*updated",
+            r"invoice.*generated",
+            r"bill.*generated",
+            r"successfully",
+        ],
+        required=False,
+    )
+
+    page.wait_for_timeout(1_500)
+
+    try:
+        page.wait_for_load_state("networkidle", timeout=5_000)
+    except PlaywrightTimeoutError:
+        pass
+
+    # A saved booking invoice URL contains invId.
+    expect(page).to_have_url(
+        re.compile(r"/business/bookingInvoice.*[?&]invId=", re.IGNORECASE),
+        timeout=DEFAULT_TIMEOUT,
+    )
+
+    # Some builds keep the old form DOM after Update. Reloading the saved
+    # invoice URL ensures the payment controls are rendered.
+    page.reload(wait_until="domcontentloaded")
+
+    try:
+        page.wait_for_load_state("networkidle", timeout=5_000)
+    except PlaywrightTimeoutError:
+        pass
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(700)
+
+    payment_control = locate_booking_invoice_payment_control(page)
+
+    assert payment_control is not None, (
+        "Invoice was saved, but the Get Payment control was not displayed."
+    )
+
+    return True
+
+
+
+
+def complete_booking_invoice_payment(page: Page) -> dict:
+    """
+    Complete payment and wait until the saved invoice shows Amount Due = 0.
+    """
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(500)
+
+    open_payment_options(page)
+
+    available_methods = get_available_payment_methods(page)
+
+    assert available_methods, (
+        "Neither Pay by Cash nor Pay by Others is available."
+    )
+
+    payment_method = random.choice(available_methods)
+    selected_method_text = normalize_text(payment_method.inner_text())
+
+    payment_method.click()
+
+    payment_mode = None
+
+    if "other" in selected_method_text.lower():
+        payment_mode = select_random_other_payment_mode(page)
+
+    pay_button = page.get_by_role(
+        "button",
+        name="Pay",
+        exact=True,
+    )
+
+    expect(pay_button.last).to_be_visible(timeout=DEFAULT_TIMEOUT)
+    pay_button.last.click()
+
+    confirm_payment_dialog(page)
+
+    wait_for_success_message(
+        page=page,
+        patterns=[
+            r"payment.*successful",
+            r"payment.*completed",
+            r"payment.*received",
+            r"paid successfully",
+            r"successfully",
+        ],
+        required=False,
+    )
+
+    # Wait for navigation to the saved invoice view.
+    try:
+        page.wait_for_url(
+            re.compile(
+                r"/business/bookingInvoice/view",
+                re.IGNORECASE,
+            ),
+            timeout=DEFAULT_TIMEOUT,
+        )
+    except PlaywrightTimeoutError:
+        pass
+
+    try:
+        page.wait_for_load_state("networkidle", timeout=5_000)
+    except PlaywrightTimeoutError:
+        pass
+
+    # Poll until the invoice is recalculated.
+    amount_due = wait_for_invoice_amount_due(
+        page=page,
+        expected=Decimal("0.00"),
+        timeout_ms=30_000,
+    )
+
+    return {
+        "payment_completed": True,
+        "payment_method": selected_method_text,
+        "payment_mode": payment_mode,
+        "amount_due": amount_due,
+    }
+
+
+
+def wait_for_invoice_amount_due(
+    page: Page,
+    expected: Decimal,
+    timeout_ms: int = 30_000,
+) -> Decimal:
+    """
+    Poll the saved invoice until Amount Due reaches the expected value.
+    """
+
+    deadline = page.evaluate("Date.now()") + timeout_ms
+    last_amount = Decimal("-1.00")
+
+    while page.evaluate("Date.now()") < deadline:
+        page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+        page.wait_for_timeout(750)
+
+        last_amount = read_invoice_amount_by_label(
+            page=page,
+            labels=[
+                "Amount Due",
+                "Amount due",
+                "Balance Due",
+                "Due Amount",
+            ],
+            required=False,
+        )
+
+        if abs(last_amount - expected) <= Decimal("0.01"):
+            return last_amount
+
+        page.reload(wait_until="domcontentloaded")
+
+        try:
+            page.wait_for_load_state("networkidle", timeout=4_000)
+        except PlaywrightTimeoutError:
+            pass
+
+    raise AssertionError(
+        "Invoice Amount Due did not update after payment. "
+        f"Expected={expected}, Last actual={last_amount}"
+    )
+
+
+
+
+def open_payment_options(page: Page) -> None:
+    """
+    Open the payment methods from the saved booking invoice.
+
+    This intentionally avoids generic dropdown-trigger locators because the
+    invoice page also contains Location and Department dropdowns.
+    """
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(500)
+
+    payment_control = locate_booking_invoice_payment_control(page)
+
+    assert payment_control is not None, (
+        "Unable to locate the Get Payment control on the saved invoice."
+    )
+
+    payment_control.scroll_into_view_if_needed()
+
+    try:
+        payment_control.click(timeout=5_000)
+    except PlaywrightTimeoutError:
+        payment_control.click(timeout=5_000, force=True)
+
+    payment_option = page.get_by_text(
+        re.compile(
+            r"^\s*(Pay by Cash|Pay by Others)\s*$",
+            re.IGNORECASE,
+        )
+    )
+
+    expect(payment_option.first).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+
+
+def locate_booking_invoice_payment_control(
+    page: Page,
+) -> Locator | None:
+    """
+    Locate only the booking-invoice payment button or its associated
+    split-button menu trigger.
+    """
+
+    direct_buttons = [
+        page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Get Payment|Receive Payment|Make Payment",
+                re.IGNORECASE,
+            ),
+        ),
+        page.get_by_text(
+            re.compile(
+                r"^\s*(Get Payment|Receive Payment|Make Payment)\s*$",
+                re.IGNORECASE,
+            )
+        ),
+    ]
+
+    for candidate_group in direct_buttons:
+        visible_candidate = first_visible_locator(candidate_group)
+
+        if visible_candidate is not None:
+            return visible_candidate
+
+    # Locate a split-button containing payment text.
+    payment_split_buttons = page.locator(
+        "p-splitbutton, .p-splitbutton"
+    ).filter(
+        has_text=re.compile(
+            r"Get Payment|Receive Payment|Make Payment",
+            re.IGNORECASE,
+        )
+    )
+
+    for index in range(payment_split_buttons.count()):
+        split_button = payment_split_buttons.nth(index)
+
+        try:
+            if not split_button.is_visible():
+                continue
+        except PlaywrightTimeoutError:
+            continue
+
+        menu_trigger = split_button.locator(
+            ".p-splitbutton-menubutton, "
+            'button[aria-haspopup="menu"], '
+            "button"
+        )
+
+        visible_trigger = last_visible_locator(menu_trigger)
+
+        if visible_trigger is not None:
+            return visible_trigger
+
+    return None
+
+
+
+
+def get_available_payment_methods(page: Page) -> list[Locator]:
+    methods: list[Locator] = []
+
+    for method_name in ["Pay by Cash", "Pay by Others"]:
+        locator = page.get_by_text(
+            re.compile(
+                rf"^{re.escape(method_name)}$",
+                re.IGNORECASE,
+            )
+        )
+
+        visible_locator = first_visible_locator(locator)
+
+        if visible_locator is not None:
+            methods.append(visible_locator)
+
+    return methods
+
+
+def select_random_other_payment_mode(page: Page) -> str:
+    """
+    Select a random payment mode from the Pay by Others dialog.
+    """
+
+    expect(
+        page.get_by_text(
+            re.compile(
+                r"Select Mode|Payment Mode|Mode of Payment",
+                re.IGNORECASE,
+            )
+        ).first
+    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+    dropdown_candidates = [
+        page.get_by_role(
+            "combobox",
+            name=re.compile(
+                r"Select Mode|Payment Mode|Mode",
+                re.IGNORECASE,
+            ),
+        ),
+        page.get_by_text(
+            re.compile(
+                r"^Select Mode$|^Select Payment Mode$",
+                re.IGNORECASE,
+            )
+        ),
+        page.locator(
+            '[formcontrolname*="mode" i], '
+            '[id*="paymentMode" i], '
+            '.p-dialog .p-dropdown-trigger'
+        ),
+    ]
+
+    clicked = click_first_visible(dropdown_candidates)
+
+    assert clicked, "Unable to open the payment mode dropdown."
+
+    options = page.get_by_role("option")
+    visible_options: list[Locator] = []
+
+    for index in range(options.count()):
+        option = options.nth(index)
+
+        try:
+            if not option.is_visible():
+                continue
+
+            option_text = normalize_text(option.inner_text())
+
+            if not option_text:
+                continue
+
+            if re.search(
+                r"select|choose|mode",
+                option_text,
+                re.IGNORECASE,
+            ):
+                continue
+
+            visible_options.append(option)
+
+        except PlaywrightTimeoutError:
+            continue
+
+    if not visible_options:
+        overlay_options = page.locator(
+            ".p-dropdown-item:visible, "
+            ".p-select-option:visible, "
+            ".p-listbox-option:visible"
+        )
+
+        for index in range(overlay_options.count()):
+            option = overlay_options.nth(index)
+            option_text = normalize_text(option.inner_text())
+
+            if option_text and not re.search(
+                r"select|choose",
+                option_text,
+                re.IGNORECASE,
+            ):
+                visible_options.append(option)
+
+    assert visible_options, "No payment modes are available."
+
+    selected_option = random.choice(visible_options)
+    selected_mode = normalize_text(selected_option.inner_text())
+
+    selected_option.click()
+
+    return selected_mode
+
+
+def confirm_payment_dialog(page: Page) -> None:
+    """
+    Confirm the Proceed with payment dialog.
+    """
+
+    proceed_dialog = page.get_by_text(
+        re.compile(
+            r"Proceed with payment\s*\?",
+            re.IGNORECASE,
+        )
+    )
+
+    try:
+        expect(proceed_dialog.first).to_be_visible(timeout=5_000)
+    except AssertionError:
+        pass
+
+    yes_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^Yes$", re.IGNORECASE),
+    )
+
+    expect(yes_button.last).to_be_visible(timeout=DEFAULT_TIMEOUT)
+    yes_button.last.click()
+
+
+def read_invoice_amount_by_label(
+    page: Page,
+    labels: list[str],
+    required: bool = True,
+) -> Decimal:
+    """
+    Read an amount shown next to one of the supplied invoice labels.
+    """
+
+    for label in labels:
+        escaped_label = re.escape(label)
+
+        label_locator = page.get_by_text(
+            re.compile(
+                rf"^\s*{escaped_label}\s*:?\s*$",
+                re.IGNORECASE,
+            )
+        )
+
+        for index in range(label_locator.count()):
+            candidate = label_locator.nth(index)
+
+            try:
+                if not candidate.is_visible():
+                    continue
+            except PlaywrightTimeoutError:
+                continue
+
+            amounts = extract_amounts_near_locator(candidate)
+
+            if amounts:
+                return amounts[-1]
+
+        combined_locator = page.get_by_text(
+            re.compile(
+                rf"{escaped_label}.*(?:₹|Rs\.?|INR)?\s*[\d,]+(?:\.\d+)?",
+                re.IGNORECASE,
+            )
+        )
+
+        for index in range(combined_locator.count()):
+            candidate = combined_locator.nth(index)
+
+            try:
+                if not candidate.is_visible():
+                    continue
+            except PlaywrightTimeoutError:
+                continue
+
+            amounts = extract_decimal_amounts(candidate.inner_text())
+
+            if amounts:
+                return amounts[-1]
+
+    if required:
+        raise AssertionError(
+            f"Unable to read invoice amount for labels: {labels}"
+        )
+
+    return Decimal("0.00")
+
+
+def extract_amounts_near_locator(locator: Locator) -> list[Decimal]:
+    """
+    Extract monetary values from the label element and nearby container.
+    """
+
+    texts: list[str] = []
+
+    try:
+        texts.append(locator.inner_text())
+    except PlaywrightTimeoutError:
+        pass
+
+    nearby_selectors = [
+        "xpath=following-sibling::*[1]",
+        "xpath=parent::*",
+        "xpath=parent::*/following-sibling::*[1]",
+        "xpath=ancestor::*[self::div or self::li or self::tr][1]",
+    ]
+
+    for selector in nearby_selectors:
+        try:
+            nearby = locator.locator(selector)
+
+            if nearby.count() > 0:
+                texts.append(nearby.first.inner_text())
+        except PlaywrightTimeoutError:
+            continue
+
+    amounts: list[Decimal] = []
+
+    for text in texts:
+        amounts.extend(extract_decimal_amounts(text))
+
+    return amounts
+
+
+def extract_decimal_amounts(text: str) -> list[Decimal]:
+    normalized = text.replace("\u00a0", " ")
+
+    matches = re.findall(
+        r"(?:₹|Rs\.?|INR)?\s*(-?\d[\d,]*(?:\.\d{1,2})?)",
+        normalized,
+        re.IGNORECASE,
+    )
+
+    amounts: list[Decimal] = []
+
+    for match in matches:
+        try:
+            amounts.append(
+                Decimal(match.replace(",", "")).quantize(
+                    Decimal("0.01")
+                )
+            )
+        except InvalidOperation:
+            continue
+
+    return amounts
+
+
+def assert_amount_close(
+    actual: Decimal,
+    expected: Decimal,
+    label: str,
+    tolerance: Decimal = Decimal("0.10"),
+) -> None:
+    difference = abs(actual - expected)
+
+    if difference > tolerance:
+        print(
+            f"[Amount Mismatch] {label}: "
+            f"actual={actual}, expected={expected}, "
+            f"difference={difference}, tolerance={tolerance}"
+        )
+
+    assert difference <= tolerance, (
+        f"{label} mismatch. "
+        f"Actual={actual}, Expected={expected}, "
+        f"Difference={difference}"
+    )
+
+
+def wait_for_success_message(
+    page: Page,
+    patterns: list[str],
+    required: bool = True,
+) -> bool:
+    combined_pattern = "|".join(f"(?:{pattern})" for pattern in patterns)
+
+    success_message = page.get_by_text(
+        re.compile(combined_pattern, re.IGNORECASE)
+    )
+
+    try:
+        expect(success_message.first).to_be_visible(timeout=7_000)
+        return True
+    except AssertionError:
+        if required:
+            raise AssertionError(
+                "Expected success message was not displayed. "
+                f"Patterns: {patterns}"
+            )
+
+    return False
+
+
+def confirm_yes_dialog_if_visible(page: Page) -> None:
+    yes_button = page.get_by_role(
+        "button",
+        name=re.compile(r"^Yes$", re.IGNORECASE),
+    )
+
+    try:
+        if yes_button.count() > 0 and yes_button.last.is_visible():
+            yes_button.last.click()
+    except PlaywrightTimeoutError:
+        pass
+
+
+def fill_textbox_by_names(
+    page: Page,
+    names: list[str],
+    value: str,
+    required: bool,
+) -> bool:
+    for name in names:
+        locator = page.get_by_role(
+            "textbox",
+            name=re.compile(
+                rf"^{re.escape(name)}$",
+                re.IGNORECASE,
+            ),
+        )
+
+        visible_locator = first_visible_locator(locator)
+
+        if visible_locator is not None:
+            visible_locator.fill(value)
+            return True
+
+    if required:
+        raise AssertionError(
+            f"Unable to locate textbox using names: {names}"
+        )
+
+    return False
+
+
+def fill_patient_phone_number(
+    page: Page,
+    phone: str,
+) -> None:
+    """
+    Fill the patient mobile number using stable input attributes.
+    """
+
+    normalized_phone = re.sub(r"\D", "", phone)[-10:]
+
+    candidates = [
+        page.get_by_role(
+            "textbox",
+            name=re.compile(
+                r"Phone|Mobile|Contact|10123",
+                re.IGNORECASE,
+            ),
+        ),
+        page.get_by_placeholder(
+            re.compile(
+                r"Phone|Mobile|10123",
+                re.IGNORECASE,
+            )
+        ),
+        page.locator('input[type="tel"]'),
+        page.locator('input[formcontrolname*="phone" i]'),
+        page.locator('input[formcontrolname*="mobile" i]'),
+        page.locator('input[name*="phone" i]'),
+        page.locator('input[name*="mobile" i]'),
+        page.locator('input[id*="phone" i]'),
+        page.locator('input[id*="mobile" i]'),
+    ]
+
+    for candidate_group in candidates:
+        for index in range(candidate_group.count()):
+            candidate = candidate_group.nth(index)
+
+            try:
+                if not candidate.is_visible():
+                    continue
+
+                candidate.scroll_into_view_if_needed()
+                candidate.click()
+                candidate.fill(normalized_phone)
+
+                if candidate.input_value() == normalized_phone:
+                    return
+
+            except PlaywrightTimeoutError:
+                continue
+
+    raise AssertionError(
+        "Unable to locate or fill the patient phone number field."
+    )
+
+
+
+
+def select_patient_gender(
+    page: Page,
+    gender: str,
+) -> None:
+    normalized_gender = gender.strip().title()
+
+    if normalized_gender not in {"Male", "Female", "Other"}:
+        normalized_gender = random.choice(["Male", "Female"])
+
+    radio = page.get_by_role(
+        "radio",
+        name=re.compile(
+            rf"^{re.escape(normalized_gender)}$",
+            re.IGNORECASE,
+        ),
+    )
+
+    if radio.count() > 0:
+        radio.first.check()
+        return
+
+    gender_text = page.get_by_text(
+        re.compile(
+            rf"^{re.escape(normalized_gender)}$",
+            re.IGNORECASE,
+        )
+    )
+
+    if gender_text.count() > 0:
+        gender_text.first.click()
+
+
+def get_profile_value(
+    profile: Any,
+    *names: str,
+    default: Any = None,
+) -> Any:
+    for name in names:
+        if isinstance(profile, dict):
+            value = profile.get(name)
+
+            if value not in (None, ""):
+                return value
+        else:
+            value = getattr(profile, name, None)
+
+            if value not in (None, ""):
+                return value
+
+    return default
+
+
+def generate_random_indian_mobile_number() -> str:
+    first_digit = random.choice(["6", "7", "8", "9"])
+    remaining_digits = "".join(
+        str(random.randint(0, 9))
+        for _ in range(9)
+    )
+
+    return first_digit + remaining_digits
+
+
+def click_first_visible(
+    locator_groups: list[Locator],
+) -> bool:
+    """
+    Click the first visible locator.
+
+    This works for buttons, links, text elements, cards, and other clickable
+    containers. Non-form elements may not expose a meaningful enabled state,
+    so visibility is treated as the primary requirement.
+    """
+
+    for locator_group in locator_groups:
+        count = locator_group.count()
+
+        for index in range(count):
+            locator = locator_group.nth(index)
+
+            try:
+                if not locator.is_visible():
+                    continue
+
+                locator.scroll_into_view_if_needed()
+
+                try:
+                    locator.click(timeout=5_000)
+                except PlaywrightTimeoutError:
+                    locator.click(timeout=5_000, force=True)
+
+                return True
+
+            except PlaywrightTimeoutError:
+                continue
+
+    return False
+
+
+
+
+def first_visible_locator(
+    locator_group: Locator,
+) -> Locator | None:
+    for index in range(locator_group.count()):
+        locator = locator_group.nth(index)
+
+        try:
+            if locator.is_visible():
+                return locator
+        except PlaywrightTimeoutError:
+            continue
+
+    return None
+
+
+def last_visible_locator(
+    locator_group: Locator,
+) -> Locator | None:
+    for index in range(locator_group.count() - 1, -1, -1):
+        locator = locator_group.nth(index)
+
+        try:
+            if locator.is_visible():
+                return locator
+        except PlaywrightTimeoutError:
+            continue
+
+    return None
+
+
+def is_locator_disabled(locator: Locator) -> bool:
+    try:
+        if locator.is_disabled():
+            return True
+    except PlaywrightTimeoutError:
+        return True
+
+    aria_disabled = locator.get_attribute("aria-disabled")
+    disabled_attribute = locator.get_attribute("disabled")
+    class_name = locator.get_attribute("class") or ""
+
+    return (
+        aria_disabled == "true"
+        or disabled_attribute is not None
+        or "disabled" in class_name.lower()
+    )
+
+
+def normalize_text(value: str) -> str:
+    return re.sub(
+        r"\s+",
+        " ",
+        value.replace("\u00a0", " "),
+    ).strip()
+
+
+
+# Case 2 :: Create an invoice and add 1 more service into it and do the payment
+
+
+def complete_booking_invoice_with_additional_service_flow(
+    page: Page,
+    config,
+    consumer_profile,
+    doctor_name: str = "Naveen KP",
+    appointment_service_name: str = "Video call Services",
+    additional_service_name: str = "Consultation",
+) -> dict:
+    """
+    Create a booking invoice, add one additional service, validate Net Total,
+    update the invoice, and complete payment.
+    """
+
+    select_first_business_if_needed(page)
+    open_appointment_dashboard(page)
+    open_create_appointment_page(page)
+
+    patient_name = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    select_appointment_doctor(
+        page=page,
+        doctor_name=doctor_name,
+    )
+
+    select_appointment_service(
+        page=page,
+        service_name=appointment_service_name,
+    )
+
+    confirm_appointment(page)
+
+    open_latest_created_appointment(
+        page=page,
+        patient_name=patient_name,
+    )
+
+    open_appointment_details(page)
+    create_booking_invoice(page)
+
+    assert "/business/bookingInvoice" in page.url, (
+        "Create Invoice page was not opened. "
+        f"Current URL: {page.url}"
+    )
+
+    initial_item_total = read_invoice_item_total(
+        page=page,
+        item_name=appointment_service_name,
+    )
+
+    additional_service_result = add_service_to_booking_invoice(
+        page=page,
+        service_name=additional_service_name,
+    )
+
+    additional_item_total = read_invoice_item_total(
+        page=page,
+        item_name=additional_service_name,
+    )
+
+    expected_net_total = round_money(
+        initial_item_total + additional_item_total
+    )
+
+    actual_net_total = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Net Total",
+            "Net total",
+        ],
+        required=True,
+    )
+
+    assert_amount_close(
+        actual=actual_net_total,
+        expected=expected_net_total,
+        label="Booking invoice Net Total after adding service",
+    )
+
+    invoice_created = update_booking_invoice(page)
+
+    payment_result = complete_booking_invoice_payment(page)
+    amount_due = payment_result["amount_due"]
+
+    assert_amount_close(
+        actual=amount_due,
+        expected=Decimal("0.00"),
+        label="Amount Due after booking invoice payment",
+    )
+
+    return {
+        "patient_name": patient_name,
+        "doctor_name": doctor_name,
+        "appointment_service_name": appointment_service_name,
+        "additional_service_name": additional_service_name,
+        "initial_item_total": initial_item_total,
+        "additional_item_total": additional_item_total,
+        "expected_net_total": expected_net_total,
+        "actual_net_total": actual_net_total,
+        "invoice_created": invoice_created,
+        "additional_service_added": additional_service_result,
+        "payment_completed": payment_result["payment_completed"],
+        "payment_method": payment_result["payment_method"],
+        "payment_mode": payment_result.get("payment_mode"),
+        "amount_due": amount_due,
+    }
+
+
+
+def add_service_to_booking_invoice(
+    page: Page,
+    service_name: str,
+) -> bool:
+    """
+    Add one additional Procedure/Item to the booking invoice.
+    """
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(700)
+
+    add_procedure_button = page.locator("button").filter(
+        has_text="Add Procedure/Item"
+    )
+
+    visible_add_procedure = first_visible_locator(add_procedure_button)
+
+    assert visible_add_procedure is not None, (
+        "Unable to locate the Add Procedure/Item button."
+    )
+
+    visible_add_procedure.scroll_into_view_if_needed()
+    visible_add_procedure.click()
+
+    item_section = locate_add_procedure_item_section(page)
+
+    assert item_section is not None, (
+        "The Add Procedure/Item section did not open."
+    )
+
+    procedure_combobox = locate_procedure_item_combobox(
+        page=page,
+        item_section=item_section,
+    )
+
+    assert procedure_combobox is not None, (
+        "Unable to locate the Procedure/Item field."
+    )
+
+    procedure_combobox.scroll_into_view_if_needed()
+    procedure_combobox.click()
+
+    service_option = locate_open_dropdown_option(
+        page=page,
+        option_text=service_name,
+    )
+
+    assert service_option is not None, (
+        f"Procedure/Item option '{service_name}' was not visible."
+    )
+
+    service_option.scroll_into_view_if_needed()
+    service_option.click()
+
+    selected_value = procedure_combobox.input_value()
+
+    assert selected_value.strip().lower() == service_name.strip().lower(), (
+        f"Procedure/Item selection failed. "
+        f"Expected='{service_name}', Actual='{selected_value}'"
+    )
+
+    add_button = item_section.get_by_role(
+        "button",
+        name="Add",
+        exact=True,
+    )
+
+    visible_add_button = last_visible_locator(add_button)
+
+    assert visible_add_button is not None, (
+        "Unable to locate the ADD button in the Procedure/Item section."
+    )
+
+    visible_add_button.scroll_into_view_if_needed()
+    expect(visible_add_button).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+    expect(visible_add_button).to_be_enabled(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    visible_add_button.click()
+
+    wait_for_success_message(
+        page=page,
+        patterns=[
+            r"item.*added",
+            r"service.*added",
+            r"procedure.*added",
+            r"successfully",
+        ],
+        required=False,
+    )
+
+    wait_for_invoice_item_row(
+        page=page,
+        item_name=service_name,
+    )
+
+    return True
+
+
+
+def locate_add_procedure_item_section(
+    page: Page,
+) -> Locator | None:
+    """
+    Locate the expanded section created by Add Procedure/Item.
+    """
+
+    procedure_label = page.get_by_text(
+        re.compile(
+            r"^\s*Procedure/Item\s*\*?\s*$",
+            re.IGNORECASE,
+        )
+    )
+
+    visible_label = last_visible_locator(procedure_label)
+
+    if visible_label is not None:
+        container_candidates = [
+            visible_label.locator(
+                "xpath=ancestor::form[1]"
+            ),
+            visible_label.locator(
+                "xpath=ancestor::div["
+                ".//button[normalize-space()='Add']"
+                "][1]"
+            ),
+            visible_label.locator(
+                "xpath=ancestor::*["
+                ".//*[@role='combobox'] and "
+                ".//button"
+                "][1]"
+            ),
+        ]
+
+        for candidate in container_candidates:
+            if candidate.count() == 0:
+                continue
+
+            container = candidate.first
+
+            try:
+                if container.is_visible():
+                    return container
+            except PlaywrightTimeoutError:
+                continue
+
+    # Fallback: visible container with an Add button and combobox.
+    candidates = page.locator(
+        "form:visible, "
+        ".p-dialog:visible, "
+        "div:visible"
+    ).filter(
+        has=page.get_by_role(
+            "button",
+            name="Add",
+            exact=True,
+        )
+    )
+
+    for index in range(candidates.count() - 1, -1, -1):
+        candidate = candidates.nth(index)
+
+        try:
+            if (
+                candidate.is_visible()
+                and candidate.locator(
+                    '[role="combobox"], p-dropdown, p-select'
+                ).count() > 0
+            ):
+                return candidate
+        except PlaywrightTimeoutError:
+            continue
+
+    return None
+
+
+
+
+def locate_procedure_item_combobox(
+    page: Page,
+    item_section: Locator,
+) -> Locator | None:
+    """
+    Locate the Procedure/Item dropdown inside the expanded item section.
+    """
+
+    candidates = [
+        item_section.get_by_role(
+            "combobox",
+            name=re.compile(
+                r"Procedure|Item",
+                re.IGNORECASE,
+            ),
+        ),
+        item_section.locator(
+            '[formcontrolname*="procedure" i], '
+            '[formcontrolname*="item" i], '
+            'p-dropdown, '
+            'p-select, '
+            '[role="combobox"]'
+        ),
+    ]
+
+    for candidate_group in candidates:
+        visible_candidate = first_visible_locator(candidate_group)
+
+        if visible_candidate is not None:
+            return visible_candidate
+
+    procedure_label = item_section.get_by_text(
+        re.compile(
+            r"^\s*Procedure/Item\s*\*?\s*$",
+            re.IGNORECASE,
+        )
+    )
+
+    visible_label = first_visible_locator(procedure_label)
+
+    if visible_label is not None:
+        following_combobox = visible_label.locator(
+            "xpath=following::*["
+            "@role='combobox' or "
+            "self::p-dropdown or "
+            "self::p-select"
+            "][1]"
+        )
+
+        return first_visible_locator(following_combobox)
+
+    return None
+
+
+
+def locate_open_dropdown_option(
+    page: Page,
+    option_text: str,
+) -> Locator | None:
+    """
+    Locate an option only inside an open dropdown/list overlay.
+    """
+
+    exact_pattern = re.compile(
+        rf"^\s*{re.escape(option_text)}\s*$",
+        re.IGNORECASE,
+    )
+
+    candidates = [
+        page.get_by_role(
+            "option",
+            name=exact_pattern,
+        ),
+        page.locator(
+            '[role="listbox"]:visible [role="option"]:visible'
+        ).filter(
+            has_text=exact_pattern
+        ),
+        page.locator(
+            ".p-dropdown-panel:visible "
+            ".p-dropdown-item:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+        page.locator(
+            ".p-select-overlay:visible "
+            ".p-select-option:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+        page.locator(
+            ".p-overlay:visible li:visible"
+        ).filter(
+            has_text=exact_pattern
+        ),
+    ]
+
+    for candidate_group in candidates:
+        visible_candidate = last_visible_locator(candidate_group)
+
+        if visible_candidate is not None:
+            return visible_candidate
+
+    return None
+
+
+
+
+def verify_selected_procedure_item(
+    item_section: Locator,
+    service_name: str,
+) -> None:
+    """
+    Verify that the service is selected in the add-item section.
+    """
+
+    selected_service = item_section.get_by_text(
+        service_name,
+        exact=True,
+    )
+
+    expect(selected_service.last).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+
+
+def locate_item_section_add_button(
+    item_section: Locator,
+) -> Locator | None:
+    """
+    Locate the Add button belonging only to the expanded item section.
+    """
+
+    add_buttons = item_section.get_by_role(
+        "button",
+        name="Add",
+        exact=True,
+    )
+
+    return last_visible_locator(add_buttons)
+
+
+
+def wait_for_invoice_item_row(
+    page: Page,
+    item_name: str,
+) -> Locator:
+    """
+    Wait until the newly added item appears as an invoice table row.
+    """
+
+    item_cell = page.get_by_role(
+        "cell",
+        name=re.compile(
+            rf"^\s*{re.escape(item_name)}\s*$",
+            re.IGNORECASE,
+        ),
+    )
+
+    try:
+        expect(item_cell.last).to_be_visible(
+            timeout=DEFAULT_TIMEOUT
+        )
+    except AssertionError:
+        # Some builds render responsive invoice rows without cell roles.
+        item_text = page.get_by_text(
+            item_name,
+            exact=True,
+        )
+
+        expect(item_text.last).to_be_visible(
+            timeout=DEFAULT_TIMEOUT
+        )
+
+    row = locate_invoice_item_row(
+        page=page,
+        item_name=item_name,
+    )
+
+    assert row is not None, (
+        f"Service '{item_name}' did not appear in the invoice table "
+        "after clicking Add."
+    )
+
+    return row
+
+
+
+
+
+def open_procedure_item_dropdown(page: Page) -> None:
+    """
+    Open the Procedure/Item selector displayed after clicking
+    Add Procedure/Item.
+    """
+
+    procedure_labels = [
+        page.get_by_text(
+            re.compile(
+                r"^\s*Procedure/Item\s*\*?\s*$",
+                re.IGNORECASE,
+            )
+        ),
+        page.get_by_text(
+            re.compile(
+                r"^\s*Select Procedure/Item\s*$",
+                re.IGNORECASE,
+            )
+        ),
+    ]
+
+    for label_group in procedure_labels:
+        visible_label = first_visible_locator(label_group)
+
+        if visible_label is None:
+            continue
+
+        following_combobox = visible_label.locator(
+            "xpath=following::*[@role='combobox'][1]"
+        )
+
+        visible_combobox = first_visible_locator(following_combobox)
+
+        if visible_combobox is not None:
+            visible_combobox.scroll_into_view_if_needed()
+            visible_combobox.click()
+            return
+
+        sibling = visible_label.locator(
+            "xpath=following-sibling::*[1]"
+        )
+
+        if sibling.count() > 0:
+            try:
+                if sibling.first.is_visible():
+                    sibling.first.click()
+                    return
+            except PlaywrightTimeoutError:
+                pass
+
+    attribute_candidates = [
+        page.locator(
+            '[formcontrolname*="procedure" i], '
+            '[formcontrolname*="item" i], '
+            '[id*="procedure" i], '
+            '[id*="item" i]'
+        ),
+        page.get_by_role(
+            "combobox",
+            name=re.compile(
+                r"Procedure|Item",
+                re.IGNORECASE,
+            ),
+        ),
+    ]
+
+    clicked = click_first_visible(attribute_candidates)
+
+    assert clicked, (
+        "Unable to open the Procedure/Item dropdown."
+    )
+
+
+
+def locate_invoice_item_row(
+    page: Page,
+    item_name: str,
+) -> Locator | None:
+    """
+    Locate an invoice row using table cells or responsive row markup.
+    """
+
+    exact_pattern = re.compile(
+        rf"^\s*{re.escape(item_name)}\s*$",
+        re.IGNORECASE,
+    )
+
+    item_candidates = [
+        page.get_by_role(
+            "cell",
+            name=exact_pattern,
+        ),
+        page.locator("td").filter(
+            has_text=exact_pattern
+        ),
+        page.get_by_text(
+            item_name,
+            exact=True,
+        ),
+    ]
+
+    for candidate_group in item_candidates:
+        for index in range(candidate_group.count() - 1, -1, -1):
+            candidate = candidate_group.nth(index)
+
+            try:
+                if not candidate.is_visible():
+                    continue
+            except PlaywrightTimeoutError:
+                continue
+
+            row_candidates = [
+                candidate.locator("xpath=ancestor::tr[1]"),
+                candidate.locator(
+                    "xpath=ancestor::*[@role='row'][1]"
+                ),
+                candidate.locator(
+                    "xpath=ancestor::div["
+                    ".//*[contains(normalize-space(), '₹')]"
+                    "][1]"
+                ),
+            ]
+
+            for row_candidate in row_candidates:
+                if row_candidate.count() == 0:
+                    continue
+
+                row = row_candidate.first
+
+                try:
+                    if row.is_visible():
+                        return row
+                except PlaywrightTimeoutError:
+                    continue
+
+    return None
+
+
+
+def read_invoice_item_total(
+    page: Page,
+    item_name: str,
+) -> Decimal:
+    """
+    Read the final Total value from an invoice item row.
+
+    Expected row structure:
+
+    Procedure/Item | Date | Rate | Qty | Total Rate |
+    Discount | After Discount | Tax | Total
+    """
+
+    row = locate_invoice_item_row(
+        page=page,
+        item_name=item_name,
+    )
+
+    assert row is not None, (
+        f"Unable to locate invoice row for item '{item_name}'."
+    )
+
+    cells = row.get_by_role("cell")
+
+    assert cells.count() > 0, (
+        f"Invoice row for '{item_name}' does not contain table cells."
+    )
+
+    # The final monetary cell in the row is normally the item Total.
+    amount_candidates: list[Decimal] = []
+
+    for index in range(cells.count()):
+        cell = cells.nth(index)
+
+        try:
+            if not cell.is_visible():
+                continue
+
+            cell_text = normalize_text(cell.inner_text())
+            amounts = extract_decimal_amounts(cell_text)
+
+            if amounts:
+                amount_candidates.extend(amounts)
+
+        except PlaywrightTimeoutError:
+            continue
+
+    assert amount_candidates, (
+        f"No monetary values were found in the invoice row "
+        f"for '{item_name}'."
+    )
+
+    return amount_candidates[-1]
+
+
+def round_money(value: Decimal) -> Decimal:
+    return value.quantize(
+        Decimal("0.01"),
+        rounding=ROUND_HALF_UP,
+    )
+
+
+
+# Case 3 :: Create invoice for a taxable service and check the calculations are correct
+
+
+def complete_taxable_booking_service_invoice_flow(
+    page: Page,
+    config,
+    consumer_profile,
+    doctor_name: str = "Naveen KP",
+    service_name: str = "WhatsApp Service(Taxable)",
+    tax_percentage: Decimal = Decimal("5.00"),
+) -> dict:
+    """
+    Create a booking invoice for one tax-exclusive taxable service,
+    validate its tax and total, update the invoice, and complete payment.
+    """
+
+    select_first_business_if_needed(page)
+    open_appointment_dashboard(page)
+    open_create_appointment_page(page)
+
+    patient_name = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    select_appointment_doctor(
+        page=page,
+        doctor_name=doctor_name,
+    )
+
+    select_appointment_service(
+        page=page,
+        service_name=service_name,
+    )
+
+    confirm_appointment(page)
+
+    open_latest_created_appointment(
+        page=page,
+        patient_name=patient_name,
+    )
+
+    open_appointment_details(page)
+    create_booking_invoice(page)
+
+    assert "/business/bookingInvoice" in page.url, (
+        "Create Invoice page was not opened. "
+        f"Current URL: {page.url}"
+    )
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(700)
+
+    item_amounts = read_taxable_invoice_item_amounts(
+        page=page,
+        item_name=service_name,
+    )
+
+    rate = item_amounts["rate"]
+    actual_tax = item_amounts["tax"]
+    actual_total = item_amounts["total"]
+
+    expected_tax = round_money(
+        rate * tax_percentage / Decimal("100")
+    )
+
+    expected_total = round_money(
+        rate + expected_tax
+    )
+
+    assert_amount_close(
+        actual=actual_tax,
+        expected=expected_tax,
+        label=f"{service_name} tax at {tax_percentage}%",
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=actual_total,
+        expected=expected_total,
+        label=f"{service_name} total including tax",
+        tolerance=Decimal("0.01"),
+    )
+
+    actual_net_total = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Net Total",
+            "Net total",
+        ],
+        required=True,
+    )
+
+    assert_amount_close(
+        actual=actual_net_total,
+        expected=expected_total,
+        label="Booking invoice Net Total",
+        tolerance=Decimal("0.01"),
+    )
+
+    print(
+        "[Tax Validation] "
+        f"service={service_name}, "
+        f"rate={rate}, "
+        f"tax_percentage={tax_percentage}, "
+        f"expected_tax={expected_tax}, "
+        f"actual_tax={actual_tax}, "
+        f"expected_total={expected_total}, "
+        f"actual_total={actual_total}, "
+        f"net_total={actual_net_total}"
+    )
+
+    invoice_created = update_booking_invoice(page)
+
+    payment_result = complete_booking_invoice_payment(page)
+    amount_due = payment_result["amount_due"]
+
+    assert_amount_close(
+        actual=amount_due,
+        expected=Decimal("0.00"),
+        label="Amount Due after taxable booking invoice payment",
+        tolerance=Decimal("0.01"),
+    )
+
+    return {
+        "patient_name": patient_name,
+        "doctor_name": doctor_name,
+        "service_name": service_name,
+        "tax_percentage": tax_percentage,
+        "rate": rate,
+        "expected_tax": expected_tax,
+        "actual_tax": actual_tax,
+        "expected_total": expected_total,
+        "actual_total": actual_total,
+        "actual_net_total": actual_net_total,
+        "tax_calculation_valid": (
+            abs(actual_tax - expected_tax) <= Decimal("0.01")
+        ),
+        "total_calculation_valid": (
+            abs(actual_total - expected_total) <= Decimal("0.01")
+        ),
+        "invoice_created": invoice_created,
+        "payment_completed": payment_result["payment_completed"],
+        "payment_method": payment_result["payment_method"],
+        "payment_mode": payment_result.get("payment_mode"),
+        "amount_due": amount_due,
+    }
+
+
+
+def read_taxable_invoice_item_amounts(
+    page: Page,
+    item_name: str,
+) -> dict[str, Decimal]:
+    """
+    Read Rate, Tax, and Total from a booking invoice item row.
+
+    Column positions:
+    0 - Procedure/Item
+    1 - Date
+    2 - Rate
+    3 - Qty
+    4 - Total Rate
+    5 - Discount
+    6 - After Discount
+    7 - Tax
+    8 - Total
+    """
+
+    row = locate_invoice_item_row(
+        page=page,
+        item_name=item_name,
+    )
+
+    assert row is not None, (
+        f"Unable to locate the invoice row for '{item_name}'."
+    )
+
+    row.scroll_into_view_if_needed()
+
+    cells = row.get_by_role("cell")
+
+    if cells.count() < 9:
+        cells = row.locator("td")
+
+    assert cells.count() >= 9, (
+        f"Invoice row for '{item_name}' does not contain the expected "
+        f"nine financial columns. Cell count={cells.count()}. "
+        f"Row text={normalize_text(row.inner_text())}"
+    )
+
+    rate = read_single_amount_from_cell(
+        cell=cells.nth(2),
+        label=f"{item_name} Rate",
+    )
+
+    tax = read_single_amount_from_cell(
+        cell=cells.nth(7),
+        label=f"{item_name} Tax",
+    )
+
+    total = read_single_amount_from_cell(
+        cell=cells.nth(8),
+        label=f"{item_name} Total",
+    )
+
+    return {
+        "rate": rate,
+        "tax": tax,
+        "total": total,
+    }
+
+
+
+def read_single_amount_from_cell(
+    cell: Locator,
+    label: str,
+) -> Decimal:
+    """
+    Read one monetary value from an invoice table cell.
+    """
+
+    expect(cell).to_be_visible(timeout=DEFAULT_TIMEOUT)
+
+    cell_text = normalize_text(cell.inner_text())
+    amounts = extract_decimal_amounts(cell_text)
+
+    assert amounts, (
+        f"Unable to read {label}. Cell text='{cell_text}'"
+    )
+
+    return round_money(amounts[-1])
+
+
+
+# Case 4 :: Create an invoice for a taxable service and add 1 more taxable service into it and check the calculations  
+
+
+
+def complete_two_taxable_services_booking_invoice_flow(
+    page: Page,
+    config,
+    consumer_profile,
+    doctor_name: str = "Naveen KP",
+    appointment_service_name: str = "WhatsApp Service(Taxable)",
+    additional_service_name: str = "General Service with Tax",
+    appointment_service_tax_percentage: Decimal = Decimal("5.00"),
+    additional_service_tax_percentage: Decimal = Decimal("5.00"),
+) -> dict:
+    """
+    Create a booking invoice with two tax-exclusive taxable services.
+
+    Validations:
+    - Tax of each service
+    - Total of each service
+    - Combined invoice Net Total
+    - Payment completion
+    - Amount Due becomes zero
+    """
+
+    select_first_business_if_needed(page)
+    open_appointment_dashboard(page)
+    open_create_appointment_page(page)
+
+    patient_name = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    select_appointment_doctor(
+        page=page,
+        doctor_name=doctor_name,
+    )
+
+    select_appointment_service(
+        page=page,
+        service_name=appointment_service_name,
+    )
+
+    confirm_appointment(page)
+
+    open_latest_created_appointment(
+        page=page,
+        patient_name=patient_name,
+    )
+
+    open_appointment_details(page)
+    create_booking_invoice(page)
+
+    assert "/business/bookingInvoice" in page.url, (
+        "Create Invoice page was not opened. "
+        f"Current URL: {page.url}"
+    )
+
+    page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+    page.wait_for_timeout(700)
+
+    appointment_service_before_add = read_taxable_invoice_item_amounts(
+        page=page,
+        item_name=appointment_service_name,
+    )
+
+    additional_service_added = add_service_to_booking_invoice(
+        page=page,
+        service_name=additional_service_name,
+    )
+
+    assert additional_service_added is True, (
+        f"Additional service '{additional_service_name}' was not added."
+    )
+
+    appointment_service_amounts = read_taxable_invoice_item_amounts(
+        page=page,
+        item_name=appointment_service_name,
+    )
+
+    additional_service_amounts = read_taxable_invoice_item_amounts(
+        page=page,
+        item_name=additional_service_name,
+    )
+
+    appointment_rate = appointment_service_amounts["rate"]
+    appointment_actual_tax = appointment_service_amounts["tax"]
+    appointment_actual_total = appointment_service_amounts["total"]
+
+    additional_rate = additional_service_amounts["rate"]
+    additional_actual_tax = additional_service_amounts["tax"]
+    additional_actual_total = additional_service_amounts["total"]
+
+    appointment_expected_tax = round_money(
+        appointment_rate
+        * appointment_service_tax_percentage
+        / Decimal("100")
+    )
+
+    appointment_expected_total = round_money(
+        appointment_rate + appointment_expected_tax
+    )
+
+    additional_expected_tax = round_money(
+        additional_rate
+        * additional_service_tax_percentage
+        / Decimal("100")
+    )
+
+    additional_expected_total = round_money(
+        additional_rate + additional_expected_tax
+    )
+
+    assert_amount_close(
+        actual=appointment_actual_tax,
+        expected=appointment_expected_tax,
+        label=f"{appointment_service_name} tax",
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=appointment_actual_total,
+        expected=appointment_expected_total,
+        label=f"{appointment_service_name} total",
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=additional_actual_tax,
+        expected=additional_expected_tax,
+        label=f"{additional_service_name} tax",
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=additional_actual_total,
+        expected=additional_expected_total,
+        label=f"{additional_service_name} total",
+        tolerance=Decimal("0.01"),
+    )
+
+    displayed_items_total = round_money(
+    appointment_actual_total + additional_actual_total
+    )
+
+    round_off = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Round Off",
+            "Round off",
+            "RoundOff",
+        ],
+        required=False,
+    )
+
+    expected_net_total = round_money(
+        displayed_items_total + round_off
+    )
+
+    actual_net_total = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Net Total",
+            "Net total",
+        ],
+        required=True,
+    )
+
+    assert_amount_close(
+        actual=actual_net_total,
+        expected=expected_net_total,
+        label="Net Total including round off",
+        tolerance=Decimal("0.01"),
+    )
+
+    print(
+        "\n[Two Taxable Services Validation]\n"
+        f"Patient: {patient_name}\n"
+        f"Service 1: {appointment_service_name}\n"
+        f"Service 1 Rate: {appointment_rate}\n"
+        f"Service 1 Tax %: {appointment_service_tax_percentage}\n"
+        f"Service 1 Expected Tax: {appointment_expected_tax}\n"
+        f"Service 1 Actual Tax: {appointment_actual_tax}\n"
+        f"Service 1 Expected Total: {appointment_expected_total}\n"
+        f"Service 1 Actual Total: {appointment_actual_total}\n"
+        f"Service 2: {additional_service_name}\n"
+        f"Service 2 Rate: {additional_rate}\n"
+        f"Service 2 Tax %: {additional_service_tax_percentage}\n"
+        f"Service 2 Expected Tax: {additional_expected_tax}\n"
+        f"Service 2 Actual Tax: {additional_actual_tax}\n"
+        f"Service 2 Expected Total: {additional_expected_total}\n"
+        f"Service 2 Actual Total: {additional_actual_total}\n"
+        f"Expected Net Total: {expected_net_total}\n"
+        f"Actual Net Total: {actual_net_total}"
+    )
+
+    invoice_created = update_booking_invoice(page)
+
+    payment_result = complete_booking_invoice_payment(page)
+    amount_due = payment_result["amount_due"]
+
+    assert_amount_close(
+        actual=amount_due,
+        expected=Decimal("0.00"),
+        label="Amount Due after payment",
+        tolerance=Decimal("0.01"),
+    )
+
+    return {
+        "patient_name": patient_name,
+        "doctor_name": doctor_name,
+        "appointment_service_name": appointment_service_name,
+        "additional_service_name": additional_service_name,
+
+        "displayed_items_total": displayed_items_total,
+        "round_off": round_off,
+        "appointment_service_rate": appointment_rate,
+        "appointment_service_expected_tax": appointment_expected_tax,
+        "appointment_service_actual_tax": appointment_actual_tax,
+        "appointment_service_expected_total": appointment_expected_total,
+        "appointment_service_actual_total": appointment_actual_total,
+
+        "additional_service_rate": additional_rate,
+        "additional_service_expected_tax": additional_expected_tax,
+        "additional_service_actual_tax": additional_actual_tax,
+        "additional_service_expected_total": additional_expected_total,
+        "additional_service_actual_total": additional_actual_total,
+
+        "expected_net_total": expected_net_total,
+        "actual_net_total": actual_net_total,
+
+        "appointment_service_tax_valid": (
+            abs(
+                appointment_actual_tax
+                - appointment_expected_tax
+            )
+            <= Decimal("0.01")
+        ),
+        "appointment_service_total_valid": (
+            abs(
+                appointment_actual_total
+                - appointment_expected_total
+            )
+            <= Decimal("0.01")
+        ),
+        "additional_service_tax_valid": (
+            abs(
+                additional_actual_tax
+                - additional_expected_tax
+            )
+            <= Decimal("0.01")
+        ),
+        "additional_service_total_valid": (
+            abs(
+                additional_actual_total
+                - additional_expected_total
+            )
+            <= Decimal("0.01")
+        ),
+        "net_total_valid": (
+            abs(actual_net_total - expected_net_total)
+            <= Decimal("0.01")
+        ),
+
+        "invoice_created": invoice_created,
+        "payment_completed": payment_result["payment_completed"],
+        "payment_method": payment_result["payment_method"],
+        "payment_mode": payment_result.get("payment_mode"),
+        "amount_due": amount_due,
+    }
+
+
+
+
+
+
+
+

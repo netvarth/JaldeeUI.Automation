@@ -16833,24 +16833,21 @@ def click_master_invoice_edit_button(page) -> None:
 
 def click_remove_discount_menu_item(page) -> None:
     """
-    Clicks Remove Discount from Nursing Service row action menu.
-
-    Recorded manual flow:
-        page.locator("#btnRowMenu_Service_IP_Invoice").click()
-        page.get_by_role("menuitem", name="Remove Discount").click()
+    Clicks Remove Discount from the currently opened row action menu.
     """
 
     remove_discount_candidates = [
-        page.get_by_role("menuitem", name=re.compile(r"Remove\s+Discount", re.I)).first,
-        page.locator("li").filter(has_text=re.compile(r"Remove\s+Discount", re.I)).first,
-        page.locator(".p-menuitem").filter(has_text=re.compile(r"Remove\s+Discount", re.I)).first,
-        page.get_by_text("Remove Discount", exact=False).first,
+        page.get_by_role("menuitem", name=re.compile(r"^Remove\s+Discount$", re.I)).first,
+        page.locator("[role='menuitem']").filter(has_text=re.compile(r"^Remove\s+Discount$", re.I)).first,
+        page.locator("li").filter(has_text=re.compile(r"^Remove\s+Discount$", re.I)).first,
+        page.locator(".p-menuitem").filter(has_text=re.compile(r"^Remove\s+Discount$", re.I)).first,
+        page.get_by_text("Remove Discount", exact=True).first,
     ]
 
     for candidate in remove_discount_candidates:
         try:
             candidate.wait_for(state="visible", timeout=5000)
-            candidate.click(timeout=10000)
+            candidate.click(timeout=10000, force=True)
             page.wait_for_timeout(1500)
             return
         except Exception:
@@ -16859,10 +16856,11 @@ def click_remove_discount_menu_item(page) -> None:
     visible_text = get_visible_page_text(page)
 
     raise AssertionError(
-        "Could not click Remove Discount menu item.\n"
+        "Could not click Remove Discount from opened row action menu.\n"
         f"Current URL: {page.url}\n"
         f"Visible page text:\n{visible_text[:2500]}"
     )
+
 
 
 
@@ -17139,6 +17137,7 @@ def verify_master_invoice_details_after_nursing_service_discount_removed(
 
 
 
+
 def assert_master_total_not_doubled(
     actual: Decimal,
     wrong_doubled_total: Decimal,
@@ -17169,6 +17168,19 @@ def assert_master_total_not_doubled(
         f"Exact Difference: {exact_difference}\n"
         f"Rounded Difference: {rounded_difference}"
     )
+
+
+
+
+    
+
+
+
+
+
+
+
+
 
 
 

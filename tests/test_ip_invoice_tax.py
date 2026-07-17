@@ -20,6 +20,7 @@ from framework.ip_invoice_tax_actions import (
     complete_master_invoice_unlink_ip_invoice_taxable_service_and_taxable_order_flow,
     complete_master_invoice_non_taxable_order_item_and_taxable_ip_service_discount_flow,
     complete_master_invoice_remove_service_discount_after_master_creation_not_doubling_flow,
+    complete_master_invoice_remove_taxable_order_discount_after_master_creation_not_doubling_flow,
 )
 
 
@@ -804,7 +805,7 @@ def test_master_invoice_non_taxable_order_item_and_taxable_ip_service_discount_t
 
 
 
-# Discount removed after master invoice creation; no doubling of amounts.
+# Discount removed from IP service after master invoice creation; no doubling of amounts.
 
 
 
@@ -840,6 +841,12 @@ def test_master_invoice_remove_service_discount_after_master_creation_not_doubli
     assert result["master_invoice_created"] is True
     assert result["discount_removed_from_master"] is True
     assert result["master_invoice_after_discount_removed_result"]["master_invoice_correct_after_discount_removed"] is True
+
+
+
+
+
+    
 
 
 
