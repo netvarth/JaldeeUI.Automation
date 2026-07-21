@@ -1,11 +1,14 @@
 from asyncio import wait
 import time
+from datetime import datetime, timedelta
 # import sys
 # import os
 # sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from Framework.common_utils import *
 from Framework.common_dates_utils import *
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 import allure
@@ -732,14 +735,15 @@ def test_create_purchase1(login):
 
 
     # Enter batch number for the item
-    time.sleep(5)
+    time.sleep(2)
     batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable((By.XPATH,
-            "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]"))
+            "//input[@id='inputBatch_ORD_PurchsCrt']"))
         )
     batch_number.click()
 
-    random_batch_number = str(random.randint(5, 99))
+    # random_batch_number = str(random.randint(5, 99))
+    random_batch_number = "BATCH" + str(time.time_ns())
     batch_number.send_keys(random_batch_number)
     print("Batch_Number:", random_batch_number)
 
@@ -756,46 +760,221 @@ def test_create_purchase1(login):
         ).click()
     
 
-    # Enter expiry date for the item
-    time.sleep(2)
-    item_exp = f"//p-calendar[contains(@class, 'exp-date') and contains(@class, 'ng-tns-c')]"
-    WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, item_exp))
-        ).click()
+    # # Enter expiry date for the item
+    # time.sleep(2)
+    # item_exp = f"//p-calendar[contains(@class, 'exp-date') and contains(@class, 'ng-tns-c')]"
+    # WebDriverWait(login, 20).until(
+    #         EC.presence_of_element_located((By.XPATH, item_exp))
+    #     ).click()
 
-    time.sleep(2)
-    current_year = datetime.now().strftime("%Y")
-    current_year_xpath = f"//button[normalize-space()='{current_year}']"
-    print(current_year_xpath)
-    time.sleep(2)
-    WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, current_year_xpath))
-        ).click()
+    # time.sleep(2)
+    # current_year = datetime.now().strftime("%Y")
+    # current_year_xpath = f"//button[normalize-space()='{current_year}']"
+    # print(current_year_xpath)
+    # time.sleep(2)
+    # WebDriverWait(login, 10).until(
+    #         EC.presence_of_element_located((By.XPATH, current_year_xpath))
+    #     ).click()
     
-    [year, month, day] = add_date(2)
-    print(year)
-    year_xpath = f"//span[normalize-space()='{year}']"
-    print(year_xpath)
+    # [year, month, day] = add_date(2)
+    # print(year)
+    # year_xpath = f"//span[normalize-space()='{year}']"
+    # print(year_xpath)
+    # time.sleep(1)
+    # WebDriverWait(login, 10).until(
+    #         EC.presence_of_element_located((By.XPATH, year_xpath))
+    #     ).click()
+    # time.sleep(1)
+    # month_xpath = f"//span[normalize-space()='{month}']"
+    # print(month_xpath)
+    # WebDriverWait(login, 10).until(
+    #             EC.presence_of_element_located((By.XPATH, month_xpath))
+    #      ).click()
+    # time.sleep(2)
+    # day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
+    # print(day_xpath)
+    # time.sleep(2)
+    # WebDriverWait(login, 20).until(
+    #         EC.presence_of_element_located((By.XPATH, day_xpath))
+    #     ).click()
+
+
+
+
+    # ---- Enter random future expiry date for the item ----
+    wait = WebDriverWait(login, 20)
+
+    current_year = datetime.now().year
+
+    # Random future expiry date
+    target_year = str(random.randint(current_year + 1, current_year + 5))
+    target_month_number = random.randint(1, 12)
+    target_day = str(random.randint(1, 28))   # 1-28 avoids invalid dates like Feb 30
+
+    target_date = datetime(
+        int(target_year),
+        target_month_number,
+        int(target_day)
+    )
+
+    target_month_short = target_date.strftime("%b")        # Jan, Feb, Mar
+    target_month_full = target_date.strftime("%B")         # January, February
+    target_month_short_lower = target_month_short.lower()
+    target_month_full_lower = target_month_full.lower()
+
+    print("Target expiry date:", target_date.strftime("%d/%m/%Y"))
+
+    # IMPORTANT: Exp Date only, not Purchase Bill Date
+    exp_date_xpath = (
+        "//p-calendar[contains(concat(' ', normalize-space(@class), ' '), ' exp-date ')]//input"
+    )
+
+    exp_date_input = wait.until(
+        EC.element_to_be_clickable((By.XPATH, exp_date_xpath))
+    )
+
+    login.execute_script(
+        "arguments[0].scrollIntoView({block:'center'});",
+        exp_date_input
+    )
+
+    login.execute_script("arguments[0].click();", exp_date_input)
+
+    # Active PrimeNG calendar popup
+    calendar_xpath = (
+        "(//div[contains(@class,'p-datepicker') "
+        "and contains(@class,'p-component') "
+        "and not(contains(@style,'display: none'))])[last()]"
+    )
+
+    wait.until(
+        EC.visibility_of_element_located((By.XPATH, calendar_xpath))
+    )
+
+    # Click YEAR button in calendar header.
+    # Do not click the first header button, because that may be the month button.
+    current_year_button_xpath = (
+        f"{calendar_xpath}//div[contains(@class,'p-datepicker-title')]"
+        f"//button[normalize-space()='{current_year}']"
+    )
+
+    current_year_button = wait.until(
+        EC.element_to_be_clickable((By.XPATH, current_year_button_xpath))
+    )
+
+    login.execute_script("arguments[0].click();", current_year_button)
     time.sleep(1)
-    WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, year_xpath))
-        ).click()
+
+    # Select random future year from year popup
+    target_year_xpath = (
+        f"{calendar_xpath}//div[contains(@class,'p-yearpicker')]"
+        f"//*[normalize-space()='{target_year}' "
+        f"and not(contains(@class,'p-disabled'))]"
+    )
+
+    year_selected = False
+
+    for _ in range(10):
+        year_elements = login.find_elements(By.XPATH, target_year_xpath)
+
+        if len(year_elements) > 0 and year_elements[0].is_displayed():
+            login.execute_script("arguments[0].click();", year_elements[0])
+            year_selected = True
+            time.sleep(1)
+            break
+
+        next_button = wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, f"{calendar_xpath}//button[contains(@class,'p-datepicker-next')]")
+            )
+        )
+
+        login.execute_script("arguments[0].click();", next_button)
+        time.sleep(1)
+
+    if not year_selected:
+        raise Exception(f"Target expiry year {target_year} not found in calendar")
+
+    # After selecting year, open month picker if it is not already open
+    month_picker_xpath = f"{calendar_xpath}//div[contains(@class,'p-monthpicker')]"
+
+    month_picker_elements = login.find_elements(By.XPATH, month_picker_xpath)
+
+    if len(month_picker_elements) == 0 or not month_picker_elements[0].is_displayed():
+        # Click month button in the header
+        month_button_xpath = (
+            f"{calendar_xpath}//div[contains(@class,'p-datepicker-title')]"
+            f"//button[not(normalize-space()='{target_year}')]"
+        )
+
+        month_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, month_button_xpath))
+        )
+
+        login.execute_script("arguments[0].click();", month_button)
+        time.sleep(1)
+
+    wait.until(
+        EC.visibility_of_element_located((By.XPATH, month_picker_xpath))
+    )
+
+    # Select random month from month picker
+    target_month_xpath = (
+        f"{month_picker_xpath}//*["
+        f"not(contains(@class,'p-disabled')) "
+        f"and ("
+        f"translate(normalize-space(), "
+        f"'ABCDEFGHIJKLMNOPQRSTUVWXYZ', "
+        f"'abcdefghijklmnopqrstuvwxyz')='{target_month_short_lower}' "
+        f"or "
+        f"translate(normalize-space(), "
+        f"'ABCDEFGHIJKLMNOPQRSTUVWXYZ', "
+        f"'abcdefghijklmnopqrstuvwxyz')='{target_month_full_lower}'"
+        f")"
+        f"]"
+    )
+
+    target_month_element = wait.until(
+        EC.element_to_be_clickable((By.XPATH, target_month_xpath))
+    )
+
+    login.execute_script("arguments[0].click();", target_month_element)
     time.sleep(1)
-    month_xpath = f"//span[normalize-space()='{month}']"
-    print(month_xpath)
-    WebDriverWait(login, 10).until(
-                EC.presence_of_element_located((By.XPATH, month_xpath))
-         ).click()
-    time.sleep(2)
-    day_xpath = f"//span[normalize-space()='{day}' and not(contains(@class,'p-disabled'))]"
-    print(day_xpath)
-    time.sleep(2)
-    WebDriverWait(login, 20).until(
-            EC.presence_of_element_located((By.XPATH, day_xpath))
-        ).click()
+
+    # Select random day
+    target_day_xpath = (
+        f"{calendar_xpath}//td["
+        f"not(contains(@class,'p-disabled')) "
+        f"and not(contains(@class,'p-datepicker-other-month'))"
+        f"]//span[normalize-space()='{target_day}' "
+        f"and not(contains(@class,'p-disabled'))]"
+    )
+
+    target_day_element = wait.until(
+        EC.element_to_be_clickable((By.XPATH, target_day_xpath))
+    )
+
+    login.execute_script("arguments[0].click();", target_day_element)
+    time.sleep(1)
+
+    # Close calendar popup if still open
+    login.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
+    time.sleep(1)
+
+    selected_expiry_date = login.find_element(
+        By.XPATH,
+        exp_date_xpath
+    ).get_attribute("value")
+
+    print("Selected expiry date:", selected_expiry_date)
+
+    if selected_expiry_date.strip() == "":
+        raise Exception("Expiry date was not selected")
         
 
-    # Entering quantity for the item
+            
+
+    # ----- Entering quantity for the item -----
     qty = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//input[@id='inputNumber_ORD_PurchsCrt']"))
@@ -1175,14 +1354,15 @@ def test_create_purchase2(login):
 
 
     # Enter batch number for the item
-    time.sleep(5)
+    time.sleep(2)
     batch_number = WebDriverWait(login, 20).until(
             EC.element_to_be_clickable((By.XPATH,
-            "//td//div[@class='ng-star-inserted']//input[@type='text' and contains(@class, 'p-inputtext')]"))
+            "//input[@id='inputBatch_ORD_PurchsCrt']"))
         )
     batch_number.click()
 
-    random_batch_number = str(random.randint(5, 99))
+    # random_batch_number = str(random.randint(5, 99))
+    random_batch_number = "BATCH" + str(time.time_ns())
     batch_number.send_keys(random_batch_number)
     print("Batch_Number:", random_batch_number)
 
@@ -1624,17 +1804,19 @@ def test_create_order(login):
             (By.XPATH, "//span[normalize-space()='Id : 649']"))
     ).click()
 
-    # Select the store from the dropdown in create order pop up
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//p-dropdown[@id='selectStore_ORD_CrtItemPop']//div[@class='p-dropdown p-component']"))
-    ).click()              
+    # # Select the store from the dropdown in create order pop up
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//p-dropdown[@id='selectStore_ORD_CrtItemPop']//div[@class='p-dropdown p-component']"))
+    # ).click()              
 
-    time.sleep(1)
-    WebDriverWait(login, 10).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='B&B Stores']"))
-    ).click()
+    # time.sleep(1)
+    # WebDriverWait(login, 10).until(
+    #     EC.presence_of_element_located(
+    #         (By.XPATH, "//span[@class='ng-star-inserted'][normalize-space()='B&B Stores']"))
+    # ).click()
+
+    
 
     # Select catalog from the dropdown in create order pop up
     time.sleep(2)
