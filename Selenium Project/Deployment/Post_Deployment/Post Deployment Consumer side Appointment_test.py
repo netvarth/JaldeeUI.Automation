@@ -34,7 +34,7 @@ def  test_consumer_side(consumer_login):
 
         book_now_button = wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "(//button[@id='btnBookNow'])[1]")
+                (By.XPATH, "//button[@id='btnBookNow' and normalize-space()='Book Now']")
             )
         )
         scroll_to_element(consumer_login, book_now_button)

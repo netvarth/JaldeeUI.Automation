@@ -16,20 +16,20 @@ def test_consumer_side(consumer_login):
     print("Pre-Deployment Existing Consumer Appointment",current_date)   
     try:    
         time.sleep(5)
-        # Scroll to the element
-        consultation = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//h3[normalize-space()='GET YOUR CONSULTATION TODAY'])[1]")
-            )
-        )
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", consultation)
+        # # Scroll to the element
+        # consultation = WebDriverWait(consumer_login, 10).until(
+        #     EC.presence_of_element_located(
+        #         (By.XPATH, "(//h3[normalize-space()='GET YOUR CONSULTATION TODAY'])[1]")
+        #     )
+        # )
+        # consumer_login.execute_script("arguments[0].scrollIntoView(true);", consultation)
         
-        time.sleep(3)
+        # time.sleep(3)
         wait = WebDriverWait(consumer_login, 30)
 
         book_now_button = wait.until(
             EC.element_to_be_clickable(
-                (By.XPATH, "(//button[@id='btnBookNow'])[3]")
+                (By.XPATH, "//button[@id='btnBookNow' and normalize-space()='Book Now']")
             )
         )
         scroll_to_element(consumer_login, book_now_button)
