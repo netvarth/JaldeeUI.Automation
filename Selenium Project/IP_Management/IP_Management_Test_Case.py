@@ -916,13 +916,13 @@ def test_IP_Management_3(login):
         wait_and_locate_click(login, By.XPATH, "//p-multiselect[@placeholder='Select Assignee Doctor']")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//div[@class='p-checkbox-box'])[2]")                                                                                                                                            
+        wait_and_locate_click(login, By.XPATH, "//li[@aria-label='Venu Gopal']")                                                                                                                                            
     
         time.sleep(3)
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//li[@aria-label='Block D'])[1]")
 
         time.sleep(3)
         wait_and_locate_click(
@@ -4010,7 +4010,7 @@ def test_IP_Management_21(login):
         
         time.sleep(2)
         wait_and_locate_click(
-             driver, By.XPATH, "(//div[@id='actionNav_IP_DBoard'])[2]"
+             driver, By.XPATH, "//div[normalize-space()='Patients']/ancestor::div[@id='actionNav_IP_DBoard']"
         )
 
         time.sleep(2)
