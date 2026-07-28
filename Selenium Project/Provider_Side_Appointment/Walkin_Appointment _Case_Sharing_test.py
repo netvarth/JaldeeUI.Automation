@@ -1118,11 +1118,7 @@ def test_Case_Status(login):
         
         time.sleep(2)
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']")
-            )
-        ).send_keys("Fever")
+        wait_and_send_keys(login,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever" + Keys.ENTER)
 
         element = WebDriverWait(login, 10).until(
             EC.presence_of_element_located(
@@ -1272,11 +1268,14 @@ def test_treatment_plan(login):
             EC.element_to_be_clickable(
                 (By.XPATH, "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]"))
         ).click()
+
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+            EC.element_to_be_clickable((By.XPATH, "//div[@id='actionCreate_BUS_bookList']//p-card[@class='p-element']"))
         )
         element.click()
+
+
         time.sleep(3)
         wait = WebDriverWait(login, 10)
         element_appoint = wait.until(EC.presence_of_element_located(
@@ -1407,10 +1406,10 @@ def test_treatment_plan(login):
 
         WebDriverWait(login, 10).until(
             EC.presence_of_element_located((By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']"))
-        ).send_keys("Fever")
+        ).send_keys("Fever",Keys.RETURN)
 
         WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Save')]"))
+            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Save']"))
         ).click()
 
         msg = get_toast_message(login)
@@ -1511,7 +1510,7 @@ def test_treatment_plan(login):
         ).click()
         
         
-        dropdown_xpath = "//span[normalize-space()='Naveen KP']"
+        dropdown_xpath = "//li[@aria-label='Naveen KP']"
         element = login.find_element(By.XPATH, dropdown_xpath)
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -1534,13 +1533,14 @@ def test_treatment_plan(login):
         
         WebDriverWait(login, 10).until(
            EC.presence_of_element_located(
-               (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
+               (By.XPATH, "//div[contains(@class,'p-multiselect') and .//div[normalize-space()='Select User']]"))
        ).click()
         
         time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element1)
-        element1.click()
+        dropdown_xpath = "//li[@aria-label='Naveen KP']"
+        element = login.find_element(By.XPATH, dropdown_xpath)
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
         
         time.sleep(3)
         
@@ -1742,7 +1742,7 @@ def test_treatment_plan_1(login):
         ).click()
         time.sleep(3)
         element = WebDriverWait(login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'my-1') and .//span[text()='Appointment']]"))
+            EC.element_to_be_clickable((By.XPATH, "//div[@id='actionCreate_BUS_bookList']//p-card[@class='p-element']"))
         )
         element.click()
         time.sleep(3)
@@ -1873,14 +1873,13 @@ def test_treatment_plan_1(login):
 
         time.sleep(2)
 
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']"))
-        ).send_keys("Fever")
 
-        time.sleep(2)
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[contains(text(),'Save')]"))
-        ).click()
+       
+        time.sleep(1)
+        wait_and_send_keys(login,By.XPATH, "//input[@placeholder = 'Enter Chief Complaint']", "Fever" + Keys.ENTER)
+        
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
 
         msg = get_toast_message(login)
         print("Toast Message :", msg)
@@ -1980,7 +1979,7 @@ def test_treatment_plan_1(login):
         ).click()
         
         
-        dropdown_xpath = "//span[normalize-space()='Naveen KP']"
+        dropdown_xpath = "//li[@aria-label='Naveen KP']"
         element = login.find_element(By.XPATH, dropdown_xpath)
         login.execute_script("arguments[0].scrollIntoView();", element)
         element.click()
@@ -2003,13 +2002,13 @@ def test_treatment_plan_1(login):
         
         WebDriverWait(login, 10).until(
            EC.presence_of_element_located(
-               (By.XPATH, "//p-multiselect[@optionlabel='firstName']//span[@class='p-multiselect-trigger-icon fa fa-caret-down ng-star-inserted']"))
+               (By.XPATH, "//div[contains(@class,'p-multiselect') and .//div[normalize-space()='Select User']]"))
        ).click()
         
-        time.sleep(2)
-        element1 = login.find_element(By.XPATH, dropdown_xpath)
-        login.execute_script("arguments[0].scrollIntoView();", element1)
-        element1.click()
+        dropdown_xpath = "//li[@aria-label='Naveen KP']"
+        element = login.find_element(By.XPATH, dropdown_xpath)
+        login.execute_script("arguments[0].scrollIntoView();", element)
+        element.click()
         
         time.sleep(3)
         
@@ -2137,11 +2136,11 @@ def test_share_case_from_patientrecord(login):
         
         time.sleep(2)
         wait_and_send_keys(
-             login, By.XPATH, "//*[@placeholder='Enter name or phone or id']", "9207206005"
+             login, By.XPATH, "//*[@placeholder='Enter name or phone or id']", "8281276241"
         )
         
         wait_and_locate_click(
-             login, By.XPATH, "//span[normalize-space()='Id : 2']"
+             login, By.XPATH, "//span[normalize-space()='Id : 456547']"
         )
         
         time.sleep(1)
@@ -2198,11 +2197,11 @@ def test_multiple_share_case(login):
         
         time.sleep(2)
         wait_and_send_keys(
-             login, By.XPATH, "//*[@placeholder='Enter name or phone or id']", "9207206005"
+             login, By.XPATH, "//*[@placeholder='Enter name or phone or id']", "8281276241"
         )
         time.sleep(2)
         wait_and_locate_click(
-             login, By.XPATH, "//span[normalize-space()='Id : 2']"
+             login, By.XPATH, "//span[normalize-space()='Id : 456547']"
         )
         
         time.sleep(1)
@@ -2305,12 +2304,12 @@ def test_withonly_case_NewMR_from_patient_record(login):
         wait_and_locate_click(login, By.XPATH, "(//img)[3]")
         
         time.sleep(3)
-        element = driver.find_element(By.XPATH, "(//div[@id='actionCreate_BUS_bookList'])[1]")
+        element = driver.find_element(By.XPATH, "//div[@id='actionCreate_BUS_bookList']")
         element.click()
 
         time.sleep(3)
         wait = WebDriverWait(login, 10)
-        element_appoint = driver.find_element(By.XPATH, "//*[@id='btnCreateCust_BUS_appt']")
+        element_appoint = driver.find_element(By.XPATH, "//span[@id='btnCreateCust_BUS_appt']")
         element_appoint.click()
 
         time.sleep(2)
@@ -2356,7 +2355,7 @@ def test_withonly_case_NewMR_from_patient_record(login):
         time.sleep(3)
 
         Today_Date = wait.until(EC.presence_of_element_located((By.XPATH,
-                                                                "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
+                    "//span[@class='mat-calendar-body-cell-content mat-focus-indicator mat-calendar-body-selected mat-calendar-body-today']")))
         Today_Date.click()
         print("Today Date:", Today_Date.text)
         wait = WebDriverWait(driver, 10)
@@ -2866,11 +2865,10 @@ def test_withonly_prescription_NewMR_from_patient_record(login):
         wait_and_locate_click(login, By.XPATH, "//button[@id='newcase_visit_create_rx_btn']")
 
         time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//div[@id='mat-select-value-1'])[1]")
+        wait_and_locate_click(login, By.XPATH, "(//div[contains(@class,'mat-mdc-select-trigger')])[1]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//mat-option[contains(@class,'mat-mdc-option') "
-        "and contains(normalize-space(.),'Naveen KP')]")
+        wait_and_locate_click(login, By.XPATH, "//mat-option[.//span[normalize-space()='Naveen KP']]")
 
         time.sleep(2)
         wait_and_locate_click(login, By.XPATH, "(//button[normalize-space()='Add Medicine'])[1]")
