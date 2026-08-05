@@ -8,6 +8,7 @@ from framework.booking_invoice_tax_actions import (
     complete_single_service_booking_invoice_flow,
     complete_taxable_booking_service_invoice_flow,
     complete_two_taxable_services_booking_invoice_flow,
+    complete_booking_master_invoice_with_two_invoices_flow,
 )
 from framework.test_data import generate_consumer_profile
 
@@ -206,4 +207,60 @@ def test_create_invoice_with_two_taxable_services_and_verify_calculations(
     assert result["amount_due"] == Decimal("0.00")
 
 
-    
+ 
+ 	
+# Case 5 :: Create an invoice with a non-taxable service. Then create a new invoice with another non-taxable service. Then create a Master Invoice with merging these 2 invoices    
+
+
+@pytest.mark.booking
+@pytest.mark.invoice
+@pytest.mark.master_invoice
+def test_create_master_invoice_from_two_booking_invoices_and_complete_payment(
+    page: Page,
+    config,
+    ) -> None:
+    """
+    Case:
+    Create two invoices against one booking, consolidate them into a
+    Master Invoice, validate the combined total, and complete payment.
+
+    Invoice 1:
+    - Video call Services
+
+    Invoice 2:
+    - Consultation
+
+    Expected:
+    - Both invoices are created successfully.
+    - Both invoices are linked to a Master Invoice.
+    - Master Invoice total equals:
+      Video call Services rate + Consultation rate.
+    - Payment completes successfully.
+    - Master Invoice Amount Due becomes zero.
+    """
+
+    consumer_profile = generate_consumer_profile()
+
+    login(page, config)
+
+    result = complete_booking_master_invoice_with_two_invoices_flow(
+        page=page,
+        config=config,
+        consumer_profile=consumer_profile,
+        doctor_name="Naveen KP",
+        first_service_name="Video call Services",
+        second_service_name="Consultation",
+    )
+
+    assert result["first_invoice_created"] is True
+    assert result["second_invoice_created"] is True
+    assert result["master_invoice_created"] is True
+    assert result["master_total_valid"] is True
+    assert result["payment_completed"] is True
+    assert result["amount_due"] == Decimal("0.00")
+
+# Case 6 :: Create an invoice with a non-taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices
+
+
+
+
