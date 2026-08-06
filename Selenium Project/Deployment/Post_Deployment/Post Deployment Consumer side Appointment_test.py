@@ -201,9 +201,20 @@ def  test_consumer_side(consumer_login):
         print(f"Booking ID: {booking_id}")
 
         # Step 2: Click OK
-        WebDriverWait(consumer_login, 10).until(
-            EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='Ok']"))
-        ).click()
+        consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+
+        ok_button = WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnOK']"))
+        )
+
+        consumer_login.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});",
+            ok_button
+        )
+
+        time.sleep(1)
+        consumer_login.execute_script("arguments[0].click();", ok_button)
 
         print("Clicked OK button")
 
@@ -410,21 +421,27 @@ def  test_consumer_side(consumer_login):
             EC.presence_of_element_located((By.XPATH, date_xpath))
         )
 
-        # =========================
-        # ✅ CHECK IF ALREADY SELECTED
-        # =========================
         if "is-selected" in date_element.get_attribute("class"):
             print("Date already selected:", target_date)
 
         else:
+            # Bring date button into visible area
             consumer_login.execute_script(
-                "arguments[0].scrollIntoView({block:'center'});", date_element
+                "arguments[0].scrollIntoView({block:'center', inline:'center'});",
+                date_element
+            )
+            time.sleep(1)
+
+            # Re-locate the element after scroll to avoid stale/intercepted click
+            date_element = wait.until(
+                EC.presence_of_element_located((By.XPATH, date_xpath))
             )
 
-            wait.until(EC.element_to_be_clickable((By.XPATH, date_xpath)))
-            date_element.click()
+            # Use JS click instead of normal Selenium click
+            consumer_login.execute_script("arguments[0].click();", date_element)
 
             print("Selected Date:", target_date)
+            time.sleep(2)
 
             # =========================
             # ✅ WAIT FOR SLOTS TO LOAD

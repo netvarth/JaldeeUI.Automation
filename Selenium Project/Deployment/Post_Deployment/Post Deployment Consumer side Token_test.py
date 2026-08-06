@@ -161,7 +161,9 @@ def test_consumer_side_token(consumer_login):
         consumer_notes.send_keys("Notes added from consumer side")
         
         time.sleep(3)
+       # Scroll down to make Upload Files button visible
         consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(3)
         WebDriverWait(consumer_login, 10).until(
             EC.element_to_be_clickable((By.XPATH, "//button[contains(@class,'booking-upload__trigger') and .//span[normalize-space()='Upload Files']]"))
         ).click()
@@ -194,12 +196,28 @@ def test_consumer_side_token(consumer_login):
         booking_id = booking_id_element[1].text.strip()
         print(f"Booking ID: {booking_id}")
 
-        Ok_button = WebDriverWait(consumer_login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Ok']"))
+
+
+        consumer_login.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        time.sleep(2)
+
+        ok_button = WebDriverWait(consumer_login, 20).until(
+            EC.presence_of_element_located((By.XPATH, "//button[@id='btnOK']"))
         )
-        consumer_login.execute_script("arguments[0].scrollIntoView(true);", Ok_button)
+
+        consumer_login.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});",
+            ok_button
+        )
+
+        time.sleep(1)
+        consumer_login.execute_script("arguments[0].click();", ok_button)
+
+        print("Clicked OK button")
+
         time.sleep(3)
-        Ok_button.click()
+
+        
         time.sleep(2)
         bookings = WebDriverWait(consumer_login, 10).until(
             EC.presence_of_element_located(
@@ -350,7 +368,7 @@ def test_consumer_side_token(consumer_login):
 
         time.sleep(2)
         wait.until(
-            EC.element_to_be_clickable((By.XPATH, "(//span[contains(text(),'Reschedule')])[1]"))
+            EC.element_to_be_clickable((By.XPATH, "//span[normalize-space()='Reschedule']"))
         ).click()
 
         # =========================
@@ -399,21 +417,27 @@ def test_consumer_side_token(consumer_login):
             EC.presence_of_element_located((By.XPATH, date_xpath))
         )
 
-        # =========================
-        # ✅ CHECK IF ALREADY SELECTED
-        # =========================
         if "is-selected" in date_element.get_attribute("class"):
             print("Date already selected:", target_date)
 
         else:
             consumer_login.execute_script(
-                "arguments[0].scrollIntoView({block:'center'});", date_element
+                "arguments[0].scrollIntoView({block:'center', inline:'center'});",
+                date_element
             )
 
-            wait.until(EC.element_to_be_clickable((By.XPATH, date_xpath)))
-            date_element.click()
+            time.sleep(1)
+
+            # Re-locate after scroll
+            date_element = wait.until(
+                EC.presence_of_element_located((By.XPATH, date_xpath))
+            )
+
+            # JS click avoids intercepted click issue
+            consumer_login.execute_script("arguments[0].click();", date_element)
 
             print("Selected Date:", target_date)
+            time.sleep(2)
 
             # =========================
             # ✅ WAIT FOR SLOTS TO LOAD

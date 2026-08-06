@@ -378,7 +378,7 @@ def test_create_prescription(login):
 
     try:
         wait = WebDriverWait(login, 30)
-        wait_and_locate_click(login, By.XPATH, "(//img)[4]")
+        wait_and_locate_click(login, By.XPATH, "//img[contains(@src,'tokens.png')]/ancestor::div[@routerlinkactive='active-menu']")
 
         while True:
             try:
@@ -699,17 +699,54 @@ def test_create_case(login):
             EC.presence_of_element_located(
                 (By.XPATH, "//button[normalize-space()='Save']"))
         ).click()
-        time.sleep(3)
-        
-        WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Observations']"))
-        ).click()
 
-        time.sleep(3)
-        Observation = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Observations']"))
+        # time.sleep(3)    
+        # WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//button[normalize-space()='Observations']"))
+        # ).click()
+
+        # time.sleep(3)
+        # Observation = WebDriverWait(login, 10).until(
+        #     EC.presence_of_element_located((By.XPATH, "//input[@placeholder='Enter Observations']"))
+        # )
+        # Observation.send_keys("Minor fever",Keys.RETURN)
+
+
+        # Click Observations tab
+        observations_btn = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[normalize-space()='Observations']")
+            )
         )
-        Observation.send_keys("Minor fever",Keys.RETURN)
+
+        login.execute_script("arguments[0].scrollIntoView({block:'center'});", observations_btn)
+        time.sleep(1)
+        login.execute_script("arguments[0].click();", observations_btn)
+
+        print("Clicked Observations tab")
+        time.sleep(3)
+
+        # Enter Observation
+        observation_xpath = (
+            "//input[contains(@placeholder,'Observation') "
+            "or contains(@placeholder,'Observations')]"
+            "|//textarea[contains(@placeholder,'Observation') "
+            "or contains(@placeholder,'Observations')]"
+        )
+
+        Observation = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located((By.XPATH, observation_xpath))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView({block:'center'});", Observation)
+        time.sleep(1)
+
+        Observation.clear()
+        Observation.send_keys("Minor fever")
+        Observation.send_keys(Keys.RETURN)
+
+        print("Entered Observation")
+        time.sleep(2)
         
         time.sleep(3)
         WebDriverWait(login, 10).until(

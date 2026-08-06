@@ -12,12 +12,14 @@ def test_signup():
     current_date = datetime.now().strftime("%d-%m-%Y")
     print("Post-Deployment Signup",current_date)
     try:
-        # driver = login
-        login = webdriver.Chrome(
-            service=ChromeService(
-                executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-            )
-        )
+        # # driver = login
+        # login = webdriver.Chrome(
+        #     service=ChromeService(
+        #         executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
+        #     )
+        # )
+
+        login = webdriver.Chrome()
         login.get("https://www.jaldee.com/business/signup")
         login.maximize_window()
 
@@ -336,7 +338,7 @@ def test_signup():
             input_field = login.find_element(By.XPATH, "//input[@id='pac-input']")
 
             # Input "Thrissur" into the text field
-            input_field.send_keys("Thrissur")
+            input_field.send_keys("Nallankara")
             time.sleep(3)
 
             # Wait for the suggestions to appear and select the appropriate one
@@ -369,7 +371,7 @@ def test_signup():
 
         # Clear and enter a pincode
         pincode_input.clear()
-        pincode_input.send_keys("682001")
+        pincode_input.send_keys("680655")
 
 
 

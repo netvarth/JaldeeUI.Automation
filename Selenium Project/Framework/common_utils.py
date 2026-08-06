@@ -8,11 +8,9 @@ import os
 import datetime
 from faker import Faker
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from datetime import datetime, timedelta
@@ -22,15 +20,9 @@ from allure_commons.types import AttachmentType
 from selenium.webdriver.support.ui import Select
 
 
-import os
-from selenium.webdriver.firefox.service import Service
-from webdriver_manager.firefox import GeckoDriverManager
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException 
 from selenium.common.exceptions import TimeoutException
-from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
 
@@ -89,68 +81,14 @@ def create_user_data():
 
 
 
-
-
-
-# @pytest.fixture()
-# def login(request, url, username, password):
-#     chrome_options = webdriver.ChromeOptions()
-
-#     # ✅ ADD THIS FOR HEADLESS
-#     chrome_options.add_argument("--headless=new")
-#     chrome_options.add_argument("--window-size=1920,1080")
-#     chrome_options.add_argument("--disable-gpu")
-#     chrome_options.add_argument("--no-sandbox")
-
-#     chrome_options.add_experimental_option("prefs", {
-#         "credentials_enable_service": False,
-#         "profile.password_manager_enabled": False
-#     })
-
-#     prefs = {
-#         "credentials_enable_service": False,
-#         "profile.password_manager_enabled": False,
-#         "profile.password_manager_leak_detection_enabled": False,
-#         "password_manager_enabled": False,
-#     }
-
-#     chrome_options.add_experimental_option("prefs", prefs)
-
-#     chrome_options.add_argument("--disable-notifications")
-#     chrome_options.add_argument("--disable-infobars")
-#     chrome_options.add_argument("--disable-save-password-bubble")
-#     chrome_options.add_argument("--disable-password-manager-reauthentication")
-#     chrome_options.add_argument("--no-first-run")
-#     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-#     chrome_options.add_argument("--incognito")
-
-#     driver = webdriver.Chrome(
-#         service=ChromeService(executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"),
-#         options=chrome_options
-#     )
-
-
-
-
-
-
-
-
-
 @pytest.fixture()
 def login(url, username, password):
     chrome_options = webdriver.ChromeOptions()
-    chrome_options.add_experimental_option("prefs", {
-        "credentials_enable_service": False,
-        "profile.password_manager_enabled": False
-    })
-    chrome_options.add_argument("--disable-notifications")
-
     prefs = {
-    "credentials_enable_service": False,
-    "profile.password_manager_enabled": False,
-    "profile.password_manager_leak_detection_enabled": False,
-    "password_manager_enabled": False,  # extra precaution
+        "credentials_enable_service": False,
+        "profile.password_manager_enabled": False,
+        "profile.password_manager_leak_detection_enabled": False,
+        "password_manager_enabled": False,
     }
 
     chrome_options.add_experimental_option("prefs", prefs)
@@ -165,13 +103,13 @@ def login(url, username, password):
     chrome_options.add_argument("--incognito")  # optional
    
 
-    # Initialize Chrome driver with options
-    driver = webdriver.Chrome(
-        service=ChromeService(executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"),
-        options=chrome_options
-    )
+    # Selenium Manager automatically resolves a ChromeDriver version
+    # compatible with the locally installed Chrome browser.
+    driver = webdriver.Chrome(options=chrome_options)
 
     wait = WebDriverWait(driver, 10)  # Explicit wait up to 10 seconds
+
+
 
     def retry_find(by, locator, retries=3):
         """Helper to find an element with retries"""
@@ -184,13 +122,60 @@ def login(url, username, password):
                     raise
                 time.sleep(1)  # Short wait before retry
 
+    def retry_click(by, locator, retries=3):
+        """Helper to click an element safely with retries and JavaScript fallback"""
+        for attempt in range(retries):
+            try:
+                element = wait.until(EC.presence_of_element_located((by, locator)))
+                wait.until(EC.visibility_of(element))
+
+                driver.execute_script(
+                    "arguments[0].scrollIntoView({block: 'center'});",
+                    element
+                )
+                time.sleep(1)
+
+                try:
+                    wait.until(EC.element_to_be_clickable((by, locator)))
+                    element.click()
+                except Exception:
+                    driver.execute_script("arguments[0].click();", element)
+
+                return element
+
+            except (TimeoutException, NoSuchElementException, StaleElementReferenceException):
+                if attempt == retries - 1:
+                    raise
+                time.sleep(1)
+
     try:
         driver.get(url)
         driver.maximize_window()
 
         retry_find(By.ID, "loginId").send_keys(username)
-        retry_find(By.ID, "password").send_keys(password)
-        retry_find(By.XPATH, "//div[@class='mt-2']").click()
+
+        password_field = retry_find(By.ID, "password")
+        password_field.send_keys(password)
+        password_field.send_keys(Keys.TAB)
+
+        time.sleep(1)
+
+        login_button_xpath = (
+            "//button[normalize-space()='Sign In' "
+            "or normalize-space()='Login' "
+            "or .//span[normalize-space()='Sign In'] "
+            "or .//span[normalize-space()='Login']]"
+            "|//input[@type='submit' "
+            "or @value='Sign In' "
+            "or @value='Login']"
+            "|//div[contains(@class,'mt-2') "
+            "and (.//*[normalize-space()='Sign In' or normalize-space()='Login'] "
+            "or normalize-space()='Sign In' "
+            "or normalize-space()='Login')]"
+            "|//div[@class='mt-2']"
+        )
+
+        retry_click(By.XPATH, login_button_xpath)
 
         driver.implicitly_wait(5)
 
@@ -200,46 +185,19 @@ def login(url, username, password):
         driver.quit()
 
 
-# @pytest.fixture()
-# def login(url, username, password):
-#     options = FirefoxOptions()
-#     options.set_preference("dom.webnotifications.enabled", False)
-#     options.set_preference("signon.rememberSignons", False)
-#     options.set_preference("network.cookie.cookieBehavior", 0)
-#     options.binary_location = r"C:\Program Files\Mozilla Firefox\firefox.exe"
-
-#     driver = webdriver.Firefox(
-#         service=FirefoxService(executable_path=r"Drivers\geckodriver-win64\geckodriver.exe"),
-#         options=options
-#     )
-
-#     wait = WebDriverWait(driver, 5)  # Shorter explicit wait
-
-#     try:
-#         driver.get(url)
-
-#         # Fast login
-#         wait.until(EC.visibility_of_element_located((By.ID, "loginId"))).send_keys(username)
-#         wait.until(EC.visibility_of_element_located((By.ID, "password"))).send_keys(password)
-#         wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='mt-2']"))).click()
-
-#         yield driver
-
-#     finally:
-#         driver.quit()
-
 @pytest.fixture()
 def con_login(url):
 
-    driver = webdriver.Chrome(
-        service=ChromeService(
-            executable_path=r"Drivers\chromedriver-win64\chromedriver.exe"
-        )
-    )
+    driver = webdriver.Chrome()
     driver.get(url)
     driver.maximize_window()
     time.sleep(5)
+
     yield driver
+
+    driver.quit()
+
+    
 
 @pytest.fixture()
 def open_browser():
@@ -248,10 +206,8 @@ def open_browser():
     chrome_options.add_argument("--incognito")
     chrome_options.add_argument("--start-maximized")
 
-    driver = webdriver.Chrome(
-        service=ChromeService(executable_path=r"Drivers\\chromedriver-win64\\chromedriver.exe"),
-        options=chrome_options
-    )
+    # Selenium Manager automatically resolves the compatible ChromeDriver.
+    driver = webdriver.Chrome(options=chrome_options)
 
     yield driver
     driver.quit()
@@ -286,12 +242,6 @@ def create_business_detail():
  
 
 
-# def wait_and_click(login, by, value, timeout=30):
-    element = WebDriverWait(login, timeout).until(EC.element_to_be_clickable((by, value)))
-    element.click()
-    return element
-
-
 def wait_and_click(login, by, value, timeout=30):
     wait = WebDriverWait(login, timeout)
     element = wait.until(EC.presence_of_element_located((by, value)))
@@ -299,69 +249,66 @@ def wait_and_click(login, by, value, timeout=30):
     wait.until(EC.element_to_be_clickable((by, value)))
     element.click()
     return element
-# def wait_and_click(login, by, value, timeout=30):
-#     wait = WebDriverWait(login, timeout)
-#     last_err = None
-#     for _ in range(3):  # small retry for Angular re-render
-#         try:
-#             # Don't cache an earlier element; get a FRESH clickable element now
-#             el = wait.until(EC.element_to_be_clickable((by, value)))
-#             el.click()
-#             return el
-#         except StaleElementReferenceException as e:
-#             last_err = e
-#     # If we still fail after retries, raise the last error
-#     if last_err:
-#         raise last_err
 
-# def wait_and_locate_click(login, by, value, timeout=30):
-#     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
-#     element.click()
-#     return element
 
-# def wait_and_locate_all_click(login, by, value, timeout=30):
-#     elements = WebDriverWait(login, timeout).until(EC.presence_of_all_elements_located((by, value)))
-#     for element in elements:
-#         element.click()
-#     return elements
-
-# def wait_and_visible_click(login, by, value, timeout=30):
-#     element = WebDriverWait(login, timeout).until(EC.visibility_of_element_located((by, value)))
-#     element.click()
-#     return element
-
-# def wait_and_send_keys(login, by, value, keys, timeout=30):
-#     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
-#     element.send_keys(keys)
-#     return element
-
-# def wait_for_text(login, by, value, timeout=30):
-#     element = WebDriverWait(login, timeout).until(EC.presence_of_element_located((by, value)))
-#     return element.text
-
-def wait_and_locate_click(driver, by, value, timeout=30, retries=3):
+def wait_and_locate_click(driver, by, value, timeout=30, retries=5):
     wait = WebDriverWait(driver, timeout)
 
     for attempt in range(retries):
         try:
-            element = wait.until(EC.presence_of_element_located((by, value)))
-            wait.until(EC.visibility_of(element))
-            wait.until(EC.element_to_be_clickable((by, value)))
+            element = wait.until(
+                EC.presence_of_element_located((by, value))
+            )
 
             driver.execute_script(
-                "arguments[0].scrollIntoView({block: 'center'});", element
+                "arguments[0].scrollIntoView({block: 'center'});",
+                element
+            )
+
+            time.sleep(1)
+
+            element = wait.until(
+                EC.element_to_be_clickable((by, value))
             )
 
             try:
                 element.click()
-            except:
-                driver.execute_script("arguments[0].click();", element)
+                return element
 
-            return element
+            except StaleElementReferenceException:
+                print(f"Stale element during normal click. Retrying... Attempt {attempt + 1}")
+                time.sleep(1)
+                continue
+
+            except Exception:
+                try:
+                    element = wait.until(
+                        EC.presence_of_element_located((by, value))
+                    )
+                    driver.execute_script("arguments[0].click();", element)
+                    return element
+
+                except StaleElementReferenceException:
+                    print(f"Stale element during JS click. Retrying... Attempt {attempt + 1}")
+                    time.sleep(1)
+                    continue
 
         except StaleElementReferenceException:
+            print(f"Stale element found. Retrying click... Attempt {attempt + 1}")
+            time.sleep(1)
+            continue
+
+        except Exception:
             if attempt == retries - 1:
                 raise
+            time.sleep(1)
+
+    raise Exception(f"Unable to click element after {retries} retries: {value}")
+
+
+
+
+
 
 def wait_and_send_keys(driver, by, value, keys, timeout=30):
     wait = WebDriverWait(driver, timeout)
@@ -421,25 +368,6 @@ def wait_for_loader_to_disappear(driver, timeout=30):
     )
 
 
-# def get_snack_bar_message(login, timeout=30):
-#     try:
-#         # Try to get the normal snack bar message
-#         snack_bar = WebDriverWait(login, timeout).until(
-#             EC.visibility_of_element_located((By.CLASS_NAME, "snackbarnormal"))
-#         )
-#         message = snack_bar.text
-#         return message
-
-#     except:
-#         # If not found, try to get the error snack bar message
-#         try:
-#             snack_bar = WebDriverWait(login, timeout).until(
-#                 EC.visibility_of_element_located((By.CLASS_NAME, "snackbarerror"))
-#             )
-#             message = snack_bar.text
-#             return message
-#         except Exception as e:
-#             return None
 
 def get_snack_bar_message(login, timeout=5):
     """
@@ -497,20 +425,7 @@ def click_to_element(login, element):
     login.execute_script("arguments[0].click();", element)
 
 
-# Generate a random billing address
-# def generate_random_billing_address():
-#     fake = Faker()
-#     street_address = fake.street_address()  # e.g., '1234 Elm St.'
-#     city = fake.city()  # e.g., 'Springfield'
-#     state = fake.state()  # e.g., 'Illinois'
-#     zip_code = fake.zipcode()  # e.g., '62704'
-#     country = fake.country()  # e.g., 'United States'
-    
-#     # Combine to form a full billing address
-#     # billing_address = f"{street_address}, {city}, {state} {zip_code}, {country}"
-    
-#     # return billing_address
-#     return {street_address}, {city}, {state}, {zip_code}, {country}
+
 def generate_random_billing_address():
     fake = Faker()
     street_address = fake.street_address()
@@ -639,4 +554,3 @@ def create_room_and_bed(driver, wait, room_name):
         wait_and_locate_click(driver, By.XPATH, "//i[@class='pi pi-arrow-left']")
 
     return bed_name
-
