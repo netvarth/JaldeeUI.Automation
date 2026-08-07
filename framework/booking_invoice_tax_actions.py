@@ -4548,7 +4548,721 @@ def read_master_invoice_total(page: Page) -> Decimal:
     )
 
 
-# Create an invoice with a non-taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices
+# Create an invoice with a non-taxable service. Then create a new invoice with a taxable service. Then create a Master Invoice with merging these 2 invoices
+
+
+
+def complete_booking_master_invoice_non_taxable_and_taxable_flow(
+    page: Page,
+    config,
+    consumer_profile,
+    doctor_name: str = "Naveen KP",
+    non_taxable_service_name: str = "Video call Services",
+    taxable_service_name: str = "WhatsApp Service(Taxable)",
+    tax_percentage: Decimal = Decimal("5.00"),
+) -> dict:
+    """
+    Create:
+    1. Non-taxable booking invoice.
+    2. Taxable booking invoice against the same booking.
+    3. Master Invoice containing both.
+
+    Validate taxable values between individual invoice and Master Invoice.
+    """
+
+    # ---------------------------------------------------------
+    # Create appointment
+    # ---------------------------------------------------------
+
+    select_first_business_if_needed(page)
+
+    open_appointment_dashboard(page)
+
+    open_create_appointment_page(page)
+
+    patient_name = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    select_appointment_doctor(
+        page=page,
+        doctor_name=doctor_name,
+    )
+
+    select_appointment_service(
+        page=page,
+        service_name=non_taxable_service_name,
+    )
+
+    confirm_appointment(page)
+
+    # ---------------------------------------------------------
+    # Open newly created appointment
+    # ---------------------------------------------------------
+
+    open_latest_created_appointment(
+        page=page,
+        patient_name=patient_name,
+    )
+
+    open_appointment_details(page)
+
+    # ---------------------------------------------------------
+    # INVOICE 1
+    # Video call Services - non-taxable
+    # ---------------------------------------------------------
+
+    create_booking_invoice(page)
+
+    first_service_amounts = read_booking_invoice_item_amounts(
+        page=page,
+        item_name=non_taxable_service_name,
+    )
+
+    non_taxable_rate = first_service_amounts["rate"]
+    non_taxable_tax = first_service_amounts["tax"]
+    non_taxable_total = first_service_amounts["total"]
+
+    assert_amount_close(
+        actual=non_taxable_tax,
+        expected=Decimal("0.00"),
+        label=f"{non_taxable_service_name} Tax",
+        tolerance=Decimal("0.01"),
+    )
+
+    first_invoice_created = update_booking_invoice(page)
+
+    # ---------------------------------------------------------
+    # Return to booking
+    # ---------------------------------------------------------
+
+    go_back_to_booking_details_from_invoice(page)
+
+    # ---------------------------------------------------------
+    # INVOICE 2
+    # WhatsApp Service(Taxable)
+    # ---------------------------------------------------------
+
+    open_new_booking_invoice(page)
+
+    add_service_to_booking_invoice(
+        page=page,
+        service_name=taxable_service_name,
+    )
+
+    taxable_amounts = read_booking_invoice_item_amounts(
+        page=page,
+        item_name=taxable_service_name,
+    )
+
+    taxable_rate = taxable_amounts["rate"]
+    taxable_actual_tax = taxable_amounts["tax"]
+    taxable_item_total = taxable_amounts["total"]
+
+    # ---------------------------------------------------------
+    # Validate individual taxable invoice
+    # ---------------------------------------------------------
+
+    taxable_expected_tax = round_money(
+        taxable_rate * tax_percentage / Decimal("100")
+    )
+
+    assert_amount_close(
+        actual=taxable_actual_tax,
+        expected=taxable_expected_tax,
+        label=f"{taxable_service_name} Tax",
+        tolerance=Decimal("0.01"),
+    )
+
+    taxable_expected_total = round_money(
+        taxable_rate + taxable_actual_tax
+    )
+
+    assert_amount_close(
+        actual=taxable_item_total,
+        expected=taxable_expected_total,
+        label=f"{taxable_service_name} item total",
+        tolerance=Decimal("0.01"),
+    )
+
+    # Read the invoice-level Net Total.
+    taxable_invoice_net_total = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Net Total",
+            "Net total",
+        ],
+        required=True,
+    )
+
+    assert_amount_close(
+        actual=taxable_invoice_net_total,
+        expected=taxable_expected_total,
+        label=f"{taxable_service_name} invoice Net Total",
+        tolerance=Decimal("0.01"),
+    )
+
+    tax_calculation_valid = (
+        abs(
+            taxable_actual_tax
+            - taxable_expected_tax
+        )
+        <= Decimal("0.01")
+    )
+
+    second_invoice_created = update_booking_invoice(page)
+
+    # ---------------------------------------------------------
+    # Back to booking -> invoices
+    # ---------------------------------------------------------
+
+    go_back_to_booking_details_from_invoice(page)
+
+    open_booking_invoices_tab(page)
+
+    # ---------------------------------------------------------
+    # Generate Master Invoice
+    # ---------------------------------------------------------
+
+    master_invoice_created = (
+        create_master_invoice_from_booking_invoices(page)
+    )
+
+    open_generated_master_invoice(page)
+
+    # ---------------------------------------------------------
+    # Read Master Invoice detailed breakup
+    # ---------------------------------------------------------
+
+    master_taxable_amounts = (
+        read_master_invoice_item_amounts(
+            page=page,
+            item_name=taxable_service_name,
+        )
+    )
+
+    master_non_taxable_amounts = (
+        read_master_invoice_item_amounts(
+            page=page,
+            item_name=non_taxable_service_name,
+        )
+    )
+
+    master_taxable_rate = master_taxable_amounts["rate"]
+    master_taxable_tax = master_taxable_amounts["tax"]
+    master_taxable_amount = master_taxable_amounts["amount"]
+
+    master_non_taxable_rate = (
+        master_non_taxable_amounts["rate"]
+    )
+
+    master_non_taxable_tax = (
+        master_non_taxable_amounts["tax"]
+    )
+
+    master_non_taxable_amount = (
+        master_non_taxable_amounts["amount"]
+    )
+
+    # ---------------------------------------------------------
+    # Compare individual invoice vs Master Invoice
+    # ---------------------------------------------------------
+
+    assert_amount_close(
+        actual=master_taxable_rate,
+        expected=taxable_rate,
+        label=(
+            f"{taxable_service_name} Master Invoice Rate"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=master_taxable_tax,
+        expected=taxable_actual_tax,
+        label=(
+            f"{taxable_service_name} Master Invoice Tax"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=master_taxable_amount,
+        expected=taxable_invoice_net_total,
+        label=(
+            f"{taxable_service_name} Master Invoice Amount"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    # Also verify non-taxable item.
+    assert_amount_close(
+        actual=master_non_taxable_rate,
+        expected=non_taxable_rate,
+        label=(
+            f"{non_taxable_service_name} Master Invoice Rate"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=master_non_taxable_tax,
+        expected=Decimal("0.00"),
+        label=(
+            f"{non_taxable_service_name} Master Invoice Tax"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=master_non_taxable_amount,
+        expected=non_taxable_total,
+        label=(
+            f"{non_taxable_service_name} Master Invoice Amount"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    # ---------------------------------------------------------
+    # Validate Master Invoice Amount Due
+    # ---------------------------------------------------------
+
+    expected_master_amount_due = round_money(
+        master_taxable_amount
+        + master_non_taxable_amount
+    )
+
+    actual_master_amount_due = (
+        read_master_invoice_amount_due(page)
+    )
+
+    assert_amount_close(
+        actual=actual_master_amount_due,
+        expected=expected_master_amount_due,
+        label="Master Invoice Amount Due",
+        tolerance=Decimal("0.01"),
+    )
+
+    master_taxable_rate_valid = (
+        abs(master_taxable_rate - taxable_rate)
+        <= Decimal("0.01")
+    )
+
+    master_taxable_tax_valid = (
+        abs(
+            master_taxable_tax
+            - taxable_actual_tax
+        )
+        <= Decimal("0.01")
+    )
+
+    master_taxable_amount_valid = (
+        abs(
+            master_taxable_amount
+            - taxable_invoice_net_total
+        )
+        <= Decimal("0.01")
+    )
+
+    master_amount_due_valid = (
+        abs(
+            actual_master_amount_due
+            - expected_master_amount_due
+        )
+        <= Decimal("0.01")
+    )
+
+    print(
+        "\n"
+        "============================================\n"
+        "BOOKING MASTER INVOICE TAX VALIDATION\n"
+        "============================================\n"
+        f"Patient: {patient_name}\n"
+        "\n"
+        f"Non-taxable service: {non_taxable_service_name}\n"
+        f"Individual Rate: {non_taxable_rate}\n"
+        f"Individual Tax: {non_taxable_tax}\n"
+        f"Individual Total: {non_taxable_total}\n"
+        f"Master Rate: {master_non_taxable_rate}\n"
+        f"Master Tax: {master_non_taxable_tax}\n"
+        f"Master Amount: {master_non_taxable_amount}\n"
+        "\n"
+        f"Taxable service: {taxable_service_name}\n"
+        f"Individual Rate: {taxable_rate}\n"
+        f"Tax Percentage: {tax_percentage}%\n"
+        f"Expected Tax: {taxable_expected_tax}\n"
+        f"Actual Tax: {taxable_actual_tax}\n"
+        f"Individual Net Total: {taxable_invoice_net_total}\n"
+        f"Master Rate: {master_taxable_rate}\n"
+        f"Master Tax: {master_taxable_tax}\n"
+        f"Master Amount: {master_taxable_amount}\n"
+        "\n"
+        f"Expected Master Amount Due: "
+        f"{expected_master_amount_due}\n"
+        f"Actual Master Amount Due: "
+        f"{actual_master_amount_due}\n"
+        "============================================"
+    )
+
+    # ---------------------------------------------------------
+    # Complete payment
+    # ---------------------------------------------------------
+
+    payment_result = complete_booking_invoice_payment(page)
+
+    amount_due_after_payment = (
+        payment_result["amount_due"]
+    )
+
+    assert_amount_close(
+        actual=amount_due_after_payment,
+        expected=Decimal("0.00"),
+        label="Master Invoice Amount Due after payment",
+        tolerance=Decimal("0.01"),
+    )
+
+    return {
+        "patient_name": patient_name,
+
+        "first_invoice_created": first_invoice_created,
+        "second_invoice_created": second_invoice_created,
+        "master_invoice_created": master_invoice_created,
+
+        "non_taxable_service_name":
+            non_taxable_service_name,
+        "non_taxable_rate":
+            non_taxable_rate,
+        "non_taxable_tax":
+            non_taxable_tax,
+        "non_taxable_total":
+            non_taxable_total,
+
+        "taxable_service_name":
+            taxable_service_name,
+        "taxable_rate":
+            taxable_rate,
+        "taxable_expected_tax":
+            taxable_expected_tax,
+        "taxable_actual_tax":
+            taxable_actual_tax,
+        "taxable_invoice_net_total":
+            taxable_invoice_net_total,
+
+        "master_taxable_rate":
+            master_taxable_rate,
+        "master_taxable_tax":
+            master_taxable_tax,
+        "master_taxable_amount":
+            master_taxable_amount,
+
+        "master_non_taxable_amount":
+            master_non_taxable_amount,
+
+        "expected_master_amount_due":
+            expected_master_amount_due,
+        "actual_master_amount_due":
+            actual_master_amount_due,
+
+        "tax_calculation_valid":
+            tax_calculation_valid,
+        "master_taxable_rate_valid":
+            master_taxable_rate_valid,
+        "master_taxable_tax_valid":
+            master_taxable_tax_valid,
+        "master_taxable_amount_valid":
+            master_taxable_amount_valid,
+        "master_amount_due_valid":
+            master_amount_due_valid,
+
+        "payment_completed":
+            payment_result["payment_completed"],
+        "payment_method":
+            payment_result["payment_method"],
+        "payment_mode":
+            payment_result.get("payment_mode"),
+        "amount_due_after_payment":
+            amount_due_after_payment,
+    }
+
+# -------- Read item from Master Invoice ------------
+
+def read_master_invoice_item_amounts(
+    page: Page,
+    item_name: str,
+) -> dict[str, Decimal]:
+    """
+    Read Rate, Tax, and Amount for a service from the Master Invoice
+    Detailed Breakups table.
+
+    Expected columns:
+    Description | Date | Quantity | Rate | Discount | Tax | Amount
+    """
+
+    detailed_breakups = page.get_by_text(
+        "Detailed Breakups",
+        exact=True,
+    ).first
+
+    expect(detailed_breakups).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    # Locate the table after the visible Detailed Breakups heading.
+    breakup_table = detailed_breakups.locator(
+        "xpath=following::table[1]"
+    )
+
+    expect(breakup_table).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    # Do not use \b after item_name because names ending with
+    # characters such as ")" can fail word-boundary matching.
+    item_row = breakup_table.get_by_role("row").filter(
+        has_text=re.compile(
+            re.escape(item_name),
+            re.IGNORECASE,
+        )
+    )
+
+    visible_row = first_visible_locator(item_row)
+
+    # Fallback using table rows directly.
+    if visible_row is None:
+        rows = breakup_table.locator("tr")
+
+        for index in range(rows.count()):
+            row = rows.nth(index)
+
+            try:
+                if not row.is_visible():
+                    continue
+
+                row_text = normalize_text(
+                    row.inner_text()
+                )
+
+                if item_name.lower() in row_text.lower():
+                    visible_row = row
+                    break
+
+            except PlaywrightTimeoutError:
+                continue
+
+    if visible_row is None:
+        table_text = normalize_text(
+            breakup_table.inner_text()
+        )
+
+        raise AssertionError(
+            f"Unable to locate '{item_name}' in the Master Invoice "
+            f"Detailed Breakups table.\n"
+            f"Detailed Breakups content:\n{table_text}"
+        )
+
+    row_text = normalize_text(
+        visible_row.inner_text()
+    )
+
+    print(
+        f"[Master Invoice Item] {item_name}: {row_text}"
+    )
+
+    cells = visible_row.get_by_role("cell")
+
+    if cells.count() < 7:
+        cells = visible_row.locator("td")
+
+    assert cells.count() >= 7, (
+        f"Unexpected Master Invoice row structure for "
+        f"'{item_name}'. "
+        f"Cell count={cells.count()}. "
+        f"Row text={row_text}"
+    )
+
+    # Master Invoice Detailed Breakups:
+    #
+    # 0 Description
+    # 1 Date
+    # 2 Quantity
+    # 3 Rate
+    # 4 Discount
+    # 5 Tax
+    # 6 Amount
+
+    rate = read_single_amount_from_cell(
+        cell=cells.nth(3),
+        label=f"{item_name} Master Invoice Rate",
+    )
+
+    tax = read_single_amount_from_cell(
+        cell=cells.nth(5),
+        label=f"{item_name} Master Invoice Tax",
+    )
+
+    amount = read_single_amount_from_cell(
+        cell=cells.nth(6),
+        label=f"{item_name} Master Invoice Amount",
+    )
+
+    print(
+        f"[Master Invoice Item Values] "
+        f"{item_name}: "
+        f"Rate={rate}, Tax={tax}, Amount={amount}"
+    )
+
+    return {
+        "rate": rate,
+        "tax": tax,
+        "amount": amount,
+    }
+
+
+
+# -------- Read Master Invoice Amount Due ------
+
+def read_master_invoice_amount_due(
+    page: Page,
+) -> Decimal:
+    """
+    Read Amount Due from the Master Invoice page.
+
+    Amount Due is displayed below the Detailed Breakups table,
+    not inside the table itself.
+    """
+
+    detailed_breakups = page.get_by_text(
+        "Detailed Breakups",
+        exact=True,
+    ).first
+
+    expect(detailed_breakups).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    # ---------------------------------------------------------
+    # Preferred approach:
+    # Locate the visible Amount Due text from the Master Invoice
+    # summary below Detailed Breakups.
+    # ---------------------------------------------------------
+
+    amount_due_candidates = page.get_by_text(
+        re.compile(
+            r"Amount\s*Due",
+            re.IGNORECASE,
+        )
+    )
+
+    amount_due_locator = last_visible_locator(
+        amount_due_candidates
+    )
+
+    if amount_due_locator is not None:
+
+        # First try the text of the element itself.
+        own_text = normalize_text(
+            amount_due_locator.inner_text()
+        )
+
+        own_amounts = extract_decimal_amounts(
+            own_text
+        )
+
+        if own_amounts:
+            amount_due = round_money(
+                own_amounts[-1]
+            )
+
+            print(
+                f"[Master Invoice Amount Due] "
+                f"{amount_due}"
+            )
+
+            return amount_due
+
+        # -----------------------------------------------------
+        # Amount may be in a sibling element:
+        #
+        # Amount Due:     ₹815.00
+        # -----------------------------------------------------
+
+        parent = amount_due_locator.locator(
+            "xpath=parent::*"
+        )
+
+        if parent.count() > 0:
+
+            parent_text = normalize_text(
+                parent.first.inner_text()
+            )
+
+            match = re.search(
+                r"Amount\s*Due\s*:?\s*"
+                r"(?:₹|)?\s*"
+                r"([\d,]+(?:\.\d+)?)",
+                parent_text,
+                re.IGNORECASE,
+            )
+
+            if match:
+
+                amount_due = round_money(
+                    Decimal(
+                        match.group(1).replace(",", "")
+                    )
+                )
+
+                print(
+                    f"[Master Invoice Amount Due] "
+                    f"{amount_due}"
+                )
+
+                return amount_due
+
+    # ---------------------------------------------------------
+    # Fallback:
+    # Search the entire Master Invoice content.
+    # ---------------------------------------------------------
+
+    page_text = normalize_text(
+        page.locator("body").inner_text()
+    )
+
+    matches = re.findall(
+        r"Amount\s*Due\s*:?\s*"
+        r"(?:₹|)?\s*"
+        r"([\d,]+(?:\.\d+)?)",
+        page_text,
+        re.IGNORECASE,
+    )
+
+    if matches:
+
+        # Use the last Amount Due because linked invoices can also
+        # contain due amounts higher on the page.
+        amount_due = round_money(
+            Decimal(
+                matches[-1].replace(",", "")
+            )
+        )
+
+        print(
+            f"[Master Invoice Amount Due] "
+            f"{amount_due}"
+        )
+
+        return amount_due
+
+    raise AssertionError(
+        "Unable to read Amount Due from the Master Invoice page.\n"
+        f"Page content:\n{page_text}"
+    )    
+
+
+
+# Case 7 :: Create an invoice with a taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices        
+
 
 
 

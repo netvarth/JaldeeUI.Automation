@@ -9,6 +9,7 @@ from framework.booking_invoice_tax_actions import (
     complete_taxable_booking_service_invoice_flow,
     complete_two_taxable_services_booking_invoice_flow,
     complete_booking_master_invoice_with_two_invoices_flow,
+    complete_booking_master_invoice_non_taxable_and_taxable_flow,
 )
 from framework.test_data import generate_consumer_profile
 
@@ -259,7 +260,76 @@ def test_create_master_invoice_from_two_booking_invoices_and_complete_payment(
     assert result["payment_completed"] is True
     assert result["amount_due"] == Decimal("0.00")
 
-# Case 6 :: Create an invoice with a non-taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices
+# Case 6 :: Create an invoice with a non-taxable service. Then create a new invoice with a taxable service. Then create a Master Invoice with merging these 2 invoices
+
+
+
+@pytest.mark.booking
+@pytest.mark.invoice
+@pytest.mark.invoice_tax
+@pytest.mark.master_invoice
+def test_master_invoice_with_non_taxable_and_taxable_booking_invoices(
+    page: Page,
+    config,
+) -> None:
+    """
+    Case:
+    Create one booking invoice with a non-taxable service and another
+    invoice with a taxable service, then merge both into a Master Invoice.
+
+    Invoice 1:
+    - Video call Services
+    - Non-taxable
+
+    Invoice 2:
+    - WhatsApp Service(Taxable)
+    - Tax percentage: 5%
+
+    Expected:
+    - WhatsApp tax = Rate * 5 / 100.
+    - WhatsApp Net Total = Rate + Tax.
+    - WhatsApp Rate in Master Invoice matches the individual invoice.
+    - WhatsApp Tax in Master Invoice matches the individual invoice.
+    - WhatsApp Amount in Master Invoice matches individual Net Total.
+    - Video call Services Amount is preserved in Master Invoice.
+    - Master Invoice Amount Due =
+        Video call Services Amount + WhatsApp Service(Taxable) Amount.
+    - Payment succeeds.
+    - Amount Due becomes zero after payment.
+    """
+
+    consumer_profile = generate_consumer_profile()
+
+    login(page, config)
+
+    result = complete_booking_master_invoice_non_taxable_and_taxable_flow(
+        page=page,
+        config=config,
+        consumer_profile=consumer_profile,
+        doctor_name="Naveen KP",
+        non_taxable_service_name="Video call Services",
+        taxable_service_name="WhatsApp Service(Taxable)",
+        tax_percentage=Decimal("5.00"),
+    )
+
+    assert result["first_invoice_created"] is True
+    assert result["second_invoice_created"] is True
+    assert result["master_invoice_created"] is True
+
+    assert result["tax_calculation_valid"] is True
+    assert result["master_taxable_rate_valid"] is True
+    assert result["master_taxable_tax_valid"] is True
+    assert result["master_taxable_amount_valid"] is True
+    assert result["master_amount_due_valid"] is True
+
+    assert result["payment_completed"] is True
+    assert result["amount_due_after_payment"] == Decimal("0.00")
+
+
+
+# Case 7 :: Create an invoice with a taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices           
+
+
 
 
 
