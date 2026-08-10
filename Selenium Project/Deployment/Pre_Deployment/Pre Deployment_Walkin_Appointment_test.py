@@ -14,6 +14,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from allure_commons.types import AttachmentType
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 @allure.severity(allure.severity_level.CRITICAL)
 @allure.title("Pre deployment signup")
