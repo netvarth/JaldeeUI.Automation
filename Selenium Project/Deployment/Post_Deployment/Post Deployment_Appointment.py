@@ -783,7 +783,7 @@ def test_create_patient(login):
             EC.element_to_be_clickable(
                 (
                     By.XPATH,
-                    "//div[contains(@class, 'font-small') and contains(text(),'Appointments')]",
+                    "//img[contains(@src,'appointments.png')]",
                 )
             )
         ).click()
