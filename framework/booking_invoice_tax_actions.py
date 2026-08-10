@@ -1581,93 +1581,304 @@ def find_visible_next_pagination_button(
 
 def open_appointment_details(page: Page) -> None:
     """
-    Click View Details from the expanded appointment accordion.
+    Open the appointment details screen from the expanded appointment.
+
+    Supports the current booking UI where the page may show:
+    - Appointment
+    - New Invoice
+    - View Invoice
+
+    instead of the older:
+    - Appointment Details
+    - Create Invoice
+    - Generate Bill
     """
 
-    view_details = page.get_by_role(
+    # =========================================================
+    # LOCATE VIEW DETAILS
+    # =========================================================
+
+    view_details_candidates = page.get_by_role(
         "button",
-        name=re.compile(r"View Details", re.IGNORECASE),
+        name=re.compile(
+            r"View\s*Details",
+            re.IGNORECASE,
+        ),
     )
 
-    if view_details.count() == 0:
-        view_details = page.get_by_text(
-            re.compile(r"View Details", re.IGNORECASE)
-        )
+    visible_view_details = last_visible_locator(
+        view_details_candidates
+    )
 
-    expect(view_details.last).to_be_visible(timeout=DEFAULT_TIMEOUT)
-    view_details.last.click()
-
-    expect(
-        page.get_by_text(
+    if visible_view_details is None:
+        view_details_candidates = page.get_by_text(
             re.compile(
-                r"Appointment Details|Create Invoice|Generate Bill",
+                r"View\s*Details",
                 re.IGNORECASE,
             )
-        ).first
-    ).to_be_visible(timeout=DEFAULT_TIMEOUT)
+        )
+
+        visible_view_details = last_visible_locator(
+            view_details_candidates
+        )
+
+    assert visible_view_details is not None, (
+        "Unable to locate the View Details button "
+        "for the selected appointment."
+    )
+
+    visible_view_details.click()
+
+    # =========================================================
+    # WAIT FOR APPOINTMENT DETAILS SCREEN
+    # =========================================================
+
+    try:
+        page.wait_for_load_state(
+            "networkidle",
+            timeout=5_000,
+        )
+    except PlaywrightTimeoutError:
+        pass
+
+    # Give Angular a brief opportunity to finish the details render.
+    page.wait_for_timeout(500)
+
+    # =========================================================
+    # VERIFY USING STABLE DETAILS-PAGE ELEMENTS
+    # =========================================================
+
+    details_loaded = False
+
+    # ---------------------------------------------------------
+    # Booking ID is one of the most stable indicators that the
+    # appointment details screen has loaded.
+    # ---------------------------------------------------------
+
+    booking_id = page.get_by_text(
+        re.compile(
+            r"Booking\s*ID\s*:",
+            re.IGNORECASE,
+        )
+    )
+
+    if first_visible_locator(booking_id) is not None:
+        details_loaded = True
+
+    # ---------------------------------------------------------
+    # Current UI heading may simply be "Appointment".
+    # ---------------------------------------------------------
+
+    if not details_loaded:
+        appointment_heading = page.get_by_role(
+            "heading",
+            name=re.compile(
+                r"\bAppointment\b",
+                re.IGNORECASE,
+            ),
+        )
+
+        if first_visible_locator(appointment_heading) is not None:
+            details_loaded = True
+
+    # ---------------------------------------------------------
+    # Invoice-related actions also identify the details screen.
+    # Current UI:
+    #   New Invoice
+    #   View Invoice
+    #
+    # Older UI:
+    #   Create Invoice
+    #   Generate Bill
+    # ---------------------------------------------------------
+
+    if not details_loaded:
+        invoice_actions = page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Create\s*Invoice|"
+                r"New\s*Invoice|"
+                r"View\s*Invoice|"
+                r"Generate\s*Bill",
+                re.IGNORECASE,
+            ),
+        )
+
+        if first_visible_locator(invoice_actions) is not None:
+            details_loaded = True
+
+    # ---------------------------------------------------------
+    # Details page normally contains the Invoices tab.
+    # ---------------------------------------------------------
+
+    if not details_loaded:
+        invoices_tab = page.get_by_role(
+            "tab",
+            name=re.compile(
+                r"Invoices",
+                re.IGNORECASE,
+            ),
+        )
+
+        if first_visible_locator(invoices_tab) is not None:
+            details_loaded = True
+
+    assert details_loaded, (
+        "Appointment details page did not load successfully. "
+        f"Current URL: {page.url}"
+    )
+
+    print(
+        "[Appointment Details] Opened successfully. "
+        f"URL: {page.url}"
+    )
 
 
 def create_booking_invoice(page: Page) -> None:
     """
-    Open the Create Invoice page from Appointment Details.
+    Open the first/new booking invoice from Appointment Details.
 
-    The Create Invoice action may be:
-    - visible text inside a combined action button
-    - a child element inside a button
-    - a standalone button or clickable container
+    Supports both:
+    - Create Invoice
+    - New Invoice
+
+    The UI wording differs depending on the current booking/invoice state
+    and application version.
     """
 
-    create_invoice_text = page.get_by_text(
+    invoice_action = None
+
+    # =========================================================
+    # PREFERRED: CREATE INVOICE
+    # =========================================================
+
+    create_candidates = page.get_by_text(
         "Create Invoice",
         exact=True,
     )
 
-    visible_create_invoice = last_visible_locator(
-        create_invoice_text
+    invoice_action = last_visible_locator(
+        create_candidates
     )
 
-    assert visible_create_invoice is not None, (
-        "Unable to locate the visible Create Invoice action "
+    # =========================================================
+    # CURRENT UI FALLBACK: NEW INVOICE
+    # =========================================================
+
+    if invoice_action is None:
+        new_invoice_buttons = page.get_by_role(
+            "button",
+            name=re.compile(
+                r"New\s*Invoice",
+                re.IGNORECASE,
+            ),
+        )
+
+        invoice_action = last_visible_locator(
+            new_invoice_buttons
+        )
+
+    # =========================================================
+    # TEXT FALLBACK
+    # =========================================================
+
+    if invoice_action is None:
+        new_invoice_text = page.get_by_text(
+            "New Invoice",
+            exact=True,
+        )
+
+        invoice_action = last_visible_locator(
+            new_invoice_text
+        )
+
+    assert invoice_action is not None, (
+        "Unable to locate Create Invoice or New Invoice "
         "on Appointment Details."
     )
 
-    visible_create_invoice.scroll_into_view_if_needed()
+    clicked = False
+    last_error = None
 
-    # Prefer the clickable ancestor containing the exact text.
-    clickable_ancestor = visible_create_invoice.locator(
-        "xpath=ancestor::*["
-        "self::button or "
-        "@role='button' or "
-        "self::a"
-        "][1]"
+    # =========================================================
+    # RETRY FOR ANGULAR DOM RE-RENDER
+    # =========================================================
+
+    for attempt in range(3):
+
+        try:
+            # Re-locate on every retry.
+            create_candidates = page.get_by_text(
+                "Create Invoice",
+                exact=True,
+            )
+
+            current_action = last_visible_locator(
+                create_candidates
+            )
+
+            if current_action is None:
+                current_action = last_visible_locator(
+                    page.get_by_role(
+                        "button",
+                        name=re.compile(
+                            r"New\s*Invoice",
+                            re.IGNORECASE,
+                        ),
+                    )
+                )
+
+            if current_action is None:
+                current_action = last_visible_locator(
+                    page.get_by_text(
+                        "New Invoice",
+                        exact=True,
+                    )
+                )
+
+            if current_action is None:
+                page.wait_for_timeout(500)
+                continue
+
+            # Prefer clickable parent when the text is inside a button.
+            clickable_parent = current_action.locator(
+                "xpath=ancestor::*["
+                "self::button or "
+                "self::a or "
+                "@role='button'"
+                "][1]"
+            )
+
+            if clickable_parent.count() > 0:
+                parent = clickable_parent.first
+
+                if parent.is_visible():
+                    parent.click(
+                        timeout=5_000,
+                    )
+
+                    clicked = True
+                    break
+
+            current_action.click(
+                timeout=5_000,
+            )
+
+            clicked = True
+            break
+
+        except Exception as error:
+            last_error = error
+            page.wait_for_timeout(750)
+
+    assert clicked, (
+        "Unable to open booking invoice from Appointment Details. "
+        f"Last error: {last_error}"
     )
 
-    clicked = False
-
-    if clickable_ancestor.count() > 0:
-        clickable_element = clickable_ancestor.first
-
-        try:
-            if clickable_element.is_visible():
-                clickable_element.click(timeout=5_000)
-                clicked = True
-        except PlaywrightTimeoutError:
-            pass
-
-    # If clicking the parent activates the wrong side of a combined control,
-    # click the exact Create Invoice text itself.
-    if not clicked:
-        try:
-            visible_create_invoice.click(timeout=5_000)
-            clicked = True
-        except PlaywrightTimeoutError:
-            visible_create_invoice.click(
-                timeout=5_000,
-                force=True,
-            )
-            clicked = True
-
-    assert clicked, "Create Invoice action could not be clicked."
+    # =========================================================
+    # WAIT FOR CREATE INVOICE PAGE
+    # =========================================================
 
     page.wait_for_url(
         re.compile(
@@ -1686,9 +1897,20 @@ def create_booking_invoice(page: Page) -> None:
         pass
 
     assert "/business/bill/" not in page.url, (
-        "Payment Info/Generate Bill was opened instead of Create Invoice. "
+        "Payment Info/Generate Bill was opened instead of "
+        "the Booking Invoice page. "
         f"Current URL: {page.url}"
     )
+
+    # =========================================================
+    # VERIFY INVOICE PAGE
+    # =========================================================
+
+    invoice_page_loaded = False
+
+    # ---------------------------------------------------------
+    # Current UI: Create Invoice heading
+    # ---------------------------------------------------------
 
     create_invoice_heading = page.get_by_role(
         "heading",
@@ -1696,16 +1918,69 @@ def create_booking_invoice(page: Page) -> None:
         exact=True,
     )
 
-    expect(create_invoice_heading.first).to_be_visible(
-        timeout=DEFAULT_TIMEOUT
+    if first_visible_locator(create_invoice_heading) is not None:
+        invoice_page_loaded = True
+
+    # ---------------------------------------------------------
+    # Current UI: Booking Reference field
+    # ---------------------------------------------------------
+
+    if not invoice_page_loaded:
+        booking_reference = page.get_by_text(
+            "Booking Reference",
+            exact=True,
+        )
+
+        if first_visible_locator(booking_reference) is not None:
+            invoice_page_loaded = True
+
+    # ---------------------------------------------------------
+    # Current UI: Add Procedure/Item button
+    # ---------------------------------------------------------
+
+    if not invoice_page_loaded:
+        add_item_button = page.locator(
+            "button"
+        ).filter(
+            has_text="Add Procedure/Item"
+        )
+
+        if first_visible_locator(add_item_button) is not None:
+            invoice_page_loaded = True
+
+    # ---------------------------------------------------------
+    # Current UI: Save button
+    # ---------------------------------------------------------
+
+    if not invoice_page_loaded:
+        save_button = page.get_by_role(
+            "button",
+            name="Save",
+            exact=True,
+        )
+
+        if first_visible_locator(save_button) is not None:
+            invoice_page_loaded = True
+
+    # ---------------------------------------------------------
+    # Older UI fallback: invoice table
+    # ---------------------------------------------------------
+
+    if not invoice_page_loaded:
+        invoice_table = page.get_by_role("table")
+
+        if first_visible_locator(invoice_table) is not None:
+            invoice_page_loaded = True
+
+    assert invoice_page_loaded, (
+        "Booking Create Invoice page did not load successfully. "
+        f"Current URL: {page.url}"
     )
 
-    invoice_table = page.get_by_role("table")
-
-    expect(invoice_table.first).to_be_visible(
-        timeout=DEFAULT_TIMEOUT
+    print(
+        "[Booking Invoice] Create Invoice page opened successfully. "
+        f"URL: {page.url}"
     )
-
 
 
 
@@ -3130,63 +3405,138 @@ def open_procedure_item_dropdown(page: Page) -> None:
 def locate_invoice_item_row(
     page: Page,
     item_name: str,
-) -> Locator | None:
+):
     """
-    Locate an invoice row using table cells or responsive row markup.
+    Locate an invoice item row by service/procedure name.
+
+    Supports item names containing special characters such as:
+    - WhatsApp Service(Taxable)
+    - Service (5%)
+    - Procedure/Item
+
+    Returns the visible row locator or None.
     """
 
-    exact_pattern = re.compile(
-        rf"^\s*{re.escape(item_name)}\s*$",
-        re.IGNORECASE,
-    )
+    # ---------------------------------------------------------
+    # Preferred approach:
+    # Search all visible tables for a row containing the item name.
+    # ---------------------------------------------------------
 
-    item_candidates = [
-        page.get_by_role(
-            "cell",
-            name=exact_pattern,
-        ),
-        page.locator("td").filter(
-            has_text=exact_pattern
-        ),
-        page.get_by_text(
-            item_name,
-            exact=True,
-        ),
-    ]
+    tables = page.get_by_role("table")
 
-    for candidate_group in item_candidates:
-        for index in range(candidate_group.count() - 1, -1, -1):
-            candidate = candidate_group.nth(index)
+    for table_index in range(tables.count()):
+        table = tables.nth(table_index)
+
+        try:
+            if not table.is_visible():
+                continue
+        except PlaywrightTimeoutError:
+            continue
+
+        rows = table.get_by_role("row")
+
+        for row_index in range(rows.count()):
+            row = rows.nth(row_index)
 
             try:
-                if not candidate.is_visible():
+                if not row.is_visible():
                     continue
+
+                row_text = normalize_text(
+                    row.inner_text()
+                )
+
+                if not row_text:
+                    continue
+
+                if item_name.lower() in row_text.lower():
+
+                    print(
+                        f"[Invoice Item Row Found] "
+                        f"{item_name}: {row_text}"
+                    )
+
+                    return row
+
             except PlaywrightTimeoutError:
                 continue
 
+    # ---------------------------------------------------------
+    # Fallback:
+    # Locate item text first, then move to its containing row.
+    # ---------------------------------------------------------
+
+    item_candidates = page.get_by_text(
+        re.compile(
+            re.escape(item_name),
+            re.IGNORECASE,
+        )
+    )
+
+    for index in range(item_candidates.count()):
+        item = item_candidates.nth(index)
+
+        try:
+            if not item.is_visible():
+                continue
+
             row_candidates = [
-                candidate.locator("xpath=ancestor::tr[1]"),
-                candidate.locator(
-                    "xpath=ancestor::*[@role='row'][1]"
+                item.locator(
+                    "xpath=ancestor::tr[1]"
                 ),
-                candidate.locator(
-                    "xpath=ancestor::div["
-                    ".//*[contains(normalize-space(), '₹')]"
-                    "][1]"
+                item.locator(
+                    "xpath=ancestor::*[@role='row'][1]"
                 ),
             ]
 
-            for row_candidate in row_candidates:
-                if row_candidate.count() == 0:
+            for candidate in row_candidates:
+
+                if candidate.count() == 0:
                     continue
 
-                row = row_candidate.first
+                row = candidate.first
 
-                try:
-                    if row.is_visible():
-                        return row
-                except PlaywrightTimeoutError:
-                    continue
+                if row.is_visible():
+
+                    row_text = normalize_text(
+                        row.inner_text()
+                    )
+
+                    print(
+                        f"[Invoice Item Row Found - Fallback] "
+                        f"{item_name}: {row_text}"
+                    )
+
+                    return row
+
+        except PlaywrightTimeoutError:
+            continue
+
+    # ---------------------------------------------------------
+    # Diagnostic information when row cannot be found
+    # ---------------------------------------------------------
+
+    visible_table_texts = []
+
+    for table_index in range(tables.count()):
+        table = tables.nth(table_index)
+
+        try:
+            if table.is_visible():
+                visible_table_texts.append(
+                    normalize_text(
+                        table.inner_text()
+                    )
+                )
+        except PlaywrightTimeoutError:
+            continue
+
+    print(
+        f"\n[Invoice Item Row NOT Found]\n"
+        f"Requested item: {item_name}\n"
+        f"Visible tables:\n"
+        + "\n---\n".join(visible_table_texts)
+    )
 
     return None
 
@@ -5262,6 +5612,793 @@ def read_master_invoice_amount_due(
 
 
 # Case 7 :: Create an invoice with a taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices        
+
+def complete_booking_master_invoice_two_taxable_services_flow(
+    page: Page,
+    config,
+    consumer_profile,
+    doctor_name: str = "Naveen KP",
+    first_taxable_service_name: str = "WhatsApp Service(Taxable)",
+    second_taxable_service_name: str = "General Service with Tax",
+    first_tax_percentage: Decimal = Decimal("5.00"),
+    second_tax_percentage: Decimal = Decimal("5.00"),
+) -> dict:
+    """
+    Create two taxable invoices against the same booking and merge them
+    into a Master Invoice.
+
+    Invoice 1:
+    - WhatsApp Service(Taxable)
+
+    Invoice 2:
+    - General Service with Tax
+
+    Validate:
+    - Tax calculations in both individual invoices.
+    - Rate/Tax/Amount preservation in Master Invoice.
+    - Master item Amount matches individual invoice item Total.
+    - Master Invoice Amount Due matches the sum of both source invoice
+      Net Totals.
+    - Payment completion.
+    - Amount Due becomes zero after payment.
+    """
+
+    # =========================================================
+    # CREATE APPOINTMENT
+    # =========================================================
+
+    select_first_business_if_needed(page)
+
+    open_appointment_dashboard(page)
+
+    open_create_appointment_page(page)
+
+    patient_name = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    select_appointment_doctor(
+        page=page,
+        doctor_name=doctor_name,
+    )
+
+    select_appointment_service(
+        page=page,
+        service_name=first_taxable_service_name,
+    )
+
+    confirm_appointment(page)
+
+    # =========================================================
+    # OPEN LATEST APPOINTMENT
+    # =========================================================
+
+    open_latest_created_appointment(
+        page=page,
+        patient_name=patient_name,
+    )
+
+    open_appointment_details(page)
+
+    # =========================================================
+    # INVOICE 1
+    # WhatsApp Service(Taxable)
+    # =========================================================
+
+    create_booking_invoice(page)
+
+    first_item = read_booking_invoice_item_amounts(
+        page=page,
+        item_name=first_taxable_service_name,
+    )
+
+    first_rate = first_item["rate"]
+    first_actual_tax = first_item["tax"]
+    first_item_total = first_item["total"]
+
+    # ---------------------------------------------------------
+    # Validate first service tax
+    # ---------------------------------------------------------
+
+    first_expected_tax = round_money(
+        first_rate
+        * first_tax_percentage
+        / Decimal("100")
+    )
+
+    assert_amount_close(
+        actual=first_actual_tax,
+        expected=first_expected_tax,
+        label=f"{first_taxable_service_name} Tax",
+        tolerance=Decimal("0.02"),
+    )
+
+    first_expected_item_total = round_money(
+        first_rate + first_actual_tax
+    )
+
+    assert_amount_close(
+        actual=first_item_total,
+        expected=first_expected_item_total,
+        label=f"{first_taxable_service_name} Total",
+        tolerance=Decimal("0.01"),
+    )
+
+    # ---------------------------------------------------------
+    # Read first invoice Round Off and Net Total
+    # ---------------------------------------------------------
+
+    first_round_off = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Round Off",
+            "Round off",
+            "RoundOff",
+        ],
+        required=False,
+    )
+
+    first_expected_net_total = round_money(
+        first_item_total + first_round_off
+    )
+
+    first_invoice_net_total = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Net Total",
+            "Net total",
+        ],
+        required=True,
+    )
+
+    assert_amount_close(
+        actual=first_invoice_net_total,
+        expected=first_expected_net_total,
+        label=f"{first_taxable_service_name} Net Total",
+        tolerance=Decimal("0.01"),
+    )
+
+    first_tax_calculation_valid = (
+        abs(
+            first_actual_tax
+            - first_expected_tax
+        )
+        <= Decimal("0.02")
+    )
+
+    first_invoice_created = update_booking_invoice(page)
+
+    # =========================================================
+    # RETURN TO BOOKING
+    # =========================================================
+
+    go_back_to_booking_details_from_invoice(page)
+
+    # =========================================================
+    # INVOICE 2
+    # General Service with Tax
+    # =========================================================
+
+    open_new_booking_invoice(page)
+
+    add_service_to_booking_invoice(
+        page=page,
+        service_name=second_taxable_service_name,
+    )
+
+    second_item = read_booking_invoice_item_amounts(
+        page=page,
+        item_name=second_taxable_service_name,
+    )
+
+    second_rate = second_item["rate"]
+    second_actual_tax = second_item["tax"]
+    second_item_total = second_item["total"]
+
+    # ---------------------------------------------------------
+    # Validate second service tax
+    # ---------------------------------------------------------
+
+    second_expected_tax = round_money(
+        second_rate
+        * second_tax_percentage
+        / Decimal("100")
+    )
+
+    assert_amount_close(
+        actual=second_actual_tax,
+        expected=second_expected_tax,
+        label=f"{second_taxable_service_name} Tax",
+        tolerance=Decimal("0.02"),
+    )
+
+    second_expected_item_total = round_money(
+        second_rate + second_actual_tax
+    )
+
+    assert_amount_close(
+        actual=second_item_total,
+        expected=second_expected_item_total,
+        label=f"{second_taxable_service_name} Total",
+        tolerance=Decimal("0.01"),
+    )
+
+    # ---------------------------------------------------------
+    # Read second invoice Round Off and Net Total
+    # ---------------------------------------------------------
+
+    second_round_off = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Round Off",
+            "Round off",
+            "RoundOff",
+        ],
+        required=False,
+    )
+
+    second_expected_net_total = round_money(
+        second_item_total + second_round_off
+    )
+
+    second_invoice_net_total = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Net Total",
+            "Net total",
+        ],
+        required=True,
+    )
+
+    assert_amount_close(
+        actual=second_invoice_net_total,
+        expected=second_expected_net_total,
+        label=f"{second_taxable_service_name} Net Total",
+        tolerance=Decimal("0.01"),
+    )
+
+    second_tax_calculation_valid = (
+        abs(
+            second_actual_tax
+            - second_expected_tax
+        )
+        <= Decimal("0.02")
+    )
+
+    second_invoice_created = update_booking_invoice(page)
+
+    # =========================================================
+    # GO TO BOOKING INVOICES
+    # =========================================================
+
+    go_back_to_booking_details_from_invoice(page)
+
+    open_booking_invoices_tab(page)
+
+    # =========================================================
+    # CREATE MASTER INVOICE
+    # =========================================================
+
+    master_invoice_created = (
+        create_master_invoice_from_booking_invoices(page)
+    )
+
+    open_generated_master_invoice(page)
+
+    # =========================================================
+    # READ MASTER INVOICE VALUES
+    # =========================================================
+
+    first_master_item = read_master_invoice_item_amounts(
+        page=page,
+        item_name=first_taxable_service_name,
+    )
+
+    second_master_item = read_master_invoice_item_amounts(
+        page=page,
+        item_name=second_taxable_service_name,
+    )
+
+    first_master_rate = first_master_item["rate"]
+    first_master_tax = first_master_item["tax"]
+    first_master_amount = first_master_item["amount"]
+
+    second_master_rate = second_master_item["rate"]
+    second_master_tax = second_master_item["tax"]
+    second_master_amount = second_master_item["amount"]
+
+    # =========================================================
+    # VALIDATE FIRST TAXABLE SERVICE IN MASTER INVOICE
+    # =========================================================
+
+    assert_amount_close(
+        actual=first_master_rate,
+        expected=first_rate,
+        label=(
+            f"{first_taxable_service_name} "
+            "Master Invoice Rate"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=first_master_tax,
+        expected=first_actual_tax,
+        label=(
+            f"{first_taxable_service_name} "
+            "Master Invoice Tax"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    # Master item Amount should match the individual item's Total,
+    # before invoice-level Round Off.
+    assert_amount_close(
+        actual=first_master_amount,
+        expected=first_item_total,
+        label=(
+            f"{first_taxable_service_name} "
+            "Master Invoice Amount"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    # =========================================================
+    # VALIDATE SECOND TAXABLE SERVICE IN MASTER INVOICE
+    # =========================================================
+
+    assert_amount_close(
+        actual=second_master_rate,
+        expected=second_rate,
+        label=(
+            f"{second_taxable_service_name} "
+            "Master Invoice Rate"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    assert_amount_close(
+        actual=second_master_tax,
+        expected=second_actual_tax,
+        label=(
+            f"{second_taxable_service_name} "
+            "Master Invoice Tax"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    # Example:
+    # General Service item Total = 288.76
+    # Invoice Round Off = 0.24
+    # Invoice Net Total = 289.00
+    #
+    # The Master item row should preserve 288.76.
+    assert_amount_close(
+        actual=second_master_amount,
+        expected=second_item_total,
+        label=(
+            f"{second_taxable_service_name} "
+            "Master Invoice Amount"
+        ),
+        tolerance=Decimal("0.01"),
+    )
+
+    # =========================================================
+    # MASTER INVOICE AMOUNT DUE
+    # =========================================================
+
+    # IMPORTANT:
+    # Master item rows preserve item totals before invoice-level
+    # round-off.
+    #
+    # But the Master Invoice Amount Due represents the payable
+    # totals of the source invoices.
+    #
+    # Example:
+    #
+    # WhatsApp invoice Net Total = 315.00
+    # General invoice Net Total  = 289.00
+    #
+    # Expected Master Amount Due = 604.00
+
+    source_invoices_net_total = round_money(
+        first_invoice_net_total
+        + second_invoice_net_total
+    )
+
+    actual_master_amount_due = read_master_invoice_amount_due(
+        page
+    )
+
+    expected_master_amount_due = (
+        source_invoices_net_total
+    )
+
+    print(
+        "\n"
+        "[Master Invoice Amount Due Validation]\n"
+        f"First Invoice Net Total  : "
+        f"{first_invoice_net_total}\n"
+        f"Second Invoice Net Total : "
+        f"{second_invoice_net_total}\n"
+        f"Expected Amount Due      : "
+        f"{expected_master_amount_due}\n"
+        f"Actual Amount Due        : "
+        f"{actual_master_amount_due}\n"
+    )
+
+    assert_amount_close(
+        actual=actual_master_amount_due,
+        expected=expected_master_amount_due,
+        label="Master Invoice Amount Due",
+        tolerance=Decimal("0.01"),
+    )
+
+    # =========================================================
+    # VALIDATION FLAGS
+    # =========================================================
+
+    first_master_rate_valid = (
+        abs(
+            first_master_rate
+            - first_rate
+        )
+        <= Decimal("0.01")
+    )
+
+    first_master_tax_valid = (
+        abs(
+            first_master_tax
+            - first_actual_tax
+        )
+        <= Decimal("0.01")
+    )
+
+    first_master_amount_valid = (
+        abs(
+            first_master_amount
+            - first_item_total
+        )
+        <= Decimal("0.01")
+    )
+
+    second_master_rate_valid = (
+        abs(
+            second_master_rate
+            - second_rate
+        )
+        <= Decimal("0.01")
+    )
+
+    second_master_tax_valid = (
+        abs(
+            second_master_tax
+            - second_actual_tax
+        )
+        <= Decimal("0.01")
+    )
+
+    second_master_amount_valid = (
+        abs(
+            second_master_amount
+            - second_item_total
+        )
+        <= Decimal("0.01")
+    )
+
+    master_amount_due_valid = (
+        abs(
+            actual_master_amount_due
+            - expected_master_amount_due
+        )
+        <= Decimal("0.01")
+    )
+
+    # =========================================================
+    # PRINT CALCULATION DETAILS
+    # =========================================================
+
+    print(
+        "\n"
+        "====================================================\n"
+        "BOOKING MASTER INVOICE - TWO TAXABLE SERVICES\n"
+        "====================================================\n"
+        f"Patient: {patient_name}\n"
+        "\n"
+        "FIRST TAXABLE INVOICE\n"
+        "----------------------------------------------------\n"
+        f"Service: {first_taxable_service_name}\n"
+        f"Rate: {first_rate}\n"
+        f"Tax Percentage: {first_tax_percentage}%\n"
+        f"Expected Tax: {first_expected_tax}\n"
+        f"Actual Tax: {first_actual_tax}\n"
+        f"Item Total: {first_item_total}\n"
+        f"Round Off: {first_round_off}\n"
+        f"Invoice Net Total: {first_invoice_net_total}\n"
+        "\n"
+        "FIRST SERVICE IN MASTER INVOICE\n"
+        "----------------------------------------------------\n"
+        f"Rate: {first_master_rate}\n"
+        f"Tax: {first_master_tax}\n"
+        f"Amount: {first_master_amount}\n"
+        "\n"
+        "SECOND TAXABLE INVOICE\n"
+        "----------------------------------------------------\n"
+        f"Service: {second_taxable_service_name}\n"
+        f"Rate: {second_rate}\n"
+        f"Tax Percentage: {second_tax_percentage}%\n"
+        f"Expected Tax: {second_expected_tax}\n"
+        f"Actual Tax: {second_actual_tax}\n"
+        f"Item Total: {second_item_total}\n"
+        f"Round Off: {second_round_off}\n"
+        f"Invoice Net Total: {second_invoice_net_total}\n"
+        "\n"
+        "SECOND SERVICE IN MASTER INVOICE\n"
+        "----------------------------------------------------\n"
+        f"Rate: {second_master_rate}\n"
+        f"Tax: {second_master_tax}\n"
+        f"Amount: {second_master_amount}\n"
+        "\n"
+        "MASTER INVOICE\n"
+        "----------------------------------------------------\n"
+        f"First Source Invoice Net Total: "
+        f"{first_invoice_net_total}\n"
+        f"Second Source Invoice Net Total: "
+        f"{second_invoice_net_total}\n"
+        f"Expected Amount Due: "
+        f"{expected_master_amount_due}\n"
+        f"Actual Amount Due: "
+        f"{actual_master_amount_due}\n"
+        "===================================================="
+    )
+
+    # =========================================================
+    # PAYMENT
+    # =========================================================
+
+    payment_result = complete_booking_invoice_payment(page)
+
+    amount_due_after_payment = (
+        payment_result["amount_due"]
+    )
+
+    assert_amount_close(
+        actual=amount_due_after_payment,
+        expected=Decimal("0.00"),
+        label="Master Invoice Amount Due after payment",
+        tolerance=Decimal("0.01"),
+    )
+
+    # =========================================================
+    # RESULT
+    # =========================================================
+
+    return {
+        "patient_name": patient_name,
+
+        "first_invoice_created":
+            first_invoice_created,
+        "second_invoice_created":
+            second_invoice_created,
+        "master_invoice_created":
+            master_invoice_created,
+
+        # -----------------------------------------------------
+        # First individual invoice
+        # -----------------------------------------------------
+
+        "first_service_name":
+            first_taxable_service_name,
+        "first_rate":
+            first_rate,
+        "first_expected_tax":
+            first_expected_tax,
+        "first_actual_tax":
+            first_actual_tax,
+        "first_item_total":
+            first_item_total,
+        "first_round_off":
+            first_round_off,
+        "first_invoice_net_total":
+            first_invoice_net_total,
+
+        # -----------------------------------------------------
+        # Second individual invoice
+        # -----------------------------------------------------
+
+        "second_service_name":
+            second_taxable_service_name,
+        "second_rate":
+            second_rate,
+        "second_expected_tax":
+            second_expected_tax,
+        "second_actual_tax":
+            second_actual_tax,
+        "second_item_total":
+            second_item_total,
+        "second_round_off":
+            second_round_off,
+        "second_invoice_net_total":
+            second_invoice_net_total,
+
+        # -----------------------------------------------------
+        # Master Invoice item values
+        # -----------------------------------------------------
+
+        "first_master_rate":
+            first_master_rate,
+        "first_master_tax":
+            first_master_tax,
+        "first_master_amount":
+            first_master_amount,
+
+        "second_master_rate":
+            second_master_rate,
+        "second_master_tax":
+            second_master_tax,
+        "second_master_amount":
+            second_master_amount,
+
+        # -----------------------------------------------------
+        # Master Invoice totals
+        # -----------------------------------------------------
+
+        "source_invoices_net_total":
+            source_invoices_net_total,
+        "expected_master_amount_due":
+            expected_master_amount_due,
+        "actual_master_amount_due":
+            actual_master_amount_due,
+
+        # -----------------------------------------------------
+        # Validation
+        # -----------------------------------------------------
+
+        "first_tax_calculation_valid":
+            first_tax_calculation_valid,
+        "second_tax_calculation_valid":
+            second_tax_calculation_valid,
+
+        "first_master_rate_valid":
+            first_master_rate_valid,
+        "first_master_tax_valid":
+            first_master_tax_valid,
+        "first_master_amount_valid":
+            first_master_amount_valid,
+
+        "second_master_rate_valid":
+            second_master_rate_valid,
+        "second_master_tax_valid":
+            second_master_tax_valid,
+        "second_master_amount_valid":
+            second_master_amount_valid,
+
+        "master_amount_due_valid":
+            master_amount_due_valid,
+
+        # -----------------------------------------------------
+        # Payment
+        # -----------------------------------------------------
+
+        "payment_completed":
+            payment_result["payment_completed"],
+        "payment_method":
+            payment_result["payment_method"],
+        "payment_mode":
+            payment_result.get("payment_mode"),
+        "amount_due_after_payment":
+            amount_due_after_payment,
+    }
+
+
+
+
+def read_master_invoice_round_off(
+    page: Page,
+) -> Decimal:
+    """
+    Read the Master Invoice Round Off amount.
+
+    Returns Decimal("0.00") when Round Off is not displayed.
+    """
+
+    round_off_candidates = page.get_by_text(
+        re.compile(
+            r"Round\s*Off",
+            re.IGNORECASE,
+        )
+    )
+
+    visible_round_off = last_visible_locator(
+        round_off_candidates
+    )
+
+    if visible_round_off is not None:
+
+        # Try the element itself.
+        text = normalize_text(
+            visible_round_off.inner_text()
+        )
+
+        amounts = extract_decimal_amounts(text)
+
+        if amounts:
+            round_off = round_money(amounts[-1])
+
+            print(
+                f"[Master Invoice Round Off] {round_off}"
+            )
+
+            return round_off
+
+        # Usually label + value are under the same parent.
+        parent = visible_round_off.locator(
+            "xpath=parent::*"
+        )
+
+        if parent.count() > 0:
+
+            parent_text = normalize_text(
+                parent.first.inner_text()
+            )
+
+            match = re.search(
+                r"Round\s*Off\s*:?\s*"
+                r"(?:₹|)?\s*"
+                r"([+-]?[\d,]+(?:\.\d+)?)",
+                parent_text,
+                re.IGNORECASE,
+            )
+
+            if match:
+                round_off = round_money(
+                    Decimal(
+                        match.group(1).replace(",", "")
+                    )
+                )
+
+                print(
+                    f"[Master Invoice Round Off] {round_off}"
+                )
+
+                return round_off
+
+    # ---------------------------------------------------------
+    # Fallback: inspect the page text.
+    # ---------------------------------------------------------
+
+    page_text = normalize_text(
+        page.locator("body").inner_text()
+    )
+
+    matches = re.findall(
+        r"Round\s*Off\s*:?\s*"
+        r"(?:₹|)?\s*"
+        r"([+-]?[\d,]+(?:\.\d+)?)",
+        page_text,
+        re.IGNORECASE,
+    )
+
+    if matches:
+
+        round_off = round_money(
+            Decimal(
+                matches[-1].replace(",", "")
+            )
+        )
+
+        print(
+            f"[Master Invoice Round Off] {round_off}"
+        )
+
+        return round_off
+
+    print("[Master Invoice Round Off] 0.00")
+
+    return Decimal("0.00")
+
+
 
 
 

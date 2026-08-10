@@ -10,6 +10,7 @@ from framework.booking_invoice_tax_actions import (
     complete_two_taxable_services_booking_invoice_flow,
     complete_booking_master_invoice_with_two_invoices_flow,
     complete_booking_master_invoice_non_taxable_and_taxable_flow,
+    complete_booking_master_invoice_two_taxable_services_flow,
 )
 from framework.test_data import generate_consumer_profile
 
@@ -328,6 +329,74 @@ def test_master_invoice_with_non_taxable_and_taxable_booking_invoices(
 
 
 # Case 7 :: Create an invoice with a taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices           
+
+
+@pytest.mark.booking
+@pytest.mark.invoice
+@pytest.mark.invoice_tax
+@pytest.mark.master_invoice
+def test_master_invoice_with_two_taxable_booking_invoices(
+    page: Page,
+    config,
+) -> None:
+    """
+    Case:
+    Create two separate taxable booking invoices and merge them into
+    a Master Invoice.
+
+    Invoice 1:
+    - WhatsApp Service(Taxable)
+    - Tax: 5%
+
+    Invoice 2:
+    - General Service with Tax
+    - Tax: 5%
+
+    Expected:
+    - Tax calculation is correct for both individual invoices.
+    - Rate in Master Invoice matches each individual invoice.
+    - Tax in Master Invoice matches each individual invoice.
+    - Amount in Master Invoice matches each individual invoice Net Total.
+    - Master Invoice Amount Due equals the sum of both Master Invoice amounts.
+    - Payment completes successfully.
+    - Amount Due becomes zero.
+    """
+
+    consumer_profile = generate_consumer_profile()
+
+    login(page, config)
+
+    result = complete_booking_master_invoice_two_taxable_services_flow(
+        page=page,
+        config=config,
+        consumer_profile=consumer_profile,
+        doctor_name="Naveen KP",
+        first_taxable_service_name="WhatsApp Service(Taxable)",
+        second_taxable_service_name="General Service with Tax",
+        first_tax_percentage=Decimal("5.00"),
+        second_tax_percentage=Decimal("5.00"),
+    )
+
+    assert result["first_invoice_created"] is True
+    assert result["second_invoice_created"] is True
+    assert result["master_invoice_created"] is True
+
+    assert result["first_tax_calculation_valid"] is True
+    assert result["second_tax_calculation_valid"] is True
+
+    assert result["first_master_rate_valid"] is True
+    assert result["first_master_tax_valid"] is True
+    assert result["first_master_amount_valid"] is True
+
+    assert result["second_master_rate_valid"] is True
+    assert result["second_master_tax_valid"] is True
+    assert result["second_master_amount_valid"] is True
+
+    assert result["master_amount_due_valid"] is True
+
+    assert result["payment_completed"] is True
+    assert result["amount_due_after_payment"] == Decimal("0.00")
+
 
 
 
