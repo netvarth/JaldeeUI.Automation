@@ -5557,7 +5557,33 @@ def test_IP_Management_31(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        # wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")
 
         time.sleep(1)
         wait_and_locate_click(
@@ -6065,7 +6091,33 @@ def test_IP_Management_32(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        # wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")        
 
         time.sleep(1)
         wait_and_locate_click(
@@ -6573,7 +6625,31 @@ def test_IP_Management_33(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")
 
         time.sleep(1)
         wait_and_locate_click(
@@ -7081,7 +7157,31 @@ def test_IP_Management_34(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")       
 
         time.sleep(1)
         wait_and_locate_click(
@@ -7597,7 +7697,31 @@ def test_IP_Management_35(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")
 
         time.sleep(1)
         wait_and_locate_click(
@@ -8129,7 +8253,31 @@ def test_IP_Management_36(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")        
 
         time.sleep(1)
         wait_and_locate_click(
@@ -8689,8 +8837,31 @@ def test_IP_Management_38(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
 
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")        
         time.sleep(1)
         wait_and_locate_click(
              driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"
@@ -9164,7 +9335,31 @@ def test_IP_Management_40(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"        
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")       
 
         time.sleep(1)
         wait_and_locate_click(
@@ -9568,8 +9763,32 @@ def test_IP_Management_41(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
 
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")
+        
         time.sleep(1)
         wait_and_locate_click(
              driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"
@@ -10123,8 +10342,32 @@ def test_IP_Management_44(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
 
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")
+        
         time.sleep(1)
         wait_and_locate_click(
              driver, By.XPATH, "(//*[name()='svg'][@class='p-icon p-paginator-icon'])[4]"
@@ -10910,7 +11153,31 @@ def test_IP_Management_49(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")        
 
         time.sleep(1)
         wait_and_locate_click(
@@ -11366,7 +11633,31 @@ def test_IP_Management_50(login):
         wait_and_locate_click(login, By.XPATH, "//input[@placeholder='Select Building']/ancestor::div[contains(@class,'p-dropdown')]")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")        
 
         time.sleep(1)
         wait_and_locate_click(
@@ -11929,7 +12220,31 @@ def test_IP_Management_51(login):
         wait_and_locate_click(login, By.XPATH, "//p-dropdown[@placeholder='Select Building']")
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//span[@class='ng-star-inserted'][normalize-space()='Block D'])[1]")
+        panel_xpath = "(//div[contains(@class,'p-dropdown-panel')])[last()]"
+        scroll_area_xpath = panel_xpath + "//div[contains(@class,'p-dropdown-items-wrapper')]"
+
+        scroll_area = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, scroll_area_xpath))
+        )
+
+        for i in range(15):
+            block_d_options = login.find_elements(
+                By.XPATH,
+                panel_xpath + "//li[@role='option' and .//*[normalize-space()='Block D']]"
+            )
+
+            if block_d_options:
+                login.execute_script("arguments[0].click();", block_d_options[0])
+                print("Selected Building: Block D")
+                break
+
+            login.execute_script(
+                "arguments[0].scrollTop = arguments[0].scrollTop + 150;",
+                scroll_area
+            )
+            time.sleep(1)
+        else:
+            raise Exception("Block D not found in dropdown")        
 
         time.sleep(1)
         wait_and_locate_click(
