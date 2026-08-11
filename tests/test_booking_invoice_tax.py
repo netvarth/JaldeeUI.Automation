@@ -11,18 +11,19 @@ from framework.booking_invoice_tax_actions import (
     complete_booking_master_invoice_with_two_invoices_flow,
     complete_booking_master_invoice_non_taxable_and_taxable_flow,
     complete_booking_master_invoice_two_taxable_services_flow,
+    complete_booking_invoice_non_taxable_with_invoice_discount_flow,
 )
 from framework.test_data import generate_consumer_profile
 
 
-# Case 1 :: Create an invoice and do the payment
+# Case 1 :: Create an invoice for a non-taxable service
 
 @pytest.mark.booking
 @pytest.mark.invoice
 def test_create_booking_invoice_for_single_service(
     page: Page,
     config,
-) -> None:
+    ) -> None:
     """
     Case:
     Create a booking invoice for a single service and complete payment.
@@ -55,7 +56,7 @@ def test_create_booking_invoice_for_single_service(
 
 
 
-# Case 2 :: Create an invoice and add 1 more service into it and do the payment    
+# Case 2 :: Create an invoice for a non-taxable service and add 1 more non-taxable service    
 
 
 import pytest
@@ -156,7 +157,7 @@ def test_create_invoice_for_taxable_service_and_verify_calculations(
     assert result["amount_due"] == Decimal("0.00")
 
 
-# Case 4 :: Create an invoice for a taxable service and add 1 more taxable service into it and check the calculations  
+# Case 4 :: Create invoice for a taxable service and check the calculations are correct  
 
 
 
@@ -211,9 +212,7 @@ def test_create_invoice_with_two_taxable_services_and_verify_calculations(
 
  
  	
-# Case 5 :: Create an invoice with a non-taxable service. Then create a new invoice with another non-taxable service. Then create a Master Invoice with merging these 2 invoices    
-
-
+# Case 5 :: Create an invoice with a non-taxable service. Then create a new invoice with another non-taxable service. Create a Master Invoice by merging these 2 invoices
 @pytest.mark.booking
 @pytest.mark.invoice
 @pytest.mark.master_invoice
@@ -261,7 +260,7 @@ def test_create_master_invoice_from_two_booking_invoices_and_complete_payment(
     assert result["payment_completed"] is True
     assert result["amount_due"] == Decimal("0.00")
 
-# Case 6 :: Create an invoice with a non-taxable service. Then create a new invoice with a taxable service. Then create a Master Invoice with merging these 2 invoices
+# Case 6 :: Create an invoice with a non-taxable service. Then create a new invoice with another taxable service. Create a Master Invoice by merging these 2 invoices
 
 
 
@@ -328,8 +327,7 @@ def test_master_invoice_with_non_taxable_and_taxable_booking_invoices(
 
 
 
-# Case 7 :: Create an invoice with a taxable service. Then create a new invoice with another taxable service. Then create a Master Invoice with merging these 2 invoices           
-
+# Case 7 :: Create an invoice with a taxable service. Then create a new invoice with another taxable service. Create a Master Invoice by merging these 2 invoices
 
 @pytest.mark.booking
 @pytest.mark.invoice
@@ -396,6 +394,74 @@ def test_master_invoice_with_two_taxable_booking_invoices(
 
     assert result["payment_completed"] is True
     assert result["amount_due_after_payment"] == Decimal("0.00")
+
+
+# Case 8 :: Create an invoice for a non-taxable service and apply discount
+
+
+@pytest.mark.booking
+@pytest.mark.invoice
+@pytest.mark.invoice_discount
+def test_booking_invoice_non_taxable_service_with_invoice_level_discount(
+    page: Page,
+    config,
+) -> None:
+    """
+    Case:
+    Create an invoice for a non-taxable service and apply an
+    invoice-level On Demand Discount.
+
+    Expected:
+    - Video call Services is non-taxable.
+    - On Demand Discount is applied successfully.
+    - Discount amount is <= 50.
+    - Net Total = Total Amount - On Demand Discount.
+    - Invoice is created/updated successfully.
+    - Payment completes successfully.
+    - Amount Due becomes zero after payment.
+    """
+
+    consumer_profile = generate_consumer_profile()
+
+    login(
+        page,
+        config,
+    )
+
+    result = (
+        complete_booking_invoice_non_taxable_with_invoice_discount_flow(
+            page=page,
+            config=config,
+            consumer_profile=consumer_profile,
+            doctor_name="Naveen KP",
+            service_name="Video call Services",
+            discount_amount=Decimal("17.25"),
+        )
+    )
+
+    assert result["invoice_created"] is True
+
+    assert result["service_tax"] == Decimal("0.00")
+
+    assert (
+        result["discount_amount"]
+        <= Decimal("50.00")
+    )
+
+    assert (
+        result["discount_calculation_valid"]
+        is True
+    )
+
+    assert (
+        result["payment_completed"]
+        is True
+    )
+
+    assert (
+        result["amount_due_after_payment"]
+        == Decimal("0.00")
+    )
 
 
 

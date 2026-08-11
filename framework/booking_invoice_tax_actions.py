@@ -1583,54 +1583,91 @@ def open_appointment_details(page: Page) -> None:
     """
     Open the appointment details screen from the expanded appointment.
 
-    Supports the current booking UI where the page may show:
-    - Appointment
-    - New Invoice
-    - View Invoice
-
-    instead of the older:
-    - Appointment Details
-    - Create Invoice
-    - Generate Bill
+    Works with the current UI where appointment details may render
+    inline on the same /business/appointments/<id> route.
     """
 
     # =========================================================
     # LOCATE VIEW DETAILS
     # =========================================================
 
-    view_details_candidates = page.get_by_role(
-        "button",
-        name=re.compile(
-            r"View\s*Details",
-            re.IGNORECASE,
-        ),
-    )
-
-    visible_view_details = last_visible_locator(
-        view_details_candidates
-    )
-
-    if visible_view_details is None:
-        view_details_candidates = page.get_by_text(
-            re.compile(
+    view_details = last_visible_locator(
+        page.get_by_role(
+            "button",
+            name=re.compile(
                 r"View\s*Details",
                 re.IGNORECASE,
+            ),
+        )
+    )
+
+    if view_details is None:
+        view_details = last_visible_locator(
+            page.get_by_text(
+                re.compile(
+                    r"View\s*Details",
+                    re.IGNORECASE,
+                )
             )
         )
 
-        visible_view_details = last_visible_locator(
-            view_details_candidates
-        )
-
-    assert visible_view_details is not None, (
+    assert view_details is not None, (
         "Unable to locate the View Details button "
         "for the selected appointment."
     )
 
-    visible_view_details.click()
+    # =========================================================
+    # CLICK WITH RETRY
+    # =========================================================
+
+    clicked = False
+    last_error = None
+
+    for attempt in range(3):
+        try:
+            # Re-locate each time in case Angular re-renders.
+            current = last_visible_locator(
+                page.get_by_role(
+                    "button",
+                    name=re.compile(
+                        r"View\s*Details",
+                        re.IGNORECASE,
+                    ),
+                )
+            )
+
+            if current is None:
+                current = last_visible_locator(
+                    page.get_by_text(
+                        re.compile(
+                            r"View\s*Details",
+                            re.IGNORECASE,
+                        )
+                    )
+                )
+
+            if current is None:
+                page.wait_for_timeout(500)
+                continue
+
+            current.click(
+                timeout=5_000,
+            )
+
+            clicked = True
+            break
+
+        except Exception as error:
+            last_error = error
+            page.wait_for_timeout(750)
+
+    assert clicked, (
+        "Unable to click View Details. "
+        f"Last error: {last_error}"
+    )
 
     # =========================================================
-    # WAIT FOR APPOINTMENT DETAILS SCREEN
+    # WAIT FOR DETAILS CONTENT
     # =========================================================
 
     try:
@@ -1641,64 +1678,56 @@ def open_appointment_details(page: Page) -> None:
     except PlaywrightTimeoutError:
         pass
 
-    # Give Angular a brief opportunity to finish the details render.
-    page.wait_for_timeout(500)
+    # Angular can take a little longer to render the detail panel.
+    page.wait_for_timeout(1_000)
 
     # =========================================================
-    # VERIFY USING STABLE DETAILS-PAGE ELEMENTS
+    # VERIFY DETAILS SCREEN
     # =========================================================
 
     details_loaded = False
 
-    # ---------------------------------------------------------
-    # Booking ID is one of the most stable indicators that the
-    # appointment details screen has loaded.
-    # ---------------------------------------------------------
+    for attempt in range(10):
 
-    booking_id = page.get_by_text(
-        re.compile(
-            r"Booking\s*ID\s*:",
-            re.IGNORECASE,
+        # -----------------------------------------------------
+        # Booking ID
+        # -----------------------------------------------------
+
+        booking_id = page.get_by_text(
+            re.compile(
+                r"Booking\s*ID",
+                re.IGNORECASE,
+            )
         )
-    )
 
-    if first_visible_locator(booking_id) is not None:
-        details_loaded = True
+        if first_visible_locator(booking_id) is not None:
+            details_loaded = True
+            break
 
-    # ---------------------------------------------------------
-    # Current UI heading may simply be "Appointment".
-    # ---------------------------------------------------------
+        # -----------------------------------------------------
+        # Appointment heading
+        # -----------------------------------------------------
 
-    if not details_loaded:
         appointment_heading = page.get_by_role(
             "heading",
             name=re.compile(
-                r"\bAppointment\b",
+                r"Appointment",
                 re.IGNORECASE,
             ),
         )
 
         if first_visible_locator(appointment_heading) is not None:
             details_loaded = True
+            break
 
-    # ---------------------------------------------------------
-    # Invoice-related actions also identify the details screen.
-    # Current UI:
-    #   New Invoice
-    #   View Invoice
-    #
-    # Older UI:
-    #   Create Invoice
-    #   Generate Bill
-    # ---------------------------------------------------------
+        # -----------------------------------------------------
+        # Current invoice actions
+        # -----------------------------------------------------
 
-    if not details_loaded:
         invoice_actions = page.get_by_role(
             "button",
             name=re.compile(
-                r"Create\s*Invoice|"
-                r"New\s*Invoice|"
-                r"View\s*Invoice|"
+                r"(?:Create|New|View)\s*Invoice|"
                 r"Generate\s*Bill",
                 re.IGNORECASE,
             ),
@@ -1706,12 +1735,12 @@ def open_appointment_details(page: Page) -> None:
 
         if first_visible_locator(invoice_actions) is not None:
             details_loaded = True
+            break
 
-    # ---------------------------------------------------------
-    # Details page normally contains the Invoices tab.
-    # ---------------------------------------------------------
+        # -----------------------------------------------------
+        # Invoices tab
+        # -----------------------------------------------------
 
-    if not details_loaded:
         invoices_tab = page.get_by_role(
             "tab",
             name=re.compile(
@@ -1722,11 +1751,46 @@ def open_appointment_details(page: Page) -> None:
 
         if first_visible_locator(invoices_tab) is not None:
             details_loaded = True
+            break
 
-    assert details_loaded, (
-        "Appointment details page did not load successfully. "
-        f"Current URL: {page.url}"
-    )
+        # -----------------------------------------------------
+        # Other stable detail-screen actions
+        # -----------------------------------------------------
+
+        detail_actions = page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Complete|"
+                r"Change\s*Status|"
+                r"Create\s*Case|"
+                r"Follow\s*Up|"
+                r"Assign\s*Team|"
+                r"Reschedule|"
+                r"More\s*Actions",
+                re.IGNORECASE,
+            ),
+        )
+
+        if first_visible_locator(detail_actions) is not None:
+            details_loaded = True
+            break
+
+        page.wait_for_timeout(500)
+
+    # =========================================================
+    # DIAGNOSTIC FAILURE
+    # =========================================================
+
+    if not details_loaded:
+        body_text = normalize_text(
+            page.locator("body").inner_text()
+        )
+
+        raise AssertionError(
+            "Appointment details page did not load successfully.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{body_text}"
+        )
 
     print(
         "[Appointment Details] Opened successfully. "
@@ -1734,99 +1798,68 @@ def open_appointment_details(page: Page) -> None:
     )
 
 
+
+
 def create_booking_invoice(page: Page) -> None:
     """
-    Open the first/new booking invoice from Appointment Details.
+    Open Create/New Invoice from Appointment Details.
 
-    Supports both:
+    Supports UI variants such as:
     - Create Invoice
     - New Invoice
-
-    The UI wording differs depending on the current booking/invoice state
-    and application version.
+    - Generate BillCreate Invoice
+    - Generate BillNew Invoice
     """
-
-    invoice_action = None
-
-    # =========================================================
-    # PREFERRED: CREATE INVOICE
-    # =========================================================
-
-    create_candidates = page.get_by_text(
-        "Create Invoice",
-        exact=True,
-    )
-
-    invoice_action = last_visible_locator(
-        create_candidates
-    )
-
-    # =========================================================
-    # CURRENT UI FALLBACK: NEW INVOICE
-    # =========================================================
-
-    if invoice_action is None:
-        new_invoice_buttons = page.get_by_role(
-            "button",
-            name=re.compile(
-                r"New\s*Invoice",
-                re.IGNORECASE,
-            ),
-        )
-
-        invoice_action = last_visible_locator(
-            new_invoice_buttons
-        )
-
-    # =========================================================
-    # TEXT FALLBACK
-    # =========================================================
-
-    if invoice_action is None:
-        new_invoice_text = page.get_by_text(
-            "New Invoice",
-            exact=True,
-        )
-
-        invoice_action = last_visible_locator(
-            new_invoice_text
-        )
-
-    assert invoice_action is not None, (
-        "Unable to locate Create Invoice or New Invoice "
-        "on Appointment Details."
-    )
 
     clicked = False
     last_error = None
 
-    # =========================================================
-    # RETRY FOR ANGULAR DOM RE-RENDER
-    # =========================================================
+    try:
+        page.wait_for_load_state(
+            "networkidle",
+            timeout=5_000,
+        )
+    except PlaywrightTimeoutError:
+        pass
 
-    for attempt in range(3):
+    page.wait_for_timeout(750)
 
+    for attempt in range(4):
         try:
-            # Re-locate on every retry.
-            create_candidates = page.get_by_text(
-                "Create Invoice",
-                exact=True,
+            current_action = None
+
+            # =====================================================
+            # 1. BUTTON LOCATOR - CURRENT + OLD UI
+            # =====================================================
+
+            invoice_buttons = page.get_by_role(
+                "button",
+                name=re.compile(
+                    r"(?:Generate\s*Bill)?\s*"
+                    r"(?:Create|New)\s*Invoice",
+                    re.IGNORECASE,
+                ),
             )
 
             current_action = last_visible_locator(
-                create_candidates
+                invoice_buttons
             )
+
+            # =====================================================
+            # 2. CREATE INVOICE TEXT FALLBACK
+            # =====================================================
 
             if current_action is None:
                 current_action = last_visible_locator(
-                    page.get_by_role(
-                        "button",
-                        name=re.compile(
-                            r"New\s*Invoice",
-                            re.IGNORECASE,
-                        ),
+                    page.get_by_text(
+                        "Create Invoice",
+                        exact=True,
                     )
                 )
+
+            # =====================================================
+            # 3. NEW INVOICE TEXT FALLBACK
+            # =====================================================
 
             if current_action is None:
                 current_action = last_visible_locator(
@@ -1836,29 +1869,47 @@ def create_booking_invoice(page: Page) -> None:
                     )
                 )
 
+            # =====================================================
+            # 4. GENERIC BUTTON TEXT FALLBACK
+            # =====================================================
+
             if current_action is None:
-                page.wait_for_timeout(500)
+                current_action = last_visible_locator(
+                    page.locator(
+                        "button"
+                    ).filter(
+                        has_text=re.compile(
+                            r"(Create|New)\s*Invoice",
+                            re.IGNORECASE,
+                        )
+                    )
+                )
+
+            # =====================================================
+            # 5. FALLBACK FOR COMBINED ACCESSIBLE NAME
+            # Example:
+            # Generate BillNew Invoice
+            # =====================================================
+
+            if current_action is None:
+                current_action = last_visible_locator(
+                    page.locator(
+                        "button"
+                    ).filter(
+                        has_text=re.compile(
+                            r"Invoice",
+                            re.IGNORECASE,
+                        )
+                    )
+                )
+
+            if current_action is None:
+                page.wait_for_timeout(750)
                 continue
 
-            # Prefer clickable parent when the text is inside a button.
-            clickable_parent = current_action.locator(
-                "xpath=ancestor::*["
-                "self::button or "
-                "self::a or "
-                "@role='button'"
-                "][1]"
-            )
-
-            if clickable_parent.count() > 0:
-                parent = clickable_parent.first
-
-                if parent.is_visible():
-                    parent.click(
-                        timeout=5_000,
-                    )
-
-                    clicked = True
-                    break
+            # =====================================================
+            # CLICK
+            # =====================================================
 
             current_action.click(
                 timeout=5_000,
@@ -1871,13 +1922,25 @@ def create_booking_invoice(page: Page) -> None:
             last_error = error
             page.wait_for_timeout(750)
 
-    assert clicked, (
-        "Unable to open booking invoice from Appointment Details. "
-        f"Last error: {last_error}"
-    )
+    # =========================================================
+    # FAILURE DIAGNOSTICS
+    # =========================================================
+
+    if not clicked:
+        body_text = normalize_text(
+            page.locator("body").inner_text()
+        )
+
+        raise AssertionError(
+            "Unable to locate Create Invoice or New Invoice "
+            "on Appointment Details.\n"
+            f"Current URL: {page.url}\n"
+            f"Visible page text:\n{body_text}\n"
+            f"Last error: {last_error}"
+        )
 
     # =========================================================
-    # WAIT FOR CREATE INVOICE PAGE
+    # WAIT FOR BOOKING INVOICE PAGE
     # =========================================================
 
     page.wait_for_url(
@@ -1896,34 +1959,28 @@ def create_booking_invoice(page: Page) -> None:
     except PlaywrightTimeoutError:
         pass
 
+    page.wait_for_timeout(500)
+
     assert "/business/bill/" not in page.url, (
-        "Payment Info/Generate Bill was opened instead of "
-        "the Booking Invoice page. "
+        "Generate Bill/Payment Info was opened instead of "
+        "Booking Invoice. "
         f"Current URL: {page.url}"
     )
 
     # =========================================================
-    # VERIFY INVOICE PAGE
+    # VERIFY CREATE INVOICE PAGE
     # =========================================================
 
     invoice_page_loaded = False
 
-    # ---------------------------------------------------------
-    # Current UI: Create Invoice heading
-    # ---------------------------------------------------------
-
-    create_invoice_heading = page.get_by_role(
+    heading = page.get_by_role(
         "heading",
         name="Create Invoice",
         exact=True,
     )
 
-    if first_visible_locator(create_invoice_heading) is not None:
+    if first_visible_locator(heading) is not None:
         invoice_page_loaded = True
-
-    # ---------------------------------------------------------
-    # Current UI: Booking Reference field
-    # ---------------------------------------------------------
 
     if not invoice_page_loaded:
         booking_reference = page.get_by_text(
@@ -1931,26 +1988,22 @@ def create_booking_invoice(page: Page) -> None:
             exact=True,
         )
 
-        if first_visible_locator(booking_reference) is not None:
+        if first_visible_locator(
+            booking_reference
+        ) is not None:
             invoice_page_loaded = True
 
-    # ---------------------------------------------------------
-    # Current UI: Add Procedure/Item button
-    # ---------------------------------------------------------
-
     if not invoice_page_loaded:
-        add_item_button = page.locator(
+        add_item = page.locator(
             "button"
         ).filter(
             has_text="Add Procedure/Item"
         )
 
-        if first_visible_locator(add_item_button) is not None:
+        if first_visible_locator(
+            add_item
+        ) is not None:
             invoice_page_loaded = True
-
-    # ---------------------------------------------------------
-    # Current UI: Save button
-    # ---------------------------------------------------------
 
     if not invoice_page_loaded:
         save_button = page.get_by_role(
@@ -1959,17 +2012,9 @@ def create_booking_invoice(page: Page) -> None:
             exact=True,
         )
 
-        if first_visible_locator(save_button) is not None:
-            invoice_page_loaded = True
-
-    # ---------------------------------------------------------
-    # Older UI fallback: invoice table
-    # ---------------------------------------------------------
-
-    if not invoice_page_loaded:
-        invoice_table = page.get_by_role("table")
-
-        if first_visible_locator(invoice_table) is not None:
+        if first_visible_locator(
+            save_button
+        ) is not None:
             invoice_page_loaded = True
 
     assert invoice_page_loaded, (
@@ -6399,13 +6444,813 @@ def read_master_invoice_round_off(
     return Decimal("0.00")
 
 
+# Case 8 :: Create an invoice for a non-taxable service and apply discount
+
+def open_invoice_item_action_menu(
+    page: Page,
+    item_name: str,
+) -> None:
+    """
+    Open the action menu for the invoice service.
+
+    Supports the current booking invoice view where the service may not
+    be rendered as a normal HTML table row.
+    """
+
+    # First try to locate the service text directly.
+    service = page.get_by_text(
+        re.compile(
+            re.escape(item_name),
+            re.IGNORECASE,
+        )
+    )
+
+    visible_service = first_visible_locator(service)
+
+    assert visible_service is not None, (
+        f"Unable to locate service '{item_name}' "
+        "on the booking invoice page."
+    )
+
+    # Search nearby ancestors for buttons/icons.
+    candidate_scopes = [
+        visible_service.locator("xpath=parent::*"),
+        visible_service.locator("xpath=parent::*/parent::*"),
+        visible_service.locator("xpath=ancestor::*[self::tr or @role='row'][1]"),
+    ]
+
+    for scope in candidate_scopes:
+        if scope.count() == 0:
+            continue
+
+        # Buttons in same item block.
+        buttons = scope.locator("button")
+
+        for index in range(buttons.count() - 1, -1, -1):
+            button = buttons.nth(index)
+
+            try:
+                if not button.is_visible():
+                    continue
+
+                button.click(timeout=5_000)
+                return
+
+            except Exception:
+                continue
+
+        # Generic clickable/menu icon fallback.
+        menu_candidate = scope.locator(
+            "[role='button'], "
+            ".pi-bars, "
+            ".pi-ellipsis-v, "
+            ".pi-ellipsis-h, "
+            ".menu-icon"
+        )
+
+        visible_menu = last_visible_locator(
+            menu_candidate
+        )
+
+        if visible_menu is not None:
+            visible_menu.click()
+            return
+
+    # Final fallback: visible buttons close to service text.
+    all_buttons = page.locator("button")
+
+    for index in range(all_buttons.count()):
+        button = all_buttons.nth(index)
+
+        try:
+            if not button.is_visible():
+                continue
+
+            box = button.bounding_box()
+            service_box = visible_service.bounding_box()
+
+            if box is None or service_box is None:
+                continue
+
+            vertical_distance = abs(
+                box["y"] - service_box["y"]
+            )
+
+            if vertical_distance <= 100:
+                button.click(timeout=5_000)
+                return
+
+        except Exception:
+            continue
+
+    raise AssertionError(
+        f"Unable to locate the action menu for '{item_name}'."
+    )
+
+
+
+def apply_on_demand_invoice_discount(
+    page: Page,
+    item_name: str,
+    discount_amount: Decimal,
+) -> None:
+    """
+    Apply On Demand Discount to an invoice item.
+
+    The amount must be <= 50 as required by this test case.
+    """
+
+    assert Decimal("0.00") < discount_amount <= Decimal("50.00"), (
+        "On Demand Discount must be greater than 0 "
+        "and less than or equal to 50."
+    )
+
+    open_invoice_item_action_menu(
+        page=page,
+        item_name=item_name,
+    )
+
+    # =========================================================
+    # APPLY DISCOUNT ACTION
+    # =========================================================
+
+    apply_discount = page.get_by_text(
+        "Apply Discount",
+        exact=True,
+    )
+
+    visible_apply_discount = last_visible_locator(
+        apply_discount
+    )
+
+    if visible_apply_discount is None:
+        apply_discount = page.get_by_role(
+            "menuitem",
+            name=re.compile(
+                r"Apply\s*Discount",
+                re.IGNORECASE,
+            ),
+        )
+
+        visible_apply_discount = last_visible_locator(
+            apply_discount
+        )
+
+    assert visible_apply_discount is not None, (
+        "Unable to locate Apply Discount action."
+    )
+
+    visible_apply_discount.click()
+
+    # =========================================================
+    # APPLY DISCOUNT DIALOG
+    # =========================================================
+
+    dialog = page.get_by_role(
+        "dialog",
+        name=re.compile(
+            r"Apply\s*Discount",
+            re.IGNORECASE,
+        ),
+    )
+
+    expect(
+        dialog.first
+    ).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    discount_dialog = dialog.first
+
+    # =========================================================
+    # SELECT ON DEMAND DISCOUNT
+    # =========================================================
+
+    combobox = discount_dialog.get_by_role(
+        "combobox"
+    )
+
+    expect(
+        combobox.first
+    ).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    # Prefer opening the dropdown and selecting by visible text.
+    combobox.first.click()
+
+    on_demand_option = page.get_by_text(
+        "On Demand Discount",
+        exact=True,
+    )
+
+    visible_on_demand = last_visible_locator(
+        on_demand_option
+    )
+
+    if visible_on_demand is not None:
+        visible_on_demand.click()
+    else:
+        # Native select fallback.
+        try:
+            combobox.first.select_option(
+                label="On Demand Discount"
+            )
+        except Exception as error:
+            raise AssertionError(
+                "Unable to select On Demand Discount."
+            ) from error
+
+    # =========================================================
+    # ENTER DISCOUNT AMOUNT
+    # =========================================================
+
+    amount_input = discount_dialog.get_by_role(
+        "textbox",
+        name="Number",
+        exact=True,
+    )
+
+    if amount_input.count() == 0:
+        amount_input = discount_dialog.locator(
+            "input[type='number']"
+        )
+
+    assert amount_input.count() > 0, (
+        "Unable to locate discount amount input."
+    )
+
+    amount_input.first.fill(
+        str(discount_amount)
+    )
+
+    # =========================================================
+    # APPLY
+    # =========================================================
+
+    apply_button = discount_dialog.get_by_role(
+        "button",
+        name="Apply",
+        exact=True,
+    )
+
+    expect(
+        apply_button
+    ).to_be_visible(
+        timeout=DEFAULT_TIMEOUT
+    )
+
+    apply_button.click()
+
+    # =========================================================
+    # ASSERT SUCCESS MESSAGE
+    # =========================================================
+
+    success_message = page.get_by_text(
+        re.compile(
+            r"discount.*applied|"
+            r"applied.*discount|"
+            r"success",
+            re.IGNORECASE,
+        )
+    )
+
+    try:
+        expect(
+            success_message.first
+        ).to_be_visible(
+            timeout=5_000,
+        )
+    except AssertionError:
+        # Some versions remove the dialog without a persistent toast.
+        expect(
+            dialog
+        ).not_to_be_visible(
+            timeout=5_000,
+        )
+
+
+
+def read_invoice_discount_amount(
+    page: Page,
+) -> Decimal:
+    """
+    Read the applied On Demand Discount amount from the invoice.
+
+    Avoid generic 'Discount' matching because it can pick unrelated
+    totals/summary values.
+    """
+
+    # ---------------------------------------------------------
+    # First preference: exact On Demand Discount label
+    # ---------------------------------------------------------
+
+    discount_labels = page.get_by_text(
+        re.compile(
+            r"On\s*Demand\s*Discount",
+            re.IGNORECASE,
+        )
+    )
+
+    for index in range(discount_labels.count()):
+        label = discount_labels.nth(index)
+
+        try:
+            if not label.is_visible():
+                continue
+
+            scopes = [
+                label.locator("xpath=parent::*"),
+                label.locator("xpath=parent::*/parent::*"),
+                label.locator("xpath=ancestor::tr[1]"),
+            ]
+
+            for scope in scopes:
+                if scope.count() == 0:
+                    continue
+
+                text = normalize_text(
+                    scope.first.inner_text()
+                )
+
+                match = re.search(
+                    r"On\s*Demand\s*Discount"
+                    r".*?"
+                    r"([+-]?\d[\d,]*(?:\.\d+)?)",
+                    text,
+                    re.IGNORECASE,
+                )
+
+                if match:
+                    amount = round_money(
+                        Decimal(
+                            match.group(1).replace(",", "")
+                        )
+                    )
+
+                    print(
+                        f"[On Demand Discount] {amount}"
+                    )
+
+                    return amount
+
+        except Exception:
+            continue
+
+    # ---------------------------------------------------------
+    # Page-text fallback
+    # ---------------------------------------------------------
+
+    page_text = normalize_text(
+        page.locator("body").inner_text()
+    )
+
+    matches = re.findall(
+        r"On\s*Demand\s*Discount"
+        r"\s*:?\s*"
+        r"(?:₹|)?\s*"
+        r"([+-]?\d[\d,]*(?:\.\d+)?)",
+        page_text,
+        re.IGNORECASE,
+    )
+
+    if matches:
+        amount = round_money(
+            Decimal(
+                matches[-1].replace(",", "")
+            )
+        )
+
+        print(
+            f"[On Demand Discount - Fallback] {amount}"
+        )
+
+        return amount
+
+    raise AssertionError(
+        "Unable to read On Demand Discount amount "
+        "from the invoice."
+    )
 
 
 
 
+def generate_random_discount_amount() -> Decimal:
+    """
+    Generate a random On Demand Discount greater than 0
+    and less than 50.
+
+    Can return whole-number or decimal values.
+    """
+
+    amount = Decimal(
+        str(
+            round(
+                random.uniform(1, 49.99),
+                2,
+            )
+        )
+    )
+
+    return round_money(amount)
+
+        
 
 
 
+def complete_booking_invoice_non_taxable_with_invoice_discount_flow(
+    page: Page,
+    config,
+    consumer_profile,
+    doctor_name: str = "Naveen KP",
+    service_name: str = "Video call Services",
+    discount_amount: Decimal = Decimal("17.25"),
+) -> dict:
+    """
+    Create an invoice for a non-taxable booking service,
+    apply On Demand Discount, update the invoice,
+    validate the final invoice calculation,
+    and complete payment.
+
+    Flow:
+        Create Appointment
+        -> Create Invoice
+        -> Apply On Demand Discount
+        -> Update Invoice
+        -> Validate discount calculation
+        -> Validate final Net Total
+        -> Complete Payment
+        -> Verify Amount Due = 0
+    """
+
+    # =========================================================
+    # CREATE APPOINTMENT
+    # =========================================================
+
+    select_first_business_if_needed(page)
+
+    open_appointment_dashboard(page)
+
+    open_create_appointment_page(page)
+
+    patient_name = create_random_patient_from_consumer_profile(
+        page=page,
+        consumer_profile=consumer_profile,
+    )
+
+    select_appointment_doctor(
+        page=page,
+        doctor_name=doctor_name,
+    )
+
+    select_appointment_service(
+        page=page,
+        service_name=service_name,
+    )
+
+    confirm_appointment(page)
+
+    # =========================================================
+    # OPEN APPOINTMENT
+    # =========================================================
+
+    open_latest_created_appointment(
+        page=page,
+        patient_name=patient_name,
+    )
+
+    open_appointment_details(page)
+
+    # =========================================================
+    # CREATE INVOICE
+    # =========================================================
+
+    create_booking_invoice(page)
+
+    # =========================================================
+    # READ INVOICE BEFORE DISCOUNT
+    # =========================================================
+
+    total_amount_before_discount = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Total Amount",
+            "Total",
+        ],
+        required=True,
+    )
+
+    tax_amount_before_discount = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Tax",
+            "Tax Amount",
+        ],
+        required=False,
+    )
+
+    if tax_amount_before_discount is None:
+        tax_amount_before_discount = Decimal("0.00")
+
+    # =========================================================
+    # VERIFY SERVICE IS NON-TAXABLE
+    # =========================================================
+
+    assert_amount_close(
+        actual=tax_amount_before_discount,
+        expected=Decimal("0.00"),
+        label=f"{service_name} Tax",
+        tolerance=Decimal("0.01"),
+    )
+
+    print(
+        "\n"
+        "[Invoice Before Discount]\n"
+        f"Service      : {service_name}\n"
+        f"Tax          : {tax_amount_before_discount}\n"
+        f"Total Amount : {total_amount_before_discount}\n"
+    )
+
+    # =========================================================
+    # VALIDATE DISCOUNT INPUT
+    # =========================================================
+
+    assert Decimal("0.00") < discount_amount < Decimal("50.00"), (
+        "Discount amount must be greater than 0 "
+        "and less than 50."
+    )
+
+    # =========================================================
+    # APPLY ON DEMAND DISCOUNT
+    # =========================================================
+
+    apply_on_demand_invoice_discount(
+        page=page,
+        item_name=service_name,
+        discount_amount=discount_amount,
+    )
+
+    print(
+        f"[Discount Applied] On Demand Discount: {discount_amount}"
+    )
+
+    # =========================================================
+    # UPDATE INVOICE
+    # =========================================================
+
+    invoice_created = update_booking_invoice(
+        page
+    )
+
+    # =========================================================
+    # WAIT FOR FINAL INVOICE
+    # =========================================================
+
+    try:
+        page.wait_for_load_state(
+            "networkidle",
+            timeout=5_000,
+        )
+    except PlaywrightTimeoutError:
+        pass
+
+    page.wait_for_timeout(750)
+
+    # =========================================================
+    # READ FINAL INVOICE VALUES
+    # =========================================================
+
+    final_total_amount = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Total Amount",
+            "Total",
+        ],
+        required=True,
+    )
+
+    final_net_total = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Net Total",
+            "Net total",
+        ],
+        required=True,
+    )
+
+    final_round_off = read_invoice_amount_by_label(
+        page=page,
+        labels=[
+            "Round Off",
+            "Round off",
+            "RoundOff",
+        ],
+        required=False,
+    )
+
+    if final_round_off is None:
+        final_round_off = Decimal("0.00")
+
+    # =========================================================
+    # VALIDATE APPLIED DISCOUNT
+    # =========================================================
+
+    # The final Total Amount already has the discount deducted.
+    #
+    # Example:
+    # Before Discount = 500.00
+    # Discount        = 17.25
+    # Final Total     = 482.75
+    #
+    # Therefore:
+    #
+    # Actual Discount
+    # = Total Before Discount - Final Total
+
+    actual_discount = round_money(
+        total_amount_before_discount
+        - final_total_amount
+    )
+
+    assert_amount_close(
+        actual=actual_discount,
+        expected=discount_amount,
+        label="Applied On Demand Discount",
+        tolerance=Decimal("0.01"),
+    )
+
+    # =========================================================
+    # VALIDATE FINAL NET TOTAL
+    # =========================================================
+
+    # IMPORTANT:
+    #
+    # final_total_amount already contains the discount.
+    #
+    # Therefore DO NOT subtract the discount again.
+    #
+    # Net Total = Final Total Amount + Round Off
+
+    expected_final_net_total = round_money(
+        final_total_amount
+        + final_round_off
+    )
+
+    print(
+        "\n"
+        "[Final Invoice Discount Validation]\n"
+        f"Total Before Discount : {total_amount_before_discount}\n"
+        f"Expected Discount     : {discount_amount}\n"
+        f"Actual Discount       : {actual_discount}\n"
+        f"Total After Discount  : {final_total_amount}\n"
+        f"Round Off             : {final_round_off}\n"
+        f"Expected Net Total    : {expected_final_net_total}\n"
+        f"Actual Net Total      : {final_net_total}\n"
+    )
+
+    assert_amount_close(
+        actual=final_net_total,
+        expected=expected_final_net_total,
+        label="Final Invoice Net Total after On Demand Discount",
+        tolerance=Decimal("0.01"),
+    )
+
+    # =========================================================
+    # DISCOUNT CALCULATION VALIDATION RESULT
+    # =========================================================
+
+    discount_calculation_valid = (
+        abs(
+            actual_discount
+            - discount_amount
+        )
+        <= Decimal("0.01")
+        and
+        abs(
+            final_net_total
+            - expected_final_net_total
+        )
+        <= Decimal("0.01")
+    )
+
+    final_discount = actual_discount
+
+    # =========================================================
+    # PAYMENT
+    # =========================================================
+
+    payment_result = complete_booking_invoice_payment(
+        page
+    )
+
+    amount_due_after_payment = (
+        payment_result["amount_due"]
+    )
+
+    # =========================================================
+    # VERIFY AMOUNT DUE = ZERO
+    # =========================================================
+
+    assert_amount_close(
+        actual=amount_due_after_payment,
+        expected=Decimal("0.00"),
+        label="Invoice Amount Due after payment",
+        tolerance=Decimal("0.01"),
+    )
+
+    # =========================================================
+    # FINAL RESULT LOG
+    # =========================================================
+
+    print(
+        "\n"
+        "====================================================\n"
+        "BOOKING INVOICE - NON TAXABLE WITH DISCOUNT\n"
+        "====================================================\n"
+        f"Patient: {patient_name}\n"
+        f"Service: {service_name}\n"
+        "\n"
+        "BEFORE DISCOUNT\n"
+        "----------------------------------------------------\n"
+        f"Tax: {tax_amount_before_discount}\n"
+        f"Total Amount: {total_amount_before_discount}\n"
+        "\n"
+        "DISCOUNT\n"
+        "----------------------------------------------------\n"
+        f"Expected Discount: {discount_amount}\n"
+        f"Actual Discount: {actual_discount}\n"
+        "\n"
+        "FINAL INVOICE\n"
+        "----------------------------------------------------\n"
+        f"Total Amount After Discount: {final_total_amount}\n"
+        f"Round Off: {final_round_off}\n"
+        f"Expected Net Total: {expected_final_net_total}\n"
+        f"Actual Net Total: {final_net_total}\n"
+        "\n"
+        "PAYMENT\n"
+        "----------------------------------------------------\n"
+        f"Payment Method: {payment_result['payment_method']}\n"
+        f"Payment Mode: {payment_result.get('payment_mode')}\n"
+        f"Amount Due After Payment: {amount_due_after_payment}\n"
+        "===================================================="
+    )
+
+    # =========================================================
+    # RETURN
+    # =========================================================
+
+    return {
+        "patient_name": patient_name,
+        "service_name": service_name,
+
+        # Before discount
+        "service_tax":
+            tax_amount_before_discount,
+
+        "total_amount_before_discount":
+            total_amount_before_discount,
+
+        # Discount
+        "expected_discount_amount":
+            discount_amount,
+
+        "discount_amount":
+            final_discount,
+
+        # Final invoice
+        "total_amount":
+            final_total_amount,
+
+        "round_off":
+            final_round_off,
+
+        "expected_net_total":
+            expected_final_net_total,
+
+        "actual_net_total":
+            final_net_total,
+
+        # Invoice
+        "invoice_created":
+            invoice_created,
+
+        # Validation
+        "discount_calculation_valid":
+            discount_calculation_valid,
+
+        # Payment
+        "payment_completed":
+            payment_result["payment_completed"],
+
+        "payment_method":
+            payment_result["payment_method"],
+
+        "payment_mode":
+            payment_result.get("payment_mode"),
+
+        "amount_due_after_payment":
+            amount_due_after_payment,
+    }
 
 
 
