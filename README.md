@@ -250,11 +250,11 @@ Uninstall old packages:
 
 pip uninstall pytest-reportportal reportportal-client -y
 
-commands for bookings, order and IP are:-
+commands for bookings, order, prescription and IP are:-
 
 pytest tests/test_take_appointment.py --account booking
 pytest tests/test_order.py --account order
 pytest tests/test_ip.py --account ip
 pytest tests/test_booking_invoice_tax.py --account booking --headed -s    
-
+python -m pytest .\tests\test_prescription_flow.py -v -s --alluredir=allure-results
 pytest tests/test_order_invoice_tax.py --account order
