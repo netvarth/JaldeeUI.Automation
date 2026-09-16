@@ -258,3 +258,4 @@ pytest tests/test_ip.py --account ip
 pytest tests/test_booking_invoice_tax.py --account booking --headed -s    
 python -m pytest .\tests\test_prescription_flow.py -v -s --alluredir=allure-results
 pytest tests/test_order_invoice_tax.py --account order
+pytest tests/test_selling_unit_purchase.py

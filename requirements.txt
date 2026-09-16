@@ -7,3 +7,4 @@ allure-pytest
 
 pytest-json-report
 pytest-xdist
+python-dateutil
