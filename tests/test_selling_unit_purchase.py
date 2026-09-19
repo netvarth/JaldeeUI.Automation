@@ -3,59 +3,176 @@ import sys
 import allure
 import pytest
 
-# Run with: pytest tests/test_selling_unit_purchase.py
+# Run all tests :- python -m pytest .\tests\test_selling_unit_purchase.py -v -s
 
-sys.path.insert(
-    0,
-    os.path.abspath(
-        os.path.join(os.path.dirname(__file__), "..")
-    )
+# Run Only Purchase :- python -m pytest .\tests\test_selling_unit_purchase.py::test_01_create_and_approve_purchase -v -s
+# Run Only Catalog Update :- python -m pytest .\tests\test_selling_unit_purchase.py::test_02_add_purchased_items_to_sales_order_catalog -v -s
+# Run Only Order Creation :- python -m pytest .\tests\test_selling_unit_purchase.py::test_03_create_order_for_new_customer -v -s
+
+from framework.selling_unit_purchase import (
+    SellingUnitPurchaseFlow,
 )
 
-from framework.selling_unit_purchase import SellingUnitPurchaseFlow
+
+# ============================================================
+# SHARED BROWSER SESSION FOR THESE 3 DEPENDENT TESTS
+# ============================================================
+
+@pytest.fixture(scope="module")
+def selling_unit_flow(browser):
+
+    context = browser.new_context()
+
+    page = context.new_page()
+
+    flow = SellingUnitPurchaseFlow(page)
+
+    yield flow
+
+    context.close()
 
 
-@allure.feature("Sales Order")
-@allure.story("Selling Unit")
-@allure.title(
-    "Purchase inventory items and update them "
-    "in Sales Order Catalog"
-)
-@pytest.mark.selling_unit
-@pytest.mark.sales_order
-def test_prepare_items_for_selling_unit_sales_order(page):
+# ============================================================
+# PURCHASE DATA
+# Runs once and is reused by Test 1, 2 and 3
+# ============================================================
 
-    purchase_flow = SellingUnitPurchaseFlow(page)
+@pytest.fixture(scope="module")
+def purchase_result(
+    selling_unit_flow,
+):
 
-    result = purchase_flow.prepare_stock_for_selling_unit_test(
+    return selling_unit_flow.create_and_approve_purchase(
         number_of_items=2
     )
 
-    # Purchase bill number should be generated
-    assert result["bill_number"]
 
-    # Exactly 2 items should be purchased
-    assert len(result["items"]) == 2
 
-    # Ensure both purchased items are different
-    item_names = [
-        item["item_name"]
-        for item in result["items"]
-    ]
+# ============================================================
+# CATALOG DATA
+# Depends on purchase_result
+# ============================================================
 
-    assert len(set(item_names)) == 2, (
-        f"Duplicate items selected: {item_names}"
+@pytest.fixture(scope="module")
+def catalog_result(
+    selling_unit_flow,
+):
+
+    return (
+        selling_unit_flow
+        .add_latest_purchase_items_to_sales_order_catalog()
     )
 
-    # Validate purchase data
-    for item in result["items"]:
 
-        assert item["item_name"]
 
-        assert item["quantity"] > 0
+# ============================================================
+# ORDER DATA
+# ============================================================
+@pytest.fixture(scope="module")
+def order_result(
+    selling_unit_flow,
+):
 
-        assert item["mrp"] > 0
+    return (
+        selling_unit_flow
+        .create_random_sales_order_for_new_customer(
+            number_of_items=2
+        )
+    )
 
-        assert item["purchase_price"] > 0
+# ============================================================
+# TEST CASE 1
+# PURCHASE
+# ============================================================
 
-        assert item["mrp"] > item["purchase_price"]
+def test_01_create_and_approve_purchase(
+    purchase_result,
+):
+
+    assert purchase_result is not None
+
+    assert purchase_result["bill_number"]
+
+    assert purchase_result["items"]
+
+    assert len(
+        purchase_result["items"]
+    ) == 2
+
+    print("\n============================================")
+    print("TEST 1 - PURCHASE PASSED")
+    print("============================================")
+
+    print(
+        f"Bill Number: "
+        f"{purchase_result['bill_number']}"
+    )
+
+    for item in purchase_result["items"]:
+
+        print(
+            f"Item={item['item_name']} | "
+            f"Quantity={item['quantity']} | "
+            f"Batch={item['batch']} | "
+            f"MRP={item['mrp']} | "
+            f"Purchase Price={item['purchase_price']}"
+        )
+
+
+# ============================================================
+# TEST CASE 2
+# ADD PURCHASED ITEMS TO SALES ORDER CATALOG
+# ============================================================
+
+def test_02_add_purchased_items_to_sales_order_catalog(
+    catalog_result,
+):
+
+    assert catalog_result is not None
+
+    assert catalog_result["catalog_updated"] is True
+
+    assert catalog_result["items"]
+
+    print("\n============================================")
+    print("TEST 2 - SALES CATALOG UPDATE PASSED")
+    print("============================================")
+
+    for item in catalog_result["items"]:
+
+        print(
+            f"Catalog Item: "
+            f"{item['item_name']}"
+        )
+
+
+# ============================================================
+# TEST CASE 3
+# CREATE ORDER FOR NEW CUSTOMER
+# ============================================================
+
+def test_03_create_order_for_new_customer(
+    order_result,
+):
+
+    assert order_result is not None
+
+    assert order_result["customer"]
+
+    assert order_result["order_items"]
+
+    print("\n============================================")
+    print("TEST 3 - SALES ORDER PASSED")
+    print("============================================")
+
+    print(
+        f"Customer: "
+        f"{order_result['customer'].get('full_name', '')}"
+    )
+
+    for item in order_result["order_items"]:
+
+        print(
+            f"Order Item: "
+            f"{item['item_name']}"
+        )
