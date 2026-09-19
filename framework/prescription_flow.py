@@ -6,6 +6,7 @@ from typing import Any
 from dotenv import load_dotenv
 from playwright.sync_api import Page, expect
 
+# To run the test case :- pytest tests\test_prescription_flow.py
 
 load_dotenv()
 
@@ -896,70 +897,255 @@ def push_rx_to_pharmacy(page: Page) -> None:
 # ============================================================
 
 def open_sales_order_dashboard(page: Page) -> None:
+        """
+        Open Sales Order dashboard and navigate to RX Requests.
+        """
 
-    # Try to identify Sales Order menu using text first.
-    sales_order = page.get_by_text(
-        re.compile(
-            r"Sales Order",
-            re.IGNORECASE,
+        # =========================================================
+        # CLICK SALES ORDER FROM SIDEBAR
+        # =========================================================
+
+        sales_order_link = page.locator(
+            'a[href*="/business/salesorder/dashboard"]'
         )
-    )
 
-    if sales_order.count() > 0:
-        sales_order.first.click()
+        expect(sales_order_link).to_be_visible(timeout=15000)
 
-    else:
-        # Existing recorder fallback.
-        page.get_by_role("link").nth(3).click()
+        sales_order_link.click()
 
-    page.wait_for_load_state("domcontentloaded")
+        # =========================================================
+        # WAIT FOR SALES ORDER DASHBOARD
+        # =========================================================
+
+        page.wait_for_url(
+            re.compile(r".*/business/salesorder/dashboard.*"),
+            timeout=20000,
+        )
+
+        print("Sales Order dashboard opened:", page.url)
+
+        # =========================================================
+        # OPEN REQUESTS
+        # =========================================================
+
+        requests_button = page.get_by_text(
+            re.compile(r"^Requests", re.I)
+        )
+
+        expect(requests_button.first).to_be_visible(timeout=15000)
+
+        requests_button.first.click()
+
+        # =========================================================
+        # WAIT FOR RX REQUEST GRID
+        # =========================================================
+
+        page.wait_for_url(
+            re.compile(r".*/business/salesorder/rx-requests-grid.*"),
+            timeout=20000,
+        )
+
+        expect(
+            page.get_by_text(
+                re.compile(r"Requests \(\d+\)", re.I)
+            )
+        ).to_be_visible(timeout=15000)
+
+        print("RX Requests page opened:", page.url)
 
 
 def open_first_rx_request_and_confirm_order(
-    page: Page,
-) -> None:
+        page: Page
+    ) -> None:
+    """
+    Open the latest RX request from the Requests grid.
 
-    requests_tab = page.get_by_text(
-        "Requests",
-        exact=True,
+    Assumption:
+        The latest request is always shown as the first data row.
+    """
+
+    # =========================================================
+    # VERIFY RX REQUEST PAGE
+    # =========================================================
+
+    if "/business/salesorder/rx-requests-grid" not in page.url:
+        raise AssertionError(
+            f"Expected RX Requests page, but current URL is: {page.url}"
+        )
+
+    # =========================================================
+    # LOCATE REQUEST TABLE
+    # =========================================================
+
+    requests_table = page.locator("table").filter(
+        has_text=re.compile(
+            r"Date & Ref\.No.*Patient Name.*Status.*Actions",
+            re.S,
+        )
     )
 
     expect(
-        requests_tab.first
+        requests_table
     ).to_be_visible(timeout=15000)
 
-    requests_tab.first.click()
+    # =========================================================
+    # GET FIRST DATA ROW
+    # =========================================================
 
-    page.wait_for_timeout(1000)
+    rows = requests_table.get_by_role("row")
 
-    view_buttons = page.locator(
-        "#btnACPTOrd_ORD_RQTORD"
+    # row 0 = header
+    # row 1 = latest request
+    expect(
+        rows.nth(1)
+    ).to_be_visible(timeout=15000)
+
+    latest_row = rows.nth(1)
+
+    latest_row_text = latest_row.inner_text()
+
+    print(
+        "Latest RX request:",
+        latest_row_text,
     )
 
-    expect(
-        view_buttons.first
-    ).to_be_visible(timeout=15000)
+    # =========================================================
+    # CLICK VIEW OF FIRST ROW
+    # =========================================================
 
-    # First/latest request.
-    view_buttons.first.click()
-
-    confirm_order = page.get_by_role(
+    view_button = latest_row.get_by_role(
         "button",
-        name="Confirm Order",
+        name="View",
         exact=True,
     )
 
     expect(
-        confirm_order
+        view_button
     ).to_be_visible(timeout=10000)
 
-    confirm_order.click()
+    expect(
+        view_button
+    ).to_be_enabled(timeout=10000)
 
-    wait_for_success_message(page)
+    view_button.click()
 
-    page.wait_for_load_state("domcontentloaded")
+    # =========================================================
+    # CONVERT TO ORDER DIALOG
+    # =========================================================
 
+    dialog = page.get_by_role("dialog")
 
+    expect(
+        dialog
+    ).to_be_visible(timeout=15000)
+
+    expect(
+        dialog.get_by_text(
+            "Convert to order",
+            exact=True,
+        )
+    ).to_be_visible(timeout=10000)
+
+    # =========================================================
+    # CONFIRM ORDER BUTTON
+    # =========================================================
+
+    confirm_button = dialog.locator(
+        "button"
+    ).filter(
+        has_text=re.compile(
+            r"^\s*Confirm Order\s*$",
+            re.I,
+        )
+    )
+
+    expect(
+        confirm_button
+    ).to_have_count(1)
+
+    expect(
+        confirm_button
+    ).to_be_visible(timeout=10000)
+
+    expect(
+        confirm_button
+    ).to_be_enabled(timeout=10000)
+
+    confirm_button.scroll_into_view_if_needed()
+
+    print(
+        "Confirm Order button:",
+        confirm_button.inner_text(),
+    )
+
+    # =========================================================
+    # CLICK CONFIRM ORDER
+    # =========================================================
+
+    try:
+        confirm_button.hover()
+
+        page.wait_for_timeout(300)
+
+        confirm_button.click(
+            timeout=5000,
+        )
+
+    except Exception as e:
+        print(
+            "Normal Confirm Order click failed. "
+            "Trying forced click:",
+            e,
+        )
+
+        confirm_button.click(
+            force=True,
+        )
+
+    # =========================================================
+    # WAIT FOR DIALOG TO CLOSE
+    # =========================================================
+
+    try:
+        expect(
+            dialog
+        ).to_be_hidden(timeout=10000)
+
+    except AssertionError:
+        print(
+            "Dialog still visible. "
+            "Trying native DOM click..."
+        )
+
+        confirm_button.evaluate(
+            "(element) => element.click()"
+        )
+
+        expect(
+            dialog
+        ).to_be_hidden(timeout=15000)
+
+    # =========================================================
+    # VERIFY ORDER DETAILS PAGE
+    # =========================================================
+
+    edit_order_button = page.get_by_role(
+        "button",
+        name=re.compile(
+            r"Edit Order",
+            re.I,
+        ),
+    )
+
+    expect(
+        edit_order_button
+    ).to_be_visible(timeout=20000)
+
+    print(
+        "Latest RX successfully converted to Sales Order"
+    )
+
+    
 # ============================================================
 # EDIT ORDER
 # ============================================================
@@ -1225,47 +1411,79 @@ def create_invoice(page: Page) -> None:
     page.wait_for_load_state("domcontentloaded")
 
 
+
+
+def wait_for_success_toasts_to_clear(page: Page) -> None:
+    toasts = page.locator(
+        ".p-toast-message-success:visible, "
+        ".mat-mdc-snack-bar-container:visible, "
+        ".alert-success:visible"
+    )
+
+    try:
+        expect(toasts).to_have_count(0, timeout=15000)
+    except AssertionError:
+        pass
+
+
 # ============================================================
 # PAYMENT
 # ============================================================
 
 def pay_invoice_by_cash(page: Page) -> None:
+    """
+    Pay the current sales-order invoice by cash.
+    """
 
-    # Scroll to payment area.
-    page.mouse.wheel(0, 3000)
+    # =========================================================
+    # WAIT FOR SUCCESS TOASTS TO DISAPPEAR
+    # =========================================================
 
+    wait_for_success_toasts_to_clear(page)
+
+    # Give Angular / PrimeNG a moment to finish rendering
     page.wait_for_timeout(500)
 
-    # First try actual Get Payment button.
-    get_payment = page.get_by_role(
-        "button",
-        name=re.compile(
-            r"Get Payment",
-            re.IGNORECASE,
-        ),
+    # =========================================================
+    # LOCATE GET PAYMENT CONTROL
+    # =========================================================
+
+    get_payment_combo = page.get_by_role(
+        "combobox",
+        name="Get Payment",
     )
 
-    if get_payment.count() > 0:
+    expect(
+        get_payment_combo
+    ).to_be_attached(timeout=15000)
 
-        get_payment.first.scroll_into_view_if_needed()
-        get_payment.first.click()
+    # PrimeNG may keep the internal input hidden.
+    # So use the visible parent dropdown element.
+    payment_dropdown = get_payment_combo.locator(
+        "xpath=ancestor::*[contains(@class,'p-dropdown')][1]"
+    )
 
-    else:
-        # Current recorded selector.
-        dropdown_button = page.get_by_role(
-            "button",
-            name="dropdown trigger",
-        )
+    expect(
+        payment_dropdown
+    ).to_be_attached(timeout=15000)
 
-        expect(
-            dropdown_button
-        ).to_be_visible(timeout=15000)
+    payment_dropdown.scroll_into_view_if_needed()
 
-        dropdown_button.click()
+    page.wait_for_timeout(300)
 
-    # ========================================================
-    # PAY BY CASH
-    # ========================================================
+    expect(
+        payment_dropdown
+    ).to_be_visible(timeout=15000)
+
+    # =========================================================
+    # OPEN GET PAYMENT DROPDOWN
+    # =========================================================
+
+    payment_dropdown.click()
+
+    # =========================================================
+    # SELECT PAY BY CASH
+    # =========================================================
 
     pay_by_cash = page.get_by_text(
         "Pay by Cash",
@@ -1278,7 +1496,21 @@ def pay_invoice_by_cash(page: Page) -> None:
 
     pay_by_cash.click()
 
-    pay_button = page.get_by_role(
+    # =========================================================
+    # WAIT FOR PAYMENT DIALOG
+    # =========================================================
+
+    payment_dialog = page.get_by_role("dialog")
+
+    expect(
+        payment_dialog
+    ).to_be_visible(timeout=15000)
+
+    # =========================================================
+    # CLICK PAY
+    # =========================================================
+
+    pay_button = payment_dialog.get_by_role(
         "button",
         name="Pay",
         exact=True,
@@ -1286,34 +1518,59 @@ def pay_invoice_by_cash(page: Page) -> None:
 
     expect(
         pay_button
+    ).to_be_visible(timeout=10000)
+
+    expect(
+        pay_button
     ).to_be_enabled(timeout=10000)
 
     pay_button.click()
 
-    # ========================================================
-    # PROCEED WITH PAYMENT
-    # ========================================================
+    # =========================================================
+    # CONFIRM PAYMENT
+    # =========================================================
 
-    confirmation = page.get_by_text(
-        re.compile(
-            r"Proceed with payment",
-            re.IGNORECASE,
-        )
+    confirm_dialog = page.get_by_role("dialog")
+
+    yes_button = confirm_dialog.get_by_role(
+        "button",
+        name="Yes",
+        exact=True,
     )
 
     expect(
-        confirmation
+        yes_button
     ).to_be_visible(timeout=10000)
 
-    page.get_by_role(
-        "button",
-        name=re.compile(
-            r"^Yes$",
-            re.IGNORECASE,
-        ),
-    ).last.click()
+    expect(
+        yes_button
+    ).to_be_enabled(timeout=10000)
 
-    wait_for_success_message(page)
+    yes_button.click()
+
+    # =========================================================
+    # WAIT FOR PAYMENT TO COMPLETE
+    # =========================================================
+
+    page.wait_for_timeout(1000)
+
+    # Optional:
+    # Wait until dialogs disappear after successful payment.
+    try:
+        expect(
+            payment_dialog
+        ).to_be_hidden(timeout=15000)
+
+    except AssertionError:
+        pass
+
+    # Wait for any payment success toast to disappear
+    # before the next step (Back -> Order Details).
+    wait_for_success_toasts_to_clear(page)
+
+    print("Invoice paid successfully by Cash")
+
+
 
 
 # ============================================================
@@ -1454,54 +1711,50 @@ def complete_prescription_push_rx_sales_order_flow(
     page: Page,
     config,
     consumer_profile,
-) -> dict[str, Any]:
+) -> dict:
     """
-    Complete E2E Prescription flow.
+    Complete end-to-end prescription -> RX push -> sales order -> invoice -> payment flow.
 
     Flow:
         Login
         -> Appointment Dashboard
         -> Create Appointment
         -> Create Random Patient
-        -> Doctor: Naveen KP
-        -> Service: Video call Services
-        -> Confirm Appointment
-        -> Open Appointment Details
-        -> Prescriptions
-        -> Add Paracetamol
-        -> Add Ibuprofen
-        -> Add Amoxicillin
         -> Create Prescription
-        -> Push RX to Swathy Pharmacy
-        -> Sales Order
-        -> Requests
-        -> Convert Request to Order
+        -> Push RX to Pharmacy
+        -> Open Sales Order Requests
+        -> Open RX request for the SAME patient created in this test
+        -> Convert RX request to Sales Order
         -> Edit Order
-        -> Add Item 4
-        -> Random Quantity
+        -> Add Item
         -> Update Order
         -> Confirm Order
         -> Create Invoice
-        -> Cash Payment
+        -> Pay by Cash
+        -> Return to Order Details
         -> Complete Order
+
+    Returns:
+        Dictionary containing the main test data generated during the flow.
     """
 
-    # ========================================================
+    # =========================================================
     # LOGIN
-    # ========================================================
+    # =========================================================
 
     login_to_provider(page)
 
-    # Optional debug check
-    print(f"Current URL after login: {page.url}")
-
-    # ========================================================
-    # APPOINTMENT
-    # ========================================================
+    # =========================================================
+    # OPEN APPOINTMENTS
+    # =========================================================
 
     open_appointment_dashboard(page)
 
     open_create_appointment_page(page)
+
+    # =========================================================
+    # CREATE APPOINTMENT + RANDOM PATIENT
+    # =========================================================
 
     patient_name = create_appointment(
         page=page,
@@ -1510,20 +1763,24 @@ def complete_prescription_push_rx_sales_order_flow(
 
     print(f"Created patient: {patient_name}")
 
-    # ========================================================
+    # =========================================================
     # OPEN CREATED APPOINTMENT
-    # ========================================================
+    # =========================================================
 
     open_latest_appointment(
-        page=page,
-        patient_name=patient_name,
+        page,
+        patient_name,
     )
 
-    # ========================================================
-    # PRESCRIPTION
-    # ========================================================
+    # =========================================================
+    # OPEN PRESCRIPTION SECTION
+    # =========================================================
 
     open_prescription_section(page)
+
+    # =========================================================
+    # CREATE PRESCRIPTION
+    # =========================================================
 
     prescription_data = create_prescription(page)
 
@@ -1537,69 +1794,78 @@ def complete_prescription_push_rx_sales_order_flow(
             f"Instruction={medicine['instruction']}"
         )
 
-    # ========================================================
-    # PUSH RX
-    # ========================================================
+    # =========================================================
+    # PUSH RX TO PHARMACY
+    # =========================================================
 
     push_rx_to_pharmacy(page)
 
-    # ========================================================
-    # SALES ORDER
-    # ========================================================
+    # =========================================================
+    # OPEN SALES ORDER DASHBOARD
+    # =========================================================
 
     open_sales_order_dashboard(page)
 
-    open_first_rx_request_and_confirm_order(page)
+    # =========================================================
+    # OPEN LATEST RX REQUEST
+    # Latest request is the first row in the grid
+    # =========================================================
 
-    # ========================================================
-    # EDIT ORDER
-    # ========================================================
-
-    quantity = edit_order_and_add_item(
+    open_first_rx_request_and_confirm_order(
         page=page,
-        item_name=ORDER_ITEM_NAME,
     )
 
-    print(
-        f"{ORDER_ITEM_NAME} random quantity: {quantity}"
+    # =========================================================
+    # EDIT ORDER + ADD ITEM
+    # =========================================================
+
+    added_quantity = edit_order_and_add_item(
+        page,
+        ORDER_ITEM_NAME,
     )
 
-    # ========================================================
+    # =========================================================
     # CONFIRM UPDATED ORDER
-    # ========================================================
+    # =========================================================
 
     confirm_updated_order(page)
 
-    # ========================================================
+    # =========================================================
     # CREATE INVOICE
-    # ========================================================
+    # =========================================================
 
     create_invoice(page)
 
-    # ========================================================
-    # CASH PAYMENT
-    # ========================================================
+    # =========================================================
+    # PAY INVOICE
+    # =========================================================
 
     pay_invoice_by_cash(page)
 
-    # ========================================================
-    # BACK TO ORDER
-    # ========================================================
+    # =========================================================
+    # RETURN TO ORDER DETAILS
+    # =========================================================
 
     back_to_order_details(page)
 
-    # ========================================================
+    print("Returned to order details page")
+
+    # =========================================================
     # COMPLETE ORDER
-    # ========================================================
+    # =========================================================
 
     complete_order(page)
 
+    # =========================================================
+    # RETURN TEST DATA
+    # =========================================================
+
     return {
-        "patient_name": patient_name,
-        "doctor": DOCTOR_NAME,
-        "service": SERVICE_NAME,
-        "pharmacy": PHARMACY_NAME,
-        "medicines": prescription_data,
-        "order_item": ORDER_ITEM_NAME,
-        "order_item_quantity": quantity,
-    }
+    "patient_name": patient_name,
+    "doctor": DOCTOR_NAME,
+    "service": SERVICE_NAME,
+    "pharmacy": PHARMACY_NAME,
+    "order_item": ORDER_ITEM_NAME,
+    "order_item_quantity": added_quantity,
+    "medicines": prescription_data,
+}

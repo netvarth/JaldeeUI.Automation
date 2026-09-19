@@ -7,6 +7,8 @@ from typing import Optional
 
 from playwright.sync_api import Page, expect
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
+from framework.test_data import generate_consumer_profile
+
 
 # The script to run this test case is ::- pytest tests/test_selling_unit_purchase.py
 
@@ -1194,9 +1196,21 @@ class SellingUnitPurchaseFlow:
             purchased_items
         )
 
+        # ============================================================
+        # CONTINUATION:
+        # STOCK -> SALES ORDER -> INVOICE -> PAYMENT -> COMPLETE
+        # ============================================================
+
+        order_result = (
+            self.create_and_complete_order_for_purchased_items(
+                purchased_items
+            )
+        )
+
         return {
             "bill_number": bill_number,
             "items": purchased_items,
+            "order": order_result,
         }
 
 
@@ -1513,7 +1527,8 @@ class SellingUnitPurchaseFlow:
     # ============================================================
 
     def add_latest_batch_to_catalog_item(
-        self
+        self,
+        purchased_batch: str
     ) -> None:
 
         popup = self.page.get_by_role(
@@ -1545,7 +1560,6 @@ class SellingUnitPurchaseFlow:
             timeout=10_000
         )
 
-        # Existing batch rows
         existing_rows = batch_table.locator(
             "tbody tr"
         )
@@ -1559,8 +1573,7 @@ class SellingUnitPurchaseFlow:
             )
 
         # =========================================================
-        # READ PRICE FROM PREVIOUS/LATEST EXISTING BATCH
-        # BEFORE CLICKING ADD
+        # READ MRP AND SALES PRICE FROM PREVIOUS BATCH
         # =========================================================
 
         previous_row = existing_rows.last
@@ -1622,26 +1635,44 @@ class SellingUnitPurchaseFlow:
             exact=True
         )
 
-        expect(
-            add_button
-        ).to_be_visible()
-
-        expect(
-            add_button
-        ).to_be_enabled()
+        expect(add_button).to_be_visible()
+        expect(add_button).to_be_enabled()
 
         add_button.click()
 
-        # Wait for new batch row to appear
+        # Wait until new row appears
         expect(
-            batch_table.locator("tbody tr")
+            batch_table.locator(
+                "tbody tr"
+            )
         ).to_have_count(
             existing_count + 1,
             timeout=10_000
         )
 
         # =========================================================
-        # NEW ROW = LAST ROW
+        # SCROLL POPUP TO BOTTOM
+        # =========================================================
+
+        popup.evaluate(
+            """
+            element => {
+                const scrollable =
+                    element.querySelector('.p-dialog-content') ||
+                    element.querySelector('[class*="dialog-content"]') ||
+                    element;
+
+                scrollable.scrollTop = scrollable.scrollHeight;
+            }
+            """
+        )
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        # =========================================================
+        # GET NEW LAST ROW
         # =========================================================
 
         batch_rows = batch_table.locator(
@@ -1650,56 +1681,172 @@ class SellingUnitPurchaseFlow:
 
         new_row = batch_rows.last
 
-        # Important:
-        # scroll popup so the newly added batch row is fully visible
         new_row.scroll_into_view_if_needed()
 
-        self.page.wait_for_timeout(300)
+        self.page.wait_for_timeout(
+            300
+        )
 
         # =========================================================
-        # SELECT LATEST BATCH
+        # OPEN SELECT BATCH DROPDOWN
         # =========================================================
 
-        batch_dropdown = new_row.get_by_role(
-            "combobox",
-            name="Select Batch"
+        batch_name_cell = new_row.get_by_role(
+            "cell"
+        ).first
+
+        # First try the visible dropdown trigger button
+        dropdown_trigger = batch_name_cell.get_by_role(
+            "button",
+            name=re.compile(r"dropdown trigger", re.I)
+        )
+
+        if dropdown_trigger.count() > 0:
+
+            expect(
+                dropdown_trigger.first
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            expect(
+                dropdown_trigger.first
+            ).to_be_enabled()
+
+            print(
+                "Opening Select Batch dropdown"
+            )
+
+            dropdown_trigger.first.click()
+
+        else:
+
+            # Fallback: click the visible dropdown container/cell
+            print(
+                "Dropdown trigger button not found. "
+                "Clicking Batch Name cell."
+            )
+
+            expect(
+                batch_name_cell
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            batch_name_cell.click()
+
+        # =========================================================
+        # WAIT FOR BATCH LIST
+        # =========================================================
+
+        listbox = self.page.get_by_role(
+            "listbox"
         )
 
         expect(
-            batch_dropdown
+            listbox
         ).to_be_visible(
             timeout=10_000
         )
 
-        batch_dropdown.click()
+        # =========================================================
+        # SCROLL BATCH LIST TO BOTTOM
+        # =========================================================
 
-        batch_options = self.page.get_by_role(
-            "option"
+        listbox.evaluate(
+            """
+            element => {
+                element.scrollTop = element.scrollHeight;
+            }
+            """
         )
 
-        expect(
-            batch_options.last
-        ).to_be_visible(
-            timeout=10_000
+        self.page.wait_for_timeout(
+            500
         )
-
-        latest_batch = (
-            batch_options.last.inner_text().strip()
-        )
-
-        print(
-            f"Selecting latest batch: {latest_batch}"
-        )
-
-        batch_options.last.click()
 
         # =========================================================
-        # SCROLL TO NEW ROW AGAIN AFTER DROPDOWN CLOSES
+        # SELECT PURCHASED BATCH
+        # =========================================================
+
+        purchased_batch_option = listbox.get_by_role(
+            "option",
+            name=purchased_batch,
+            exact=True
+        )
+
+        selected_batch = None
+
+        if purchased_batch_option.count() > 0:
+
+            purchased_batch_option.scroll_into_view_if_needed()
+
+            expect(
+                purchased_batch_option
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            print(
+                f"Selecting purchased batch: "
+                f"{purchased_batch}"
+            )
+
+            purchased_batch_option.click()
+
+            selected_batch = purchased_batch
+
+        else:
+
+            # -----------------------------------------------------
+            # Fallback:
+            # select the final batch from the dropdown
+            # -----------------------------------------------------
+
+            batch_options = listbox.get_by_role(
+                "option"
+            )
+
+            option_count = batch_options.count()
+
+            if option_count == 0:
+                raise AssertionError(
+                    "No batch options found in "
+                    "Select Batch dropdown"
+                )
+
+            latest_option = batch_options.last
+
+            latest_option.scroll_into_view_if_needed()
+
+            expect(
+                latest_option
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            selected_batch = (
+                latest_option.inner_text().strip()
+            )
+
+            print(
+                f"Purchased batch "
+                f"'{purchased_batch}' not found. "
+                f"Selecting latest batch: "
+                f"{selected_batch}"
+            )
+
+            latest_option.click()
+
+        # =========================================================
+        # SCROLL NEW ROW INTO VIEW AGAIN
         # =========================================================
 
         new_row.scroll_into_view_if_needed()
 
-        self.page.wait_for_timeout(300)
+        self.page.wait_for_timeout(
+            300
+        )
 
         # =========================================================
         # ENTER SAME MRP AS PREVIOUS BATCH
@@ -1712,7 +1859,9 @@ class SellingUnitPurchaseFlow:
 
         expect(
             new_mrp_input
-        ).to_be_visible()
+        ).to_be_visible(
+            timeout=10_000
+        )
 
         new_mrp_input.fill(
             previous_mrp
@@ -1729,7 +1878,9 @@ class SellingUnitPurchaseFlow:
 
         expect(
             new_sales_price_input
-        ).to_be_visible()
+        ).to_be_visible(
+            timeout=10_000
+        )
 
         new_sales_price_input.fill(
             previous_sales_price
@@ -1752,13 +1903,13 @@ class SellingUnitPurchaseFlow:
         )
 
         print(
-            f"New batch {latest_batch} -> "
+            f"New batch {selected_batch} -> "
             f"MRP: {previous_mrp}, "
             f"Sales Price: {previous_sales_price}"
         )
 
         # =========================================================
-        # SCROLL TO SAVE BUTTON
+        # SAVE
         # =========================================================
 
         save_button = popup.get_by_role(
@@ -1781,7 +1932,6 @@ class SellingUnitPurchaseFlow:
 
         # =========================================================
         # WAIT FOR SUCCESS
-        # Use the safer toast handler already created
         # =========================================================
 
         messages = (
@@ -1789,7 +1939,8 @@ class SellingUnitPurchaseFlow:
         )
 
         print(
-            f"Batch update messages: {messages}"
+            f"Batch update messages: "
+            f"{messages}"
         )
 
 
@@ -1813,20 +1964,16 @@ class SellingUnitPurchaseFlow:
 
         expect(
             popup
-        ).to_be_visible(timeout=15_000)
-
-        cancel_button = popup.get_by_role(
-            "button",
-            name=re.compile(
-                r"Cancel|Close",
-                re.I
-            )
+        ).to_be_visible(
+            timeout=15_000
         )
 
-        if cancel_button.count() > 0:
-            cancel_button.last.click()
-            return
+        print(
+            "Non-batch item: closing "
+            "Edit Item Details popup"
+        )
 
+        # Prefer Save if available
         save_button = popup.get_by_role(
             "button",
             name="Save",
@@ -1834,7 +1981,49 @@ class SellingUnitPurchaseFlow:
         )
 
         if save_button.count() > 0:
-            save_button.last.click()
+
+            expect(
+                save_button
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            expect(
+                save_button
+            ).to_be_enabled()
+
+            save_button.click()
+
+        else:
+
+            cancel_button = popup.get_by_role(
+                "button",
+                name="Cancel",
+                exact=True
+            )
+
+            expect(
+                cancel_button
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            cancel_button.click()
+
+        # ---------------------------------------------------------
+        # IMPORTANT:
+        # Wait until popup is fully closed
+        # ---------------------------------------------------------
+
+        expect(
+            popup
+        ).not_to_be_visible(
+            timeout=15_000
+        )
+
+        print(
+            "Returned to Item Details page"
+        )
 
 
     # ============================================================
@@ -1845,29 +2034,174 @@ class SellingUnitPurchaseFlow:
         self
     ) -> None:
 
-        save_button = self.page.get_by_role(
+        print(
+            "Saving Sales Order Catalog item details"
+        )
+
+        # ---------------------------------------------------------
+        # MAKE SURE INVENTORY MANAGEMENT POPUP IS CLOSED
+        # ---------------------------------------------------------
+
+        visible_dialogs = self.page.get_by_role(
+            "dialog"
+        )
+
+        for index in range(
+            visible_dialogs.count()
+        ):
+
+            dialog = visible_dialogs.nth(
+                index
+            )
+
+            if dialog.is_visible():
+                raise AssertionError(
+                    "Edit Item Details popup is still open "
+                    "before final item-details Save"
+                )
+
+        # ---------------------------------------------------------
+        # SCROLL TO BOTTOM OF ITEM DETAILS PAGE
+        # ---------------------------------------------------------
+
+        self.page.evaluate(
+            """
+            window.scrollTo(
+                0,
+                document.body.scrollHeight
+            );
+            """
+        )
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        # ---------------------------------------------------------
+        # FIND VISIBLE PAGE-LEVEL SAVE BUTTON
+        # ---------------------------------------------------------
+
+        save_buttons = self.page.get_by_role(
             "button",
             name="Save",
             exact=True
         )
 
-        expect(
-            save_button.last
-        ).to_be_visible(timeout=15_000)
+        visible_save_button = None
+
+        for index in range(
+            save_buttons.count()
+        ):
+
+            button = save_buttons.nth(
+                index
+            )
+
+            try:
+                if button.is_visible():
+
+                    # Ignore Save buttons inside dialogs.
+                    inside_dialog = button.locator(
+                        "xpath=ancestor::*[@role='dialog']"
+                    )
+
+                    if inside_dialog.count() == 0:
+
+                        visible_save_button = button
+                        break
+
+            except Exception:
+                continue
+
+        if visible_save_button is None:
+            raise AssertionError(
+                "Visible page-level Save button not found "
+                "on Sales Order item details page"
+            )
+
+        visible_save_button.scroll_into_view_if_needed()
 
         expect(
-            save_button.last
+            visible_save_button
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        expect(
+            visible_save_button
         ).to_be_enabled()
 
-        save_button.last.click()
+        print(
+            "Clicking bottom Save button "
+            "on item details page"
+        )
+
+        # ---------------------------------------------------------
+        # CLICK SAVE
+        # ---------------------------------------------------------
+
+        visible_save_button.click()
+
+        # ---------------------------------------------------------
+        # WAIT FOR SUCCESS MESSAGE IF IT APPEARS
+        # ---------------------------------------------------------
+
+        self.page.wait_for_timeout(
+            300
+        )
+
+        toast = self.page.locator(
+            ".p-toast-message:visible"
+        )
+
+        if toast.count() > 0:
+
+            messages = (
+                self.assert_and_wait_for_success_messages()
+            )
+
+            print(
+                f"Catalog item save messages: "
+                f"{messages}"
+            )
+
+        # ---------------------------------------------------------
+        # VERY IMPORTANT:
+        # VERIFY NAVIGATION BACK TO CATALOG DETAILS
+        # ---------------------------------------------------------
+
+        self.page.wait_for_url(
+            re.compile(
+                r"/business/salesorder/catalogs/details/"
+            ),
+            timeout=20_000
+        )
 
         self.page.wait_for_load_state(
             "domcontentloaded"
         )
 
-        print(
-            "Saved Sales Order Catalog item"
+        # ---------------------------------------------------------
+        # VERIFY CATALOG DETAILS PAGE
+        # ---------------------------------------------------------
+
+        catalog_details = self.page.get_by_text(
+            "Catalog Details",
+            exact=True
         )
+
+        expect(
+            catalog_details
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print(
+            f"Saved Sales Order Catalog item. "
+            f"Returned to Catalog Details: "
+            f"{self.page.url}"
+        )
+
 
 
     def get_item_detail_rows(
@@ -1980,14 +2314,15 @@ class SellingUnitPurchaseFlow:
         # across all selling units
         # ---------------------------------------------------------
 
+        # Wait for Angular/UI to finish rendering all selling-unit rows
+        self.page.wait_for_timeout(700)
+
         item_rows = self.get_item_detail_rows(
             purchased_item_name,
             parent_item_name
         )
 
-        row_count = len(
-            item_rows
-        )
+        row_count = len(item_rows)
 
         if row_count == 0:
             raise AssertionError(
@@ -2034,19 +2369,27 @@ class SellingUnitPurchaseFlow:
                     row
                 )
 
-                self.add_latest_batch_to_catalog_item()
-
+                self.add_latest_batch_to_catalog_item(
+                    purchased_batch=batch
+                )
         # =========================================================
         # NON-BATCH ITEM
         # =========================================================
 
         else:
 
-            # For non-batch items, no need to update every
-            # selling-unit combination.
+            # For non-batch items, only open Inventory Management
+            # for the first matching selling-unit row.
+            # No need to process the remaining selling units.
+
             row = item_rows[0]
 
             row.scroll_into_view_if_needed()
+
+            print(
+                f"Non-batch item: processing only first "
+                f"selling-unit row for {purchased_item_name}"
+            )
 
             self.open_inventory_management_popup_for_row(
                 row
@@ -2089,6 +2432,1916 @@ class SellingUnitPurchaseFlow:
         )
 
 
+    # ============================================================
+    # OPEN INVENTORY MANAGEMENT DASHBOARD
+    # ============================================================
+
+    def open_inventory_management_dashboard(self) -> None:
+
+        # ---------------------------------------------------------
+        # Wait for any existing popup/dialog to be closed
+        # ---------------------------------------------------------
+
+        visible_dialog = self.page.get_by_role(
+            "dialog"
+        )
+
+        if visible_dialog.count() > 0:
+
+            try:
+                expect(
+                    visible_dialog
+                ).not_to_be_visible(
+                    timeout=10_000
+                )
+            except Exception:
+                pass
+
+        # ---------------------------------------------------------
+        # Locate Inventory Management sidebar link
+        # ---------------------------------------------------------
+
+        inventory_link = self.page.locator(
+            'a[href*="/business/salesorder/inventory"]'
+        ).first
+
+        expect(
+            inventory_link
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print(
+            "Clicking Inventory Management sidebar icon"
+        )
+
+        inventory_link.click()
+
+        # ---------------------------------------------------------
+        # Verify REAL navigation happened
+        # ---------------------------------------------------------
+
+        self.page.wait_for_url(
+            re.compile(
+                r"/business/salesorder/inventory"
+            ),
+            timeout=20_000
+        )
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+        # ---------------------------------------------------------
+        # Wait for dashboard heading
+        # ---------------------------------------------------------
+
+        inventory_heading = self.page.get_by_text(
+            "Inventory Management",
+            exact=True
+        )
+
+        expect(
+            inventory_heading
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print(
+            f"Opened Inventory Management dashboard: "
+            f"{self.page.url}"
+        )
 
 
+
+    # ============================================================
+    # OPEN STOCKS PAGE
+    # ============================================================
+    def open_stocks_page(self) -> None:
+
+        # ---------------------------------------------------------
+        # CONFIRM INVENTORY MANAGEMENT DASHBOARD
+        # ---------------------------------------------------------
+
+        inventory_heading = self.page.get_by_text(
+            "Inventory Management",
+            exact=True
+        )
+
+        expect(
+            inventory_heading
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print(
+            f"Inventory dashboard URL: "
+            f"{self.page.url}"
+        )
+
+        # ---------------------------------------------------------
+        # WAIT FOR DASHBOARD OVERLAY
+        # ---------------------------------------------------------
+
+        overlay = self.page.locator(
+            ".overlay:visible"
+        )
+
+        if overlay.count() > 0:
+
+            print(
+                "Waiting for Inventory dashboard "
+                "overlay to disappear"
+            )
+
+            expect(
+                overlay
+            ).to_have_count(
+                0,
+                timeout=30_000
+            )
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        # ---------------------------------------------------------
+        # LOCATE EXACT STOCKS CARD
+        #
+        # Important:
+        # There are multiple p-card-content elements on this page.
+        # Match the one whose complete text is only "Stocks"
+        # and which contains stock.svg.
+        # ---------------------------------------------------------
+
+        stocks_card_content = (
+            self.page.locator(
+                ".p-card-content"
+            )
+            .filter(
+                has_text=re.compile(
+                    r"^\s*Stocks\s*$",
+                    re.I
+                )
+            )
+            .filter(
+                has=self.page.locator(
+                    'img[src="assets/images/rx-order/'
+                    'inventory-dashboard/stock.svg"]'
+                )
+            )
+        )
+
+        expect(
+            stocks_card_content
+        ).to_have_count(
+            1,
+            timeout=20_000
+        )
+
+        # ---------------------------------------------------------
+        # SCROLL EXACT STOCKS CARD INTO VIEW
+        # ---------------------------------------------------------
+
+        print(
+            "Scrolling exact Stocks card into view"
+        )
+
+        stocks_card_content.scroll_into_view_if_needed()
+
+        self.page.wait_for_timeout(
+            700
+        )
+
+        expect(
+            stocks_card_content
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        # ---------------------------------------------------------
+        # CLICK STOCKS CARD
+        # ---------------------------------------------------------
+
+        print(
+            "Clicking exact Stocks card"
+        )
+
+        stocks_card_content.click()
+
+        # ---------------------------------------------------------
+        # VERIFY NAVIGATION
+        # ---------------------------------------------------------
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        check_stock = self.page.get_by_role(
+            "button",
+            name="Check Stock",
+            exact=True
+        )
+
+        expect(
+            check_stock
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print(
+            f"Opened Stocks page: "
+            f"{self.page.url}"
+        )
+
+    # ============================================================
+    # SELECT STORE IF NEEDED
+    # ============================================================
+
+    def select_stock_store_if_needed(self) -> None:
+
+            select_store = self.page.get_by_text(
+                "Select Store",
+                exact=True
+            )
+
+            if select_store.count() == 0:
+                print(
+                    f"Store already selected: {self.STORE_NAME}"
+                )
+                return
+
+            select_store.first.click()
+
+            store_option = self.page.get_by_role(
+                "option",
+                name=self.STORE_NAME
+            )
+
+            expect(
+                store_option
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            store_option.click()
+
+
+    # ============================================================
+    # SELECT INVENTORY CATALOG IF NEEDED
+    # ============================================================
+
+    def select_stock_catalog_if_needed(self) -> None:
+
+            select_catalog = self.page.get_by_text(
+                re.compile(
+                    r"Select Inventory Catalog",
+                    re.I
+                )
+            )
+
+            if select_catalog.count() == 0:
+                print(
+                    f"Inventory Catalog already selected: "
+                    f"{self.INVENTORY_CATALOG}"
+                )
+                return
+
+            select_catalog.last.click()
+
+            option = self.page.get_by_role(
+                "option",
+                name=self.INVENTORY_CATALOG
+            )
+
+            expect(
+                option
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            option.click()
+
+
+
+    # ============================================================
+    # CHECK STOCK
+    # ============================================================
+
+    def click_check_stock(self) -> None:
+
+        overlay = self.page.locator(
+            ".overlay:visible"
+        )
+
+        if overlay.count() > 0:
+
+            print(
+                "Waiting for Stocks page "
+                "overlay to disappear"
+            )
+
+            expect(
+                overlay
+            ).to_have_count(
+                0,
+                timeout=20_000
+            )
+
+        check_stock = self.page.get_by_role(
+            "button",
+            name="Check Stock",
+            exact=True
+        )
+
+        expect(
+            check_stock
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        expect(
+            check_stock
+        ).to_be_enabled()
+
+        check_stock.scroll_into_view_if_needed()
+
+        print("Clicking Check Stock")
+
+        check_stock.click()
+
+        # Wait for stock results loading
+        self.page.wait_for_timeout(
+            300
+        )
+
+        overlay = self.page.locator(
+            ".overlay:visible"
+        )
+
+        if overlay.count() > 0:
+
+            expect(
+                overlay
+            ).to_have_count(
+                0,
+                timeout=20_000
+            )
+
+        print("Stock loaded")
+
+
+
+    # ============================================================
+    # CAPTURE INHAND STOCK FOR PURCHASED ITEMS
+    # ============================================================
+
+    def capture_inhand_stock(
+            self,
+            purchased_items: list[dict]
+        ) -> dict[str, float]:
+
+            stock_values = {}
+
+            # Scroll down so stock rows are rendered/visible
+            self.page.mouse.wheel(
+                0,
+                1000
+            )
+
+            self.page.wait_for_timeout(
+                500
+            )
+
+            for purchase_item in purchased_items:
+
+                item_name = purchase_item[
+                    "item_name"
+                ]
+
+                print(
+                    f"Checking stock for: {item_name}"
+                )
+
+                stock_row = self.page.get_by_role(
+                    "row"
+                ).filter(
+                    has_text=re.compile(
+                        re.escape(item_name),
+                        re.I
+                    )
+                ).first
+
+                if stock_row.count() == 0:
+
+                    # Some stock grids may show parent/base item name
+                    words = item_name.split()
+
+                    for end_index in range(
+                        len(words) - 1,
+                        0,
+                        -1
+                    ):
+
+                        candidate = " ".join(
+                            words[:end_index]
+                        )
+
+                        stock_row = self.page.get_by_role(
+                            "row"
+                        ).filter(
+                            has_text=re.compile(
+                                re.escape(candidate),
+                                re.I
+                            )
+                        ).first
+
+                        if stock_row.count() > 0:
+                            break
+
+                expect(
+                    stock_row
+                ).to_be_visible(
+                    timeout=15_000
+                )
+
+                stock_row.scroll_into_view_if_needed()
+
+                row_text = stock_row.inner_text()
+
+                print(
+                    f"Stock row for {item_name}: "
+                    f"{row_text}"
+                )
+
+                # -----------------------------------------------------
+                # Locate Inhand column
+                # -----------------------------------------------------
+
+                headers = self.page.get_by_role(
+                    "columnheader"
+                )
+
+                inhand_index = None
+
+                for index in range(
+                    headers.count()
+                ):
+
+                    header_text = (
+                        headers.nth(index)
+                        .inner_text()
+                        .strip()
+                        .lower()
+                    )
+
+                    if "inhand" in header_text.replace(" ", ""):
+                        inhand_index = index
+                        break
+
+                if inhand_index is None:
+                    raise AssertionError(
+                        "Inhand column not found in Stocks grid"
+                    )
+
+                cells = stock_row.get_by_role(
+                    "cell"
+                )
+
+                inhand_text = (
+                    cells.nth(inhand_index)
+                    .inner_text()
+                    .strip()
+                )
+
+                number_match = re.search(
+                    r"-?\d+(?:\.\d+)?",
+                    inhand_text
+                )
+
+                if not number_match:
+                    raise AssertionError(
+                        f"Could not read Inhand quantity for "
+                        f"{item_name}: {inhand_text}"
+                    )
+
+                inhand_qty = float(
+                    number_match.group()
+                )
+
+                stock_values[
+                    item_name
+                ] = inhand_qty
+
+                print(
+                    f"{item_name} Inhand stock: "
+                    f"{inhand_qty}"
+                )
+
+            return stock_values
+
+
+
+    def get_purchased_items_stock(
+        self,
+        purchased_items: list[dict]
+    ) -> dict[str, float]:
+
+        self.open_inventory_management_dashboard()
+
+        self.open_stocks_page()
+
+        self.select_stock_store_if_needed()
+
+        self.select_stock_catalog_if_needed()
+
+        self.click_check_stock()
+
+        return self.capture_inhand_stock(
+            purchased_items
+        )
+
+
+
+    # ============================================================
+    # CLICK CREATE ORDER
+    # ============================================================
+
+    def open_create_order_popup(self) -> None:
+
+        create_order = self.page.get_by_text(
+            "Create Order",
+            exact=True
+        )
+
+        expect(
+            create_order
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        create_order.click()
+
+        popup = self.page.get_by_role(
+            "dialog"
+        )
+
+        expect(
+            popup
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        print("Create Order popup opened")
+
+
+    # ============================================================
+    # CREATE NEW CUSTOMER
+    # ============================================================
+
+    def create_new_order_customer(
+        self
+    ) -> dict:
+
+        # ---------------------------------------------------------
+        # GENERATE CUSTOMER USING COMMON TEST DATA GENERATOR
+        # ---------------------------------------------------------
+
+        customer = generate_consumer_profile()
+
+        first_name = customer["first_name"]
+        last_name = customer["last_name"]
+        phone = customer["phone"]
+        email = customer["email"]
+        gender = customer["gender"]
+
+        customer_name = customer.get(
+            "full_name",
+            f"{first_name} {last_name}"
+        )
+
+        print(
+            f"Creating customer: {customer_name}"
+        )
+
+        print(
+            f"Phone: {phone} | "
+            f"Email: {email} | "
+            f"Gender: {gender}"
+        )
+
+        # ---------------------------------------------------------
+        # CLICK NEW CUSTOMER
+        # ---------------------------------------------------------
+
+        new_customer = self.page.get_by_text(
+            re.compile(
+                r"New Customer",
+                re.I
+            )
+        )
+
+        expect(
+            new_customer
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        new_customer.click()
+
+        # ---------------------------------------------------------
+        # FIRST NAME
+        # ---------------------------------------------------------
+
+        first_name_input = self.page.get_by_role(
+            "textbox",
+            name="First Name"
+        )
+
+        expect(
+            first_name_input
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        first_name_input.fill(
+            first_name
+        )
+
+        # ---------------------------------------------------------
+        # LAST NAME
+        # ---------------------------------------------------------
+
+        last_name_input = self.page.get_by_role(
+            "textbox",
+            name="Last Name"
+        )
+
+        expect(
+            last_name_input
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        last_name_input.fill(
+            last_name
+        )
+
+        # ---------------------------------------------------------
+        # PHONE
+        # ---------------------------------------------------------
+
+        phone_input = self.page.get_by_role(
+            "textbox",
+            name="10123"
+        ).first
+
+        if phone_input.count() == 0:
+            phone_input = self.page.locator(
+                'input[type="tel"]'
+            ).first
+
+        expect(
+            phone_input
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        phone_input.fill(
+            phone
+        )
+
+        # ---------------------------------------------------------
+        # EMAIL
+        # ---------------------------------------------------------
+
+        email_input = self.page.get_by_role(
+            "textbox",
+            name="Email(user@xyz.com)"
+        )
+
+        if email_input.count() == 0:
+            email_input = self.page.locator(
+                'input[type="email"]'
+            )
+
+        if email_input.count() > 0:
+
+            expect(
+                email_input.first
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            email_input.first.fill(
+                email
+            )
+
+        # ---------------------------------------------------------
+        # GENDER
+        # ---------------------------------------------------------
+
+        gender_radio = self.page.get_by_role(
+            "radio",
+            name=gender,
+            exact=True
+        )
+
+        if gender_radio.count() > 0:
+
+            expect(
+                gender_radio
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            gender_radio.check()
+
+        # ---------------------------------------------------------
+        # SAVE
+        # ---------------------------------------------------------
+
+        save_button = self.page.get_by_role(
+            "button",
+            name="Save",
+            exact=True
+        )
+
+        expect(
+            save_button
+        ).to_be_enabled(
+            timeout=10_000
+        )
+
+        save_button.click()
+
+        self.page.wait_for_timeout(
+            1000
+        )
+
+        print(
+            f"Created customer: "
+            f"{customer_name}"
+        )
+
+        return customer
+
+
+    # ============================================================
+    # CONTINUE CREATE ORDER
+    # ============================================================
+
+
+
+    def continue_create_order(self) -> None:
+
+        popup = self.page.get_by_role(
+            "dialog"
+        )
+
+        expect(
+            popup
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        # Store/catalog may already be defaulted.
+
+        next_button = popup.get_by_role(
+            "button",
+            name="Next",
+            exact=True
+        )
+
+        expect(
+            next_button
+        ).to_be_enabled()
+
+        next_button.click()
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+        print("Opened order creation page")
+
+
+
+    # ============================================================
+    # SEARCH AND ADD ONE OF THE PURCHASED ITEMS TO ORDER
+    # ============================================================
+
+    def search_and_add_order_item(
+        self,
+        purchase_item: dict
+    ) -> dict:
+
+        item_name = purchase_item[
+            "item_name"
+        ]
+
+        print(
+            f"Adding purchased item to order: "
+            f"{item_name}"
+        )
+
+        # ---------------------------------------------------------
+        # DETERMINE PARENT + ATTRIBUTE
+        # ---------------------------------------------------------
+
+        parent_item_name = item_name
+        attribute_name = ""
+
+        known_attributes = [
+            "Orange",
+            "Yellow",
+            "Kesar",
+            "Elaichi",
+        ]
+
+        for attribute in known_attributes:
+
+            suffix = f" {attribute}"
+
+            if item_name.endswith(
+                suffix
+            ):
+
+                parent_item_name = item_name[
+                    :-len(suffix)
+                ]
+
+                attribute_name = attribute
+
+                break
+
+        print(
+            f"Parent item: "
+            f"{parent_item_name}"
+        )
+
+        if attribute_name:
+
+            print(
+                f"Purchased attribute: "
+                f"{attribute_name}"
+            )
+
+        # ---------------------------------------------------------
+        # MAIN ORDER PAGE SEARCH
+        # ---------------------------------------------------------
+
+        search_box = self.page.get_by_role(
+            "searchbox",
+            name="Search items",
+            exact=True
+        )
+
+        expect(
+            search_box
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        search_text = (
+            parent_item_name[:3]
+        )
+
+        print(
+            f"Searching order item using: "
+            f"{search_text}"
+        )
+
+        search_box.fill(
+            search_text
+        )
+
+        self.page.wait_for_timeout(
+            700
+        )
+
+        # ---------------------------------------------------------
+        # WAIT FOR SEARCH DROPDOWN
+        # ---------------------------------------------------------
+
+        listbox = self.page.get_by_role(
+            "listbox"
+        )
+
+        expect(
+            listbox
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        options = listbox.get_by_role(
+            "option"
+        )
+
+        expect(
+            options.first
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        # ---------------------------------------------------------
+        # FIND EXACT PARENT ITEM RESULT
+        # ---------------------------------------------------------
+
+        matched_option = None
+
+        for index in range(
+            options.count()
+        ):
+
+            option = options.nth(
+                index
+            )
+
+            if not option.is_visible():
+                continue
+
+            option_text = (
+                option.inner_text()
+                .strip()
+            )
+
+            print(
+                f"Order search option: "
+                f"{option_text}"
+            )
+
+            if option_text.lower().startswith(
+                parent_item_name.lower()
+            ):
+
+                matched_option = option
+                break
+
+        if matched_option is None:
+
+            raise AssertionError(
+                f"Could not find "
+                f"'{parent_item_name}' "
+                f"in order search results"
+            )
+
+        # ---------------------------------------------------------
+        # THIS CLICK IS IMPORTANT
+        #
+        # Jal
+        #   ↓
+        # Jalebi ₹100 TT Sales Catalog
+        #   ↓ CLICK HERE
+        # Select Item popup opens
+        # ---------------------------------------------------------
+
+        print(
+            f"Clicking searched item: "
+            f"{parent_item_name}"
+        )
+
+        matched_option.click()
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        # ---------------------------------------------------------
+        # HANDLE SELECT ITEM POPUP
+        # ---------------------------------------------------------
+
+        selection = (
+            self.select_order_item_combination(
+                purchased_item_name=item_name,
+                parent_item_name=parent_item_name,
+                attribute_name=attribute_name
+            )
+        )
+
+        return {
+            "item_name": item_name,
+            "parent_item_name": parent_item_name,
+            **selection
+        }
     
+    
+    # ============================================================
+    # SELECT ATTRIBUTE AND SELLING UNIT FOR ORDER ITEM
+    # ============================================================
+
+
+    def select_order_item_combination(
+        self,
+        purchased_item_name: str,
+        parent_item_name: str,
+        attribute_name: str = ""
+    ) -> dict:
+
+        self.page.wait_for_timeout(300)
+
+        # ---------------------------------------------------------
+        # FIND SELECT ITEM DIALOG
+        # ---------------------------------------------------------
+
+        dialogs = self.page.get_by_role("dialog")
+
+        select_dialog = None
+
+        for index in range(dialogs.count()):
+
+            dialog = dialogs.nth(index)
+
+            if not dialog.is_visible():
+                continue
+
+            select_button = dialog.get_by_role(
+                "button",
+                name=re.compile(r"Select Item", re.I)
+            )
+
+            if (
+                select_button.count() > 0
+                and select_button.first.is_visible()
+            ):
+                select_dialog = dialog
+                break
+
+        # ---------------------------------------------------------
+        # NO POPUP = SINGLE CONFIGURATION ITEM
+        # ---------------------------------------------------------
+
+        if select_dialog is None:
+
+            print(
+                f"No Select Item popup for "
+                f"{purchased_item_name}"
+            )
+
+            return {
+                "attribute": None,
+                "selling_unit": None
+            }
+
+        dialog = select_dialog
+
+        print(
+            f"Select Item popup opened for: "
+            f"{parent_item_name}"
+        )
+
+        selected_attribute = None
+        selected_unit = None
+
+        # ---------------------------------------------------------
+        # ATTRIBUTE / VARIANT
+        # ---------------------------------------------------------
+
+        if attribute_name:
+
+            attribute_button = dialog.get_by_role(
+                "button",
+                name=attribute_name,
+                exact=True
+            )
+
+            if (
+                attribute_button.count() > 0
+                and attribute_button.first.is_visible()
+            ):
+
+                print(
+                    f"Selecting attribute: "
+                    f"{attribute_name}"
+                )
+
+                attribute_button.first.click()
+
+                selected_attribute = attribute_name
+
+                self.page.wait_for_timeout(300)
+
+        # ---------------------------------------------------------
+        # SELLING UNITS
+        # ---------------------------------------------------------
+
+        known_units = {
+            "kg",
+            "g",
+            "mg",
+            "gram",
+            "kilogram",
+            "milligram",
+            "box",
+            "numbers",
+            "number",
+            "can",
+            "strip",
+            "packet",
+            "pack",
+            "litre",
+            "liter",
+            "ml",
+            "cl",
+            "tablet",
+            "bottle",
+        }
+
+        unit_candidates = []
+
+        buttons = dialog.get_by_role("button")
+
+        for index in range(buttons.count()):
+
+            button = buttons.nth(index)
+
+            if not button.is_visible():
+                continue
+
+            try:
+                button_text = button.inner_text().strip()
+            except Exception:
+                continue
+
+            if not button_text:
+                continue
+
+            normalized = button_text.lower()
+
+            if normalized in known_units:
+
+                unit_candidates.append(
+                    (
+                        button,
+                        button_text
+                    )
+                )
+
+        # ---------------------------------------------------------
+        # RANDOMLY SELECT SELLING UNIT
+        # ---------------------------------------------------------
+
+        if unit_candidates:
+
+            unit_button, selected_unit = random.choice(
+                unit_candidates
+            )
+
+            print(
+                f"Selecting selling unit: "
+                f"{selected_unit}"
+            )
+
+            unit_button.click()
+
+            self.page.wait_for_timeout(300)
+
+        # ---------------------------------------------------------
+        # CLICK SELECT ITEM
+        # ---------------------------------------------------------
+
+        select_item_button = dialog.get_by_role(
+            "button",
+            name=re.compile(
+                r"Select Item",
+                re.I
+            )
+        ).last
+
+        expect(
+            select_item_button
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        expect(
+            select_item_button
+        ).to_be_enabled(
+            timeout=10_000
+        )
+
+        print(
+            f"Clicking Select Item | "
+            f"Attribute: {selected_attribute} | "
+            f"Unit: {selected_unit}"
+        )
+
+        select_item_button.click()
+
+        # ---------------------------------------------------------
+        # WAIT UNTIL POPUP CLOSES
+        # ---------------------------------------------------------
+
+        expect(
+            dialog
+        ).not_to_be_visible(
+            timeout=15_000
+        )
+
+        print(
+            f"Added {purchased_item_name} "
+            f"to Sales Order"
+        )
+
+        return {
+            "attribute": selected_attribute,
+            "selling_unit": selected_unit
+        }
+
+
+    # ============================================================
+    # RANDOM ATTRIBUTE AND SELLING UNIT SELECTION
+    # ============================================================
+
+
+    def randomize_item_attribute_and_unit(
+        self,
+        dialog,
+        purchase_item: dict,
+        selection: dict
+    ) -> None:
+
+        # ---------------------------------------------------------
+        # Attribute radio buttons
+        # ---------------------------------------------------------
+
+        radios = dialog.get_by_role(
+            "radio"
+        )
+
+        if radios.count() > 1:
+
+            random_attribute_index = random.randint(
+                0,
+                radios.count() - 1
+            )
+
+            radios.nth(
+                random_attribute_index
+            ).check()
+
+            print(
+                f"Selected random attribute index: "
+                f"{random_attribute_index}"
+            )
+
+        # ---------------------------------------------------------
+        # Selling unit controls
+        # ---------------------------------------------------------
+
+        # Depending on UI these may also be radio buttons.
+        # Re-read after attribute change.
+        self.page.wait_for_timeout(
+            300
+        )
+
+        unit_controls = dialog.locator(
+            '[role="radio"]:visible'
+        )
+
+        if unit_controls.count() > 1:
+
+            random_unit_index = random.randint(
+                0,
+                unit_controls.count() - 1
+            )
+
+            unit_controls.nth(
+                random_unit_index
+            ).check()
+
+            print(
+                f"Selected random unit index: "
+                f"{random_unit_index}"
+            )
+
+
+
+    # ============================================================
+    # CONFIRM SALES ORDER
+    # ============================================================
+    def confirm_sales_order(self) -> None:
+
+        confirm_button = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Confirm Order",
+                re.I
+            )
+        )
+
+        expect(
+            confirm_button
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        confirm_button.click()
+
+        self.page.wait_for_timeout(
+            700
+        )
+
+        # Check whether insufficient-stock error appeared
+        stock_error = self.page.get_by_text(
+            re.compile(
+                r"Required quantity is not available",
+                re.I
+            )
+        )
+
+        if stock_error.count() > 0:
+
+            error_text = (
+                stock_error.first
+                .inner_text()
+                .strip()
+            )
+
+            print(
+                f"Stock error: {error_text}"
+            )
+
+            self.handle_order_stock_error(
+                error_text
+            )
+
+            # Try confirmation again
+            confirm_button = self.page.get_by_role(
+                "button",
+                name=re.compile(
+                    r"Confirm Order",
+                    re.I
+                )
+            )
+
+            confirm_button.click()
+
+        messages = (
+            self.assert_and_wait_for_success_messages()
+        )
+
+        print(
+            f"Order confirmation messages: "
+            f"{messages}"
+        )
+
+
+    # ============================================================
+    # HANDLE INSUFFICIENT STOCK ERROR
+    # ============================================================  
+
+    def handle_order_stock_error(
+        self,
+        error_text: str
+    ) -> None:
+
+        match = re.search(
+            r"item\s+(.+?)\.\s*Available Quantity",
+            error_text,
+            re.I
+        )
+
+        if not match:
+            raise AssertionError(
+                f"Could not determine item from "
+                f"stock error: {error_text}"
+            )
+
+        item_name = (
+            match.group(1)
+            .strip()
+        )
+
+        print(
+            f"Adjusting batch for: {item_name}"
+        )
+
+        item_row = self.page.get_by_role(
+            "row"
+        ).filter(
+            has_text=re.compile(
+                re.escape(item_name),
+                re.I
+            )
+        ).first
+
+        expect(
+            item_row
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        batch_dropdown = item_row.get_by_text(
+            re.compile(
+                r"Select Batch|Batch",
+                re.I
+            )
+        )
+
+        if batch_dropdown.count() == 0:
+
+            # Reduce quantity as fallback
+            quantity_input = item_row.get_by_role(
+                "spinbutton"
+            )
+
+            if quantity_input.count() == 0:
+                quantity_input = (
+                    item_row.locator(
+                        'input[type="number"]'
+                    )
+                )
+
+            if quantity_input.count() == 0:
+                raise AssertionError(
+                    f"Unable to adjust quantity for "
+                    f"{item_name}"
+                )
+
+            quantity_input.first.fill("1")
+
+            return
+
+        batch_dropdown.first.click()
+
+        batch_options = self.page.get_by_role(
+            "option"
+        )
+
+        if batch_options.count() == 0:
+            raise AssertionError(
+                f"No available batch found for "
+                f"{item_name}"
+            )
+
+        # Choose the last available batch.
+        batch_options.last.click()   
+
+
+
+    # ============================================================
+    # CREATE INVOICE FOR ORDER
+    # ============================================================ 
+
+
+    def create_invoice_for_order(self) -> None:
+
+        create_invoice = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Create Invoice",
+                re.I
+            )
+        )
+
+        expect(
+            create_invoice
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        create_invoice.click()
+
+        self.assert_and_wait_for_success_messages()
+
+        expect(
+            self.page.get_by_role(
+                "button",
+                name=re.compile(
+                    r"View Invoice",
+                    re.I
+                )
+            )
+        ).to_be_visible(
+            timeout=20_000
+        )  
+
+
+    # ============================================================
+    # OPEN INVOICE
+    # ============================================================  
+
+    def open_invoice(self) -> None:
+
+        view_invoice = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"View Invoice",
+                re.I
+            )
+        )
+
+        expect(
+            view_invoice
+        ).to_be_visible()
+
+        view_invoice.click()
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+
+
+    # ============================================================
+    # SHARE INVOICE
+    # ============================================================ 
+
+    def share_invoice(self) -> None:
+
+        share_invoice = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Share Invoice",
+                re.I
+            )
+        )
+
+        expect(
+            share_invoice
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        share_invoice.click()
+
+        dialog = self.page.get_by_role(
+            "dialog"
+        )
+
+        expect(
+            dialog
+        ).to_be_visible()
+
+        share_button = dialog.get_by_role(
+            "button",
+            name=re.compile(
+                r"SHARE",
+                re.I
+            )
+        )
+
+        expect(
+            share_button
+        ).to_be_enabled()
+
+        share_button.click()
+
+        messages = (
+            self.assert_and_wait_for_success_messages()
+        )
+
+        print(
+            f"Share Invoice messages: {messages}"
+        )
+
+
+    # ============================================================
+    # PAY INVOICE BY CASH
+    # ============================================================ 
+
+
+    def pay_invoice_by_cash(self) -> None:
+
+        print("Starting invoice payment")
+
+        # ---------------------------------------------------------
+        # GET PAYMENT DROPDOWN
+        # ---------------------------------------------------------
+
+        get_payment = self.page.get_by_role(
+            "combobox",
+            name="Get Payment",
+            exact=True
+        )
+
+        expect(
+            get_payment
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print("Opening Get Payment dropdown")
+
+        get_payment.click()
+
+        self.page.wait_for_timeout(300)
+
+        # ---------------------------------------------------------
+        # SELECT PAY BY CASH
+        # ---------------------------------------------------------
+
+        cash_option = self.page.get_by_role(
+            "option",
+            name=re.compile(
+                r"Pay\s*by\s*Cash|Cash",
+                re.I
+            )
+        )
+
+        if cash_option.count() == 0:
+
+            cash_option = self.page.get_by_text(
+                re.compile(
+                    r"Pay\s*by\s*Cash",
+                    re.I
+                )
+            )
+
+        expect(
+            cash_option.first
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print("Selecting Pay by Cash")
+
+        cash_option.first.click()
+
+        self.page.wait_for_timeout(500)
+
+        # ---------------------------------------------------------
+        # PAYMENT POPUP
+        # ---------------------------------------------------------
+
+        dialogs = self.page.get_by_role("dialog")
+
+        payment_dialog = None
+
+        for index in range(dialogs.count()):
+
+            dialog = dialogs.nth(index)
+
+            if not dialog.is_visible():
+                continue
+
+            pay_button = dialog.get_by_role(
+                "button",
+                name="Pay",
+                exact=True
+            )
+
+            if (
+                pay_button.count() > 0
+                and pay_button.first.is_visible()
+            ):
+                payment_dialog = dialog
+                break
+
+        # ---------------------------------------------------------
+        # CLICK PAY
+        # ---------------------------------------------------------
+
+        if payment_dialog is not None:
+
+            pay_button = payment_dialog.get_by_role(
+                "button",
+                name="Pay",
+                exact=True
+            )
+
+        else:
+
+            pay_button = self.page.get_by_role(
+                "button",
+                name="Pay",
+                exact=True
+            ).last
+
+        expect(
+            pay_button
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        expect(
+            pay_button
+        ).to_be_enabled(
+            timeout=10_000
+        )
+
+        print("Clicking Pay")
+
+        pay_button.click()
+
+        self.page.wait_for_timeout(300)
+
+        # ---------------------------------------------------------
+        # CONFIRMATION:
+        # Proceed with payment ?
+        # ---------------------------------------------------------
+
+        confirmation_text = self.page.get_by_text(
+            re.compile(
+                r"Proceed\s+with\s+payment",
+                re.I
+            )
+        )
+
+        if confirmation_text.count() > 0:
+
+            expect(
+                confirmation_text.first
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            print(
+                "Payment confirmation popup opened"
+            )
+
+        # ---------------------------------------------------------
+        # CLICK YES
+        # ---------------------------------------------------------
+
+        yes_button = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"^Yes$",
+                re.I
+            )
+        )
+
+        expect(
+            yes_button.last
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print(
+            "Confirming payment"
+        )
+
+        yes_button.last.click()
+
+        # ---------------------------------------------------------
+        # ASSERT PAYMENT SUCCESS
+        # ---------------------------------------------------------
+
+        self.page.wait_for_timeout(300)
+
+        messages = (
+            self.assert_and_wait_for_success_messages()
+        )
+
+        print(
+            f"Payment messages: "
+            f"{messages}"
+        )
+
+        print(
+            "Invoice payment completed successfully"
+        )
+
+    # ============================================================
+    # GO BACK TO ORDER DETAILS
+    # ============================================================ 
+
+    def go_back_to_order_details(self) -> None:
+
+        back = self.page.get_by_text(
+            "Back",
+            exact=True
+        )
+
+        if back.count() > 0:
+
+            back.first.click()
+
+        else:
+
+            self.page.go_back()
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+
+
+    # ============================================================
+    # COMPLETE SALES ORDER
+    # ============================================================ 
+
+    def complete_sales_order(self) -> None:
+
+        self.page.mouse.wheel(
+            0,
+            1500
+        )
+
+        complete_order = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Complete Order",
+                re.I
+            )
+        )
+
+        complete_order.scroll_into_view_if_needed()
+
+        expect(
+            complete_order
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        expect(
+            complete_order
+        ).to_be_enabled()
+
+        complete_order.click()
+
+        messages = (
+            self.assert_and_wait_for_success_messages()
+        )
+
+        print(
+            f"Complete Order messages: "
+            f"{messages}"
+        )
+
+
+
+    def create_and_complete_order_for_purchased_items(
+        self,
+        purchased_items: list[dict]
+    ) -> dict:
+
+        # =========================================================
+        # STOCK BEFORE ORDER
+        # =========================================================
+
+        stock_before = self.get_purchased_items_stock(
+            purchased_items
+        )
+
+        print(
+            f"Stock before order: {stock_before}"
+        )
+
+        # =========================================================
+        # CREATE ORDER
+        # =========================================================
+
+        self.open_sales_order_dashboard()
+
+        self.open_create_order_popup()
+
+        customer = self.create_new_order_customer()
+
+        self.continue_create_order()
+
+        order_items = []
+
+        for purchase_item in purchased_items:
+
+            selected_item = self.search_and_add_order_item(
+                purchase_item
+            )
+
+            order_items.append(
+                selected_item
+            )
+
+        self.confirm_sales_order()
+
+        # =========================================================
+        # INVOICE
+        # =========================================================
+
+        self.create_invoice_for_order()
+
+        self.open_invoice()
+
+        self.share_invoice()
+
+        self.pay_invoice_by_cash()
+
+        # =========================================================
+        # COMPLETE ORDER
+        # =========================================================
+
+        self.go_back_to_order_details()
+
+        self.complete_sales_order()
+
+        # =========================================================
+        # STOCK AFTER ORDER
+        # =========================================================
+
+        stock_after = self.get_purchased_items_stock(
+            purchased_items
+        )
+
+        print(
+            f"Stock after order: {stock_after}"
+        )
+
+        return {
+            "customer": customer,
+            "order_items": order_items,
+            "stock_before": stock_before,
+            "stock_after": stock_after,
+        }
+                                

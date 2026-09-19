@@ -5,6 +5,8 @@ from framework.prescription_flow import (
     complete_prescription_push_rx_sales_order_flow,
 )
 
+# To run the test case :- pytest tests\test_prescription_flow.py
+
 
 @allure.feature("Prescription")
 @allure.story("Create Prescription and Push RX")
