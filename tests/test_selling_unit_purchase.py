@@ -8,6 +8,7 @@ import pytest
 # Run Only Purchase :- python -m pytest .\tests\test_selling_unit_purchase.py::test_01_create_and_approve_purchase -v -s
 # Run Only Catalog Update :- python -m pytest .\tests\test_selling_unit_purchase.py::test_02_add_purchased_items_to_sales_order_catalog -v -s
 # Run Only Order Creation :- python -m pytest .\tests\test_selling_unit_purchase.py::test_03_create_order_for_new_customer -v -s
+# Run Only Order Creation :- python -m pytest .\tests\test_selling_unit_purchase.py::test_04_create_order_for_existing_customer -v -s
 
 from framework.selling_unit_purchase import (
     SellingUnitPurchaseFlow,
@@ -76,6 +77,23 @@ def order_result(
     return (
         selling_unit_flow
         .create_random_sales_order_for_new_customer(
+            number_of_items=2
+        )
+    )
+
+
+
+# ============================================================
+# EXISTING CUSTOMER ORDER DATA
+# ============================================================
+@pytest.fixture(scope="module")
+def existing_customer_order_result(
+    selling_unit_flow,
+):
+
+    return (
+        selling_unit_flow
+        .create_random_sales_order_for_existing_customer(
             number_of_items=2
         )
     )
@@ -175,4 +193,70 @@ def test_03_create_order_for_new_customer(
         print(
             f"Order Item: "
             f"{item['item_name']}"
+        )
+
+
+
+# ============================================================
+# TEST CASE 4
+# CREATE ORDER FOR EXISTING CUSTOMER
+# ============================================================
+
+def test_04_create_order_for_existing_customer(
+    existing_customer_order_result,
+):
+
+    assert (
+        existing_customer_order_result
+        is not None
+    )
+
+    assert (
+        existing_customer_order_result[
+            "customer"
+        ]
+    )
+
+    assert (
+        existing_customer_order_result[
+            "order_items"
+        ]
+    )
+
+    customer = (
+        existing_customer_order_result[
+            "customer"
+        ]
+    )
+
+    assert (
+        customer["full_name"]
+        == "Jisha Rajan"
+    )
+
+    print("\n============================================")
+    print(
+        "TEST 4 - EXISTING CUSTOMER "
+        "SALES ORDER PASSED"
+    )
+    print("============================================")
+
+    print(
+        f"Customer: "
+        f"{customer['full_name']}"
+    )
+
+    for item in (
+        existing_customer_order_result[
+            "order_items"
+        ]
+    ):
+
+        print(
+            f"Order Item: "
+            f"{item['item_name']} | "
+            f"Attribute: "
+            f"{item.get('attribute')} | "
+            f"Selling Unit: "
+            f"{item.get('selling_unit')}"
         )

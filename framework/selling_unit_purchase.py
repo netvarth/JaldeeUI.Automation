@@ -25,6 +25,7 @@ class SellingUnitPurchaseFlow:
     def __init__(self, page: Page):
         self.page = page
         self.selected_item_names = set()
+        self.selected_order_items = set()
 
     def find_parent_item_name(
         self,
@@ -113,41 +114,166 @@ class SellingUnitPurchaseFlow:
             "https://scale.jaldee.com/business/login"
         )
 
-        login_id = os.getenv("SCALE_SALESORDER_LOGIN_ID")
-        password = os.getenv("SCALE_SALESORDER_PASSWORD")
+        login_id = os.getenv(
+            "SCALE_SALESORDER_LOGIN_ID"
+        )
 
-        assert login_id, "SCALE_SALESORDER_LOGIN_ID is missing from .env"
-        assert password, "SCALE_SALESORDER_PASSWORD is missing from .env"
+        password = os.getenv(
+            "SCALE_SALESORDER_PASSWORD"
+        )
 
-        self.page.goto(provider_url)
+        assert login_id, (
+            "SCALE_SALESORDER_LOGIN_ID "
+            "is missing from .env"
+        )
+
+        assert password, (
+            "SCALE_SALESORDER_PASSWORD "
+            "is missing from .env"
+        )
+
+        print(
+            f"Opening provider application: "
+            f"{provider_url}"
+        )
+
+        self.page.goto(
+            provider_url
+        )
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        print(
+            f"Current URL after navigation: "
+            f"{self.page.url}"
+        )
+
+        # ---------------------------------------------------------
+        # CHECK IF USER IS ALREADY LOGGED IN
+        #
+        # When an authenticated browser opens /business/login,
+        # the application redirects directly to the business app.
+        # ---------------------------------------------------------
+
+        sales_order_sidebar = self.page.locator(
+            'a[href*="/business/salesorder/dashboard"]'
+        )
+
+        inventory_sidebar = self.page.locator(
+            'a[href*="/business/salesorder/inventory"]'
+        )
+
+        welcome_text = self.page.get_by_text(
+            re.compile(
+                r"Welcome back",
+                re.I
+            )
+        )
+
+        already_logged_in = (
+            sales_order_sidebar.count() > 0
+            or inventory_sidebar.count() > 0
+            or welcome_text.count() > 0
+        )
+
+        if already_logged_in:
+
+            print(
+                "Existing authenticated session found. "
+                "Login not required."
+            )
+
+            return
+
+        # ---------------------------------------------------------
+        # LOGIN FORM
+        # ---------------------------------------------------------
 
         login_input = self.page.get_by_role(
             "textbox",
             name="Enter Login ID"
         )
 
-        expect(login_input).to_be_visible()
+        expect(
+            login_input
+        ).to_be_visible(
+            timeout=20_000
+        )
 
-        login_input.fill(login_id)
+        print(
+            "Login page opened. "
+            "Entering credentials."
+        )
 
-        self.page.get_by_role(
+        login_input.fill(
+            login_id
+        )
+
+        password_input = self.page.get_by_role(
             "textbox",
             name="Enter password"
-        ).fill(password)
+        )
 
-        self.page.get_by_role(
+        expect(
+            password_input
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        password_input.fill(
+            password
+        )
+
+        sign_in = self.page.get_by_role(
             "button",
             name="Sign In"
-        ).click()
+        )
 
-        self.page.wait_for_load_state("domcontentloaded")
-
-        # Give the dashboard a reliable indication that login completed.
         expect(
-            self.page.get_by_text(
-                re.compile(r"Welcome back", re.I)
-            )
-        ).to_be_visible(timeout=30_000)
+            sign_in
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        expect(
+            sign_in
+        ).to_be_enabled()
+
+        sign_in.click()
+
+        # ---------------------------------------------------------
+        # VERIFY AUTHENTICATED APPLICATION
+        # ---------------------------------------------------------
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+        sales_order_sidebar = self.page.locator(
+            'a[href*="/business/salesorder/dashboard"]'
+        )
+
+        expect(
+            sales_order_sidebar.first
+        ).to_be_visible(
+            timeout=30_000
+        )
+
+        print(
+            "Login completed successfully"
+        )
+
+        print(
+            f"Authenticated URL: "
+            f"{self.page.url}"
+        )
+
 
     # ============================================================
     # INVENTORY NAVIGATION
@@ -2535,82 +2661,135 @@ class SellingUnitPurchaseFlow:
     # OPEN INVENTORY MANAGEMENT DASHBOARD
     # ============================================================
 
-    def open_inventory_management_dashboard(self) -> None:
+    def open_inventory_management_dashboard(
+        self
+    ) -> None:
 
-            # ---------------------------------------------------------
-            # Wait for any existing popup/dialog to be closed
-            # ---------------------------------------------------------
+        print(
+            f"Current URL before Inventory Management: "
+            f"{self.page.url}"
+        )
 
-            visible_dialog = self.page.get_by_role(
-                "dialog"
+        # ---------------------------------------------------------
+        # WAIT FOR INVENTORY SIDEBAR LINK
+        # ---------------------------------------------------------
+
+        inventory_link = self.page.locator(
+            'a[href*="/business/salesorder/inventory"]'
+        ).first
+
+        expect(
+            inventory_link
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        # Give Angular/sidebar rendering a moment to settle
+        self.page.wait_for_timeout(
+            500
+        )
+
+        # Re-locate after possible Angular re-render
+        inventory_link = self.page.locator(
+            'a[href*="/business/salesorder/inventory"]'
+        ).first
+
+        href = inventory_link.get_attribute(
+            "href"
+        )
+
+        if not href:
+            raise AssertionError(
+                "Inventory Management sidebar href "
+                "was not found."
             )
 
-            if visible_dialog.count() > 0:
+        print(
+            f"Inventory sidebar href: "
+            f"{href}"
+        )
 
-                try:
-                    expect(
-                        visible_dialog
-                    ).not_to_be_visible(
-                        timeout=10_000
-                    )
-                except Exception:
-                    pass
+        # ---------------------------------------------------------
+        # BUILD ABSOLUTE URL
+        # ---------------------------------------------------------
 
-            # ---------------------------------------------------------
-            # Locate Inventory Management sidebar link
-            # ---------------------------------------------------------
+        if href.startswith("/"):
 
-            inventory_link = self.page.locator(
-                'a[href*="/business/salesorder/inventory"]'
-            ).first
-
-            expect(
-                inventory_link
-            ).to_be_visible(
-                timeout=20_000
+            origin_match = re.match(
+                r"^(https?://[^/]+)",
+                self.page.url
             )
 
-            print(
-                "Clicking Inventory Management sidebar icon"
+            if not origin_match:
+                raise AssertionError(
+                    f"Unable to determine application origin "
+                    f"from URL: {self.page.url}"
+                )
+
+            inventory_url = (
+                origin_match.group(1)
+                + href
             )
 
-            inventory_link.click()
+        else:
+            inventory_url = href
 
-            # ---------------------------------------------------------
-            # Verify REAL navigation happened
-            # ---------------------------------------------------------
+        print(
+            f"Opening Inventory Management: "
+            f"{inventory_url}"
+        )
 
-            self.page.wait_for_url(
-                re.compile(
-                    r"/business/salesorder/inventory"
-                ),
-                timeout=20_000
-            )
+        # ---------------------------------------------------------
+        # NAVIGATE DIRECTLY
+        #
+        # This avoids Angular sidebar re-render causing:
+        # "Element is not attached to the DOM"
+        # ---------------------------------------------------------
 
-            self.page.wait_for_load_state(
-                "domcontentloaded"
-            )
+        self.page.goto(
+            inventory_url
+        )
 
-            # ---------------------------------------------------------
-            # Wait for dashboard heading
-            # ---------------------------------------------------------
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
 
-            inventory_heading = self.page.get_by_text(
+        # ---------------------------------------------------------
+        # VERIFY URL
+        # ---------------------------------------------------------
+
+        expect(
+            self.page
+        ).to_have_url(
+            re.compile(
+                r"/business/salesorder/inventory"
+            ),
+            timeout=20_000
+        )
+
+        # ---------------------------------------------------------
+        # VERIFY REAL INVENTORY HEADING
+        # Avoid tooltip duplicate.
+        # ---------------------------------------------------------
+
+        inventory_heading = (
+            self.page.locator("#kt_header")
+            .get_by_text(
                 "Inventory Management",
                 exact=True
             )
+        )
 
-            expect(
-                inventory_heading
-            ).to_be_visible(
-                timeout=20_000
-            )
+        expect(
+            inventory_heading
+        ).to_be_visible(
+            timeout=20_000
+        )
 
-            print(
-                f"Opened Inventory Management dashboard: "
-                f"{self.page.url}"
-            )
-
+        print(
+            f"Opened Inventory Management dashboard: "
+            f"{self.page.url}"
+        )
 
 
     # ============================================================
@@ -4101,23 +4280,94 @@ class SellingUnitPurchaseFlow:
 
             # ---------------------------------------------------------
             # GET PAYMENT DROPDOWN
+            # PrimeNG keeps a hidden combobox input.
+            # Click the visible dropdown container/trigger instead.
             # ---------------------------------------------------------
-
-            get_payment = self.page.get_by_role(
-                "combobox",
-                name="Get Payment",
-                exact=True
-            )
-
-            expect(
-                get_payment
-            ).to_be_visible(
-                timeout=20_000
-            )
 
             print("Opening Get Payment dropdown")
 
-            get_payment.click()
+            get_payment_input = self.page.locator(
+                'input[role="combobox"][placeholder="Get Payment"]'
+            )
+
+            if get_payment_input.count() == 0:
+                raise AssertionError(
+                    "Get Payment dropdown was not found "
+                    "on Invoice Details page."
+                )
+
+            # Find the PrimeNG dropdown containing the input
+            get_payment_dropdown = get_payment_input.first.locator(
+                "xpath=ancestor::*[contains(@class,'p-dropdown') "
+                "or contains(@class,'p-select')][1]"
+            )
+
+            if (
+                get_payment_dropdown.count() > 0
+                and get_payment_dropdown.is_visible()
+            ):
+
+                get_payment_dropdown.click()
+
+            else:
+
+                # Fallback: visible dropdown-trigger button near Get Payment
+                dropdown_triggers = self.page.get_by_role(
+                    "button",
+                    name=re.compile(
+                        r"dropdown trigger",
+                        re.I
+                    )
+                )
+
+                visible_trigger = None
+
+                for index in range(
+                    dropdown_triggers.count()
+                ):
+
+                    trigger = dropdown_triggers.nth(index)
+
+                    if not trigger.is_visible():
+                        continue
+
+                    # Get the surrounding dropdown and check that
+                    # it belongs to Get Payment.
+                    parent = trigger.locator(
+                        "xpath=ancestor::*[contains(@class,'p-dropdown') "
+                        "or contains(@class,'p-select')][1]"
+                    )
+
+                    if parent.count() == 0:
+                        continue
+
+                    parent_text = (
+                        parent.inner_text()
+                        .strip()
+                        .lower()
+                    )
+
+                    parent_html = (
+                        parent.evaluate(
+                            "el => el.outerHTML"
+                        )
+                        .lower()
+                    )
+
+                    if (
+                        "get payment" in parent_text
+                        or "get payment" in parent_html
+                    ):
+                        visible_trigger = trigger
+                        break
+
+                if visible_trigger is None:
+                    raise AssertionError(
+                        "Visible Get Payment dropdown trigger "
+                        "was not found."
+                    )
+
+                visible_trigger.click()
 
             self.page.wait_for_timeout(300)
 
@@ -4440,81 +4690,89 @@ class SellingUnitPurchaseFlow:
 
 
     def open_purchase_from_inventory_dashboard(
-            self
-        ) -> None:
+        self
+    ) -> None:
+
+        inventory_heading = (
+            self.page.locator("#kt_header")
+            .get_by_text(
+                "Inventory Management",
+                exact=True
+            )
+        )
+
+        expect(
+            inventory_heading
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        overlay = self.page.locator(
+            ".overlay:visible"
+        )
+
+        if overlay.count() > 0:
 
             expect(
-                self.page.get_by_text(
-                    "Inventory Management",
-                    exact=True
-                )
-            ).to_be_visible(
-                timeout=20_000
-            )
-
-            overlay = self.page.locator(
-                ".overlay:visible"
-            )
-
-            if overlay.count() > 0:
-
-                expect(
-                    overlay
-                ).to_have_count(
-                    0,
-                    timeout=30_000
-                )
-
-            # ---------------------------------------------------------
-            # PURCHASE CARD
-            # ---------------------------------------------------------
-
-            purchase_card = (
-                self.page.locator(
-                    ".p-card-content"
-                )
-                .filter(
-                    has_text=re.compile(
-                        r"^\s*Purchase\s*$",
-                        re.I
-                    )
-                )
-            )
-
-            expect(
-                purchase_card
+                overlay
             ).to_have_count(
-                1,
-                timeout=20_000
+                0,
+                timeout=30_000
             )
 
-            purchase_card.scroll_into_view_if_needed()
+        # ---------------------------------------------------------
+        # PURCHASE CARD
+        # ---------------------------------------------------------
 
-            print(
-                "Clicking Purchase card"
+        purchase_card = (
+            self.page.locator(
+                ".p-card-content"
             )
-
-            purchase_card.click()
-
-            # ---------------------------------------------------------
-            # VERIFY PURCHASE GRID
-            # ---------------------------------------------------------
-
-            purchase_rows = self.page.locator(
-                "table tbody tr"
+            .filter(
+                has_text=re.compile(
+                    r"^\s*Purchase\s*$",
+                    re.I
+                )
             )
+        )
 
-            expect(
-                purchase_rows.first
-            ).to_be_visible(
-                timeout=20_000
-            )
+        expect(
+            purchase_card
+        ).to_have_count(
+            1,
+            timeout=20_000
+        )
 
-            print(
-                f"Opened Purchase grid: "
-                f"{self.page.url}"
-            )
+        purchase_card.scroll_into_view_if_needed()
 
+        print(
+            "Clicking Purchase card"
+        )
+
+        purchase_card.click()
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+        # ---------------------------------------------------------
+        # VERIFY PURCHASE GRID
+        # ---------------------------------------------------------
+
+        purchase_rows = self.page.locator(
+            "table tbody tr"
+        )
+
+        expect(
+            purchase_rows.first
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print(
+            f"Opened Purchase grid: "
+            f"{self.page.url}"
+        )
 
 
 
@@ -4868,33 +5126,47 @@ class SellingUnitPurchaseFlow:
         add_item.click()
 
         # ---------------------------------------------------------
-        # SELECT ITEMS POPUP
+        # OUTER SELECT ITEMS POPUP
         # ---------------------------------------------------------
 
-        dialog = self.page.get_by_role(
-            "dialog"
-        ).filter(
-            has_text=re.compile(
-                r"Select Items",
-                re.I
+        select_items_dialog = (
+            self.page.get_by_role("dialog")
+            .filter(
+                has_text=re.compile(
+                    r"Select Items",
+                    re.I
+                )
             )
+            .first
         )
 
         expect(
-            dialog
+            select_items_dialog
         ).to_be_visible(
             timeout=15_000
         )
 
-        rows = dialog.get_by_role(
-            "row"
+        self.page.wait_for_timeout(500)
+
+        print("Select Items popup opened")
+
+        # ---------------------------------------------------------
+        # ITEM ROWS
+        # ---------------------------------------------------------
+
+        rows = select_items_dialog.locator(
+            "tbody tr"
+        )
+
+        expect(
+            rows.first
+        ).to_be_visible(
+            timeout=15_000
         )
 
         available_items = []
 
-        # row 0 = header
         for index in range(
-            1,
             rows.count()
         ):
 
@@ -4910,6 +5182,16 @@ class SellingUnitPurchaseFlow:
             if cells.count() < 2:
                 continue
 
+            checkbox = row.get_by_role(
+                "checkbox"
+            )
+
+            if checkbox.count() == 0:
+                continue
+
+            # Based on current popup:
+            # column 0 = checkbox
+            # column 1 = Item Name
             item_name = (
                 cells.nth(1)
                 .inner_text()
@@ -4919,17 +5201,38 @@ class SellingUnitPurchaseFlow:
             if not item_name:
                 continue
 
+            # Avoid same item twice
+            if (
+                hasattr(
+                    self,
+                    "selected_order_items"
+                )
+                and item_name
+                in self.selected_order_items
+            ):
+                continue
+
             available_items.append(
                 {
                     "item_name": item_name,
-                    "row": row,
+                    "checkbox": checkbox.first,
                 }
             )
 
         if not available_items:
+
             raise AssertionError(
-                "No Sales Order items available."
+                "No Sales Order items available "
+                "in Select Items popup."
             )
+
+        print(
+            "Available Sales Order items: "
+            + ", ".join(
+                item["item_name"]
+                for item in available_items
+            )
+        )
 
         # ---------------------------------------------------------
         # RANDOM ITEM
@@ -4943,22 +5246,18 @@ class SellingUnitPurchaseFlow:
             "item_name"
         ]
 
-        row = selected[
-            "row"
+        checkbox = selected[
+            "checkbox"
         ]
 
         print(
-            f"Random Sales Order item: "
+            f"Random Sales Order item selected: "
             f"{item_name}"
         )
 
         # ---------------------------------------------------------
-        # CHECK ITEM
+        # SELECT CHECKBOX
         # ---------------------------------------------------------
-
-        checkbox = row.get_by_role(
-            "checkbox"
-        )
 
         expect(
             checkbox
@@ -4968,37 +5267,89 @@ class SellingUnitPurchaseFlow:
 
         checkbox.check()
 
-        # ---------------------------------------------------------
-        # DONE
-        # ---------------------------------------------------------
-
-        done = dialog.get_by_role(
-            "button",
-            name="Done",
-            exact=True
-        )
-
         expect(
-            done
-        ).to_be_enabled(
-            timeout=10_000
-        )
-
-        done.click()
+            checkbox
+        ).to_be_checked()
 
         self.page.wait_for_timeout(
             500
         )
 
         # ---------------------------------------------------------
-        # IF ITEM HAS ATTRIBUTE / MULTIPLE SELLING UNIT
-        # A SELECT ITEM POPUP WILL OPEN
+        # IMPORTANT:
+        # CONFIGURABLE ITEM MAY IMMEDIATELY OPEN
+        # SELECT ITEM POPUP
         # ---------------------------------------------------------
 
         combination = (
             self.select_random_order_item_combination(
                 item_name
             )
+        )
+
+        # ---------------------------------------------------------
+        # AFTER INNER POPUP IS HANDLED,
+        # CLICK DONE ON OUTER SELECT ITEMS POPUP
+        # ---------------------------------------------------------
+
+        expect(
+            select_items_dialog
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        done_button = (
+            select_items_dialog.get_by_role(
+                "button",
+                name=re.compile(
+                    r"\bDone\b",
+                    re.I
+                )
+            )
+            .last
+        )
+
+        expect(
+            done_button
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        expect(
+            done_button
+        ).to_be_enabled(
+            timeout=10_000
+        )
+
+        print(
+            "Clicking Done on Select Items popup"
+        )
+
+        done_button.click()
+
+        expect(
+            select_items_dialog
+        ).not_to_be_visible(
+            timeout=15_000
+        )
+
+        # ---------------------------------------------------------
+        # STORE SELECTED ITEM
+        # ---------------------------------------------------------
+
+        if not hasattr(
+            self,
+            "selected_order_items"
+        ):
+            self.selected_order_items = set()
+
+        self.selected_order_items.add(
+            item_name
+        )
+
+        print(
+            f"Added Sales Order item: "
+            f"{item_name}"
         )
 
         return {
@@ -5024,6 +5375,10 @@ class SellingUnitPurchaseFlow:
 
         select_dialog = None
 
+        # ---------------------------------------------------------
+        # FIND INNER "SELECT ITEM" POPUP
+        # ---------------------------------------------------------
+
         for index in range(
             dialogs.count()
         ):
@@ -5033,27 +5388,33 @@ class SellingUnitPurchaseFlow:
             if not dialog.is_visible():
                 continue
 
-            select_button = dialog.get_by_role(
-                "button",
-                name=re.compile(
-                    r"Select Item",
-                    re.I
+            select_item_button = (
+                dialog.get_by_role(
+                    "button",
+                    name=re.compile(
+                        r"Select Item",
+                        re.I
+                    )
                 )
             )
 
             if (
-                select_button.count() > 0
-                and select_button.first.is_visible()
+                select_item_button.count() > 0
+                and select_item_button.last.is_visible()
             ):
+
                 select_dialog = dialog
                 break
 
-        # Single configuration item:
-        # no popup appeared.
+        # ---------------------------------------------------------
+        # NO POPUP:
+        # SIMPLE ITEM
+        # ---------------------------------------------------------
+
         if select_dialog is None:
 
             print(
-                f"No selling-unit popup for "
+                f"No Select Item popup for "
                 f"{item_name}"
             )
 
@@ -5084,6 +5445,7 @@ class SellingUnitPurchaseFlow:
             "kilogram",
             "milligram",
             "box",
+            "nos",
             "numbers",
             "number",
             "can",
@@ -5098,7 +5460,7 @@ class SellingUnitPurchaseFlow:
             "bottle",
         }
 
-        action_names = {
+        ignored_buttons = {
             "cancel",
             "select item",
         }
@@ -5107,8 +5469,8 @@ class SellingUnitPurchaseFlow:
             "button"
         )
 
-        attribute_buttons = []
-        unit_buttons = []
+        attribute_candidates = []
+        unit_candidates = []
 
         for index in range(
             buttons.count()
@@ -5119,10 +5481,13 @@ class SellingUnitPurchaseFlow:
             if not button.is_visible():
                 continue
 
-            text = (
-                button.inner_text()
-                .strip()
-            )
+            try:
+                text = (
+                    button.inner_text()
+                    .strip()
+                )
+            except Exception:
+                continue
 
             if not text:
                 continue
@@ -5131,12 +5496,12 @@ class SellingUnitPurchaseFlow:
                 text.lower()
             )
 
-            if normalized in action_names:
+            if normalized in ignored_buttons:
                 continue
 
             if normalized in known_units:
 
-                unit_buttons.append(
+                unit_candidates.append(
                     (
                         button,
                         text
@@ -5145,9 +5510,7 @@ class SellingUnitPurchaseFlow:
 
             else:
 
-                # Remaining small option buttons
-                # are treated as attribute/variant options.
-                attribute_buttons.append(
+                attribute_candidates.append(
                     (
                         button,
                         text
@@ -5156,19 +5519,21 @@ class SellingUnitPurchaseFlow:
 
         # ---------------------------------------------------------
         # RANDOM ATTRIBUTE
+        # Example:
+        # Kesar / Elaichi
         # ---------------------------------------------------------
 
-        if attribute_buttons:
+        if attribute_candidates:
 
             (
                 attribute_button,
                 selected_attribute
             ) = random.choice(
-                attribute_buttons
+                attribute_candidates
             )
 
             print(
-                f"Random attribute: "
+                f"Selecting random attribute: "
                 f"{selected_attribute}"
             )
 
@@ -5179,20 +5544,62 @@ class SellingUnitPurchaseFlow:
             )
 
         # ---------------------------------------------------------
-        # RANDOM SELLING UNIT
+        # RE-READ UNIT BUTTONS AFTER ATTRIBUTE CHANGE
         # ---------------------------------------------------------
 
-        if unit_buttons:
+        unit_candidates = []
+
+        buttons = dialog.get_by_role(
+            "button"
+        )
+
+        for index in range(
+            buttons.count()
+        ):
+
+            button = buttons.nth(index)
+
+            if not button.is_visible():
+                continue
+
+            try:
+                text = (
+                    button.inner_text()
+                    .strip()
+                )
+            except Exception:
+                continue
+
+            normalized = (
+                text.lower()
+            )
+
+            if normalized in known_units:
+
+                unit_candidates.append(
+                    (
+                        button,
+                        text
+                    )
+                )
+
+        # ---------------------------------------------------------
+        # RANDOM SELLING UNIT
+        # Example:
+        # nos / box
+        # ---------------------------------------------------------
+
+        if unit_candidates:
 
             (
                 unit_button,
                 selected_unit
             ) = random.choice(
-                unit_buttons
+                unit_candidates
             )
 
             print(
-                f"Random selling unit: "
+                f"Selecting random selling unit: "
                 f"{selected_unit}"
             )
 
@@ -5206,27 +5613,37 @@ class SellingUnitPurchaseFlow:
         # SELECT ITEM
         # ---------------------------------------------------------
 
-        select_item = dialog.get_by_role(
-            "button",
-            name=re.compile(
-                r"Select Item",
-                re.I
+        select_item_button = (
+            dialog.get_by_role(
+                "button",
+                name=re.compile(
+                    r"Select Item",
+                    re.I
+                )
             )
-        ).last
+            .last
+        )
 
         expect(
-            select_item
+            select_item_button
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        expect(
+            select_item_button
         ).to_be_enabled(
             timeout=10_000
         )
 
         print(
-            f"Adding {item_name} | "
+            f"Clicking Select Item | "
+            f"Item: {item_name} | "
             f"Attribute: {selected_attribute} | "
             f"Unit: {selected_unit}"
         )
 
-        select_item.click()
+        select_item_button.click()
 
         expect(
             dialog
@@ -5239,6 +5656,255 @@ class SellingUnitPurchaseFlow:
             "selling_unit": selected_unit,
         }
 
+    # ============================================================
+    # CREATE ORDER FOR EXISTING CUSTOMER
+    # ============================================================
+
+    def select_existing_order_customer(
+        self,
+        search_text: str = "8281"
+    ) -> dict:
+
+        print(
+            f"Searching existing customer using: "
+            f"{search_text}"
+        )
+
+        dialog = self.page.get_by_role(
+            "dialog"
+        ).filter(
+            has_text=re.compile(
+                r"Create Order",
+                re.I
+            )
+        )
+
+        expect(
+            dialog
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        # ---------------------------------------------------------
+        # CUSTOMER SEARCH
+        # ---------------------------------------------------------
+
+        customer_search = dialog.get_by_role(
+            "searchbox",
+            name=re.compile(
+                r"Select customer",
+                re.I
+            )
+        )
+
+        expect(
+            customer_search
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        customer_search.fill(
+            search_text
+        )
+
+        self.page.wait_for_timeout(
+            700
+        )
+
+        # ---------------------------------------------------------
+        # CUSTOMER SEARCH RESULTS
+        # ---------------------------------------------------------
+
+        listbox = dialog.get_by_role(
+            "listbox"
+        ).first
+
+        expect(
+            listbox
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        customer_option = listbox.get_by_role(
+                "option"
+            ).filter(
+                has_text=re.compile(
+                    r"Jisha\s+Rajan.*8281276241",
+                    re.I | re.S
+                )
+            )
+
+        expect(
+            customer_option.first
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        print(
+            "Existing customer result found:"
+        )
+
+        print(
+            customer_option.first.inner_text()
+        )
+
+        # ---------------------------------------------------------
+        # CLICK SEARCH RESULT
+        # ---------------------------------------------------------
+
+        customer_option.first.click()
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        print(
+            "Clicked existing customer search result"
+        )
+
+        # ---------------------------------------------------------
+        # VERIFY RESULT DROPDOWN CLOSED / CUSTOMER SELECTED
+        # ---------------------------------------------------------
+
+        expect(
+            listbox
+        ).not_to_be_visible(
+            timeout=10_000
+        )
+
+        print(
+            "Existing customer selected successfully"
+        )
+
+        return {
+            "full_name": "Jisha Rajan",
+            "search_text": search_text,
+        }
+
+
+
+    def create_random_sales_order_for_existing_customer(
+        self,
+        number_of_items: int = 2,
+    ) -> dict:
+
+        print("\n============================================")
+        print("CREATING SALES ORDER FOR EXISTING CUSTOMER")
+        print("============================================")
+
+        # ---------------------------------------------------------
+        # LOGIN
+        # ---------------------------------------------------------
+
+        self.login()
+
+        # Reset only Test 4 random item tracking
+        if hasattr(
+            self,
+            "selected_order_items"
+        ):
+            self.selected_order_items.clear()
+
+        # ---------------------------------------------------------
+        # SALES ORDER DASHBOARD
+        # ---------------------------------------------------------
+
+        self.open_sales_order_dashboard()
+
+        # ---------------------------------------------------------
+        # CREATE ORDER POPUP
+        # ---------------------------------------------------------
+
+        self.open_create_order_popup()
+
+        # ---------------------------------------------------------
+        # EXISTING CUSTOMER
+        # ---------------------------------------------------------
+
+        customer = (
+            self.select_existing_order_customer(
+                search_text="8281"
+            )
+        )
+
+        # ---------------------------------------------------------
+        # SAME WORKING FUNCTION USED BY TEST 3
+        #
+        # Store and TT Sales Catalog should already be selected.
+        # Click Next.
+        # ---------------------------------------------------------
+
+        self.continue_create_order()
+
+        # ---------------------------------------------------------
+        # ADD RANDOM ITEMS
+        # SAME WORKING TEST 3 FUNCTION
+        # ---------------------------------------------------------
+
+        order_items = []
+
+        for _ in range(
+            number_of_items
+        ):
+
+            selected_item = (
+                self.add_random_item_to_sales_order()
+            )
+
+            order_items.append(
+                selected_item
+            )
+
+        # ---------------------------------------------------------
+        # CONFIRM ORDER
+        # ---------------------------------------------------------
+
+        self.confirm_sales_order()
+
+        # ---------------------------------------------------------
+        # CREATE INVOICE
+        # ---------------------------------------------------------
+
+        self.create_invoice_for_order()
+
+        # ---------------------------------------------------------
+        # OPEN INVOICE
+        # ---------------------------------------------------------
+
+        self.open_invoice()
+
+        # ---------------------------------------------------------
+        # SHARE INVOICE
+        # ---------------------------------------------------------
+
+        self.share_invoice()
+
+        # ---------------------------------------------------------
+        # PAYMENT
+        # ---------------------------------------------------------
+
+        self.pay_invoice_by_cash()
+
+        # ---------------------------------------------------------
+        # BACK TO ORDER
+        # ---------------------------------------------------------
+
+        self.go_back_to_order_details()
+
+        # ---------------------------------------------------------
+        # COMPLETE ORDER
+        # ---------------------------------------------------------
+
+        self.complete_sales_order()
+
+        print("\n============================================")
+        print("EXISTING CUSTOMER SALES ORDER COMPLETED")
+        print("============================================")
+
+        return {
+            "customer": customer,
+            "order_items": order_items,
+        }
 
 
 
