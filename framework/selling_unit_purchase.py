@@ -5907,5 +5907,1149 @@ class SellingUnitPurchaseFlow:
         }
 
 
+    # ============================================
+    # EXISTING CUSTOMER SALES ORDER COMPLETED
+    # ============================================
 
+    @staticmethod
+    def random_item_name() -> str:
+
+        suffix = "".join(
+            random.choices(
+                string.ascii_uppercase + string.digits,
+                k=6
+            )
+        )
+
+        return f"Auto Item {suffix}"
+
+
+    @staticmethod
+    def random_attribute_name() -> str:
+
+        suffix = "".join(
+            random.choices(
+                string.ascii_uppercase,
+                k=4
+            )
+        )
+
+        return f"Option {suffix}"
+
+
+    @staticmethod
+    def random_attribute_values() -> list[str]:
+
+        value1 = "".join(
+            random.choices(
+                string.ascii_uppercase,
+                k=5
+            )
+        )
+
+        value2 = "".join(
+            random.choices(
+                string.ascii_uppercase,
+                k=5
+            )
+        )
+
+        return [
+            value1,
+            value2,
+        ]
     
+
+
+    def open_items_from_sales_order_dashboard(
+        self
+    ) -> None:
+
+        print("Opening Items")
+
+        items_text = self.page.get_by_text(
+            "Items",
+            exact=True
+        )
+
+        expect(
+            items_text
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        items_card = items_text.locator(
+            "xpath=ancestor::div[contains(@class,'p-card') "
+            "or contains(@class,'card')][1]"
+        )
+
+        if items_card.count() > 0:
+
+            items_card.click()
+
+        else:
+
+            items_text.click()
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+        print(
+            f"Opened All Items: "
+            f"{self.page.url}"
+        )
+
+
+
+    def click_create_item(
+        self
+    ) -> None:
+
+        create_button = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Create",
+                re.I
+            )
+        )
+
+        expect(
+            create_button.last
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        create_button.last.click()
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+        expect(
+            self.page.get_by_text(
+                "Create Item",
+                exact=True
+            ).first
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print("Create Item page opened")
+
+
+
+    def enter_item_name(
+        self,
+        item_name: str
+    ) -> None:
+
+        item_name_input = self.page.get_by_role(
+            "textbox",
+            name=re.compile(
+                r"Item Name",
+                re.I
+            )
+        )
+
+        expect(
+            item_name_input
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        item_name_input.fill(
+            item_name
+        )
+
+        print(
+            f"Item Name: {item_name}"
+        )
+
+
+
+
+    def select_item_property_other(
+        self
+    ) -> None:
+
+        print("Selecting Item Property: Other")
+
+        property_label = self.page.get_by_text(
+            "Item Property",
+            exact=True
+        )
+
+        expect(
+            property_label
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        hidden_input = self.page.locator(
+            'input[placeholder="Select Item Property"]'
+        ).first
+
+        expect(
+            hidden_input
+        ).to_be_attached(
+            timeout=10_000
+        )
+
+        parent = hidden_input.locator(
+            "xpath=ancestor::*[contains(@class,'p-dropdown')][1]"
+        )
+
+        expect(
+            parent
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        trigger = parent.get_by_role(
+            "button",
+            name=re.compile(
+                r"dropdown trigger",
+                re.I
+            )
+        )
+
+        if trigger.count() > 0:
+
+            expect(
+                trigger.first
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            print(
+                "Clicking Item Property dropdown trigger"
+            )
+
+            trigger.first.click()
+
+        else:
+
+            print(
+                "Clicking Item Property dropdown"
+            )
+
+            parent.click()
+
+        # ---------------------------------------------------------
+        # VISIBLE ITEM PROPERTY OPTIONS
+        # ---------------------------------------------------------
+
+        listbox = self.page.locator(
+            "ul[role='listbox']:visible"
+        )
+
+        expect(
+            listbox
+        ).to_have_count(
+            1,
+            timeout=10_000
+        )
+
+        expect(
+            listbox
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        other_option = listbox.get_by_role(
+            "option",
+            name="Other",
+            exact=True
+        )
+
+        expect(
+            other_option
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print("Selecting Other")
+
+        other_option.click()
+
+        self.page.wait_for_timeout(
+            300
+        )
+
+        # ---------------------------------------------------------
+        # VERIFY VISIBLE SELECTED VALUE
+        # ---------------------------------------------------------
+
+        selected_other = parent.get_by_text(
+            "Other",
+            exact=True
+        )
+
+        expect(
+            selected_other
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print(
+            "Item Property selected: Other"
+        )
+
+        # ---------------------------------------------------------
+        # SCROLL DOWN FOR BASE UNIT
+        # ---------------------------------------------------------
+
+        print(
+            "Scrolling down to Base Unit"
+        )
+
+        self.page.mouse.wheel(
+            0,
+            800
+        )
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+
+
+    def select_base_unit(
+        self,
+        unit_name: str
+    ) -> None:
+
+        print(
+            f"Selecting Base Unit: "
+            f"{unit_name}"
+        )
+
+        # ---------------------------------------------------------
+        # SCROLL DOWN
+        # ---------------------------------------------------------
+
+        self.page.mouse.wheel(
+            0,
+            900
+        )
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+        # ---------------------------------------------------------
+        # BASE UNIT
+        # ---------------------------------------------------------
+
+        base_unit_label = self.page.get_by_text(
+            "Base Unit",
+            exact=True
+        )
+
+        expect(
+            base_unit_label
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        base_unit_label.scroll_into_view_if_needed()
+
+        # ---------------------------------------------------------
+        # FIND BASE UNIT DROPDOWN
+        # ---------------------------------------------------------
+
+        base_unit_input = self.page.locator(
+            'input[placeholder*="Base Unit" i]'
+        )
+
+        if base_unit_input.count() == 0:
+
+            base_unit_input = base_unit_label.locator(
+                "xpath=following::input[@role='combobox'][1]"
+            )
+
+        expect(
+            base_unit_input.first
+        ).to_be_attached(
+            timeout=10_000
+        )
+
+        base_unit_parent = (
+            base_unit_input.first.locator(
+                "xpath=ancestor::*[contains(@class,'p-dropdown')][1]"
+            )
+        )
+
+        expect(
+            base_unit_parent
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        # ---------------------------------------------------------
+        # OPEN DROPDOWN
+        # ---------------------------------------------------------
+
+        trigger = base_unit_parent.get_by_role(
+            "button",
+            name=re.compile(
+                r"dropdown trigger",
+                re.I
+            )
+        )
+
+        if trigger.count() > 0:
+
+            trigger.first.click()
+
+        else:
+
+            base_unit_parent.click()
+
+        # ---------------------------------------------------------
+        # VISIBLE OPTIONS
+        # ---------------------------------------------------------
+
+        listbox = self.page.locator(
+            "ul[role='listbox']:visible"
+        )
+
+        expect(
+            listbox
+        ).to_have_count(
+            1,
+            timeout=10_000
+        )
+
+        option = listbox.get_by_role(
+            "option",
+            name=unit_name,
+            exact=True
+        )
+
+        expect(
+            option
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print(
+            f"Selecting Base Unit option: "
+            f"{unit_name}"
+        )
+
+        option.click()
+
+        self.page.wait_for_timeout(
+            300
+        )
+
+        print(
+            f"Base Unit selected: "
+            f"{unit_name}"
+        )
+
+
+    def configure_box_unit(
+        self
+    ) -> int:
+
+        unit_contains = random.choice(
+            [10, 20, 30]
+        )
+
+        print(
+            f"Unit contains: "
+            f"{unit_contains} Numbers"
+        )
+
+        # ---------------------------------------------------------
+        # UNIT CONTAINS
+        # ---------------------------------------------------------
+
+        unit_contains_label = self.page.get_by_text(
+            "Unit contains",
+            exact=True
+        )
+
+        expect(
+            unit_contains_label
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        unit_contains_label.scroll_into_view_if_needed()
+
+        contains_input = unit_contains_label.locator(
+            "xpath=following::input[@type='number' or @role='spinbutton'][1]"
+        )
+
+        expect(
+            contains_input
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        contains_input.fill(
+            str(unit_contains)
+        )
+
+        print(
+            f"Entered Unit contains: "
+            f"{unit_contains}"
+        )
+
+        # ---------------------------------------------------------
+        # UNIT DROPDOWN BESIDE IT
+        # ---------------------------------------------------------
+
+        unit_combobox = self.page.get_by_role(
+            "combobox",
+            name="Unit",
+            exact=True
+        )
+
+        expect(
+            unit_combobox
+        ).to_be_attached(
+            timeout=10_000
+        )
+
+        unit_dropdown = unit_combobox.locator(
+            "xpath=ancestor::*[contains(@class,'p-dropdown')][1]"
+        )
+
+        expect(
+            unit_dropdown
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        trigger = unit_dropdown.get_by_role(
+            "button",
+            name=re.compile(
+                r"dropdown trigger",
+                re.I
+            )
+        )
+
+        if trigger.count() > 0:
+
+            trigger.first.click()
+
+        else:
+
+            unit_dropdown.click()
+
+        # ---------------------------------------------------------
+        # SELECT NUMBERS
+        # ---------------------------------------------------------
+
+        listbox = self.page.locator(
+            "ul[role='listbox']:visible"
+        )
+
+        expect(
+            listbox
+        ).to_have_count(
+            1,
+            timeout=10_000
+        )
+
+        numbers_option = listbox.get_by_role(
+            "option",
+            name="Numbers",
+            exact=True
+        )
+
+        expect(
+            numbers_option
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print(
+            "Selecting contained Unit: Numbers"
+        )
+
+        numbers_option.click()
+
+        print(
+            f"Configured Box unit: "
+            f"1 Box = {unit_contains} Numbers"
+        )
+
+        return unit_contains
+    
+
+
+    def select_batch_applicable_yes(
+        self
+    ) -> None:
+
+        print(
+            "Selecting Batch Applicable: Yes"
+        )
+
+        # ---------------------------------------------------------
+        # FIND BATCH APPLICABLE LABEL
+        # ---------------------------------------------------------
+
+        batch_label = self.page.get_by_text(
+            "Batch Applicable",
+            exact=True
+        )
+
+        expect(
+            batch_label
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        batch_label.scroll_into_view_if_needed()
+
+        # ---------------------------------------------------------
+        # FIND HIDDEN PRIME INPUT
+        # ---------------------------------------------------------
+
+        hidden_input = self.page.locator(
+            'input[placeholder="Select Batch Applicable"]'
+        ).first
+
+        expect(
+            hidden_input
+        ).to_be_attached(
+            timeout=10_000
+        )
+
+        # ---------------------------------------------------------
+        # FIND VISIBLE DROPDOWN CONTAINER
+        # ---------------------------------------------------------
+
+        dropdown = hidden_input.locator(
+            "xpath=ancestor::*[contains(@class,'p-dropdown')][1]"
+        )
+
+        expect(
+            dropdown
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        # ---------------------------------------------------------
+        # OPEN DROPDOWN
+        # ---------------------------------------------------------
+
+        trigger = dropdown.get_by_role(
+            "button",
+            name=re.compile(
+                r"dropdown trigger",
+                re.I
+            )
+        )
+
+        if trigger.count() > 0:
+
+            expect(
+                trigger.first
+            ).to_be_visible(
+                timeout=10_000
+            )
+
+            print(
+                "Clicking Batch Applicable dropdown trigger"
+            )
+
+            trigger.first.click()
+
+        else:
+
+            print(
+                "Clicking Batch Applicable dropdown"
+            )
+
+            dropdown.click()
+
+        # ---------------------------------------------------------
+        # SELECT YES
+        # ---------------------------------------------------------
+
+        listbox = self.page.locator(
+            "ul[role='listbox']:visible"
+        )
+
+        expect(
+            listbox
+        ).to_have_count(
+            1,
+            timeout=10_000
+        )
+
+        yes_option = listbox.get_by_role(
+            "option",
+            name="Yes",
+            exact=True
+        )
+
+        expect(
+            yes_option
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print(
+            "Selecting Yes"
+        )
+
+        yes_option.click()
+
+        self.page.wait_for_timeout(
+            300
+        )
+
+        # ---------------------------------------------------------
+        # VERIFY VISIBLE VALUE
+        # ---------------------------------------------------------
+
+        selected_yes = dropdown.get_by_text(
+            "Yes",
+            exact=True
+        )
+
+        expect(
+            selected_yes
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        print(
+            "Batch Applicable selected: Yes"
+        )
+
+        # ---------------------------------------------------------
+        # SCROLL DOWN FOR ITEM ATTRIBUTES
+        # ---------------------------------------------------------
+
+        print(
+            "Scrolling down to Item Attributes"
+        )
+
+        self.page.mouse.wheel(
+            0,
+            900
+        )
+
+        self.page.wait_for_timeout(
+            500
+        )
+
+
+
+    def add_random_item_attribute(
+        self
+    ) -> dict:
+
+        self.page.mouse.wheel(
+            0,
+            800
+        )
+
+        self.page.wait_for_timeout(
+            300
+        )
+
+        # ---------------------------------------------------------
+        # ADD OPTIONS
+        # ---------------------------------------------------------
+
+        add_options = self.page.get_by_role(
+            "button",
+            name=re.compile(
+                r"Add Options",
+                re.I
+            )
+        )
+
+        expect(
+            add_options
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        add_options.click()
+
+        self.page.wait_for_timeout(
+            300
+        )
+
+        # ---------------------------------------------------------
+        # RANDOM DATA
+        # ---------------------------------------------------------
+
+        option_name = (
+            self.random_attribute_name()
+        )
+
+        option_values = (
+            self.random_attribute_values()
+        )
+
+        # ---------------------------------------------------------
+        # OPTION NAME
+        # ---------------------------------------------------------
+
+        option_name_input = self.page.get_by_role(
+            "textbox",
+            name="Enter Option Name",
+            exact=True
+        )
+
+        expect(
+            option_name_input
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        option_name_input.fill(
+            option_name
+        )
+
+        print(
+            f"Attribute Option Name: "
+            f"{option_name}"
+        )
+
+        # ---------------------------------------------------------
+        # OPTION VALUES
+        # ---------------------------------------------------------
+
+        option_value_input = self.page.get_by_role(
+            "textbox",
+            name="Enter Value",
+            exact=True
+        )
+
+        expect(
+            option_value_input
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        for value in option_values:
+
+            print(
+                f"Entering option value: "
+                f"{value}"
+            )
+
+            option_value_input.fill(
+                value
+            )
+
+            option_value_input.press(
+                "Enter"
+            )
+
+            self.page.wait_for_timeout(
+                300
+            )
+
+            print(
+                f"Added option value: "
+                f"{value}"
+            )
+
+        # ---------------------------------------------------------
+        # DONE
+        # ---------------------------------------------------------
+
+        done_button = self.page.get_by_role(
+            "button",
+            name="Done",
+            exact=True
+        )
+
+        expect(
+            done_button
+        ).to_be_visible(
+            timeout=10_000
+        )
+
+        expect(
+            done_button
+        ).to_be_enabled(
+            timeout=10_000
+        )
+
+        done_button.click()
+
+        self.page.wait_for_timeout(
+            300
+        )
+
+        # ---------------------------------------------------------
+        # RETURN ATTRIBUTE DATA
+        # ---------------------------------------------------------
+
+        attribute_result = {
+            "option_name": option_name,
+            "option_values": option_values,
+        }
+
+        print(
+            f"Attribute result: "
+            f"{attribute_result}"
+        )
+
+        return attribute_result
+
+
+
+
+    def submit_create_item(
+        self
+    ) -> None:
+
+        self.page.evaluate(
+            """
+            window.scrollTo(
+                0,
+                document.body.scrollHeight
+            )
+            """
+        )
+
+        self.page.wait_for_timeout(
+            400
+        )
+
+        create_item_button = self.page.get_by_role(
+            "button",
+            name="Create Item",
+            exact=True
+        )
+
+        expect(
+            create_item_button
+        ).to_be_visible(
+            timeout=15_000
+        )
+
+        expect(
+            create_item_button
+        ).to_be_enabled()
+
+        create_item_button.click()
+
+        messages = (
+            self.assert_and_wait_for_success_messages()
+        )
+
+        print(
+            f"Create Item messages: "
+            f"{messages}"
+        )
+
+        self.page.wait_for_load_state(
+            "domcontentloaded"
+        )
+
+
+
+    def verify_item_in_all_items(
+        self,
+        item_name: str
+    ) -> None:
+
+        print(
+            f"Verifying new item: "
+            f"{item_name}"
+        )
+
+        item_row = self.page.get_by_role(
+            "row"
+        ).filter(
+            has_text=re.compile(
+                re.escape(item_name),
+                re.I
+            )
+        )
+
+        expect(
+            item_row.first
+        ).to_be_visible(
+            timeout=20_000
+        )
+
+        print(
+            f"Created item found in grid: "
+            f"{item_name}"
+        )
+
+
+
+
+    def create_simple_numbers_item(
+        self
+    ) -> dict:
+
+        item_name = (
+            self.random_item_name()
+        )
+
+        self.click_create_item()
+
+        self.enter_item_name(
+            item_name
+        )
+
+        self.select_item_property_other()
+
+        self.select_base_unit(
+            "Numbers"
+        )
+
+        self.submit_create_item()
+
+        self.verify_item_in_all_items(
+            item_name
+        )
+
+        return {
+            "item_name": item_name,
+            "base_unit": "Numbers",
+            "batch_applicable": False,
+        }
+
+
+
+    def create_box_batch_attribute_item(
+        self
+    ) -> dict:
+
+        item_name = (
+            self.random_item_name()
+        )
+
+        self.click_create_item()
+
+        self.enter_item_name(
+            item_name
+        )
+
+        self.select_item_property_other()
+
+        self.select_base_unit(
+            "Box"
+        )
+
+        unit_contains = (
+            self.configure_box_unit()
+        )
+
+        self.select_batch_applicable_yes()
+
+        # IMPORTANT:
+        # capture the returned attribute dictionary
+        attribute = (
+            self.add_random_item_attribute()
+        )
+
+        print(
+            f"Captured attribute: "
+            f"{attribute}"
+        )
+
+        self.submit_create_item()
+
+        self.verify_item_in_all_items(
+            item_name
+        )
+
+        result = {
+            "item_name": item_name,
+            "base_unit": "Box",
+            "unit_contains": unit_contains,
+            "contained_unit": "Numbers",
+            "batch_applicable": True,
+            "attribute": attribute,
+        }
+
+        print(
+            f"Box item result: "
+            f"{result}"
+        )
+
+        return result
+    
+
+    def create_items_for_selling_unit_test(
+        self
+    ) -> dict:
+
+        print("\n============================================")
+        print("TEST 1 - CREATE ITEMS")
+        print("============================================")
+
+        # ---------------------------------------------------------
+        # LOGIN
+        # ---------------------------------------------------------
+
+        self.login()
+
+        # ---------------------------------------------------------
+        # SALES ORDER DASHBOARD
+        # ---------------------------------------------------------
+
+        self.open_sales_order_dashboard()
+
+        # ---------------------------------------------------------
+        # ITEMS
+        # ---------------------------------------------------------
+
+        self.open_items_from_sales_order_dashboard()
+
+        # ---------------------------------------------------------
+        # ITEM 1
+        # Base Unit = Numbers
+        # ---------------------------------------------------------
+
+        simple_item = (
+            self.create_simple_numbers_item()
+        )
+
+        # We are now back in All Items.
+
+        # ---------------------------------------------------------
+        # ITEM 2
+        # Base Unit = Box
+        # Unit Contains = 10/20/30 Numbers
+        # Batch = Yes
+        # Attribute + 2 values
+        # ---------------------------------------------------------
+
+        box_item = (
+            self.create_box_batch_attribute_item()
+        )
+
+        print("\n============================================")
+        print("ITEM CREATION COMPLETED")
+        print("============================================")
+
+        print(
+            f"Simple Item: "
+            f"{simple_item['item_name']}"
+        )
+
+        print(
+            f"Box Item: "
+            f"{box_item['item_name']}"
+        )
+
+        return {
+            "items": [
+                simple_item,
+                box_item,
+            ]
+        }

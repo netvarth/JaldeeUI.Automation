@@ -7,12 +7,28 @@ import pytest
 
 # Run Only Purchase :- python -m pytest .\tests\test_selling_unit_purchase.py::test_01_create_and_approve_purchase -v -s
 # Run Only Catalog Update :- python -m pytest .\tests\test_selling_unit_purchase.py::test_02_add_purchased_items_to_sales_order_catalog -v -s
-# Run Only Order Creation :- python -m pytest .\tests\test_selling_unit_purchase.py::test_03_create_order_for_new_customer -v -s
-# Run Only Order Creation :- python -m pytest .\tests\test_selling_unit_purchase.py::test_04_create_order_for_existing_customer -v -s
+# Run Only Order Creation for new customers :- python -m pytest .\tests\test_selling_unit_purchase.py::test_03_create_order_for_new_customer -v -s
+# Run Only Order Creation for existing customers :- python -m pytest .\tests\test_selling_unit_purchase.py::test_04_create_order_for_existing_customer -v -s
+# Run Only Item Creation :- python -m pytest .\tests\test_selling_unit_purchase.py::test_01_create_items -v -s
 
 from framework.selling_unit_purchase import (
     SellingUnitPurchaseFlow,
 )
+
+
+
+# ============================================================
+# FIXTURES
+# ============================================================
+@pytest.fixture(scope="module")
+def created_items_result(
+    selling_unit_flow,
+):
+
+    return (
+        selling_unit_flow
+        .create_items_for_selling_unit_test()
+    )
 
 
 # ============================================================
@@ -260,3 +276,56 @@ def test_04_create_order_for_existing_customer(
             f"Selling Unit: "
             f"{item.get('selling_unit')}"
         )
+
+
+
+def test_01_create_items(
+    created_items_result,
+):
+
+    assert created_items_result is not None
+
+    items = created_items_result["items"]
+
+    assert len(items) == 2
+
+    assert (
+        items[0]["base_unit"]
+        == "Numbers"
+    )
+
+    assert (
+        items[1]["base_unit"]
+        == "Box"
+    )
+
+    assert (
+        items[1]["batch_applicable"]
+        is True
+    )
+
+    assert (
+        items[1]["unit_contains"]
+        in [10, 20, 30]
+    )
+
+    assert (
+        len(
+            items[1]["attribute"][
+                "option_values"
+            ]
+        )
+        == 2
+    )
+
+    print("\n============================================")
+    print("TEST 1 - CREATE ITEMS PASSED")
+    print("============================================")
+
+    for item in items:
+
+        print(
+            f"Created Item: "
+            f"{item['item_name']}"
+        )
+
