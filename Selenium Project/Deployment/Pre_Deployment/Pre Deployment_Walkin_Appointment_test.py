@@ -1396,10 +1396,10 @@ def test_confirmation_label_message_attachment(login):
             raise e
 
 
-# @allure.severity(allure.severity_level.CRITICAL)
-# @allure.title("Prescription and RX Push Prescription Pre deployment testing")
-# @pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
-# def test_prescription_rxpush_predeployment(login): 
+@allure.severity(allure.severity_level.CRITICAL)
+@allure.title("Prescription and RX Push Prescription Pre deployment testing")
+@pytest.mark.parametrize("url, username, password", [(scale_url, main_scale, password)])
+def test_prescription_rxpush_predeployment(login): 
 
     current_date = datetime.now().strftime("%Y-%m-%d")
     print("Pre-Deployment Prescription and RX Push Prescription : ",current_date)
@@ -1407,9 +1407,511 @@ def test_confirmation_label_message_attachment(login):
         wait = WebDriverWait(login, 30)
         time.sleep(3)
 
-        wait_and_click(login, By.XPATH, "(//div[@class='p-card p-component'])[5]")
+
+        # Open Settings from side panel
+        settings_icon = WebDriverWait(login, 20).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//img[contains(@src,'settings.png')]/ancestor::div[@routerlinkactive='active-menu']"
+                )
+            )
+        )
+
+        login.execute_script("arguments[0].click();", settings_icon)
+        time.sleep(3)
+
+        # Scroll down to POS Ordering section
+        pos_ordering_xpath = "//*[normalize-space()='POS Ordering']"
+
+        pos_ordering = None
+
+        for _ in range(15):
+            pos_elements = login.find_elements(By.XPATH, pos_ordering_xpath)
+            visible_pos_elements = [element for element in pos_elements if element.is_displayed()]
+
+            if visible_pos_elements:
+                pos_ordering = visible_pos_elements[0]
+                break
+
+            login.execute_script("window.scrollBy(0, 600);")
+            time.sleep(1)
+
+        if pos_ordering is None:
+            raise Exception("POS Ordering section not found in Settings page")
+
+        login.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});",
+            pos_ordering
+        )
+
+        time.sleep(1)
+
+        # Click RX Push Management System under POS Ordering
+        rx_push_menu_xpath = "//p[normalize-space()='RX Push Management System']"
+
+        rx_push_menu = None
+
+        for _ in range(10):
+            rx_push_elements = login.find_elements(By.XPATH, rx_push_menu_xpath)
+            visible_rx_push_elements = [element for element in rx_push_elements if element.is_displayed()]
+
+            if visible_rx_push_elements:
+                rx_push_menu = visible_rx_push_elements[0]
+                break
+
+            login.execute_script("window.scrollBy(0, 400);")
+            time.sleep(1)
+
+        if rx_push_menu is None:
+            raise Exception("RX Push Management System menu not found under POS Ordering")
+
+        login.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});",
+            rx_push_menu
+        )
+
+        time.sleep(1)
+
+        login.execute_script("arguments[0].click();", rx_push_menu)
 
         time.sleep(3)
+
+        # Turn RX Push OFF only if it is currently ON
+        rx_switch = WebDriverWait(login, 20).until(
+            EC.presence_of_element_located(
+                (
+                    By.XPATH,
+                    "(//button[contains(@class,'mdc-switch') or contains(@class,'mat-mdc-slide-toggle')])[1]"
+                )
+            )
+        )
+
+        switch_checked = rx_switch.get_attribute("aria-checked")
+
+        print("RX Push switch status before click:", switch_checked)
+
+        if switch_checked == "true":
+            login.execute_script("arguments[0].click();", rx_switch)
+            time.sleep(2)
+
+            msg = get_snack_bar_message(login)
+            print("Snack bar message:", msg)
+
+        else:
+            print("RX Push already OFF, skipping switch click")
+
+        # No snack bar message will come if already OFF.
+        # Directly click Appointments icon in sidebar.
+        appointments_icon = WebDriverWait(login, 20).until(
+            EC.element_to_be_clickable(
+                (
+                    By.XPATH,
+                    "//img[contains(@src,'appointments.png')]/ancestor::div[@routerlinkactive='active-menu']"
+                )
+            )
+        )
+
+        login.execute_script("arguments[0].click();", appointments_icon)
+
+        time.sleep(3)
+        while True:
+            try:
+                
+                next_button = WebDriverWait(login, 10).until(
+                    EC.presence_of_element_located(
+                        (By.XPATH, "//button[contains(@class,'p-paginator-last') and @type='button']")
+                    )
+                )
+
+                
+                if next_button.is_enabled():
+                   
+                    login.execute_script("arguments[0].click();", next_button)
+                else:
+                  
+                    break
+
+            except Exception as e:
+                
+                break
+
+
+
+        time.sleep(1)
+        last_element_in_accordian = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
+        )
+        last_element_in_accordian.click()
+
+        time.sleep(3)
+        View_Detail_button = WebDriverWait(login, 10).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
+            )
+        )
+        click_to_element(login, View_Detail_button)
+
+        time.sleep(3)
+
+        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Prescriptions']")
+
+        time.sleep(2)
+        wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Amber Gordon']/ancestor::div[contains(@class,'mat-mdc-select-trigger')]"))
+            ).click()
+        
+        select_doc = wait.until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[normalize-space()='Naveen KP']"))
+            )
+        
+        login.execute_script("arguments[0].scrollIntoView();", select_doc)
+        
+        select_doc.click()
+        
+        # Loop through rows and interact with each row
+        medicines_to_add = [
+            {"name": "Paracetamol", "manual": True},
+            {"name": "Ibuprofen", "manual": True},
+            {"name": "Cetirizine", "manual": True}
+        ]
+
+        frequency_values = ["1-1-1", "1-0-1", "1-0-0"]
+        duration_values = ["5 days", "3 days", "10 days"]
+
+        for index, med in enumerate(medicines_to_add):
+
+            medicine_rows_xpath = (
+                "//table[.//th[normalize-space()='Medicine'] "
+                "and .//th[normalize-space()='Dose'] "
+                "and .//th[normalize-space()='Frequency']]//tbody/tr"
+            )
+
+            rows_before_count = len(login.find_elements(By.XPATH, medicine_rows_xpath))
+
+            add_medicine_button = wait.until(
+                EC.element_to_be_clickable(
+                    (By.XPATH, "//button[normalize-space()='+ Add Medicine']")
+                )
+            )
+
+            login.execute_script("arguments[0].scrollIntoView({block:'center'});", add_medicine_button)
+            login.execute_script("arguments[0].click();", add_medicine_button)
+
+            WebDriverWait(login, 20).until(
+                lambda driver: len(driver.find_elements(By.XPATH, medicine_rows_xpath)) > rows_before_count
+            )
+
+            rows_after = login.find_elements(By.XPATH, medicine_rows_xpath)
+            new_row_index = len(rows_after)
+
+            row_xpath = (
+                "("
+                "//table[.//th[normalize-space()='Medicine'] "
+                "and .//th[normalize-space()='Dose'] "
+                "and .//th[normalize-space()='Frequency']]//tbody/tr"
+                f")[{new_row_index}]"
+            )
+
+            # td[2] = Medicine
+            medicine_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[2]"))
+            )
+
+            login.execute_script("arguments[0].scrollIntoView({block:'center'});", medicine_cell)
+            medicine_cell.click()
+            time.sleep(0.5)
+
+            medicine_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[2]//input[@role='searchbox' or @type='text']"
+            )
+
+            if medicine_inputs:
+                medicine_input = medicine_inputs[0]
+            else:
+                medicine_input = login.switch_to.active_element
+
+            medicine_input.send_keys(Keys.CONTROL, "a")
+            medicine_input.send_keys(Keys.BACKSPACE)
+            medicine_input.send_keys(med["name"])
+            time.sleep(1)
+            medicine_input.send_keys(Keys.ENTER)
+            time.sleep(1)
+
+            # td[3] = Dose
+            row_xpath = f"(//tbody/tr)[{new_row_index}]"
+
+            dose_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[3]"))
+            )
+
+            dose_cell.click()
+            time.sleep(0.5)
+
+            dose_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[3]//input[@role='searchbox' or @type='text']"
+            )
+
+            if dose_inputs:
+                dose_input = dose_inputs[0]
+            else:
+                dose_input = login.switch_to.active_element
+
+            dose_input.send_keys(Keys.CONTROL, "a")
+            dose_input.send_keys(Keys.BACKSPACE)
+            dose_input.send_keys("650 mg")
+            dose_input.send_keys(Keys.ENTER)
+            time.sleep(1)
+
+            # td[4] = Frequency
+            frequency_value = frequency_values[index % len(frequency_values)]
+            row_xpath = f"(//tbody/tr)[{new_row_index}]"
+
+            frequency_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[4]"))
+            )
+
+            frequency_cell.click()
+            time.sleep(0.5)
+
+            frequency_selected = False
+
+            frequency_dropdowns = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[4]//div[contains(@class,'p-dropdown-trigger')]"
+            )
+
+            if frequency_dropdowns:
+                login.execute_script("arguments[0].click();", frequency_dropdowns[0])
+                time.sleep(1)
+
+                frequency_option_xpath = (
+                    "//div[contains(@class,'p-dropdown-items-wrapper')]"
+                    f"//li[.//span[normalize-space()='{frequency_value}'] "
+                    f"or normalize-space()='{frequency_value}']"
+                )
+
+                frequency_options = login.find_elements(By.XPATH, frequency_option_xpath)
+                visible_frequency_options = [
+                    option for option in frequency_options if option.is_displayed()
+                ]
+
+                if visible_frequency_options:
+                    login.execute_script("arguments[0].click();", visible_frequency_options[0])
+                    frequency_selected = True
+                    time.sleep(1)
+                else:
+                    login.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
+                    time.sleep(0.5)
+
+            if not frequency_selected:
+                row_xpath = f"(//tbody/tr)[{new_row_index}]"
+
+                frequency_cell = WebDriverWait(login, 10).until(
+                    EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[4]"))
+                )
+
+                frequency_cell.click()
+                time.sleep(0.5)
+
+                frequency_inputs = login.find_elements(
+                    By.XPATH,
+                    row_xpath + "/td[4]//input[@role='searchbox' or @type='text' or @type='number']"
+                )
+
+                if frequency_inputs:
+                    frequency_input = frequency_inputs[0]
+                else:
+                    frequency_input = login.switch_to.active_element
+
+                frequency_input.send_keys(Keys.CONTROL, "a")
+                frequency_input.send_keys(Keys.BACKSPACE)
+                frequency_input.send_keys(frequency_value)
+                frequency_input.send_keys(Keys.ENTER)
+
+            print("Selected Frequency:", frequency_value)
+            time.sleep(1)
+
+            # td[5] = Duration
+            duration_value = duration_values[index % len(duration_values)]
+            row_xpath = f"(//tbody/tr)[{new_row_index}]"
+
+            duration_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[5]"))
+            )
+
+            duration_cell.click()
+            time.sleep(0.5)
+
+            duration_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[5]//input[@type='number' or @type='text' or @role='searchbox']"
+            )
+
+            if duration_inputs:
+                duration_input = duration_inputs[0]
+            else:
+                duration_input = login.switch_to.active_element
+
+            duration_input.send_keys(Keys.CONTROL, "a")
+            duration_input.send_keys(Keys.BACKSPACE)
+            duration_input.send_keys(duration_value)
+            duration_input.send_keys(Keys.ENTER)
+
+            print("Selected Duration:", duration_value)
+            time.sleep(1)
+
+            # td[6] = Notes / Instructions
+            row_xpath = f"(//tbody/tr)[{new_row_index}]"
+
+            notes_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[6]"))
+            )
+
+            notes_cell.click()
+            time.sleep(0.5)
+
+            notes_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[6]//input[@role='searchbox' or @type='text']"
+            )
+
+            if notes_inputs:
+                notes_input = notes_inputs[0]
+            else:
+                notes_input = login.switch_to.active_element
+
+            notes_input.send_keys(Keys.CONTROL, "a")
+            notes_input.send_keys(Keys.BACKSPACE)
+            notes_input.send_keys("After Food")
+            notes_input.send_keys(Keys.ENTER)
+
+            time.sleep(1)
+
+        # Save after adding all medicines
+        wait.until(
+            EC.element_to_be_clickable(
+                (By.XPATH, "//button[normalize-space()='Save']")
+            )
+        ).click()
+
+        time.sleep(2)
+
+        login.find_element(By.XPATH, "//img[@alt='share']").click()
+
+        time.sleep(2)
+        login.find_element(
+            By.XPATH, "//textarea[@placeholder='Enter message description']"
+        ).send_keys("prescription message")
+
+        login.find_element(
+            By.XPATH, "(//input[@class='mdc-checkbox__native-control'])[1]"
+        ).click()
+        login.find_element(By.XPATH, "//input[@type='checkbox' and @id='mat-mdc-checkbox-2-input']").click()
+        login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
+        
+        msg = get_toast_message(login)
+        print("Toast Message :", msg)
+
+
+        time.sleep(2)
+        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
+
+
+        time.sleep(2)
+        setting_element = wait.until(
+            EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='POS Ordering'])[1]"))
+        )
+
+        login.execute_script("arguments[0].scrollIntoView();", setting_element)
+
+        time.sleep(1)
+        wait_and_locate_click(login, By.XPATH, "(//p[normalize-space()='RX Push Management System'])[1]")
+
+
+        time.sleep(2)
+        # Turn RX Push ON only if it is OFF
+        rx_switch_xpaths = [
+            "(//*[contains(normalize-space(),'RX Push')]/ancestor::*[contains(@class,'mdc-form-field')][1]//button[@role='switch'])[1]",
+            "(//*[contains(normalize-space(),'RX Push')]/ancestor::*[contains(@class,'mat-mdc-slide-toggle')][1]//button[@role='switch'])[1]",
+            "(//button[@role='switch'])[1]",
+            "(//button[contains(@class,'mdc-switch')])[1]",
+            "(//mat-slide-toggle//button)[1]",
+            "(//mat-slide-toggle)[1]//button"
+        ]
+
+        rx_switch = None
+        used_switch_xpath = None
+
+        for xpath in rx_switch_xpaths:
+            switch_elements = login.find_elements(By.XPATH, xpath)
+            visible_switch_elements = [
+                element for element in switch_elements if element.is_displayed()
+            ]
+
+            if visible_switch_elements:
+                rx_switch = visible_switch_elements[0]
+                used_switch_xpath = xpath
+                break
+
+        if rx_switch is None:
+            raise Exception("RX Push switch not found after opening RX Push Management System")
+
+        login.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});",
+            rx_switch
+        )
+
+        time.sleep(1)
+
+        switch_checked = rx_switch.get_attribute("aria-checked")
+
+        if switch_checked is None:
+            switch_class = rx_switch.get_attribute("class")
+
+            if "mdc-switch--selected" in switch_class or "mat-mdc-slide-toggle-checked" in switch_class:
+                switch_checked = "true"
+            else:
+                switch_checked = "false"
+
+        print("RX Push switch status before click:", switch_checked)
+
+        if switch_checked == "false":
+            login.execute_script("arguments[0].click();", rx_switch)
+            time.sleep(2)
+
+            msg = get_snack_bar_message(login)
+            print("Snack bar message:", msg)
+
+            rx_switch = WebDriverWait(login, 20).until(
+                EC.presence_of_element_located((By.XPATH, used_switch_xpath))
+            )
+
+            switch_checked_after = rx_switch.get_attribute("aria-checked")
+
+            if switch_checked_after is None:
+                switch_class_after = rx_switch.get_attribute("class")
+
+                if "mdc-switch--selected" in switch_class_after or "mat-mdc-slide-toggle-checked" in switch_class_after:
+                    switch_checked_after = "true"
+                else:
+                    switch_checked_after = "false"
+
+            print("RX Push switch status after click:", switch_checked_after)
+
+            assert switch_checked_after == "true", "RX Push was not turned ON"
+
+        else:
+            print("RX Push already ON, skipping switch click")
+
+
+        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
+
+        time.sleep(2)
         while True:
             try:
                 
@@ -1446,55 +1948,9 @@ def test_confirmation_label_message_attachment(login):
         click_to_element(login, View_Detail_button)
 
         time.sleep(3)
-
         wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Prescriptions']")
 
-        # for i in range(5):
-        #     wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Add Medicine']")
-        #     wait_and_send_keys( login, By.XPATH, "//input[@role='searchbox']", "Medicine")
-
-        #     before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
-        #     aftertd_XPath_1 = "/td[2]"
-        #     aftertd_XPath_2 = "/td[3]"
-        #     aftertd_XPath_3 = "/td[4]"
-        #     aftertd_XPath_4 = "/td[5]"
-        #     textarea_xpath = "//input[@role='searchbox']"
-        #     row = i + 1
-        #     if i > 0:
-        #         trXPath = before_XPath + str([row])
-        #     else:
-        #         trXPath = before_XPath
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_1
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-
-        #     Dose = login.find_element(By.XPATH, PreFinalXPath)
-        #     Dose.click()
-        #     Dose1 = login.find_element(By.XPATH, FinalXPath)
-        #     Dose1.send_keys("650 mg")
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_2
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-
-        #     Frequency = login.find_element(By.XPATH, PreFinalXPath)
-        #     Frequency.click()
-        #     Frequency1 = login.find_element(By.XPATH, FinalXPath)
-        #     Frequency1.send_keys("1-1-1")
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_3
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-        #     Duration = login.find_element(By.XPATH, PreFinalXPath)
-        #     Duration.click()
-        #     Duration1 = login.find_element(By.XPATH, FinalXPath)
-        #     Duration1.send_keys("5 Days")
-
-        #     PreFinalXPath = trXPath + aftertd_XPath_4
-        #     FinalXPath = PreFinalXPath + textarea_xpath
-        #     Notes = login.find_element(By.XPATH, PreFinalXPath)
-        #     Notes.click()
-        #     Notes1 = login.find_element(By.XPATH, FinalXPath)
-        #     Notes1.send_keys("After Food")
-
+        
 
         for i in range(5):
             wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Add Medicine']")
@@ -1526,16 +1982,17 @@ def test_confirmation_label_message_attachment(login):
             else:
                 trXPath = before_XPath
 
-            # Dose / Medicine value
+            # Medicine Name
             PreFinalXPath = trXPath + aftertd_XPath_1
             FinalXPath = PreFinalXPath + textarea_xpath
 
-            Dose = login.find_element(By.XPATH, PreFinalXPath)
-            Dose.click()
+            Medicine = login.find_element(By.XPATH, PreFinalXPath)
+            Medicine.click()
 
-            Dose1 = login.find_element(By.XPATH, FinalXPath)
-            Dose1.clear()
-            Dose1.send_keys("650 mg")
+            Medicine1 = login.find_element(By.XPATH, FinalXPath)
+            Medicine1.clear()
+            Medicine1.send_keys(f"Medicine {i + 1}")
+            Medicine1.send_keys(Keys.ENTER)
 
             # Unit - newly added column
             PreFinalXPath = trXPath + aftertd_XPath_2
@@ -1626,204 +2083,17 @@ def test_confirmation_label_message_attachment(login):
                 notes_inputs[0].clear()
                 notes_inputs[0].send_keys("After Food")
      
-        wait_and_locate_click(login, By.XPATH, "//mat-select[@aria-haspopup='listbox']")
+        wait_and_locate_click(login, By.XPATH, "//input[@placeholder='Select Doctor *']/ancestor::div[contains(@class,'p-dropdown')]")
         
         time.sleep(3)
-        element3 = login.find_element(By.XPATH, "//span[@class='mdc-list-item__primary-text']//div[contains(text(),'Naveen KP')]")
+        element3 = login.find_element(By.XPATH, "//li[@role='option']//span[normalize-space()='Naveen KP']")
         click_to_element(login, element3)
         
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Create Prescription']")
         
         msg = get_toast_message(login)
         print("Toast Message :", msg )
-
-        time.sleep(2)
-
-        login.find_element(By.XPATH, "//img[@alt='share']").click()
-
-        time.sleep(2)
-        login.find_element(
-            By.XPATH, "//textarea[@placeholder='Enter message description']"
-        ).send_keys("prescription message")
-
-        login.find_element(
-            By.XPATH, "(//input[@class='mdc-checkbox__native-control'])[1]"
-        ).click()
-        login.find_element(By.XPATH, "//input[@type='checkbox' and @id='mat-mdc-checkbox-2-input']").click()
-        login.find_element(By.XPATH, "//button[@type='button'][normalize-space()='Share']").click()
-        
-        msg = get_toast_message(login)
-        print("Toast Message :", msg)
-
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
-
-
-        time.sleep(2)
-        setting_element = wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='POS Ordering'])[1]"))
-        )
-
-        login.execute_script("arguments[0].scrollIntoView();", setting_element)
-
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//p[normalize-space()='RX Push Management System'])[1]")
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//*[name()='svg'][@class='mdc-switch__icon mdc-switch__icon--off'])[1]")
-
-        get_snack_bar_message(login)
-        print("Snack bar message:", get_snack_bar_message(login))
-        time.sleep(2)
-
-        wait_and_locate_click(login, By.XPATH, "(//img)[3]")
-
-        time.sleep(2)
-        while True:
-            try:
-                
-                next_button = WebDriverWait(login, 10).until(
-                    EC.presence_of_element_located(
-                        (By.XPATH, "//button[contains(@class,'p-paginator-last') and @type='button']")
-                    )
-                )
-
-                
-                if next_button.is_enabled():
-                   
-                    login.execute_script("arguments[0].click();", next_button)
-                else:
-                  
-                    break
-
-            except Exception as e:
-                
-                break
-
-        time.sleep(1)
-        last_element_in_accordian = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//div[contains(@class, 'card my-1 p-0 ng-star-inserted')][last()]"))
-        )
-        last_element_in_accordian.click()
-
-        time.sleep(3)
-        View_Detail_button = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[@id='btnbooks_BUS_bookAction']")
-            )
-        )
-        click_to_element(login, View_Detail_button)
-
-        time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "//span[normalize-space()='Prescriptions']")
-
-        time.sleep(2)
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        select_doc = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Naveen KP']"))
-        )
-
-        login.execute_script("arguments[0].scrollIntoView();", select_doc)
-
-        select_doc.click()
-
-        # Loop through rows and interact with each row
-        # Medicines: first is manual, rest are normal
-        medicines_to_add = [
-            {"name": "Paracetamol", "manual": True},
-            {"name": "items", "manual": False},
-            {"name": "Item4", "manual": False}
-        ]
-
-        for index, med in enumerate(medicines_to_add):
-            # Click "+ Add Medicine"
-            wait.until(
-                EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
-            ).click()
-
-            # Locate the newly added row dynamically (last row)
-            row = wait.until(
-                EC.presence_of_element_located((By.XPATH, "//tbody/tr[last()]"))
-            )
-
-            # Search box inside current row
-            search_box = row.find_element(By.XPATH, ".//td[2]//input[@role='searchbox']")
-            search_box.clear()
-            search_box.send_keys(med["name"])
-            time.sleep(1)
-
-            if not med["manual"]:
-                suggestions = row.find_elements(By.CSS_SELECTOR, ".p-autocomplete-item")
-                if suggestions:
-                    suggestions[0].click()
-            else:
-                search_box.send_keys(Keys.ENTER)
-
-            time.sleep(1)
-
-          
-
-            # Frequency dropdown
-            dropdown_trigger = row.find_element(By.XPATH, ".//td[3]//div[contains(@class, 'p-dropdown-trigger')]")
-            dropdown_trigger.click()
-         
-        
-            # Wait for the dropdown list to appear (overlay in body)
-            dropdown_options = WebDriverWait(login, 10).until(
-                EC.presence_of_all_elements_located(
-                    (By.XPATH, "//div[contains(@class,'p-dropdown-items-wrapper')]//li")
-                )
-            )
-
-            if dropdown_options:
-                # Choose randomly
-                option_to_click = random.choice(dropdown_options)
-                login.execute_script("arguments[0].scrollIntoView(true);", option_to_click)
-                time.sleep(0.3)
-                login.execute_script("arguments[0].click();", option_to_click)
-
-            # Duration
-            duration = row.find_element(By.XPATH, ".//td[4]/input[@type='number']")
-            duration.clear()
-            duration.send_keys("5")
-
-            # Quantity
-            qty_input = row.find_element(By.XPATH, ".//td[5]/input[@type='number']")
-            qty_input.clear()
-            qty_input.send_keys("1")
-
-            # Locate the remarks cell in the current row
-            remarks_cell = row.find_element(By.XPATH, ".//td[6][@class='p-element p-editable-column']")
-
-            # Click to activate editing
-            login.execute_script("arguments[0].scrollIntoView(true);", remarks_cell)
-            remarks_cell.click()
-            time.sleep(0.3)  # tiny wait for input to appear
-
-            # Find the inner input
-            remarks_input = row.find_element(By.XPATH, ".//td[6]//input")
-            remarks_input.clear()
-            remarks_input.send_keys(f"Notes for {med['name']}")
-
-            time.sleep(1)
-
-
-            time.sleep(1)
-
-        # Finally submit
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[normalize-space()='Create Prescription']")
-            )
-        ).click()
 
         time.sleep(3)  # Wait for the prescription to be processed
         
@@ -1834,7 +2104,7 @@ def test_confirmation_label_message_attachment(login):
 
         store = wait.until(
             EC.presence_of_element_located(
-                (By.XPATH, "//div[normalize-space()='Geetha']"))
+                (By.XPATH, "//div[normalize-space()='Swathy Pharmacy']"))
         )
         login.execute_script("arguments[0].scrollIntoView();", store)
         store.click()
@@ -1851,76 +2121,6 @@ def test_confirmation_label_message_attachment(login):
         message = toast_message.text
         print("Toast Message:", message)
         time.sleep(3)
-
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//img)[5]"))
-        ).click()
-
-        time.sleep(2)
-        wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "(//span[@class='p-dropdown-trigger-icon fa fa-caret-down ng-star-inserted'])[1]"))
-        ).click()
-
-        stores = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//span[normalize-space()='Geetha']"))
-        )
-
-        login.execute_script("arguments[0].scrollIntoView();", stores)
-        stores.click()
-
-        time.sleep(2)
-        
-        RX_request_element = wait.until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//button[@id='btnRXReq_ORD_Dashbrd']"))
-        )
-
-        scroll_to_element(login, RX_request_element) 
-        time.sleep(1)
-        RX_request_element.click()
-
-        time.sleep(2)
-        # Wait for the table to be present
-        table_body = WebDriverWait(login, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//tbody"))
-        )
-
-        # Locate the first table row
-        first_row = table_body.find_element(By.XPATH, "(//tr[@class='ng-star-inserted'])[1]")
-                                                                    
-        # Find the status element within the first row
-        status_element = first_row.find_element(By.XPATH, '(.//span[contains(@class, "status-")])[2]')
-        status_text = status_element.text
-        expected_status = "Pushed"
-
-        print(f"Expected status: '{expected_status}', Actual status: '{status_text}'")
-
-        # Assert that the status is "Pushed"
-        assert status_text == "Pushed", f"Expected status to be 'Pushed', but got '{status_text}'"
-
-        time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "(//img[@src='./assets/images/menu/settings.png'])[1]")
-
-        time.sleep(2)
-        setting_element = wait.until(
-            EC.presence_of_element_located((By.XPATH, "(//div[normalize-space()='POS Ordering'])[1]"))
-        )
-
-        login.execute_script("arguments[0].scrollIntoView();", setting_element)
-
-        time.sleep(1)
-        wait_and_locate_click(login, By.XPATH, "(//p[normalize-space()='RX Push Management System'])[1]")
-
-        time.sleep(3)
-        wait_and_locate_click(login, By.XPATH, "(//label[normalize-space()='RX Push  On'])[1]")
-
-        msg = get_snack_bar_message(login)
-        print("Snack bar message:", msg)
-
-        time.sleep(5)
 
     except Exception as e:
             allure.attach(  # use Allure package, .attach() method, pass 3 params
