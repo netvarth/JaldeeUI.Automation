@@ -10,7 +10,7 @@ from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 from framework.test_data import generate_consumer_profile
 
 
-# Run all tests :- python -m pytest .\tests\test_selling_unit_purchase.py -v -s
+# Run all tests :- pytest tests/selling_unit -s -v   OR   pytest tests/selling_unit/test_selling_unit_purchase.py -s -v
 
 # Run Only Purchase :- python -m pytest .\tests\test_selling_unit_purchase.py::test_01_create_and_approve_purchase -v -s
 # Run Only Catalog Update :- python -m pytest .\tests\test_selling_unit_purchase.py::test_02_add_purchased_items_to_sales_order_catalog -v -s

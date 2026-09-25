@@ -3,17 +3,19 @@ import sys
 import allure
 import pytest
 
-# Run all tests :- python -m pytest .\tests\test_selling_unit_purchase.py -v -s
+# Run all tests :- pytest tests/selling_unit -s -v   OR   pytest tests/selling_unit/test_selling_unit_purchase.py -s -v
 
-# Run Only Purchase :- python -m pytest .\tests\test_selling_unit_purchase.py::test_01_create_and_approve_purchase -v -s
-# Run Only Catalog Update :- python -m pytest .\tests\test_selling_unit_purchase.py::test_02_add_purchased_items_to_sales_order_catalog -v -s
-# Run Only Order Creation for new customers :- python -m pytest .\tests\test_selling_unit_purchase.py::test_03_create_order_for_new_customer -v -s
-# Run Only Order Creation for existing customers :- python -m pytest .\tests\test_selling_unit_purchase.py::test_04_create_order_for_existing_customer -v -s
-# Run Only Item Creation :- python -m pytest .\tests\test_selling_unit_purchase.py::test_01_create_items -v -s
+# Run Only Purchase :- pytest tests/selling_unit/test_selling_unit_purchase.py::test_01_create_and_approve_purchase -v -s
+# Run Only Catalog Update :- pytest tests/selling_unit/test_selling_unit_purchase.py::test_02_add_purchased_items_to_sales_order_catalog -v -s
+# Run Only Order Creation for new customers :- pytest tests/selling_unit/test_selling_unit_purchase.py::test_03_create_order_for_new_customer -v -s
+# Run Only Order Creation for existing customers :- pytest tests/selling_unit/test_selling_unit_purchase.py::test_04_create_order_for_existing_customer -v -s
+# Run Only Item Creation :- pytest tests/selling_unit/test_selling_unit_purchase.py::test_01_create_items -s -v
 
-from framework.selling_unit_purchase import (
-    SellingUnitPurchaseFlow,
-)
+# from framework.selling_unit_purchase import (
+#     SellingUnitPurchaseFlow,
+# )
+
+from framework.selling_unit.selling_unit_purchase import SellingUnitPurchaseFlow
 
 
 
