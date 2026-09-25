@@ -4,7 +4,7 @@ import pytest
 from playwright.sync_api import Page
 
 from framework.auth import login
-from framework.booking_invoice_tax_actions import (
+from framework.booking_invoice.booking_invoice_tax_actions import (
     complete_single_service_booking_invoice_flow,
     complete_taxable_booking_service_invoice_flow,
     complete_two_taxable_services_booking_invoice_flow,
@@ -63,7 +63,7 @@ import pytest
 from playwright.sync_api import Page
 
 from framework.auth import login
-from framework.booking_invoice_tax_actions import (
+from framework.booking_invoice.booking_invoice_tax_actions import (
     complete_booking_invoice_with_additional_service_flow,
 )
 from framework.test_data import generate_consumer_profile

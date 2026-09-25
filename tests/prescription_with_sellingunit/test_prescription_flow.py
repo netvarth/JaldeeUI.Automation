@@ -1,7 +1,7 @@
 import allure
 from playwright.sync_api import Page
 
-from framework.prescription_flow import (
+from framework.prescription_with_sellingunit.prescription_flow import (
     complete_prescription_push_rx_sales_order_flow,
 )
 
