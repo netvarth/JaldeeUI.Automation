@@ -1,3 +1,8 @@
+import random
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from Framework.common_utils import *
 from Framework.common_dates_utils import *
 
@@ -2976,54 +2981,218 @@ def test_IP_Management_13(login):
                driver, By.XPATH, "(//*[contains(@class,'btnSelectSection_IP_VL_VL')])[10]"
         )
 
-        for i in range(5):
-            wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Add Medicine']")
-            wait_and_send_keys( login, By.XPATH, "//input[@role='searchbox']", "Medicine")
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='+ Add Medicine']")
+        wait_and_send_keys( login, By.XPATH, "//input[@role='searchbox']", "Medicine")
 
-            before_XPath = "//*[contains(@id, 'pr_id')]/tbody/tr"
-            aftertd_XPath_1 = "/td[2]"
-            aftertd_XPath_2 = "/td[3]"
-            aftertd_XPath_3 = "/td[4]"
-            aftertd_XPath_4 = "/td[5]"
-            textarea_xpath = "//input[@role='searchbox']"
-            row = i + 1
-            if i > 0:
-                trXPath = before_XPath + str([row])
+        medicines_to_add = [
+            {"name": "Paracetamol", "dosage": "650 mg", "duration": "5", "qty": "5", "notes": "After Food"},
+            {"name": "Azithromycin", "dosage": "250 mg", "duration": "3", "qty": "3", "notes": "After Food"},
+            {"name": "Pantop", "dosage": "40 mg", "duration": "5", "qty": "5", "notes": "Before Food"}
+        ]
+
+        for index, med in enumerate(medicines_to_add):
+
+            if index > 0:
+                wait.until(
+                    EC.element_to_be_clickable((By.XPATH, "//button[normalize-space()='+ Add Medicine']"))
+                ).click()
+                time.sleep(1)
+
+            row_xpath = "(//tbody/tr)[last()]"
+
+            # td[2] = Medicine Name
+            medicine_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[2]"))
+            )
+            medicine_cell.click()
+            time.sleep(0.5)
+
+            medicine_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[2]//input[@role='searchbox' or @type='text']"
+            )
+
+            if medicine_inputs:
+                medicine_input = medicine_inputs[0]
             else:
-                trXPath = before_XPath
+                medicine_input = login.switch_to.active_element
 
-            PreFinalXPath = trXPath + aftertd_XPath_1
-            FinalXPath = PreFinalXPath + textarea_xpath
+            medicine_input.send_keys(Keys.CONTROL, "a")
+            medicine_input.send_keys(Keys.BACKSPACE)
+            medicine_input.send_keys(med["name"])
+            time.sleep(1)
+            medicine_input.send_keys(Keys.ENTER)
+            time.sleep(1)
 
-            Dose = login.find_element(By.XPATH, PreFinalXPath)
-            Dose.click()
-            Dose1 = login.find_element(By.XPATH, FinalXPath)
-            Dose1.send_keys("650 mg")
+            # td[4] = Dosage
+            dosage_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[4]"))
+            )
+            dosage_cell.click()
+            time.sleep(0.5)
 
-            PreFinalXPath = trXPath + aftertd_XPath_2
-            FinalXPath = PreFinalXPath + textarea_xpath
+            dosage_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[4]//input[@role='searchbox' or @type='text']"
+            )
 
-            Frequency = login.find_element(By.XPATH, PreFinalXPath)
-            Frequency.click()
-            Frequency1 = login.find_element(By.XPATH, FinalXPath)
-            Frequency1.send_keys("1-1-1")
+            if dosage_inputs:
+                dosage_input = dosage_inputs[0]
+            else:
+                dosage_input = login.switch_to.active_element
 
-            PreFinalXPath = trXPath + aftertd_XPath_3
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Duration = login.find_element(By.XPATH, PreFinalXPath)
-            Duration.click()
-            Duration1 = login.find_element(By.XPATH, FinalXPath)
-            Duration1.send_keys("5 Days")
+            dosage_input.send_keys(Keys.CONTROL, "a")
+            dosage_input.send_keys(Keys.BACKSPACE)
+            dosage_input.send_keys(med["dosage"])
+            dosage_input.send_keys(Keys.ENTER)
+            time.sleep(1)
 
-            PreFinalXPath = trXPath + aftertd_XPath_4
-            FinalXPath = PreFinalXPath + textarea_xpath
-            Notes = login.find_element(By.XPATH, PreFinalXPath)
-            Notes.click()
-            Notes1 = login.find_element(By.XPATH, FinalXPath)
-            Notes1.send_keys("After Food")
+            # td[5] = Frequency dropdown - select random frequency
+            frequency_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[5]"))
+            )
+
+            login.execute_script(
+                "arguments[0].scrollIntoView({block:'center'});",
+                frequency_cell
+            )
+
+            login.execute_script("arguments[0].click();", frequency_cell)
+            time.sleep(1)
+
+            frequency_trigger_xpaths = [
+                row_xpath + "/td[5]//div[contains(@class,'p-dropdown-trigger')]",
+                row_xpath + "/td[5]//*[contains(@class,'p-dropdown-trigger-icon')]",
+                row_xpath + "/td[5]//span[contains(@class,'p-dropdown-trigger-icon')]"
+            ]
+
+            frequency_trigger = None
+
+            for xpath in frequency_trigger_xpaths:
+                trigger_elements = login.find_elements(By.XPATH, xpath)
+                visible_triggers = [
+                    element for element in trigger_elements
+                    if element.is_displayed()
+                ]
+
+                if visible_triggers:
+                    frequency_trigger = visible_triggers[0]
+                    break
+
+            if frequency_trigger:
+                login.execute_script("arguments[0].click();", frequency_trigger)
+            else:
+                login.execute_script("arguments[0].click();", frequency_cell)
+
+            time.sleep(1)
+
+            frequency_option_xpaths = [
+                "//li[@role='option' and not(contains(@class,'p-disabled'))]",
+                "//li[contains(@class,'p-dropdown-item') and not(contains(@class,'p-disabled'))]",
+                "//div[contains(@class,'p-dropdown-items-wrapper')]//li[not(contains(@class,'p-disabled'))]",
+                "//*[@role='listbox']//li[not(contains(@class,'p-disabled'))]"
+            ]
+
+            visible_frequency_options = []
+
+            for xpath in frequency_option_xpaths:
+                frequency_options = login.find_elements(By.XPATH, xpath)
+
+                visible_frequency_options = [
+                    option for option in frequency_options
+                    if option.is_displayed()
+                    and option.text.strip() != ""
+                    and option.text.strip().lower() not in ["nil", "select", "select frequency"]
+                ]
+
+                if visible_frequency_options:
+                    break
+
+            if not visible_frequency_options:
+                raise Exception("Frequency dropdown options not found")
+
+            random_frequency = random.choice(visible_frequency_options)
+            selected_frequency = random_frequency.text.strip()
+
+            print("Selected Frequency:", selected_frequency)
+
+            login.execute_script("arguments[0].click();", random_frequency)
+            time.sleep(1)
+
+            login.find_element(By.TAG_NAME, "body").send_keys(Keys.ESCAPE)
+            time.sleep(0.5)
+
+            # td[6] = Duration
+            duration_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[6]"))
+            )
+            duration_cell.click()
+            time.sleep(0.5)
+
+            duration_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[6]//input[@type='number' or @type='text']"
+            )
+
+            if duration_inputs:
+                duration_input = duration_inputs[0]
+            else:
+                duration_input = login.switch_to.active_element
+
+            duration_input.send_keys(Keys.CONTROL, "a")
+            duration_input.send_keys(Keys.BACKSPACE)
+            duration_input.send_keys(med["duration"])
+            duration_input.send_keys(Keys.ENTER)
+            time.sleep(1)
+
+            # td[7] = Qty
+            qty_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[7]"))
+            )
+            qty_cell.click()
+            time.sleep(0.5)
+
+            qty_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[7]//input[@type='number' or @type='text']"
+            )
+
+            if qty_inputs:
+                qty_input = qty_inputs[0]
+            else:
+                qty_input = login.switch_to.active_element
+
+            qty_input.send_keys(Keys.CONTROL, "a")
+            qty_input.send_keys(Keys.BACKSPACE)
+            qty_input.send_keys(med["qty"])
+            qty_input.send_keys(Keys.ENTER)
+            time.sleep(1)
+
+            # td[8] = Notes / Instructions
+            notes_cell = WebDriverWait(login, 10).until(
+                EC.element_to_be_clickable((By.XPATH, row_xpath + "/td[8]"))
+            )
+            notes_cell.click()
+            time.sleep(0.5)
+
+            notes_inputs = login.find_elements(
+                By.XPATH,
+                row_xpath + "/td[8]//input[@role='searchbox' or @type='text']"
+            )
+
+            if notes_inputs:
+                notes_input = notes_inputs[0]
+            else:
+                notes_input = login.switch_to.active_element
+
+            notes_input.send_keys(Keys.CONTROL, "a")
+            notes_input.send_keys(Keys.BACKSPACE)
+            notes_input.send_keys(med["notes"])
+            notes_input.send_keys(Keys.ENTER)
+            time.sleep(1)
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Create Prescription']")
         
         msg = get_toast_message(driver)
         print("Toast Message :", msg )
@@ -3101,7 +3270,7 @@ def test_IP_Management_14(login):
         )
 
         wait_and_locate_click(
-              driver, By.XPATH, "//button[normalize-space()='Choose RX Template']"
+              driver, By.XPATH, "//button[normalize-space()='Choose Template']"
         )
 
         time.sleep(2)
@@ -3110,7 +3279,7 @@ def test_IP_Management_14(login):
         )
 
         time.sleep(2)
-        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Save']")
+        wait_and_locate_click(login, By.XPATH, "//button[normalize-space()='Create Prescription']")
         
         msg = get_toast_message(driver)
         print("Toast Message :", msg )
